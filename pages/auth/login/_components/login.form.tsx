@@ -22,7 +22,6 @@ export const LoginForm: React.FC = () => {
   const router = useRouter();
 
   const {
-    connectWallet,
     connectedAddress,
     signMessage,
     disconnectWallet,
@@ -122,20 +121,6 @@ export const LoginForm: React.FC = () => {
             className="flex h-11 w-full items-center justify-center text-[14px]"
             notloginCheck={true}
           />
-          {/* <Button
-            title={ButtonsText.connect_metamask}
-            onClick={async () => await connectWallet(WalletEnum.METAMASK)}
-            variant="primary"
-            className="flex h-11 w-full items-center justify-center text-[14px]"
-            borderRounded="14px"
-          />
-          <Button
-            title={ButtonsText.connect_wallet}
-            onClick={async () => await connectWallet(WalletEnum.WALLET_SERVICE)}
-            variant="primary"
-            className="flex h-11 w-full items-center justify-center text-[14px]"
-            borderRounded="14px"
-          /> */}
         </div>
       )}
     </div>

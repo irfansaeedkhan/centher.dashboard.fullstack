@@ -7,13 +7,11 @@ import { JsonRpcSigner } from "@ethersproject/providers";
 import { AddIcon } from "@/assets/svgs";
 import Button from "@/components/button";
 import { CustomNumberInput } from "@/components/custom-number-input";
-import ConnectWalletModal from "@/components/modal/connect-wallet-modal";
 import useUser from "@/hooks/use.user";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { IMyCollection } from "@/hooks/use.get.my.collections";
 import useGetUser from "@/hooks/use.get.user";
 import { BlockchainConfig } from "@/web3/blockchain/config";
-import { useWallet } from "@/web3/hooks/use.wallet";
 import { formatAddress } from "@/utils/format.address";
 import { IModalHandler, ModalManager, TemplateCollection } from "@/utils/modal";
 import { CollectionPreviewModal } from "@/components/modal/collection-preview";
@@ -66,8 +64,6 @@ const FixedPriceForm = ({
 }: FixedPriceFormProps) => {
   const { user: loggedInUser } = useUser();
   const { user } = useGetUser(loggedInUser?._id);
-  const { connectWallet, disconnectWallet } = useWallet();
-  const [connectWalletModal, setConnectWalletModal] = useState(false);
   const [propertyModal, setPropertyModal] = useState(false);
   const [propertyDetails, setPropertyDetails] = useState<any>([]);
   const [propertyList, setPropertyList] = useState<any>([]);
@@ -430,14 +426,7 @@ const FixedPriceForm = ({
           propertyErr={propertyErr}
         />
       )}
-      {/* {connectWalletModal && (
-        <ConnectWalletModal
-          connectWallet={connectWallet}
-          deactivate={disconnectWallet}
-          loggedInUser={loggedInUser}
-          setConnectWalletModal={setConnectWalletModal}
-        />
-      )} */}
+
       {ModalModel.visibility && (
         <CollectionPreviewModal
           onClose={() => {

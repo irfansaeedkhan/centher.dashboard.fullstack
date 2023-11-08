@@ -2,10 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import Image from "next/image";
 import { useEventListener, useOnClickOutside } from "usehooks-ts";
-import { toast } from "react-hot-toast";
 import { CgSpinner } from "react-icons/cg";
 import cn from "@/utils/cn";
 import { ModalPortal } from "@/components/modal/modal.portal";
+import { ConnectWalletComp } from "@/components/connect.wallet";
 import { CitizenShipType, useCitizenStore } from "@/store/citizen.store";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { formatEther2Number } from "@/utils/format.address";
@@ -14,7 +14,6 @@ import Button from "../../button";
 import { CitizenShipSuccessModal } from "./success-modal";
 import { CitizenShipFailureModal } from "./failure-modal";
 import { useWallet } from "@/web3/hooks/use.wallet";
-import { ConnectWalletComp } from "@/components/connect.wallet";
 
 interface CustomModalProps {
   isOpen: boolean;

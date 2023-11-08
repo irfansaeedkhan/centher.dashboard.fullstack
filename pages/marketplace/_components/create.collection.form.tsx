@@ -3,12 +3,12 @@ import { ethers } from "ethers";
 import Joi from "joi";
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
-import { toast } from "react-hot-toast";
-import { FiArrowRight } from "react-icons/fi";
+
 import clsx from "clsx";
 import { JsonRpcSigner } from "@ethersproject/providers";
 import Button from "@/components/button";
 import { CollectionPreviewModal } from "@/components/modal/collection-preview";
+import { ConnectWalletComp } from "@/components/connect.wallet";
 import useUser from "@/hooks/use.user";
 import { categories } from "@/models/nft";
 import { GreyWorldIcon, GreyFBIcon, XLogo, MetamaskIcon2 } from "@/assets/svgs";
@@ -16,7 +16,6 @@ import { IModalHandler, ModalManager, TemplateCollection } from "@/utils/modal";
 import { useWallet } from "@/web3/hooks/use.wallet";
 import CustomDropdown from "./custom.dropdown";
 import CollectionPreview from "./collection-preview";
-import { ConnectWalletComp } from "@/components/connect.wallet";
 
 enum ModalType {
   previewCollection = "previewCollection",

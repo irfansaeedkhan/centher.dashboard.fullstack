@@ -43,7 +43,7 @@ export const RegisterForm: React.FC = () => {
 
   const router = useRouter();
   const {
-    connectWallet,
+    disconnectWallet,
     connectedAddress,
     getSigner,
     openWallet,
@@ -129,20 +129,19 @@ export const RegisterForm: React.FC = () => {
                 </p>
               </div>
             </div>
+            <Button
+              title="Disconnect"
+              onClick={() => disconnectWallet()}
+              variant="primary"
+              className="flex h-11 w-full items-center justify-center text-[14px]"
+              borderRounded="14px"
+            />
           </div>
         ) : (
           <ConnectWalletComp
             className="flex h-11 w-full items-center justify-center rounded-xl text-[14px]"
             notloginCheck={true}
           />
-          // <Button
-          //   type="button"
-          //   title={"Connect"}
-          //   onClick={() => connectWallet()}
-          //   variant="primary"
-          //   className="flex h-11 w-full items-center justify-center text-[14px]"
-          //   borderRounded="14px"
-          // />
         )}
 
         <InputField

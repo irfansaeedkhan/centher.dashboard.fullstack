@@ -5,9 +5,7 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import { FiArrowUpRight, FiCopy } from "react-icons/fi";
 import { useOnClickOutside } from "usehooks-ts";
-import { useWeb3React } from "@web3-react/core";
 import clsx from "clsx";
-import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import { AppRoutes } from "@/constants/app.routes";
 import useUser from "@/hooks/use.user";
@@ -26,7 +24,7 @@ import { BlockchainConfig } from "@/web3/blockchain/config";
 import { useCentherLive } from "@/hooks/chat";
 import Button from "@/components/button";
 import { WalletEnum, useWallet } from "@/web3/hooks/use.wallet";
-import ConnectWalletModal from "../modal/connect-wallet-modal";
+import ConnectWalletModal from "@/components/modal/connect-wallet-modal";
 
 interface HeaderProfileProps {
   onClickOutside: () => void;

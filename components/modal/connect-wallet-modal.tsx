@@ -26,15 +26,13 @@ const ConnectWalletModal: React.FC<Props> = ({
 }) => {
   const connectionWallet = async (wallet: string) => {
     if (notloginCheck) {
-      const _account = await connectWallet(wallet);
-      console.log("hi");
+      await connectWallet(wallet);
     } else {
       if (!loggedInUser) {
         toast.error("Please login to buy this nft");
         setConnectWalletModal(false);
         return;
       }
-      console.log("huh");
 
       const _account = await connectWallet(wallet);
       if (loggedInUser?._id.toLowerCase() !== _account?.toLowerCase()) {
@@ -70,17 +68,6 @@ const ConnectWalletModal: React.FC<Props> = ({
           <div
             onClick={async () => {
               connectionWallet(WalletEnum.METAMASK);
-              // if (!loggedInUser) {
-              //   toast.error("Please login to buy this nft");
-              //   setConnectWalletModal(false);
-              //   return;
-              // }
-              // const _account = await connectWallet();
-              // if (loggedInUser._id.toLowerCase() !== _account?.toLowerCase()) {
-              //   toast.error("Please connect to correct account");
-              //   deactivate();
-              // }
-              // setConnectWalletModal(false);
             }}
             className="flex w-full cursor-pointer items-center justify-between gap-10 !rounded-xl px-5 py-3"
           >
@@ -99,17 +86,6 @@ const ConnectWalletModal: React.FC<Props> = ({
           <div
             onClick={async () => {
               connectionWallet(WalletEnum.WALLET_SERVICE);
-              // if (!loggedInUser) {
-              //   toast.error("Please login to buy this nft");
-              //   setConnectWalletModal(false);
-              //   return;
-              // }
-              // const _account = await connectWallet();
-              // if (loggedInUser._id.toLowerCase() !== _account?.toLowerCase()) {
-              //   toast.error("Please connect to correct account");
-              //   deactivate();
-              // }
-              // setConnectWalletModal(false);
             }}
             className="flex w-full cursor-pointer items-center justify-between gap-10 !rounded-xl px-5 py-3"
           >

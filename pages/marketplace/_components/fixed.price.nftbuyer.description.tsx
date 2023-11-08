@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { FiArrowRight } from "react-icons/fi";
 import toast from "react-hot-toast";
 import clsx from "clsx";
 import Button from "@/components/button";

@@ -7,13 +7,11 @@ import Joi from "joi";
 import clsx from "clsx";
 import Button from "@/components/button";
 import { CustomNumberInput } from "@/components/custom-number-input";
-import ConnectWalletModal from "@/components/modal/connect-wallet-modal";
 import { CollectionPreviewModal } from "@/components/modal/collection-preview";
 import { formatAddress } from "@/utils/format.address";
 import { IMyCollection } from "@/hooks/use.get.my.collections";
 import useGetUser from "@/hooks/use.get.user";
 import useUser from "@/hooks/use.user";
-import { useWallet } from "@/web3/hooks/use.wallet";
 import { AddIcon } from "@/assets/svgs";
 import cn from "@/utils/cn";
 import { IModalHandler, ModalManager, TemplateCollection } from "@/utils/modal";
@@ -75,8 +73,6 @@ const AuctionForm = ({
 }: AuctionFormProps) => {
   const { user: loggedInUser } = useUser();
   const { user } = useGetUser(loggedInUser?._id);
-  const { disconnectWallet, connectWallet } = useWallet();
-  const [connectWalletModal, setConnectWalletModal] = useState(false);
   const [propertyModal, setPropertyModal] = useState(false);
   const [AuctionEndTimeErr, setAuctionEndTimeErr] = useState(false);
   const [propertyDetails, setPropertyDetails] = useState<any>([]);
@@ -409,14 +405,6 @@ const AuctionForm = ({
           propertyErr={propertyErr}
         />
       )}
-      {/* {connectWalletModal && (
-        <ConnectWalletModal
-          connectWallet={connectWallet}
-          deactivate={disconnectWallet}
-          loggedInUser={loggedInUser}
-          setConnectWalletModal={setConnectWalletModal}
-        />
-      )} */}
       {ModalModel.visibility && (
         <CollectionPreviewModal
           onClose={() => {
