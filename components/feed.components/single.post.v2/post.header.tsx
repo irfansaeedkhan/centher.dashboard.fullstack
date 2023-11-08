@@ -248,7 +248,7 @@ export const PostHeader: React.FC<Props> = ({
                   : "View Post"
               }
               variant="primary"
-              className="h-10 w-[100px] text-[14px]"
+              className="h-10 w-[100px] text-xs"
               borderRounded="14px"
             />
           </Link>
