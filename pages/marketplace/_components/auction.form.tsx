@@ -7,15 +7,13 @@ import Joi from "joi";
 import clsx from "clsx";
 import Button from "@/components/button";
 import { CustomNumberInput } from "@/components/custom-number-input";
-import ConnectWalletModal from "@/components/modal/connect-wallet-modal";
 import { formatAddress } from "@/utils/format.address";
 import { IMyCollection } from "@/hooks/use.get.my.collections";
-import useUser from "@/hooks/use.user";
-import { useWallet } from "@/web3/hooks/use.wallet";
 import { AddIcon } from "@/assets/svgs";
 import cn from "@/utils/cn";
 import CustomDropdown from "./custom.dropdown";
 import AddPropertiesModal from "./add-properties-modal";
+import { ConnectWalletComp } from "@/components/connect.wallet";
 
 // form validations
 const schema = Joi.object({
@@ -62,9 +60,6 @@ const AuctionForm = ({
   asset,
   library,
 }: AuctionFormProps) => {
-  const { user: loggedInUser } = useUser();
-  const { disconnectWallet, connectWallet } = useWallet();
-  const [connectWalletModal, setConnectWalletModal] = useState(false);
   const [propertyModal, setPropertyModal] = useState(false);
   const [AuctionEndTimeErr, setAuctionEndTimeErr] = useState(false);
   const [propertyDetails, setPropertyDetails] = useState<any>([]);
@@ -329,13 +324,7 @@ const AuctionForm = ({
         </div>
       )}
       {!library ? (
-        <Button
-          title={"Connect Wallet"}
-          variant="primary"
-          onClick={() => {
-            setConnectWalletModal(true);
-          }}
-        />
+        <ConnectWalletComp className="" />
       ) : (
         <Button
           title={"Create NFT"}
@@ -356,14 +345,6 @@ const AuctionForm = ({
           propertyDetails={propertyDetails}
           setPropertyModal={setPropertyModal}
           propertyErr={propertyErr}
-        />
-      )}
-      {connectWalletModal && (
-        <ConnectWalletModal
-          connectWallet={connectWallet}
-          deactivate={disconnectWallet}
-          loggedInUser={loggedInUser}
-          setConnectWalletModal={setConnectWalletModal}
         />
       )}
     </div>

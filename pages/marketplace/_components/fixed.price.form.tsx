@@ -7,16 +7,14 @@ import { JsonRpcSigner } from "@ethersproject/providers";
 import { AddIcon } from "@/assets/svgs";
 import Button from "@/components/button";
 import { CustomNumberInput } from "@/components/custom-number-input";
-import ConnectWalletModal from "@/components/modal/connect-wallet-modal";
 import { formatAddress } from "@/utils/format.address";
-import useUser from "@/hooks/use.user";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { IMyCollection } from "@/hooks/use.get.my.collections";
 import { BlockchainConfig } from "@/web3/blockchain/config";
-import { useWallet } from "@/web3/hooks/use.wallet";
 import CustomDropdown from "./custom.dropdown";
 import { INFTData } from "./create.nft.form";
 import AddPropertiesModal from "./add-properties-modal";
+import { ConnectWalletComp } from "@/components/connect.wallet";
 
 // form validations
 const schema = Joi.object({
@@ -53,9 +51,6 @@ const FixedPriceForm = ({
   asset,
   signer: library,
 }: FixedPriceFormProps) => {
-  const { user: loggedInUser } = useUser();
-  const { connectWallet, disconnectWallet } = useWallet();
-  const [connectWalletModal, setConnectWalletModal] = useState(false);
   const [propertyModal, setPropertyModal] = useState(false);
   const [propertyDetails, setPropertyDetails] = useState<any>([]);
   const [propertyList, setPropertyList] = useState<any>([]);
@@ -344,13 +339,7 @@ const FixedPriceForm = ({
       )}
 
       {!library ? (
-        <Button
-          title={"Connect Wallet"}
-          variant="primary"
-          onClick={() => {
-            setConnectWalletModal(true);
-          }}
-        />
+        <ConnectWalletComp className="" />
       ) : (
         <Button
           title={"Create NFT"}
@@ -376,14 +365,6 @@ const FixedPriceForm = ({
           propertyDetails={propertyDetails}
           setPropertyModal={setPropertyModal}
           propertyErr={propertyErr}
-        />
-      )}
-      {connectWalletModal && (
-        <ConnectWalletModal
-          connectWallet={connectWallet}
-          deactivate={disconnectWallet}
-          loggedInUser={loggedInUser}
-          setConnectWalletModal={setConnectWalletModal}
         />
       )}
     </div>

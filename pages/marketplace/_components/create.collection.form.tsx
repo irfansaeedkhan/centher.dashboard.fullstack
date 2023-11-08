@@ -8,7 +8,6 @@ import { FiArrowRight } from "react-icons/fi";
 import clsx from "clsx";
 import { JsonRpcSigner } from "@ethersproject/providers";
 import Button from "@/components/button";
-import { CustomNewModal } from "@/components/modal/custom.new.modal";
 import { CollectionPreviewModal } from "@/components/modal/collection-preview";
 import useUser from "@/hooks/use.user";
 import { categories } from "@/models/nft";
@@ -17,6 +16,7 @@ import { IModalHandler, ModalManager, TemplateCollection } from "@/utils/modal";
 import { useWallet } from "@/web3/hooks/use.wallet";
 import CustomDropdown from "./custom.dropdown";
 import CollectionPreview from "./collection-preview";
+import { ConnectWalletComp } from "@/components/connect.wallet";
 
 enum ModalType {
   previewCollection = "previewCollection",
@@ -105,8 +105,7 @@ export const CreateNFTCollectionForm = ({
   const [selectedOption, setSelectedOption] = useState("");
   const [categoryError, setCategoryError] = useState(true);
   const { user: loggedInUser } = useUser();
-  const { disconnectWallet, getSigner, connectWallet } = useWallet();
-  const [connectWalletModal, setConnectWalletModal] = useState(false);
+  const { getSigner } = useWallet();
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
     title: "",
@@ -368,14 +367,7 @@ export const CreateNFTCollectionForm = ({
           </div>
         </div>
         {!getSigner() ? (
-          <Button
-            title={"Connect Wallet"}
-            variant="primary"
-            onClick={() => {
-              setConnectWalletModal(true);
-            }}
-            className="mt-2 w-full py-4"
-          />
+          <ConnectWalletComp className="mt-2 w-full py-4" />
         ) : (
           <div className="flex flex-col items-center gap-2 fsm:flex-row">
             <Button
@@ -417,50 +409,6 @@ export const CreateNFTCollectionForm = ({
           </div>
         )}
       </div>
-      {connectWalletModal && (
-        <CustomNewModal
-          onClose={() => {
-            setConnectWalletModal(false);
-          }}
-          title={"Connect to wallet"}
-        >
-          <div className="mb-8 flex w-full justify-center px-5 md:px-10">
-            <p className="mt-2 w-full max-w-[366px] text-center text-xs text-gray-shade-14">
-              Please Connect your wallet to continue, the system support
-              following wallet.
-            </p>
-          </div>
-          <div className="flex w-full justify-center px-5 md:px-10">
-            <div className="flex w-full max-w-[400px] items-center justify-between gap-10 rounded-xl border border-brand-primary px-5 py-3">
-              <div className="flex items-center gap-3 fsm:gap-6">
-                <MetamaskIcon2 />
-                <h3 className="text-sm font-semibold text-white fmd:text-base">
-                  Metamask
-                </h3>
-              </div>
-              <button
-                onClick={async () => {
-                  if (!loggedInUser) {
-                    toast.error("Please login to continue");
-                    setConnectWalletModal(false);
-                    return;
-                  }
-                  const _account = await connectWallet();
-                  if (
-                    loggedInUser._id.toLowerCase() !== _account?.toLowerCase()
-                  ) {
-                    toast.error("Please connect to correct account");
-                    disconnectWallet();
-                  }
-                  setConnectWalletModal(false);
-                }}
-              >
-                <FiArrowRight className="h-6 w-6 text-brand-primary fsm:h-8 fsm:w-8" />
-              </button>
-            </div>
-          </div>
-        </CustomNewModal>
-      )}
       {ModalModel.visibility && (
         <CollectionPreviewModal
           onClose={() => {

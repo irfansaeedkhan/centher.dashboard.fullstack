@@ -5,7 +5,6 @@ import { IModalProps } from "@/components/modal/standard.modal";
 import Button from "@/components/button";
 import { BNBIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
-import ConnectWalletModal from "@/components/modal/connect-wallet-modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import {
   formatAddress,
@@ -18,13 +17,13 @@ import SuccessMessageModal from "@/utils/modal/success-modal";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { useGetBNBBalance } from "@/web3/hooks/use.get.balances";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
-import useUser from "@/hooks/use.user";
 import { useWallet } from "@/web3/hooks/use.wallet";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import AuctionBidModal from "./auction.bid.modal";
 
 import AuctionCountdownRenderer from "./auction-countdown.renderer";
+import { ConnectWalletComp } from "@/components/connect.wallet";
 
 interface AuctionNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
@@ -41,9 +40,7 @@ export const AuctionNFTBuyerDescription = ({
   data,
   setNftData,
 }: AuctionNFTBuyerDescriptionProps) => {
-  const { user: loggedInUser } = useUser();
-  const { getSigner, connectedAddress, connectWallet, disconnectWallet } =
-    useWallet();
+  const { getSigner, connectedAddress } = useWallet();
   const bnbBalance = useGetBNBBalance(connectedAddress);
   const bnbPrice = useBNBPrice();
   const price =
@@ -54,7 +51,6 @@ export const AuctionNFTBuyerDescription = ({
   const [endTime, setEndTime] = useState(new Date());
   const [BidModal, setBidModal] = useState(false);
   const [isUserWinner, SetIsUserWinner] = useState(false);
-  const [connectWalletModal, setConnectWalletModal] = useState(false);
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
     title: "",
@@ -269,14 +265,7 @@ export const AuctionNFTBuyerDescription = ({
         )}
       </div>
       {!getSigner() ? (
-        <Button
-          title={"Connect Wallet"}
-          variant="primary"
-          onClick={() => {
-            setConnectWalletModal(true);
-          }}
-          className="w-full rounded-[14px]"
-        />
+        <ConnectWalletComp className="w-full rounded-[14px]" />
       ) : (
         <div className="buttonContainer flex items-center">
           {nowTime < endTime && (
@@ -330,15 +319,6 @@ export const AuctionNFTBuyerDescription = ({
           onClose={() => {
             setBidModal(false);
           }}
-        />
-      )}
-
-      {connectWalletModal && (
-        <ConnectWalletModal
-          connectWallet={connectWallet}
-          deactivate={disconnectWallet}
-          loggedInUser={loggedInUser}
-          setConnectWalletModal={setConnectWalletModal}
         />
       )}
     </div>
