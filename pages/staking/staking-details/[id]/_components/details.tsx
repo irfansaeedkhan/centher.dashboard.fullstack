@@ -57,14 +57,13 @@ const Details: React.FC<{ data: OptionalType<ListCardDataOBj> }> = ({
             return {
               userImage: e.profile_image,
               userDisplayName: e.display_name,
-              title: data?.metadata?.team.find((e: any) =>
-                eqAddress(e.walletAddress, e._id)
+              title: data?.metadata?.team.find((s: any) =>
+                eqAddress(s.walletAddress, e._id)
               )?.jobTitle,
               address: e._id,
               membership: e.membership,
             };
           });
-
           setUsers(mappedUsers);
         });
       }
