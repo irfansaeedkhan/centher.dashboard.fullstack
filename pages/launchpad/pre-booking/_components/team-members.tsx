@@ -11,7 +11,7 @@ const teamMemberList = [
   },
   {
     name: "Antonio De Rosa",
-    title: "Chief Marketing Officer",
+    title: "Chief Branding Officer",
     image: "/images/antonio-de-rosa.png",
     url: "https://app.centher.io/profile/0x12fdc603d1a702b878d3757a348cd8e30abf754c",
   },
