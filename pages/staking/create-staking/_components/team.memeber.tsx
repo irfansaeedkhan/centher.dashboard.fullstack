@@ -57,7 +57,11 @@ const SingleTeamMember: React.FC<{ member: Memb }> = ({ member }) => {
             </span>
           )}
         </div>
-        <span className={`text-xs text-gray-shade-14`}>{member.title}</span>
+        <span className={`text-xs text-gray-shade-14`}>
+          {member.userDisplayName == "Antonio De Rosa"
+            ? "Chief Branding Officer"
+            : member.title}
+        </span>
       </div>
     </Link>
   );
