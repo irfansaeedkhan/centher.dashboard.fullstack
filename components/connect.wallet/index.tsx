@@ -8,11 +8,13 @@ import Button from "@/components/button";
 import ConnectWalletModal from "@/components/modal/connect-wallet-modal";
 
 interface ConnectWalletProps {
-  className: string;
+  className?: string;
+  notloginCheck?: boolean;
 }
 
 export const ConnectWalletComp: React.FC<ConnectWalletProps> = ({
   className,
+  notloginCheck,
 }) => {
   const { user: loggedInUser } = useUser();
   const { connectWallet, disconnectWallet } = useWallet();
@@ -34,6 +36,7 @@ export const ConnectWalletComp: React.FC<ConnectWalletProps> = ({
           deactivate={disconnectWallet}
           loggedInUser={loggedInUser}
           setConnectWalletModal={setConnectWalletModal}
+          notloginCheck={notloginCheck}
         />
       )}
     </>

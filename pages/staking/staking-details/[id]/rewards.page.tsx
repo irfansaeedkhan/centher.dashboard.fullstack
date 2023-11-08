@@ -32,6 +32,7 @@ import StakingDetailsWrapper from "./_components/staking-details-wrapper";
 import UnstakeModal from "./_components/unstake-modal";
 import SuccessModalContent from "./_components/success-modal-content";
 import FailedModalContent from "./_components/failed-modal-content";
+import ConnectWalletModal from "@/components/modal/connect-wallet-modal";
 
 enum ModalType {
   cancelStakingModal = "cancelStakingModal",
@@ -363,46 +364,52 @@ const ClaimRewards: NextPageWithLayout = () => {
         </CustomModal>
       )}
       {connectWalletModal && (
-        <CustomNewModal
-          onClose={() => {
-            setConnectWalletModal(false);
-          }}
-          title={"Connect to wallet"}
-        >
-          <div className="mb-8 flex w-full justify-center px-5 md:px-10">
-            <p className="mt-2 w-full max-w-[366px] text-center text-sm text-gray-shade-14">
-              Please Connect your wallet to continue, the system support
-              following wallet.
-            </p>
-          </div>
-          <div className="flex w-full justify-center px-5 md:px-10">
-            <div className="flex w-full max-w-[400px] items-center justify-between gap-10 rounded-xl border border-brand-primary px-5 py-3">
-              <div className="flex items-center gap-3 fsm:gap-6">
-                <MetamaskIcon2 />
-                <h3 className="text-sm font-semibold text-white fmd:text-base">
-                  Metamask
-                </h3>
-              </div>
-              <button
-                onClick={async () => {
-                  if (!user) {
-                    toast.error("Please login to buy this membership");
-                    setConnectWalletModal(false);
-                    return;
-                  }
-                  const _account = await connectWallet();
-                  if (user._id.toLowerCase() !== _account?.toLowerCase()) {
-                    toast.error("Please connect to correct account");
-                    disconnectWallet();
-                  }
-                  setConnectWalletModal(false);
-                }}
-              >
-                <FiArrowRight className="h-6 w-6 text-brand-primary fsm:h-8 fsm:w-8" />
-              </button>
-            </div>
-          </div>
-        </CustomNewModal>
+        <ConnectWalletModal
+          setConnectWalletModal={setConnectWalletModal}
+          loggedInUser={user}
+          deactivate={disconnectWallet}
+          connectWallet={connectWallet}
+        />
+        // <CustomNewModal
+        //   onClose={() => {
+        //     setConnectWalletModal(false);
+        //   }}
+        //   title={"Connect to wallet"}
+        // >
+        //   <div className="mb-8 flex w-full justify-center px-5 md:px-10">
+        //     <p className="mt-2 w-full max-w-[366px] text-center text-sm text-gray-shade-14">
+        //       Please Connect your wallet to continue, the system support
+        //       following wallet.
+        //     </p>
+        //   </div>
+        //   <div className="flex w-full justify-center px-5 md:px-10">
+        //     <div className="flex w-full max-w-[400px] items-center justify-between gap-10 rounded-xl border border-brand-primary px-5 py-3">
+        //       <div className="flex items-center gap-3 fsm:gap-6">
+        //         <MetamaskIcon2 />
+        //         <h3 className="text-sm font-semibold text-white fmd:text-base">
+        //           Metamask
+        //         </h3>
+        //       </div>
+        //       <button
+        //         onClick={async () => {
+        //           if (!user) {
+        //             toast.error("Please login to buy this membership");
+        //             setConnectWalletModal(false);
+        //             return;
+        //           }
+        //           const _account = await connectWallet();
+        //           if (user._id.toLowerCase() !== _account?.toLowerCase()) {
+        //             toast.error("Please connect to correct account");
+        //             disconnectWallet();
+        //           }
+        //           setConnectWalletModal(false);
+        //         }}
+        //       >
+        //         <FiArrowRight className="h-6 w-6 text-brand-primary fsm:h-8 fsm:w-8" />
+        //       </button>
+        //     </div>
+        //   </div>
+        // </CustomNewModal>
       )}
       {!connectWalletModal && (isLoading || !userStaked) ? <PreLoader /> : ""}
     </>

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import Link from "next/link";
@@ -26,6 +26,7 @@ import { BlockchainConfig } from "@/web3/blockchain/config";
 import { useCentherLive } from "@/hooks/chat";
 import Button from "@/components/button";
 import { WalletEnum, useWallet } from "@/web3/hooks/use.wallet";
+import ConnectWalletModal from "../modal/connect-wallet-modal";
 
 interface HeaderProfileProps {
   onClickOutside: () => void;
@@ -42,6 +43,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
   const router = useRouter();
   const { user: loggedInUser } = useUser();
   const { unreadNotifications, unreadConversations } = useCentherLive();
+  const [connectWalletModal, setConnectWalletModal] = useState(false);
   const {
     connectWallet,
     connectedAddress,
@@ -326,14 +328,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
         ) : (
           <button
             className="textGradient flex items-center gap-3 stroke-brand-primary"
-            onClick={async () => {
-              if (!loggedInUser) return;
-              const _account = await connectWallet();
-              if (loggedInUser._id.toLowerCase() !== _account?.toLowerCase()) {
-                toast.error("Please connect to correct account");
-                disconnectWallet();
-              }
-            }}
+            onClick={() => setConnectWalletModal(true)}
           >
             <ConnectIcon />
             <p className="textGradient text-sm font-medium leading-6">
@@ -342,6 +337,15 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
           </button>
         )}
       </div>
+      {connectWalletModal && (
+        <ConnectWalletModal
+          setConnectWalletModal={setConnectWalletModal}
+          loggedInUser={loggedInUser}
+          deactivate={disconnectWallet}
+          connectWallet={connectWallet}
+          notloginCheck={true}
+        />
+      )}
     </div>
   );
 };

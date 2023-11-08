@@ -20,6 +20,7 @@ import {
   getRegistrationFee,
   registerWithSmartContract,
 } from "./register.with.smart.contract";
+import { ConnectWalletComp } from "@/components/connect.wallet";
 
 // Initial Signup State
 const initialSignupState: SignupState = {
@@ -130,14 +131,18 @@ export const RegisterForm: React.FC = () => {
             </div>
           </div>
         ) : (
-          <Button
-            type="button"
-            title={"Connect"}
-            onClick={() => connectWallet()}
-            variant="primary"
-            className="flex h-11 w-full items-center justify-center text-[14px]"
-            borderRounded="14px"
+          <ConnectWalletComp
+            className="flex h-11 w-full items-center justify-center rounded-xl text-[14px]"
+            notloginCheck={true}
           />
+          // <Button
+          //   type="button"
+          //   title={"Connect"}
+          //   onClick={() => connectWallet()}
+          //   variant="primary"
+          //   className="flex h-11 w-full items-center justify-center text-[14px]"
+          //   borderRounded="14px"
+          // />
         )}
 
         <InputField

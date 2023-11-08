@@ -324,7 +324,7 @@ const AuctionForm = ({
         </div>
       )}
       {!library ? (
-        <ConnectWalletComp className="" />
+        <ConnectWalletComp />
       ) : (
         <Button
           title={"Create NFT"}
