@@ -18,7 +18,7 @@ export const BuyCentherWrapper = () => {
       <div className="flex justify-center space-x-2 p-1.5 fmd:justify-start [@media(max-width:370px)]:overflow-auto">
         <Link
           href={{
-            pathname: AppRoutes.launchpad,
+            pathname: AppRoutes.launchpad.index,
             query: {
               token_address,
               round: 1,
@@ -33,7 +33,7 @@ export const BuyCentherWrapper = () => {
         </Link>
         <Link
           href={{
-            pathname: AppRoutes.launchpad,
+            pathname: AppRoutes.launchpad.index,
             query: {
               token_address,
               round: 2,
@@ -49,7 +49,7 @@ export const BuyCentherWrapper = () => {
         </Link>
         <Link
           href={{
-            pathname: AppRoutes.launchpad,
+            pathname: AppRoutes.launchpad.index,
             query: {
               token_address,
               round: 3,

@@ -25,7 +25,7 @@ export const PromotionCard2: React.FC<Props> = ({ className, ...props }) => {
         </p>
         <Link
           href={{
-            pathname: AppRoutes.launchpad,
+            pathname: AppRoutes.launchpad.index,
             query: {
               token_address: AddressFactory.getContractAddress(
                 SmartContractName.DXC

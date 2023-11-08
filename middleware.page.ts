@@ -135,7 +135,8 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.marketplace.collections,
   AppRoutes.marketplace.collection,
 
-  AppRoutes.launchpad,
+  AppRoutes.launchpad.index,
+  AppRoutes.launchpad.create_launchpad,
   AppRoutes.launchpad_pre_booking.index,
   AppRoutes.launchpad_pre_booking.booking,
 

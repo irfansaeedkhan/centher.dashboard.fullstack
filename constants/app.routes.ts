@@ -66,7 +66,11 @@ export const AppRoutes = {
     // Citizen Only End
   },
 
-  launchpad: "/launchpad/[token_address]/[round]",
+  launchpad: {
+    index: "/launchpad/[token_address]/[round]",
+    create_launchpad: "/launchpad/create-launchpad",
+  },
+
   launchpad_pre_booking: {
     index: "/launchpad/pre-booking",
     booking: "/launchpad/pre-booking/bookings",

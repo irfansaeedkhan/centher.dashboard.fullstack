@@ -30,7 +30,7 @@ export const PromotionCard2Mobile: React.FC<Props> = ({
       </div>
       <Link
         href={{
-          pathname: AppRoutes.launchpad,
+          pathname: AppRoutes.launchpad.index,
           query: {
             token_address: AddressFactory.getContractAddress(
               SmartContractName.DXC

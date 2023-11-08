@@ -1,8 +1,9 @@
 import { CreateCollection, Explore, Launchpad, CreateNFT } from "@/assets/svgs";
-import { AppRoutes } from "@/constants/app.routes";
-import { SidebarData } from "./shared";
+import { CreateLaunchpad } from "@/assets/svgs/launchpad-v2";
 import { AddressFactory } from "@/web3/blockchain/providers/address.provider";
 import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.enum";
+import { AppRoutes } from "@/constants/app.routes";
+import { SidebarData } from "./shared";
 
 export const sidebarData: SidebarData = {
   nft_marketplace: {
@@ -64,10 +65,17 @@ export const sidebarData: SidebarData = {
         icon: Launchpad,
         available_for: "all",
         activeList: [
-          AppRoutes.launchpad,
+          AppRoutes.launchpad.index,
           AppRoutes.launchpad_pre_booking.index,
           AppRoutes.launchpad_pre_booking.booking,
         ],
+      },
+      {
+        label: "Create Launchpad",
+        url: AppRoutes.launchpad.create_launchpad,
+        icon: CreateLaunchpad,
+        available_for: "all",
+        activeList: [AppRoutes.launchpad.create_launchpad],
       },
     ],
   },
