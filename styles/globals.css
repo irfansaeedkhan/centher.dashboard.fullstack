@@ -952,6 +952,16 @@
     padding: 5px 10px;
     cursor: pointer;
   }
+  .background-gradient-color {
+    background: linear-gradient(
+      270deg,
+      #5691ff -9.34%,
+      #72f6d1 17.09%,
+      #76e268 48.54%,
+      #ffd505 78.11%,
+      #ff5e52 107.63%
+    );
+  }
 }
 
 @layer utilities {
