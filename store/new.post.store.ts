@@ -393,6 +393,7 @@ export const useNewPostStore = create<NewPostStore>()(
           );
           const entityMap = Object.values(rawEditorContent.entityMap);
 
+          // TODO: the indices sometimes ignore the spaces, we need to fix it
           let entityRanges = [];
           let textLength = 0;
           let c = 0;
@@ -409,7 +410,7 @@ export const useNewPostStore = create<NewPostStore>()(
                 j < rawEditorContent.blocks[i].entityRanges.length;
                 j++
               ) {
-                if (entityMap[c + j].type == "emoji") {
+                if (entityMap[c + j]?.type == "emoji") {
                   totalEmoji++;
                   continue;
                 }
@@ -432,7 +433,7 @@ export const useNewPostStore = create<NewPostStore>()(
                 j++
               ) {
                 c++;
-                if (entityMap[j].type == "emoji") {
+                if (entityMap[j]?.type == "emoji") {
                   totalEmoji++;
                   continue;
                 }
@@ -448,7 +449,7 @@ export const useNewPostStore = create<NewPostStore>()(
           }
 
           for (let i = 0, j = 0; i < entityMap.length; i++) {
-            if (entityMap[i].type == "emoji") {
+            if (entityMap[i]?.type == "emoji") {
               continue;
             }
             lastPost.entities.mentions.push({
@@ -607,7 +608,11 @@ export const useNewPostStore = create<NewPostStore>()(
           }
         } catch (error: any) {
           set({ isPostModalLoading: false });
-          customLog(["development"], "Error in create post: ", error);
+          customLog(
+            ["development", "staging"],
+            "Error in create post: ",
+            error
+          );
           if (error.response?.data?.message_description) {
             toast.error(error.response.data.message_description);
           } else {

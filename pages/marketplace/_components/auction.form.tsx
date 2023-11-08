@@ -7,13 +7,24 @@ import Joi from "joi";
 import clsx from "clsx";
 import Button from "@/components/button";
 import { CustomNumberInput } from "@/components/custom-number-input";
+import ConnectWalletModal from "@/components/modal/connect-wallet-modal";
+import { CollectionPreviewModal } from "@/components/modal/collection-preview";
 import { formatAddress } from "@/utils/format.address";
 import { IMyCollection } from "@/hooks/use.get.my.collections";
+import useGetUser from "@/hooks/use.get.user";
+import useUser from "@/hooks/use.user";
+import { useWallet } from "@/web3/hooks/use.wallet";
 import { AddIcon } from "@/assets/svgs";
 import cn from "@/utils/cn";
+import { IModalHandler, ModalManager, TemplateCollection } from "@/utils/modal";
 import CustomDropdown from "./custom.dropdown";
 import AddPropertiesModal from "./add-properties-modal";
+import NftPreview from "./nft-preview";
 import { ConnectWalletComp } from "@/components/connect.wallet";
+
+enum ModalType {
+  previewNft = "previewNft",
+}
 
 // form validations
 const schema = Joi.object({
@@ -52,6 +63,7 @@ interface AuctionFormProps {
   clearForm: boolean;
   asset: Blob | undefined;
   library: any;
+  assetTab: string;
 }
 const AuctionForm = ({
   createNFT,
@@ -59,28 +71,29 @@ const AuctionForm = ({
   clearForm,
   asset,
   library,
+  assetTab,
 }: AuctionFormProps) => {
+  const { user: loggedInUser } = useUser();
+  const { user } = useGetUser(loggedInUser?._id);
+  const { disconnectWallet, connectWallet } = useWallet();
+  const [connectWalletModal, setConnectWalletModal] = useState(false);
   const [propertyModal, setPropertyModal] = useState(false);
   const [AuctionEndTimeErr, setAuctionEndTimeErr] = useState(false);
   const [propertyDetails, setPropertyDetails] = useState<any>([]);
   const [propertyList, setPropertyList] = useState<any>([]);
   const [propertyErr, setPropertyErr] = useState<null | string>(null);
   const [collectionErrorMsg, setCollectionErrorMsg] = useState<any>("");
+  const [ModalModel, setModalModel] = useState<IModalHandler>({
+    visibility: false,
+    title: "",
+    content: "",
+  });
   const [selectedOption, setSelectedOption] = useState(
     collections[0].collection
   );
   const today = new Date();
 
-  // Add 7 days to today's date
-  let futureDate = new Date(today);
-  futureDate.setDate(today.getDate() + 7);
-
-  const handleOptionSelect = (value: string) => {
-    setSelectedOption(value);
-    setCollectionErrorMsg("");
-  };
-
-  const { handleSubmit, register, formState, reset } =
+  const { handleSubmit, register, formState, reset, watch } =
     useForm<AuctionFormFields>({
       mode: "onChange",
       resolver: joiResolver(schema),
@@ -91,6 +104,35 @@ const AuctionForm = ({
         StartingNFTPrice: null,
       },
     });
+
+  const modalTemplateCollection: TemplateCollection = {
+    previewNft: {
+      title: "Review your NFT",
+      visibility: true,
+      content: () => (
+        <NftPreview
+          asset={asset}
+          watch={watch}
+          selectedOption={selectedOption}
+          changeNFTPrice={watch("StartingNFTPrice")}
+          loggedInUser={loggedInUser!}
+          assetTab={assetTab}
+          user={user!}
+        />
+      ),
+    },
+  };
+
+  const modal = new ModalManager(setModalModel, modalTemplateCollection);
+
+  // Add 7 days to today's date
+  let futureDate = new Date(today);
+  futureDate.setDate(today.getDate() + 7);
+
+  const handleOptionSelect = (value: string) => {
+    setSelectedOption(value);
+    setCollectionErrorMsg("");
+  };
 
   // function to add/remove dynamic property
   const handlePropertyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -150,6 +192,7 @@ const AuctionForm = ({
     };
 
     createNFT(finalizedData);
+    modal.dismissModal();
   };
 
   useEffect(() => {
@@ -326,17 +369,36 @@ const AuctionForm = ({
       {!library ? (
         <ConnectWalletComp />
       ) : (
-        <Button
-          title={"Create NFT"}
-          variant={
-            formState.isValid && asset !== undefined && collectionErrorMsg == ""
-              ? "primary"
-              : "secondary"
-          }
-          disabled={!formState.isValid || asset === undefined}
-          onClick={handleSubmit(onSubmit)}
-          className="mt-2"
-        />
+        <div className="mt-2 flex flex-col items-center gap-2 fsm:flex-row">
+          <Button
+            title={"Preview"}
+            variant={"secondary"}
+            disabled={
+              watch("NFTName") === "" ||
+              asset === undefined ||
+              watch("Description") === "" ||
+              selectedOption === undefined ||
+              watch("StartingNFTPrice") === null
+            }
+            onClick={() => {
+              modal.createModal(ModalType.previewNft);
+            }}
+            className="w-full"
+          />
+          <Button
+            title={"Create NFT"}
+            variant={
+              formState.isValid &&
+              asset !== undefined &&
+              collectionErrorMsg == ""
+                ? "primary"
+                : "secondary"
+            }
+            disabled={!formState.isValid || asset === undefined}
+            onClick={handleSubmit(onSubmit)}
+            className="w-full"
+          />
+        </div>
       )}
       {propertyModal && (
         <AddPropertiesModal
@@ -346,6 +408,25 @@ const AuctionForm = ({
           setPropertyModal={setPropertyModal}
           propertyErr={propertyErr}
         />
+      )}
+      {/* {connectWalletModal && (
+        <ConnectWalletModal
+          connectWallet={connectWallet}
+          deactivate={disconnectWallet}
+          loggedInUser={loggedInUser}
+          setConnectWalletModal={setConnectWalletModal}
+        />
+      )} */}
+      {ModalModel.visibility && (
+        <CollectionPreviewModal
+          onClose={() => {
+            modal.dismissModal();
+          }}
+          title={ModalModel.title as string}
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          {ModalModel.content}
+        </CollectionPreviewModal>
       )}
     </div>
   );
