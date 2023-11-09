@@ -22,6 +22,7 @@ const ConnectWalletModal: React.FC<Props> = ({
       onClose={() => {
         setConnectWalletModal(false);
       }}
+      disable="yes"
       title={"Connect to wallet"}
     >
       <div className="mb-8 flex w-full justify-center px-5 md:px-10">
