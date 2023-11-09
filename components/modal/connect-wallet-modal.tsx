@@ -20,15 +20,14 @@ const ConnectWalletModal: React.FC<Props> = ({
   loggedInUser,
   notloginCheck,
 }) => {
-  const { connectWallet, disconnectWallet } = useWallet();
+  const { connectWallet, disconnectWallet, connectedAddress } = useWallet();
 
   useEffect(() => {
-    if (!loggedInUser && !notloginCheck) {
-      toast.error("Please login to buy this nft");
-      setConnectWalletModal(false);
-      return;
+    if (loggedInUser?._id.toLowerCase() !== connectedAddress?.toLowerCase()) {
+      toast.error("Please connect to correct account");
+      disconnectWallet();
     }
-  }, [loggedInUser, setConnectWalletModal, notloginCheck]);
+  }, [loggedInUser, connectedAddress]);
 
   const connectionWallet = async (wallet: WalletEnum) => {
     if (notloginCheck) {
@@ -39,12 +38,7 @@ const ConnectWalletModal: React.FC<Props> = ({
         setConnectWalletModal(false);
         return;
       }
-
-      const _account = await connectWallet(wallet);
-      if (loggedInUser?._id.toLowerCase() !== _account?.toLowerCase()) {
-        toast.error("Please connect to correct account");
-        disconnectWallet();
-      }
+      await connectWallet(wallet);
     }
     setConnectWalletModal(false);
   };
