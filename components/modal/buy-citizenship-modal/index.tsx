@@ -10,9 +10,9 @@ import { CitizenShipType, useCitizenStore } from "@/store/citizen.store";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { formatEther2Number } from "@/utils/format.address";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
-import Button from "../../button";
-import { CitizenShipSuccessModal } from "./success-modal";
-import { CitizenShipFailureModal } from "./failure-modal";
+import Button from "@/components/button";
+import { CitizenShipSuccessModal } from "@/components/modal/buy-citizenship-modal/success-modal";
+import { CitizenShipFailureModal } from "@/components/modal/buy-citizenship-modal/failure-modal";
 import { useWallet } from "@/web3/hooks/use.wallet";
 
 interface CustomModalProps {

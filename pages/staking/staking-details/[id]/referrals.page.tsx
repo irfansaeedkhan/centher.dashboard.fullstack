@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { formatUnits, isAddress } from "ethers/lib/utils";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import { ClaimableReward, MetamaskIcon2, StakingUsers } from "@/assets/svgs";
+import { ClaimableReward, StakingUsers } from "@/assets/svgs";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
 import useUser from "@/hooks/use.user";
 import { useStaking } from "@/hooks/staking";
@@ -22,14 +22,13 @@ import { eqAddress } from "@/live/utils/address.utils";
 import { IModalHandler, ModalManager, TemplateCollection } from "@/utils/modal";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { PreLoader } from "@/components/pre.loader";
-import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { useWallet } from "@/web3/hooks/use.wallet";
-import { ListCardDataOBj } from "../../_components/list-card-data";
-import StakingDetailsWrapper from "./_components/staking-details-wrapper";
-import ReferralsTable from "./_components/referrals-table";
-import SuccessModalContent from "./_components/success-modal-content";
-import FailedModalContent from "./_components/failed-modal-content";
+import { ListCardDataOBj } from "@/pages/staking/_components/list-card-data";
+import StakingDetailsWrapper from "@/pages/staking/staking-details/[id]/_components/staking-details-wrapper";
+import ReferralsTable from "@/pages/staking/staking-details/[id]/_components/referrals-table";
+import SuccessModalContent from "@/pages/staking/staking-details/[id]/_components/success-modal-content";
+import FailedModalContent from "@/pages/staking/staking-details/[id]/_components/failed-modal-content";
 import ConnectWalletModal from "@/components/modal/connect-wallet-modal";
 
 enum ModalType {
@@ -38,7 +37,7 @@ enum ModalType {
 }
 
 const StakingReferrals: NextPageWithLayout = () => {
-  const { getSigner, disconnectWallet } = useWallet();
+  const { getSigner } = useWallet();
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
     title: "",
@@ -59,7 +58,6 @@ const StakingReferrals: NextPageWithLayout = () => {
   const [currentTab, setCurrentTab] = useState<"rewards" | "referrals">(
     "rewards"
   );
-  const { connectWallet } = useConnectWallet();
   const [connectWalletModal, setConnectWalletModal] = useState(false);
   const [claimRefRewardInProgress, setClaimRefRewardInProgress] = useState("");
 
@@ -312,8 +310,6 @@ const StakingReferrals: NextPageWithLayout = () => {
         <ConnectWalletModal
           setConnectWalletModal={setConnectWalletModal}
           loggedInUser={user}
-          deactivate={disconnectWallet}
-          connectWallet={connectWallet}
         />
       )}
 

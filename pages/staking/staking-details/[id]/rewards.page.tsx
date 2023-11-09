@@ -20,14 +20,13 @@ import {
 import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
 import { eqAddress } from "@/live/utils/address.utils";
 import { PreLoader } from "@/components/pre.loader";
-import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { useWallet } from "@/web3/hooks/use.wallet";
-import RewardsTable from "./_components/rewards-table";
-import { ListCardDataOBj } from "../../_components/list-card-data";
-import StakingDetailsWrapper from "./_components/staking-details-wrapper";
-import UnstakeModal from "./_components/unstake-modal";
-import SuccessModalContent from "./_components/success-modal-content";
-import FailedModalContent from "./_components/failed-modal-content";
+import RewardsTable from "@/pages/staking/staking-details/[id]/_components/rewards-table";
+import { ListCardDataOBj } from "@/pages/staking/_components/list-card-data";
+import StakingDetailsWrapper from "@/pages/staking/staking-details/[id]/_components/staking-details-wrapper";
+import UnstakeModal from "@/pages/staking/staking-details/[id]/_components/unstake-modal";
+import SuccessModalContent from "@/pages/staking/staking-details/[id]/_components/success-modal-content";
+import FailedModalContent from "@/pages/staking/staking-details/[id]/_components/failed-modal-content";
 import ConnectWalletModal from "@/components/modal/connect-wallet-modal";
 
 enum ModalType {
@@ -61,7 +60,6 @@ const ClaimRewards: NextPageWithLayout = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [claimInProcess, setClaimInProcess] = useState(false);
   const [cancelInProcess, setCancelInProcess] = useState(false);
-  const { connectWallet } = useConnectWallet();
   const [connectWalletModal, setConnectWalletModal] = useState(false);
   const [restakeInProgress, setRestakeInProgress] = useState(false);
 
@@ -363,8 +361,6 @@ const ClaimRewards: NextPageWithLayout = () => {
         <ConnectWalletModal
           setConnectWalletModal={setConnectWalletModal}
           loggedInUser={user}
-          deactivate={disconnectWallet}
-          connectWallet={connectWallet}
         />
       )}
       {!connectWalletModal && (isLoading || !userStaked) ? <PreLoader /> : ""}

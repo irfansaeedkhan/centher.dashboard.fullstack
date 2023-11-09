@@ -15,10 +15,10 @@ import { BlockchainConfig } from "@/web3/blockchain/config";
 import { formatAddress } from "@/utils/format.address";
 import { IModalHandler, ModalManager, TemplateCollection } from "@/utils/modal";
 import { CollectionPreviewModal } from "@/components/modal/collection-preview";
-import CustomDropdown from "./custom.dropdown";
-import { INFTData } from "./create.nft.form";
-import AddPropertiesModal from "./add-properties-modal";
-import NftPreview from "./nft-preview";
+import CustomDropdown from "@/pages/marketplace/_components/custom.dropdown";
+import { INFTData } from "@/pages/marketplace/_components/create.nft.form";
+import AddPropertiesModal from "@/pages/marketplace/_components/add-properties-modal";
+import NftPreview from "@/pages/marketplace/_components/nft-preview";
 import { ConnectWalletComp } from "@/components/connect.wallet";
 
 enum ModalType {

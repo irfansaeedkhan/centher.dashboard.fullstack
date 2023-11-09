@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import toast from "react-hot-toast";
 import { LoggedInUser } from "@/models/user";
 import {
@@ -7,26 +7,35 @@ import {
   CentherIcon,
 } from "@/assets/svgs";
 import { CustomNewModal } from "@/components/modal/custom.new.modal";
-import { WalletEnum } from "@/web3/hooks/use.wallet";
+import { WalletEnum, useWallet } from "@/web3/hooks/use.wallet";
 
 interface Props {
   setConnectWalletModal: (value: boolean) => void;
   loggedInUser: LoggedInUser | undefined;
-  deactivate: () => void;
-  connectWallet: any;
   notloginCheck?: boolean;
 }
 
 const ConnectWalletModal: React.FC<Props> = ({
   setConnectWalletModal,
   loggedInUser,
-  deactivate,
-  connectWallet,
   notloginCheck,
 }) => {
-  const connectionWallet = async (wallet: string) => {
+  const { connectWallet, disconnectWallet } = useWallet();
+
+  useEffect(() => {
+    if (!loggedInUser && !notloginCheck) {
+      toast.error("Please login to buy this nft");
+      setConnectWalletModal(false);
+      return;
+    }
+  }, [loggedInUser, setConnectWalletModal, notloginCheck]);
+
+  const connectionWallet = async (wallet: WalletEnum) => {
+    console.log("hi");
     if (notloginCheck) {
+      console.log("hello");
       await connectWallet(wallet);
+      console.log("ch");
     } else {
       if (!loggedInUser) {
         toast.error("Please login to buy this nft");
@@ -37,16 +46,9 @@ const ConnectWalletModal: React.FC<Props> = ({
       const _account = await connectWallet(wallet);
       if (loggedInUser?._id.toLowerCase() !== _account?.toLowerCase()) {
         toast.error("Please connect to correct account");
-        deactivate();
-      }
-
-      if (!loggedInUser) {
-        toast.error("Please login to buy this nft");
-        setConnectWalletModal(false);
-        return;
+        disconnectWallet();
       }
     }
-
     setConnectWalletModal(false);
   };
 

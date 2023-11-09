@@ -14,12 +14,15 @@ import {
   WalletIconModal,
   MetamaskIcon,
 } from "@/assets/svgs";
-import { InputField } from "./input.field";
-import { SignupState, FeeModalState } from "./form.fields.data";
+import { InputField } from "@/pages/auth/register/_components/input.field";
+import {
+  SignupState,
+  FeeModalState,
+} from "@/pages/auth/register/_components/form.fields.data";
 import {
   getRegistrationFee,
   registerWithSmartContract,
-} from "./register.with.smart.contract";
+} from "@/pages/auth/register/_components/register.with.smart.contract";
 import { ConnectWalletComp } from "@/components/connect.wallet";
 
 // Initial Signup State

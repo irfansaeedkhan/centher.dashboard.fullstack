@@ -15,9 +15,9 @@ import useUser from "@/hooks/use.user";
 import { AddIcon } from "@/assets/svgs";
 import cn from "@/utils/cn";
 import { IModalHandler, ModalManager, TemplateCollection } from "@/utils/modal";
-import CustomDropdown from "./custom.dropdown";
-import AddPropertiesModal from "./add-properties-modal";
-import NftPreview from "./nft-preview";
+import CustomDropdown from "@/pages/marketplace/_components/custom.dropdown";
+import AddPropertiesModal from "@/pages/marketplace/_components/add-properties-modal";
+import NftPreview from "@/pages/marketplace/_components/nft-preview";
 import { ConnectWalletComp } from "@/components/connect.wallet";
 
 enum ModalType {

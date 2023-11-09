@@ -42,13 +42,8 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
   const { user: loggedInUser } = useUser();
   const { unreadNotifications, unreadConversations } = useCentherLive();
   const [connectWalletModal, setConnectWalletModal] = useState(false);
-  const {
-    connectWallet,
-    connectedAddress,
-    disconnectWallet,
-    getWalletType,
-    openWallet,
-  } = useWallet();
+  const { connectedAddress, disconnectWallet, getWalletType, openWallet } =
+    useWallet();
   const wallet_type = getWalletType();
 
   const handleClickOutside = (e: MouseEvent) => {
@@ -339,8 +334,6 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
         <ConnectWalletModal
           setConnectWalletModal={setConnectWalletModal}
           loggedInUser={loggedInUser}
-          deactivate={disconnectWallet}
-          connectWallet={connectWallet}
           notloginCheck={true}
         />
       )}

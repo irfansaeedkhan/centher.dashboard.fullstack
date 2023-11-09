@@ -14,8 +14,8 @@ import { categories } from "@/models/nft";
 import { GreyWorldIcon, GreyFBIcon, XLogo, MetamaskIcon2 } from "@/assets/svgs";
 import { IModalHandler, ModalManager, TemplateCollection } from "@/utils/modal";
 import { useWallet } from "@/web3/hooks/use.wallet";
-import CustomDropdown from "./custom.dropdown";
-import CollectionPreview from "./collection-preview";
+import CustomDropdown from "@/pages/marketplace/_components/custom.dropdown";
+import CollectionPreview from "@/pages/marketplace/_components/collection-preview";
 
 enum ModalType {
   previewCollection = "previewCollection",

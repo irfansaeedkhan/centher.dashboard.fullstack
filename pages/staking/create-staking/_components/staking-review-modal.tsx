@@ -35,8 +35,11 @@ import { useStaking } from "@/hooks/staking";
 import { fetchUsers } from "@/hooks/use.get.multi.users";
 import { BlockchainConfig } from "@/web3/blockchain/config";
 import { User } from "@/models/user";
-import { claimPeriodOptions, stakingPeriodOptions } from "../../constants";
-import { stakingFormInterfaceUpdated } from "../../_components/staking-types";
+import {
+  claimPeriodOptions,
+  stakingPeriodOptions,
+} from "@/pages/staking/constants";
+import { stakingFormInterfaceUpdated } from "@/pages/staking/_components/staking-types";
 import { useWallet } from "@/web3/hooks/use.wallet";
 
 export interface Memb {

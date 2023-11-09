@@ -15,10 +15,9 @@ import { RewardsStat } from "@/staking/types/rewards.interface";
 import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
 import { eqAddress } from "@/live/utils/address.utils";
 import { PreLoader } from "@/components/pre.loader";
-import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { useWallet } from "@/web3/hooks/use.wallet";
-import StakingDetailsWrapper from "./_components/staking-details-wrapper";
-import { ListCardDataOBj } from "../../_components/list-card-data";
+import StakingDetailsWrapper from "@/pages/staking/staking-details/[id]/_components/staking-details-wrapper";
+import { ListCardDataOBj } from "@/pages/staking/_components/list-card-data";
 import ConnectWalletModal from "@/components/modal/connect-wallet-modal";
 
 const StakingDetails: NextPageWithLayout = () => {
@@ -31,7 +30,6 @@ const StakingDetails: NextPageWithLayout = () => {
   const [coinsDetails, setCoinsDetails] = useState<
     Array<CoinDetails | undefined>
   >([]);
-  const { connectWallet } = useConnectWallet();
   const [connectWalletModal, setConnectWalletModal] = useState(false);
 
   const [expireTime, setExpireTime] = useState(0);
@@ -196,8 +194,6 @@ const StakingDetails: NextPageWithLayout = () => {
         <ConnectWalletModal
           setConnectWalletModal={setConnectWalletModal}
           loggedInUser={user}
-          deactivate={disconnectWallet}
-          connectWallet={connectWallet}
         />
       )}
       {!connectWalletModal && (isLoading || !userStaked) ? <PreLoader /> : ""}

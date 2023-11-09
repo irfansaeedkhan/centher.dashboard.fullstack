@@ -20,9 +20,9 @@ import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 import { useWallet } from "@/web3/hooks/use.wallet";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
-import AuctionBidModal from "./auction.bid.modal";
+import AuctionBidModal from "@/pages/marketplace/_components/auction.bid.modal";
 
-import AuctionCountdownRenderer from "./auction-countdown.renderer";
+import AuctionCountdownRenderer from "@/pages/marketplace/_components/auction-countdown.renderer";
 import { ConnectWalletComp } from "@/components/connect.wallet";
 
 interface AuctionNFTBuyerDescriptionProps {
