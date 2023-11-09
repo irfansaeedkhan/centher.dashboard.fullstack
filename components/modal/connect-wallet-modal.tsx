@@ -31,11 +31,8 @@ const ConnectWalletModal: React.FC<Props> = ({
   }, [loggedInUser, setConnectWalletModal, notloginCheck]);
 
   const connectionWallet = async (wallet: WalletEnum) => {
-    console.log("hi");
     if (notloginCheck) {
-      console.log("hello");
       await connectWallet(wallet);
-      console.log("ch");
     } else {
       if (!loggedInUser) {
         toast.error("Please login to buy this nft");
