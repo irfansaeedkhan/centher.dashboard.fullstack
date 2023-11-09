@@ -39,6 +39,18 @@ const CreateLaunchpad: NextPageWithLayout = () => {
               Pool creation fee: 100 BNB
             </p>
           </div>
+          <div className="col-span-1 mb-6 w-full text-sm font-medium text-white md:mb-0">
+            <label
+              htmlFor="sale_rounds"
+              className="block font-normal tracking-wide"
+            >
+              Select amount of sale rounds
+              <span className="text-gradient ml-[2px]">*</span>
+            </label>
+            <div className="gradient-border-3 flex h-[18px] w-[18px] flex-shrink-0 items-center justify-center rounded-full p-[1px]">
+              <span className="background-gradient-color h-[10px] w-[10px] flex-shrink-0 rounded-full"></span>
+            </div>
+          </div>
           <p className="text-sm text-gray-shade-14">
             <span className="text-white">Note: </span>
             Disclaimer: The information provided shall not in any way constitute
@@ -49,7 +61,7 @@ const CreateLaunchpad: NextPageWithLayout = () => {
           </p>
           <div className="col-span-1 mb-6 w-full text-sm font-medium text-white md:mb-0">
             <label
-              htmlFor="token_address"
+              htmlFor="liquidity_lockup"
               className="block font-normal tracking-wide"
             >
               Liquidity lockup (days)
