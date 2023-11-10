@@ -6,6 +6,8 @@ import RoundCard from "./_components/round-card";
 import { roundCardData } from "./_components/round-card-data";
 import VerifyTokenForm from "./_components/verify-tokens/verify-token-form";
 import AdditionalInfoForm from "./_components/add-additional.info/additional-info-form";
+import RoundsSettingsForm from "./_components/rounds-settings/rounds-settings-form";
+import { BsArrowLeftShort } from "react-icons/bs";
 
 export type FormState = {
   current_round:
@@ -36,11 +38,22 @@ export type FormState = {
       walletAddress: string;
     }[];
   };
+  rounds_settings: {
+    round: {
+      round_no: number;
+      total_selling_amount: string;
+      soft_cap_busd: string;
+      start_time: string;
+      end_time: string;
+      min_contribution: string;
+      max_contribution: string;
+    }[];
+  };
 };
 
 const CreateLaunchpad: NextPageWithLayout = () => {
   const [formState, setFormState] = useState<FormState>({
-    current_round: "add_additional_info",
+    current_round: "verify_token",
     verify_token: {
       token_address: "",
       sale_rounds: 1,
@@ -61,7 +74,11 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       description: "",
       memberData: [],
     },
+    rounds_settings: {
+      round: [],
+    },
   });
+
   return (
     <div>
       <div className="flex w-full items-center gap-5">
@@ -77,8 +94,18 @@ const CreateLaunchpad: NextPageWithLayout = () => {
         ))}
       </div>
       <div className="mt-6 rounded-xl border border-gray-shade-3 bg-black-shade-9 p-6">
+        {formState.current_round !== "verify_token" && (
+          <button className="hover:gradient-border-3 group mb-3 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-gray-shade-9 p-[1px]">
+            <BsArrowLeftShort className="h-6 w-6 fill-gray-shade-18 group-hover:fill-white" />
+          </button>
+        )}
         {formState.current_round === "add_additional_info" ? (
           <AdditionalInfoForm
+            formState={formState}
+            setFormState={setFormState}
+          />
+        ) : formState.current_round === "rounds_settings" ? (
+          <RoundsSettingsForm
             formState={formState}
             setFormState={setFormState}
           />
@@ -87,16 +114,16 @@ const CreateLaunchpad: NextPageWithLayout = () => {
         )}
         <Button
           title="Next"
-          disabled={
-            (formState.current_round === "verify_token" &&
-              (formState.verify_token.token_address === "" ||
-                formState.verify_token.liquidity_lockup === "")) ||
-            (formState.current_round === "add_additional_info" &&
-              (formState.add_additional_info.description === "" ||
-                formState.add_additional_info.github === "" ||
-                formState.add_additional_info.website_url === "" ||
-                formState.add_additional_info.logo_url === ""))
-          }
+          // disabled={
+          //   (formState.current_round === "verify_token" &&
+          //     (formState.verify_token.token_address === "" ||
+          //       formState.verify_token.liquidity_lockup === "")) ||
+          //   (formState.current_round === "add_additional_info" &&
+          //     (formState.add_additional_info.description === "" ||
+          //       formState.add_additional_info.github === "" ||
+          //       formState.add_additional_info.website_url === "" ||
+          //       formState.add_additional_info.logo_url === ""))
+          // }
           className="mx-auto mt-6 w-full max-w-[496px]"
           onClick={() => {
             setFormState((prev) => {
