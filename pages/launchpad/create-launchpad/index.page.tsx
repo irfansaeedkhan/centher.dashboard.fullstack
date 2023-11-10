@@ -1,16 +1,75 @@
-import React from "react";
+import React, { useState } from "react";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
+import Button from "@/components/button";
 import RoundCard from "./_components/round-card";
 import { roundCardData } from "./_components/round-card-data";
+import VerifyTokenForm from "./_components/verify-tokens/verify-token-form";
+import AdditionalInfoForm from "./_components/add-additional.info/additional-info-form";
+
+export type FormState = {
+  current_round:
+    | "verify_token"
+    | "rounds_settings"
+    | "add_additional_info"
+    | "finish";
+  verify_token: {
+    token_address: string;
+    sale_rounds: number;
+    currency: string;
+    fee_option: string;
+    liquidity_lockup: string;
+  };
+  add_additional_info: {
+    logo_url: string;
+    website_url: string;
+    facebook: string;
+    twitter: string;
+    github: string;
+    telegram: string;
+    instagram: string;
+    discord: string;
+    reddit: string;
+    description: string;
+    memberData: {
+      jobTitle: string;
+      walletAddress: string;
+    }[];
+  };
+};
 
 const CreateLaunchpad: NextPageWithLayout = () => {
+  const [formState, setFormState] = useState<FormState>({
+    current_round: "add_additional_info",
+    verify_token: {
+      token_address: "",
+      sale_rounds: 1,
+      currency: "MATIC",
+      fee_option: "5% MATIC raised only",
+      liquidity_lockup: "",
+    },
+    add_additional_info: {
+      logo_url: "",
+      website_url: "",
+      facebook: "",
+      twitter: "",
+      github: "",
+      telegram: "",
+      instagram: "",
+      discord: "",
+      reddit: "",
+      description: "",
+      memberData: [],
+    },
+  });
   return (
     <div>
       <div className="flex w-full items-center gap-5">
         {roundCardData.map((item) => (
           <RoundCard
-            key={item.round}
+            key={item.round_no}
+            round_no={item.round_no}
+            current_round={formState.current_round}
             round={item.round}
             description={item.description}
             title={item.title}
@@ -18,65 +77,41 @@ const CreateLaunchpad: NextPageWithLayout = () => {
         ))}
       </div>
       <div className="mt-6 rounded-xl border border-gray-shade-3 bg-black-shade-9 p-6">
-        <div className="flex flex-col gap-6">
-          <div className="col-span-1 mb-6 w-full text-sm font-medium text-white md:mb-0">
-            <label
-              htmlFor="token_address"
-              className="block font-normal tracking-wide"
-            >
-              Token Address
-              <span className="text-gradient ml-[2px]">*</span>
-            </label>
-            <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
-              <input
-                type="text"
-                id="token_address"
-                placeholder="Example: Centher Token"
-                className="block w-full appearance-none rounded-lg border-0 bg-gray-shade-24 px-5 py-3 text-sm placeholder:font-semibold placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
-              />
-            </div>
-            <p className="text-gradient w-fit pb-2 pt-1 text-xs font-medium">
-              Pool creation fee: 100 BNB
-            </p>
-          </div>
-          <div className="col-span-1 mb-6 w-full text-sm font-medium text-white md:mb-0">
-            <label
-              htmlFor="sale_rounds"
-              className="block font-normal tracking-wide"
-            >
-              Select amount of sale rounds
-              <span className="text-gradient ml-[2px]">*</span>
-            </label>
-            <div className="gradient-border-3 flex h-[18px] w-[18px] flex-shrink-0 items-center justify-center rounded-full p-[1px]">
-              <span className="background-gradient-color h-[10px] w-[10px] flex-shrink-0 rounded-full"></span>
-            </div>
-          </div>
-          <p className="text-sm text-gray-shade-14">
-            <span className="text-white">Note: </span>
-            Disclaimer: The information provided shall not in any way constitute
-            a recommendation as to whether you should invest in any product
-            discussed. We accept no liability for any loss occasioned to any
-            person acting or refraining from action as a result of any material
-            provided or published.
-          </p>
-          <div className="col-span-1 mb-6 w-full text-sm font-medium text-white md:mb-0">
-            <label
-              htmlFor="liquidity_lockup"
-              className="block font-normal tracking-wide"
-            >
-              Liquidity lockup (days)
-              <span className="text-gradient ml-[2px]">*</span>
-            </label>
-            <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
-              <input
-                type="text"
-                id="liquidity_lockup"
-                placeholder="Example: 0"
-                className="block w-full appearance-none rounded-lg border-0 bg-gray-shade-24 px-5 py-3 text-sm placeholder:font-semibold placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
-              />
-            </div>
-          </div>
-        </div>
+        {formState.current_round === "add_additional_info" ? (
+          <AdditionalInfoForm
+            formState={formState}
+            setFormState={setFormState}
+          />
+        ) : (
+          <VerifyTokenForm formState={formState} setFormState={setFormState} />
+        )}
+        <Button
+          title="Next"
+          disabled={
+            (formState.current_round === "verify_token" &&
+              (formState.verify_token.token_address === "" ||
+                formState.verify_token.liquidity_lockup === "")) ||
+            (formState.current_round === "add_additional_info" &&
+              (formState.add_additional_info.description === "" ||
+                formState.add_additional_info.github === "" ||
+                formState.add_additional_info.website_url === "" ||
+                formState.add_additional_info.logo_url === ""))
+          }
+          className="mx-auto mt-6 w-full max-w-[496px]"
+          onClick={() => {
+            setFormState((prev) => {
+              return {
+                ...prev,
+                current_round:
+                  formState.current_round === "verify_token"
+                    ? "rounds_settings"
+                    : formState.current_round === "rounds_settings"
+                    ? "add_additional_info"
+                    : "finish",
+              };
+            });
+          }}
+        />
       </div>
     </div>
   );

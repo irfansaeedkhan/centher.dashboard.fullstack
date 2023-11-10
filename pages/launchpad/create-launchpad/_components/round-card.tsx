@@ -2,24 +2,36 @@ import clsx from "clsx";
 import React from "react";
 
 interface Props {
-  round: number;
+  current_round:
+    | "verify_token"
+    | "rounds_settings"
+    | "add_additional_info"
+    | "finish";
+  round: string;
+  round_no: number;
   title: string;
   description: string;
 }
 
-const RoundCard: React.FC<Props> = ({ round, title, description }) => {
+const RoundCard: React.FC<Props> = ({
+  round,
+  title,
+  description,
+  round_no,
+  current_round,
+}) => {
   return (
     <div className="h-[174px] w-[263px] rounded-xl bg-black-shade-9 p-5">
       <div className="flex items-center gap-4">
         <span
           className={clsx(
             "flex h-[38px] w-[38px] flex-shrink-0 items-center justify-center rounded-full text-sm font-semibold",
-            round === 1
+            round === current_round
               ? "background-gradient-color text-black"
               : "bg-elevation-3 text-gray-shade-14"
           )}
         >
-          {round}
+          {round_no}
         </span>
         <h4 className="text-sm font-semibold text-white">{title}</h4>
       </div>
