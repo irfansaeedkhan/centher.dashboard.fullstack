@@ -95,7 +95,22 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       </div>
       <div className="mt-6 rounded-xl border border-gray-shade-3 bg-black-shade-9 p-6">
         {formState.current_round !== "verify_token" && (
-          <button className="hover:gradient-border-3 group mb-3 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-gray-shade-9 p-[1px]">
+          <button
+            onClick={() => {
+              setFormState((prev) => {
+                return {
+                  ...prev,
+                  current_round:
+                    formState.current_round === "rounds_settings"
+                      ? "verify_token"
+                      : formState.current_round === "add_additional_info"
+                      ? "rounds_settings"
+                      : "verify_token",
+                };
+              });
+            }}
+            className="hover:gradient-border-3 group mb-3 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-gray-shade-9 p-[1px]"
+          >
             <BsArrowLeftShort className="h-6 w-6 fill-gray-shade-18 group-hover:fill-white" />
           </button>
         )}
