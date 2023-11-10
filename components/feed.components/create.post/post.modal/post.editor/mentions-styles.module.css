@@ -1,6 +1,23 @@
 .mention {
-  color: #4a85bb;
+  color: transparent;
+  background: linear-gradient(
+    270.23deg,
+    #5691ff -9.34%,
+    #72f6d1 17.09%,
+    #76e268 48.54%,
+    #ffd505 78.11%,
+    #ff5e52 107.63%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
   text-decoration: none;
+  animation: animate 2s linear infinite;
+}
+
+@keyframes animate {
+  to {
+    background-position: 200% 0;
+  }
 }
 
 .mentionSuggestions {

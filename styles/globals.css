@@ -962,3 +962,8 @@
     align-items: inherit;
   }
 }
+
+.custom-emoji .e13wqaj6,
+.custom-emoji .e8k2yoa {
+  opacity: 0;
+}
