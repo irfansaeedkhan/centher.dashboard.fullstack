@@ -54,13 +54,22 @@ export const useWalletService = () => {
   const [signer, setSigner] = useState<null | JsonRpcSigner>(null);
 
   useEffect(() => {
+    initAddress();
+  }, []);
+
+  function initAddress() {
     const address = localStorage.getItem(PUBLICK_KEY_KEY);
     if (address) {
       setAddress(address);
     }
-  }, []);
+  }
 
   useEffect(() => {
+    initSigner();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [address]);
+
+  function initSigner() {
     if (address) {
       const rpc = localStorage.getItem(RPC_KEY);
       if (rpc) {
@@ -72,8 +81,7 @@ export const useWalletService = () => {
         setSigner(signer);
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address]);
+  }
 
   function getProvider(): JsonRpcProvider {
     const rpc = localStorage.getItem(RPC_KEY);
@@ -83,7 +91,7 @@ export const useWalletService = () => {
 
   function disconnect() {
     try {
-      setAddress("");
+      setAddress(null);
       setProvider(null);
       localStorage.removeItem(PUBLICK_KEY_KEY);
       localStorage.removeItem(RPC_KEY);
@@ -153,43 +161,50 @@ export const useWalletService = () => {
   }
 
   async function parseWalletMessage(data: WalletMessage) {
-    switch (data.event) {
-      case "success_login":
-        const loginMessage = data.data as SuccessLoginMessage;
+    try {
+      switch (data.event) {
+        case "success_login":
+          const loginMessage = data.data as SuccessLoginMessage;
+          setAddress(null);
+          localStorage.setItem(PUBLICK_KEY_KEY, loginMessage.publick_key);
+          localStorage.setItem(CALBACK_KEY, loginMessage.callback);
+          if (loginMessage.rpc) {
+            localStorage.setItem(RPC_KEY, loginMessage.rpc);
+          }
+          setAddress(loginMessage.publick_key);
+          setTimeout(() => {
+            globalPromiseResolve(loginMessage.publick_key);
+          }, 1 * 1000);
 
-        localStorage.setItem(PUBLICK_KEY_KEY, loginMessage.publick_key);
-        localStorage.setItem(CALBACK_KEY, loginMessage.callback);
-        if (loginMessage.rpc) {
-          localStorage.setItem(RPC_KEY, loginMessage.rpc);
-        }
-        globalPromiseResolve(loginMessage.publick_key);
-        setAddress(loginMessage.publick_key);
-        break;
-      case "success_sign":
-        const signedMessage = data.data as SuccessSignMessage;
-        globalPromiseResolve(signedMessage.signed_message);
-        break;
+          break;
+        case "success_sign":
+          const signedMessage = data.data as SuccessSignMessage;
+          globalPromiseResolve(signedMessage.signed_message);
+          break;
 
-      case "success_send":
-        const da = data.data as any;
-        const receipt = da.data as TransactionResponse;
-        if (provider != null && provider != undefined) {
-          const e = await provider?.getTransaction(receipt.hash);
-          receipt.wait = e!.wait;
-          globalPromiseResolve(receipt);
-        } else {
-          const new_provider = getProvider();
-          const e = await new_provider?.getTransaction(receipt.hash);
-          receipt.wait = e!.wait;
-          globalPromiseResolve(receipt);
-        }
+        case "success_send":
+          const da = data.data as any;
+          const receipt = da.data as TransactionResponse;
+          if (provider != null && provider != undefined) {
+            const e = await provider?.getTransaction(receipt.hash);
+            receipt.wait = e!.wait;
+            globalPromiseResolve(receipt);
+          } else {
+            const new_provider = getProvider();
+            const e = await new_provider?.getTransaction(receipt.hash);
+            receipt.wait = e!.wait;
+            globalPromiseResolve(receipt);
+          }
 
-        break;
-      case "logout":
-        disconnect();
-        break;
-      default:
-        break;
+          break;
+        case "logout":
+          disconnect();
+          break;
+        default:
+          break;
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
 

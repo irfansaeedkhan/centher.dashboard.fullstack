@@ -7,19 +7,18 @@ import Joi from "joi";
 import clsx from "clsx";
 import Button from "@/components/button";
 import { CustomNumberInput } from "@/components/custom-number-input";
-import ConnectWalletModal from "@/components/modal/connect-wallet-modal";
 import { CollectionPreviewModal } from "@/components/modal/collection-preview";
 import { formatAddress } from "@/utils/format.address";
 import { IMyCollection } from "@/hooks/use.get.my.collections";
 import useGetUser from "@/hooks/use.get.user";
 import useUser from "@/hooks/use.user";
-import { useWallet } from "@/web3/hooks/use.wallet";
 import { AddIcon } from "@/assets/svgs";
 import cn from "@/utils/cn";
 import { IModalHandler, ModalManager, TemplateCollection } from "@/utils/modal";
-import CustomDropdown from "./custom.dropdown";
-import AddPropertiesModal from "./add-properties-modal";
-import NftPreview from "./nft-preview";
+import CustomDropdown from "@/pages/marketplace/_components/custom.dropdown";
+import AddPropertiesModal from "@/pages/marketplace/_components/add-properties-modal";
+import NftPreview from "@/pages/marketplace/_components/nft-preview";
+import { ConnectWalletComp } from "@/components/connect.wallet";
 
 enum ModalType {
   previewNft = "previewNft",
@@ -74,8 +73,6 @@ const AuctionForm = ({
 }: AuctionFormProps) => {
   const { user: loggedInUser } = useUser();
   const { user } = useGetUser(loggedInUser?._id);
-  const { disconnectWallet, connectWallet } = useWallet();
-  const [connectWalletModal, setConnectWalletModal] = useState(false);
   const [propertyModal, setPropertyModal] = useState(false);
   const [AuctionEndTimeErr, setAuctionEndTimeErr] = useState(false);
   const [propertyDetails, setPropertyDetails] = useState<any>([]);
@@ -366,13 +363,7 @@ const AuctionForm = ({
         </div>
       )}
       {!library ? (
-        <Button
-          title={"Connect Wallet"}
-          variant="primary"
-          onClick={() => {
-            setConnectWalletModal(true);
-          }}
-        />
+        <ConnectWalletComp />
       ) : (
         <div className="mt-2 flex flex-col items-center gap-2 fsm:flex-row">
           <Button
@@ -412,14 +403,6 @@ const AuctionForm = ({
           propertyDetails={propertyDetails}
           setPropertyModal={setPropertyModal}
           propertyErr={propertyErr}
-        />
-      )}
-      {connectWalletModal && (
-        <ConnectWalletModal
-          connectWallet={connectWallet}
-          deactivate={disconnectWallet}
-          loggedInUser={loggedInUser}
-          setConnectWalletModal={setConnectWalletModal}
         />
       )}
       {ModalModel.visibility && (

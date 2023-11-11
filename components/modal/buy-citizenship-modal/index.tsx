@@ -2,21 +2,17 @@ import React, { useEffect, useRef, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import Image from "next/image";
 import { useEventListener, useOnClickOutside } from "usehooks-ts";
-import { toast } from "react-hot-toast";
 import { CgSpinner } from "react-icons/cg";
-import { FiArrowRight } from "react-icons/fi";
 import cn from "@/utils/cn";
 import { ModalPortal } from "@/components/modal/modal.portal";
+import { ConnectWalletComp } from "@/components/connect.wallet";
 import { CitizenShipType, useCitizenStore } from "@/store/citizen.store";
-import useUser from "@/hooks/use.user";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { formatEther2Number } from "@/utils/format.address";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
-import { MetamaskIcon2 } from "@/assets/svgs";
-import Button from "../../button";
-import { CustomNewModal } from "../custom.new.modal";
-import { CitizenShipSuccessModal } from "./success-modal";
-import { CitizenShipFailureModal } from "./failure-modal";
+import Button from "@/components/button";
+import { CitizenShipSuccessModal } from "@/components/modal/buy-citizenship-modal/success-modal";
+import { CitizenShipFailureModal } from "@/components/modal/buy-citizenship-modal/failure-modal";
 import { useWallet } from "@/web3/hooks/use.wallet";
 
 interface CustomModalProps {
@@ -36,10 +32,8 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
 }) => {
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [showMsg, setshowMsg] = useState<any>(null);
-  const [connectWalletModal, setConnectWalletModal] = useState(false);
   const bnbPrice = useBNBPrice();
-  const { getSigner, connectedAddress, connectWallet, disconnectWallet } =
-    useWallet();
+  const { getSigner, connectedAddress } = useWallet();
   const {
     isCitizen,
     prices,
@@ -49,8 +43,6 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
     updatePrices,
     buyCitizenShip,
   } = useCitizenStore();
-
-  const { user: loggedInUser } = useUser();
 
   useEffect(() => {
     const signer = getSigner();
@@ -233,14 +225,7 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
                         ""
                       )} */}
                   {!isConnected ? (
-                    <Button
-                      title={"Connect Wallet"}
-                      variant="primary"
-                      onClick={() => {
-                        setConnectWalletModal(true);
-                      }}
-                      className="mx-auto mb-2 mt-6 w-[95%] py-3 text-sm"
-                    />
+                    <ConnectWalletComp className="mx-auto mb-2 mt-6 w-[95%] py-3 text-sm" />
                   ) : (
                     <Button
                       onClick={buyMemberShip}
@@ -253,56 +238,6 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
                         ) : undefined
                       }
                     />
-                  )}
-
-                  {connectWalletModal && (
-                    <CustomNewModal
-                      onClose={() => {
-                        setConnectWalletModal(false);
-                      }}
-                      title={"Connect to wallet"}
-                    >
-                      <div className="mb-8 flex w-full justify-center px-5 md:px-10">
-                        <p className="mt-2 w-full max-w-[366px] text-center text-sm text-gray-shade-14">
-                          Please Connect your wallet to continue, the system
-                          support following wallet.
-                        </p>
-                      </div>
-                      <div className="flex w-full justify-center px-5 md:px-10">
-                        <div className="flex w-full max-w-[400px] items-center justify-between gap-10 rounded-xl border border-brand-primary px-5 py-3">
-                          <div className="flex items-center gap-3 fsm:gap-6">
-                            <MetamaskIcon2 />
-                            <h3 className="text-sm font-semibold text-white fmd:text-base">
-                              Metamask
-                            </h3>
-                          </div>
-                          <button
-                            onClick={async () => {
-                              if (!loggedInUser) {
-                                toast.error(
-                                  "Please login to buy this membership"
-                                );
-                                setConnectWalletModal(false);
-                                return;
-                              }
-                              const _account = await connectWallet();
-                              if (
-                                loggedInUser._id.toLowerCase() !==
-                                _account?.toLowerCase()
-                              ) {
-                                toast.error(
-                                  "Please connect to correct account"
-                                );
-                                disconnectWallet();
-                              }
-                              setConnectWalletModal(false);
-                            }}
-                          >
-                            <FiArrowRight className="h-6 w-6 text-brand-primary fsm:h-8 fsm:w-8" />
-                          </button>
-                        </div>
-                      </div>
-                    </CustomNewModal>
                   )}
                 </div>
               </div>

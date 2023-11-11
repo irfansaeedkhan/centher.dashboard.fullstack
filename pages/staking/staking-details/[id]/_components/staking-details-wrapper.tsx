@@ -317,12 +317,14 @@ const StakingDetailsWrapper = ({ children }: Props) => {
                 <span>Total staked</span>
               </p>
               <p className="text-sm font-medium text-white">
-                {formatUnits(
-                  stakingPool?.totalStakedAmount + "",
-                  coinsDetails.find((e) =>
-                    eqAddress(e?.contractAddress, stakingPool?.token_address)
-                  )?.decimals || 18
-                )}{" "}
+                {Number(
+                  formatUnits(
+                    stakingPool?.totalStakedAmount + "",
+                    coinsDetails.find((e) =>
+                      eqAddress(e?.contractAddress, stakingPool?.token_address)
+                    )?.decimals || 18
+                  )
+                )?.toFixed(2)}{" "}
                 {
                   coinsDetails.find((e) =>
                     eqAddress(e?.contractAddress, stakingPool?.token_address)
@@ -335,15 +337,17 @@ const StakingDetailsWrapper = ({ children }: Props) => {
                 <span>Total paid rewards</span>
               </p>
               <p className="text-sm font-medium text-white">
-                {formatUnits(
-                  stakingPool?.totalPaidReward + "",
-                  coinsDetails.find((e) =>
-                    eqAddress(
-                      e?.contractAddress,
-                      stakingPool?.reward_token_address
-                    )
-                  )?.decimals || 18
-                )}{" "}
+                {Number(
+                  formatUnits(
+                    stakingPool?.totalPaidReward + "",
+                    coinsDetails.find((e) =>
+                      eqAddress(
+                        e?.contractAddress,
+                        stakingPool?.reward_token_address
+                      )
+                    )?.decimals || 18
+                  )
+                )?.toFixed(2)}{" "}
                 {
                   coinsDetails.find((e) =>
                     eqAddress(
@@ -388,7 +392,7 @@ const StakingDetailsWrapper = ({ children }: Props) => {
               </p>
               <p className="text-sm font-medium text-white">
                 {rewardEstimation ? (
-                  normalizeValue(rewardEstimation.total) +
+                  Number(normalizeValue(rewardEstimation.total))?.toFixed(2) +
                   " " +
                   coinsDetails.find((e) =>
                     eqAddress(

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { FiArrowRight } from "react-icons/fi";
 import toast from "react-hot-toast";
 import clsx from "clsx";
 import Button from "@/components/button";
@@ -16,10 +15,9 @@ import useUser from "@/hooks/use.user";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
 import { BlockchainConfig } from "@/web3/blockchain/config";
-import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
-import { CustomNewModal } from "@/components/modal/custom.new.modal";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 import { useWallet } from "@/web3/hooks/use.wallet";
+import { ConnectWalletComp } from "@/components/connect.wallet";
 
 interface FixedPriceNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
@@ -37,9 +35,7 @@ export const FixedPriceNFTBuyerDescription = ({
   setNftData,
 }: FixedPriceNFTBuyerDescriptionProps) => {
   const { user: loggedInUser } = useUser();
-  const { connectWallet } = useConnectWallet();
-  const { getSigner, disconnectWallet } = useWallet();
-  const [connectWalletModal, setConnectWalletModal] = useState(false);
+  const { getSigner } = useWallet();
   const [isMigrated, setIsMigrated] = useState(false);
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
@@ -269,14 +265,7 @@ export const FixedPriceNFTBuyerDescription = ({
             className="w-full rounded-[14px]"
           />
         ) : (
-          <Button
-            title={"Connect Wallet"}
-            variant="primary"
-            onClick={() => {
-              setConnectWalletModal(true);
-            }}
-            className="w-full rounded-[14px]"
-          />
+          <ConnectWalletComp className="w-full rounded-[14px]" />
         )}
       </div>
       {ModalModel.visibility && (
@@ -289,50 +278,6 @@ export const FixedPriceNFTBuyerDescription = ({
         >
           {ModalModel.content}
         </CustomModal>
-      )}
-      {connectWalletModal && (
-        <CustomNewModal
-          onClose={() => {
-            setConnectWalletModal(false);
-          }}
-          title={"Connect to wallet"}
-        >
-          <div className="mb-8 flex w-full justify-center px-5 md:px-10">
-            <p className="mt-2 w-full max-w-[366px] text-center text-xs text-gray-shade-14">
-              Please Connect your wallet to continue, the system support
-              following wallet.
-            </p>
-          </div>
-          <div className="flex w-full justify-center px-5 md:px-10">
-            <div className="flex w-full max-w-[400px] items-center justify-between gap-10 rounded-xl border border-brand-primary px-5 py-3">
-              <div className="flex items-center gap-3 fsm:gap-6">
-                <MetamaskIcon2 />
-                <h3 className="text-sm font-semibold text-white fmd:text-base">
-                  Metamask
-                </h3>
-              </div>
-              <button
-                onClick={async () => {
-                  if (!loggedInUser) {
-                    toast.error("Please login to buy this nft");
-                    setConnectWalletModal(false);
-                    return;
-                  }
-                  const _account = await connectWallet();
-                  if (
-                    loggedInUser._id.toLowerCase() !== _account?.toLowerCase()
-                  ) {
-                    toast.error("Please connect to correct account");
-                    disconnectWallet();
-                  }
-                  setConnectWalletModal(false);
-                }}
-              >
-                <FiArrowRight className="h-6 w-6 text-brand-primary fsm:h-8 fsm:w-8" />
-              </button>
-            </div>
-          </div>
-        </CustomNewModal>
       )}
     </div>
   );

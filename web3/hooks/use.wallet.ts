@@ -16,10 +16,9 @@ export enum WalletEnum {
 }
 
 const CONNECTED_WALLET_KEY = "connected_wallet";
-const IS_WALLET_CONNECTED_KEY = "is_wallet_connected";
+// const IS_WALLET_CONNECTED_KEY = "is_wallet_connected";
 
 export const useWallet = () => {
-  const [isWalletConnected, setIsWalletConnected] = useState<boolean>(false);
   const { account, activate, library, deactivate } = useWeb3React();
   const { address, connect, disconnect, sign, signer, send, showWallet } =
     useWalletService();
@@ -28,7 +27,7 @@ export const useWallet = () => {
   >(null);
 
   const updateConnectedAccount = async () => {
-    if (isWalletConnected) {
+    if (account || address) {
       const connected_wallet = getWalletType();
       if (connected_wallet) {
         if (connected_wallet == WalletEnum.METAMASK) {
@@ -53,29 +52,10 @@ export const useWallet = () => {
     }
   };
 
-  const updateWalletConnectionStatus = (status?: boolean) => {
-    if (status != undefined) {
-      setIsWalletConnected(status);
-      localStorage.setItem(IS_WALLET_CONNECTED_KEY, `${status}`);
-    } else {
-      const latest_status = localStorage.getItem(IS_WALLET_CONNECTED_KEY);
-      if (latest_status && latest_status == "true") {
-        setIsWalletConnected(true);
-      } else {
-        localStorage.setItem(IS_WALLET_CONNECTED_KEY, `false`);
-        setIsWalletConnected(false);
-      }
-    }
-  };
-
-  useEffect(() => {
-    updateWalletConnectionStatus();
-  }, []);
-
   useEffect(() => {
     updateConnectedAccount();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isWalletConnected, account, address]);
+  }, [account, address]);
 
   const getSigner = useCallback((): JsonRpcSigner | null => {
     const connected_wallet = getWalletType();
@@ -91,7 +71,7 @@ export const useWallet = () => {
       }
     }
     return null;
-  }, [account, library, signer]);
+  }, [account, library, signer, address]);
 
   const setWalletType = (wallet: WalletEnum) => {
     localStorage.setItem(CONNECTED_WALLET_KEY, wallet);
@@ -111,7 +91,7 @@ export const useWallet = () => {
   const connectWallet = async (
     wallet: WalletEnum = WalletEnum.METAMASK,
     showError: boolean = true
-  ): Promise<string | undefined> => {
+  ): Promise<void> => {
     if (wallet == WalletEnum.METAMASK) {
       if (typeof window.ethereum !== "undefined") {
         await activate(injectedConnector, (error) => {
@@ -126,18 +106,14 @@ export const useWallet = () => {
             toast.error(`Please connect to the ${network}!`);
           }
         });
+
         setWalletType(wallet);
-        const get_wallet = await updateConnectedAccount();
-        updateWalletConnectionStatus(true);
-        return get_wallet;
       } else {
         toast.error("Please install MetaMask!");
       }
     } else if (wallet == WalletEnum.WALLET_SERVICE) {
       setWalletType(wallet);
-      const get_wallet = await connect();
-      updateWalletConnectionStatus(true);
-      return get_wallet;
+      await connect();
     }
   };
 
@@ -173,7 +149,7 @@ export const useWallet = () => {
     } else {
       disconnect();
     }
-    updateWalletConnectionStatus(false);
+    setConnecteedAddress(undefined);
   };
 
   const openWallet = async () => {

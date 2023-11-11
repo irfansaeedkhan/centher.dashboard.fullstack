@@ -14,12 +14,16 @@ import {
   WalletIconModal,
   MetamaskIcon,
 } from "@/assets/svgs";
-import { InputField } from "./input.field";
-import { SignupState, FeeModalState } from "./form.fields.data";
+import { InputField } from "@/pages/auth/register/_components/input.field";
+import {
+  SignupState,
+  FeeModalState,
+} from "@/pages/auth/register/_components/form.fields.data";
 import {
   getRegistrationFee,
   registerWithSmartContract,
-} from "./register.with.smart.contract";
+} from "@/pages/auth/register/_components/register.with.smart.contract";
+import { ConnectWalletComp } from "@/components/connect.wallet";
 
 // Initial Signup State
 const initialSignupState: SignupState = {
@@ -47,7 +51,6 @@ export const RegisterForm: React.FC = () => {
 
   const router = useRouter();
   const {
-    connectWallet,
     connectedAddress,
     getSigner,
     openWallet,
@@ -110,6 +113,7 @@ export const RegisterForm: React.FC = () => {
       );
       setFeeModal((prev) => ({ ...prev, fee: registrationFee }));
     } catch (err: any) {
+      console.log(err);
       toast.error(err.message_description ?? "Could not get registration fee!");
       setFeeModal((prev) => ({ ...prev, isOpen: false }));
     }
@@ -162,6 +166,7 @@ export const RegisterForm: React.FC = () => {
             />
             {wallet_type == WalletEnum.WALLET_SERVICE ? (
               <Button
+                type="button"
                 title="Open Wallet"
                 onClick={() => openWallet()}
                 variant="primary"
@@ -173,27 +178,10 @@ export const RegisterForm: React.FC = () => {
             )}
           </div>
         ) : (
-          <div className="space-y-3">
-            <Button
-              type="button"
-              title={ButtonsText.connect_metamask}
-              onClick={async () => await connectWallet(WalletEnum.METAMASK)}
-              variant="primary"
-              className="flex h-11 w-full items-center justify-center text-[14px]"
-              borderRounded="14px"
-            />
-
-            <Button
-              type="button"
-              title={ButtonsText.connect_wallet}
-              onClick={async () =>
-                await connectWallet(WalletEnum.WALLET_SERVICE)
-              }
-              variant="primary"
-              className="flex h-11 w-full items-center justify-center text-[14px]"
-              borderRounded="14px"
-            />
-          </div>
+          <ConnectWalletComp
+            className="flex h-11 w-full items-center justify-center rounded-xl text-[14px]"
+            notloginCheck={true}
+          />
         )}
 
         <InputField
@@ -251,19 +239,6 @@ export const RegisterForm: React.FC = () => {
             className="flex h-11 w-full items-center justify-center text-[14px]"
             borderRounded="14px"
           />
-        )}
-
-        {wallet_type == WalletEnum.WALLET_SERVICE ? (
-          <Button
-            type="button"
-            title="Open Wallet"
-            onClick={() => openWallet()}
-            variant="primary"
-            className="flex h-11 w-full items-center justify-center text-[14px]"
-            borderRounded="14px"
-          />
-        ) : (
-          <></>
         )}
 
         <ModalWrapper

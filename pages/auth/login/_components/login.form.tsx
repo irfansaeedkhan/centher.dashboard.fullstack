@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import { useSWRConfig } from "swr";
@@ -8,6 +8,7 @@ import { AppRoutes } from "@/constants/app.routes";
 import { getNonce, login } from "@/lib/auth";
 import Button from "@/components/button";
 import { useWallet, WalletEnum } from "@/web3/hooks/use.wallet";
+import { ConnectWalletComp } from "@/components/connect.wallet";
 
 const ButtonsText = {
   connect_metamask: "Connect to Metamask",
@@ -21,12 +22,11 @@ export const LoginForm: React.FC = () => {
   const router = useRouter();
 
   const {
-    connectWallet,
-    connectedAddress,
     signMessage,
     disconnectWallet,
     getWalletType,
     openWallet,
+    connectedAddress,
   } = useWallet();
   const [isLoading, setIsLoading] = useState<LoadingState>("idle");
   const wallet_type = getWalletType();
@@ -117,19 +117,9 @@ export const LoginForm: React.FC = () => {
         </>
       ) : (
         <div className="space-y-3">
-          <Button
-            title={ButtonsText.connect_metamask}
-            onClick={async () => await connectWallet(WalletEnum.METAMASK)}
-            variant="primary"
+          <ConnectWalletComp
             className="flex h-11 w-full items-center justify-center text-[14px]"
-            borderRounded="14px"
-          />
-          <Button
-            title={ButtonsText.connect_wallet}
-            onClick={async () => await connectWallet(WalletEnum.WALLET_SERVICE)}
-            variant="primary"
-            className="flex h-11 w-full items-center justify-center text-[14px]"
-            borderRounded="14px"
+            notloginCheck={true}
           />
         </div>
       )}

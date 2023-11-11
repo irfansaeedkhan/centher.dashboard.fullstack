@@ -1,13 +1,11 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { FiArrowUpRight, FiCopy } from "react-icons/fi";
 import { useOnClickOutside } from "usehooks-ts";
-import { useWeb3React } from "@web3-react/core";
 import clsx from "clsx";
-import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import { AppRoutes } from "@/constants/app.routes";
 import useUser from "@/hooks/use.user";
@@ -26,6 +24,7 @@ import { BlockchainConfig } from "@/web3/blockchain/config";
 import { useCentherLive } from "@/hooks/chat";
 import Button from "@/components/button";
 import { WalletEnum, useWallet } from "@/web3/hooks/use.wallet";
+import ConnectWalletModal from "@/components/modal/connect-wallet-modal";
 
 interface HeaderProfileProps {
   onClickOutside: () => void;
@@ -42,13 +41,9 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
   const router = useRouter();
   const { user: loggedInUser } = useUser();
   const { unreadNotifications, unreadConversations } = useCentherLive();
-  const {
-    connectWallet,
-    connectedAddress,
-    disconnectWallet,
-    getWalletType,
-    openWallet,
-  } = useWallet();
+  const [connectWalletModal, setConnectWalletModal] = useState(false);
+  const { connectedAddress, disconnectWallet, getWalletType, openWallet } =
+    useWallet();
   const wallet_type = getWalletType();
 
   const handleClickOutside = (e: MouseEvent) => {
@@ -340,10 +335,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
         ) : (
           <button
             className="textGradient flex items-center gap-3 stroke-brand-primary"
-            onClick={async () => {
-              if (!loggedInUser) return;
-              await connectWallet();
-            }}
+            onClick={() => setConnectWalletModal(true)}
           >
             <ConnectIcon />
             <p className="textGradient text-sm font-medium leading-6">
@@ -352,6 +344,13 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
           </button>
         )}
       </div>
+      {connectWalletModal && (
+        <ConnectWalletModal
+          setConnectWalletModal={setConnectWalletModal}
+          loggedInUser={loggedInUser}
+          notloginCheck={true}
+        />
+      )}
     </div>
   );
 };
