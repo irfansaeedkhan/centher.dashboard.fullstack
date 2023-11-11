@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
+import clsx from "clsx";
+import toast from "react-hot-toast";
 import { FormState } from "../../index.page";
 
 interface Props {
@@ -7,7 +9,242 @@ interface Props {
 }
 
 const RoundsSettingsForm: React.FC<Props> = ({ formState, setFormState }) => {
-  return <div>RoundsSettingsForm</div>;
+  const [currentRound, setCurrentRound] = useState(1);
+  const [currentComponent, setCurrentComponent] = useState({
+    total_selling_amount: "",
+    soft_cap_busd: "",
+    start_time: "",
+    end_time: "",
+    min_contribution: "",
+    max_contribution: "",
+  });
+
+  const handleChangeEvent = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setCurrentComponent((prev) => {
+      return {
+        ...prev,
+        [name]: value,
+      };
+    });
+    setFormState((prev) => {
+      console.log(prev);
+      return {
+        ...prev,
+        rounds_settings: {
+          ...prev.rounds_settings,
+          round: prev.rounds_settings.round.map((round) => {
+            if (round.round_no === currentRound) {
+              return {
+                ...round,
+                [name]: value,
+              };
+            } else {
+              return round;
+            }
+          }),
+        },
+      };
+    });
+  };
+
+  return (
+    <div>
+      <div className="mb-3 flex w-full items-center gap-6">
+        {Array.from(
+          { length: formState.verify_token.sale_rounds },
+          (_, index) => index
+        ).map((index: number) => (
+          <div
+            key={index}
+            className={clsx(
+              "text-xl font-semibold",
+              currentRound === index + 1
+                ? "text-white"
+                : "cursor-pointer text-gray-shade-1"
+            )}
+            onClick={() => {
+              if (
+                currentComponent.total_selling_amount === "" ||
+                currentComponent.soft_cap_busd === "" ||
+                currentComponent.start_time === "" ||
+                currentComponent.end_time === "" ||
+                currentComponent.min_contribution === "" ||
+                currentComponent.max_contribution === ""
+              ) {
+                toast.error("Please fill all the fields");
+                return;
+              }
+              setFormState((prev) => {
+                return {
+                  ...prev,
+                  rounds_settings: {
+                    ...prev.rounds_settings,
+                    round: [
+                      ...prev.rounds_settings.round,
+                      {
+                        round_no: index + 1,
+                        total_selling_amount:
+                          currentComponent.total_selling_amount,
+                        soft_cap_busd: currentComponent.soft_cap_busd,
+                        start_time: currentComponent.start_time,
+                        end_time: currentComponent.end_time,
+                        min_contribution: currentComponent.min_contribution,
+                        max_contribution: currentComponent.max_contribution,
+                      },
+                    ],
+                  },
+                };
+              });
+              setCurrentRound(index + 1);
+              setCurrentComponent({
+                total_selling_amount: "",
+                soft_cap_busd: "",
+                start_time: "",
+                end_time: "",
+                min_contribution: "",
+                max_contribution: "",
+              });
+            }}
+          >
+            Round {index + 1}
+          </div>
+        ))}
+      </div>
+      <div className="flex flex-col gap-5">
+        <div className={gradientBorderInputMain}>
+          <label htmlFor="total_selling_amount" className={label}>
+            Total Selling Amount
+            <span className={labelSpan}>*</span>
+          </label>
+          <div className={gradientBorderInputParent}>
+            <input
+              type="text"
+              id="total_selling_amount"
+              name="total_selling_amount"
+              placeholder="Example: 100"
+              className={gradientBorderInput}
+              value={currentComponent.total_selling_amount}
+              onChange={handleChangeEvent}
+            />
+          </div>
+        </div>
+        <div className={gradientBorderInputMain}>
+          <label htmlFor="soft_cap_busd" className={label}>
+            Soft Cap Busd
+            <span className={labelSpan}>*</span>
+          </label>
+          <div className={gradientBorderInputParent}>
+            <input
+              type="text"
+              id="soft_cap_busd"
+              name="soft_cap_busd"
+              placeholder="Example: 0"
+              className={gradientBorderInput}
+              value={currentComponent.soft_cap_busd}
+              onChange={handleChangeEvent}
+            />
+          </div>
+        </div>
+        <p className="textGradient w-fit text-[13px] leading-5">
+          Enter the percentage of funds raised that should be allocated to the
+          liquidity pool (Min 51%, Max 100%)Ex: How many tokens will I receive
+          if I spend 1 BNB? The amount is going to be lower to allow a higher
+          listing price.
+        </p>
+        <div className={gridParent}>
+          <div className={gradientBorderInputMain}>
+            <label htmlFor="start_time" className={label}>
+              Start Time
+              <span className={labelSpan}>*</span>
+            </label>
+            <div className={gradientBorderInputParent}>
+              <input
+                type="date"
+                id="start_time"
+                name="start_time"
+                placeholder="Example: 0"
+                className={gradientBorderInput}
+                value={currentComponent.start_time}
+                onChange={handleChangeEvent}
+              />
+            </div>
+          </div>
+          <div className={gradientBorderInputMain}>
+            <label htmlFor="end_time" className={label}>
+              End Time
+              <span className={labelSpan}>*</span>
+            </label>
+            <div className={gradientBorderInputParent}>
+              <input
+                type="date"
+                id="end_time"
+                name="end_time"
+                placeholder="Example: 0"
+                className={gradientBorderInput}
+                value={currentComponent.end_time}
+                onChange={handleChangeEvent}
+              />
+            </div>
+          </div>
+        </div>
+        <div className={gridParent}>
+          <div className={gradientBorderInputMain}>
+            <label htmlFor="min_contribution" className={label}>
+              Min Contribution
+              <span className={labelSpan}>*</span>
+            </label>
+            <div className={gradientBorderInputParent}>
+              <input
+                type="text"
+                id="min_contribution"
+                name="min_contribution"
+                placeholder="Example: 0"
+                className={gradientBorderInput}
+                value={currentComponent.min_contribution}
+                onChange={handleChangeEvent}
+              />
+            </div>
+          </div>
+          <div className={gradientBorderInputMain}>
+            <label htmlFor="max_contribution" className={label}>
+              Max Contribution
+              <span className={labelSpan}>*</span>
+            </label>
+            <div className={gradientBorderInputParent}>
+              <input
+                type="text"
+                id="max_contribution"
+                name="max_contribution"
+                placeholder="Example: 0"
+                className={gradientBorderInput}
+                value={currentComponent.max_contribution}
+                onChange={handleChangeEvent}
+              />
+            </div>
+          </div>
+        </div>
+        <p className="text-sm text-gray-shade-14">
+          <span className="text-white">Note: </span>
+          Disclaimer: The information provided shall not in any way constitute a
+          recommendation as to whether you should invest in any product
+          discussed. We accept no liability for any loss occasioned to any
+          person acting or refraining from action as a result of any material
+          provided or published.
+        </p>
+      </div>
+    </div>
+  );
 };
 
 export default RoundsSettingsForm;
+
+const gradientBorderInputParent =
+  "focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]";
+const gradientBorderInput =
+  "block w-full appearance-none rounded-lg border-0 bg-gray-shade-24 px-5 py-3 text-sm placeholder:font-semibold placeholder:text-gray-shade-17 focus:outline-none focus:ring-0";
+const gradientBorderInputMain =
+  "col-span-full mb-6 text-sm font-medium text-white fmd:mb-0 fmd:col-span-1";
+const label = "block font-normal tracking-wide";
+const labelSpan = "text-gradient ml-[2px]";
+const gridParent = "grid gap-5 fmd:grid-cols-2";

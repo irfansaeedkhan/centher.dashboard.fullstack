@@ -13,6 +13,21 @@ const SaleRounds: React.FC<Props> = ({ formState, setFormState }) => {
       return {
         ...prev,
         verify_token: { ...prev.verify_token, sale_rounds: value },
+        rounds_settings: {
+          round: Array.from({ length: value }, (_, index) => index + 1).map(
+            (index) => {
+              return {
+                round_no: index,
+                total_selling_amount: "",
+                soft_cap_busd: "",
+                start_time: "",
+                end_time: "",
+                min_contribution: "",
+                max_contribution: "",
+              };
+            }
+          ),
+        },
       };
     });
   };

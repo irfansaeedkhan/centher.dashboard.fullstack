@@ -137,7 +137,9 @@ const CreateLaunchpad: NextPageWithLayout = () => {
           //     (formState.add_additional_info.description === "" ||
           //       formState.add_additional_info.github === "" ||
           //       formState.add_additional_info.website_url === "" ||
-          //       formState.add_additional_info.logo_url === ""))
+          //       formState.add_additional_info.logo_url === "")) ||
+          //   (formState.current_round === "rounds_settings" &&
+          //     formState.rounds_settings.round.length === 0)
           // }
           className="mx-auto mt-6 w-full max-w-[496px]"
           onClick={() => {
