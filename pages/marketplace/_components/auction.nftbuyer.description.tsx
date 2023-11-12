@@ -40,7 +40,8 @@ export const AuctionNFTBuyerDescription = ({
   data,
   setNftData,
 }: AuctionNFTBuyerDescriptionProps) => {
-  const { getSigner, connectedAddress } = useWallet();
+  const { getSigner, connectedAddress, connectWallet, disconnectWallet } =
+    useWallet();
   const bnbBalance = useGetBNBBalance(connectedAddress);
   const bnbPrice = useBNBPrice();
   const price =
@@ -265,7 +266,12 @@ export const AuctionNFTBuyerDescription = ({
         )}
       </div>
       {!getSigner() ? (
-        <ConnectWalletComp className="w-full rounded-[14px]" />
+        <ConnectWalletComp
+          connectWallet={connectWallet}
+          connectedAddress={connectedAddress}
+          disconnectWallet={disconnectWallet}
+          className="w-full rounded-[14px]"
+        />
       ) : (
         <div className="buttonContainer flex items-center">
           {nowTime < endTime && (

@@ -33,7 +33,9 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [showMsg, setshowMsg] = useState<any>(null);
   const bnbPrice = useBNBPrice();
-  const { getSigner, connectedAddress } = useWallet();
+  const { getSigner, disconnectWallet, connectWallet, connectedAddress } =
+    useWallet();
+
   const {
     isCitizen,
     prices,
@@ -225,7 +227,12 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
                         ""
                       )} */}
                   {!isConnected ? (
-                    <ConnectWalletComp className="mx-auto mb-2 mt-6 w-[95%] py-3 text-sm" />
+                    <ConnectWalletComp
+                      connectWallet={connectWallet}
+                      connectedAddress={connectedAddress}
+                      disconnectWallet={disconnectWallet}
+                      className="mx-auto mb-2 mt-6 w-[95%] py-3 text-sm"
+                    />
                   ) : (
                     <Button
                       onClick={buyMemberShip}

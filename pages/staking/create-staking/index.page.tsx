@@ -89,7 +89,8 @@ const CreateStaking: NextPageWithLayout = () => {
   );
   const [isConnected, setIsConnected] = useState<boolean>(false);
 
-  const { getSigner, connectedAddress } = useWallet();
+  const { getSigner, connectedAddress, connectWallet, disconnectWallet } =
+    useWallet();
   const [isLoading, setIsLoading] = useState(false);
   const { sdk } = useStaking();
   const [isDifferentTokens, setIsDifferentTokens] = useState(false);
@@ -1831,7 +1832,12 @@ const CreateStaking: NextPageWithLayout = () => {
                 )}
               </div>
               {!isConnected ? (
-                <ConnectWalletComp className="mx-auto mt-5 w-[45%] text-sm" />
+                <ConnectWalletComp
+                  connectWallet={connectWallet}
+                  connectedAddress={connectedAddress}
+                  disconnectWallet={disconnectWallet}
+                  className="mx-auto mt-5 w-[45%] text-sm"
+                />
               ) : (
                 <Button
                   title="Next"
@@ -2308,7 +2314,12 @@ const CreateStaking: NextPageWithLayout = () => {
 
               {!isConnected ? (
                 <div>
-                  <ConnectWalletComp className="mx-auto mt-5 w-[45%] text-sm" />
+                  <ConnectWalletComp
+                    connectWallet={connectWallet}
+                    connectedAddress={connectedAddress}
+                    disconnectWallet={disconnectWallet}
+                    className="mx-auto mt-5 w-[45%] text-sm"
+                  />
                 </div>
               ) : (
                 <Button

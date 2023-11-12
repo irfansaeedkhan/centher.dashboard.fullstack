@@ -13,15 +13,19 @@ interface Props {
   setConnectWalletModal: (value: boolean) => void;
   loggedInUser: LoggedInUser | undefined;
   notloginCheck?: boolean;
+  connectedAddress: string | null | undefined;
+  disconnectWallet: () => void;
+  connectWallet: (wallet?: WalletEnum, showError?: boolean) => Promise<void>;
 }
 
 const ConnectWalletModal: React.FC<Props> = ({
   setConnectWalletModal,
   loggedInUser,
   notloginCheck,
+  connectedAddress,
+  disconnectWallet,
+  connectWallet,
 }) => {
-  const { connectWallet, disconnectWallet, connectedAddress } = useWallet();
-
   useEffect(() => {
     if (!notloginCheck) {
       if (loggedInUser?._id.toLowerCase() !== connectedAddress?.toLowerCase()) {

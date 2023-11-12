@@ -32,6 +32,7 @@ export const LoginForm: React.FC = () => {
     signMessage,
     disconnectWallet,
     getWalletType,
+    connectWallet,
     openWallet,
     connectedAddress,
   } = useWallet();
@@ -126,6 +127,9 @@ export const LoginForm: React.FC = () => {
       ) : (
         <div className="space-y-3">
           <ConnectWalletComp
+            connectWallet={connectWallet}
+            connectedAddress={connectedAddress}
+            disconnectWallet={disconnectWallet}
             className="flex h-11 w-full items-center justify-center text-[14px]"
             notloginCheck={true}
           />

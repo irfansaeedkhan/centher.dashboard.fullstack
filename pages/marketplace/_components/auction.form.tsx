@@ -19,6 +19,7 @@ import CustomDropdown from "@/pages/marketplace/_components/custom.dropdown";
 import AddPropertiesModal from "@/pages/marketplace/_components/add-properties-modal";
 import NftPreview from "@/pages/marketplace/_components/nft-preview";
 import { ConnectWalletComp } from "@/components/connect.wallet";
+import { useWallet } from "@/web3/hooks/use.wallet";
 
 enum ModalType {
   previewNft = "previewNft",
@@ -87,6 +88,7 @@ const AuctionForm = ({
   const [selectedOption, setSelectedOption] = useState(
     collections[0].collection
   );
+  const { connectWallet, connectedAddress, disconnectWallet } = useWallet();
   const today = new Date();
 
   const { handleSubmit, register, formState, reset, watch } =
@@ -363,7 +365,11 @@ const AuctionForm = ({
         </div>
       )}
       {!library ? (
-        <ConnectWalletComp />
+        <ConnectWalletComp
+          connectWallet={connectWallet}
+          connectedAddress={connectedAddress}
+          disconnectWallet={disconnectWallet}
+        />
       ) : (
         <div className="mt-2 flex flex-col items-center gap-2 fsm:flex-row">
           <Button

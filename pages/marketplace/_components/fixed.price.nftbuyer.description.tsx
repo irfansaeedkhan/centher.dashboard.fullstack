@@ -35,7 +35,8 @@ export const FixedPriceNFTBuyerDescription = ({
   setNftData,
 }: FixedPriceNFTBuyerDescriptionProps) => {
   const { user: loggedInUser } = useUser();
-  const { getSigner } = useWallet();
+  const { getSigner, connectWallet, connectedAddress, disconnectWallet } =
+    useWallet();
   const [isMigrated, setIsMigrated] = useState(false);
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
@@ -265,7 +266,12 @@ export const FixedPriceNFTBuyerDescription = ({
             className="w-full rounded-[14px]"
           />
         ) : (
-          <ConnectWalletComp className="w-full rounded-[14px]" />
+          <ConnectWalletComp
+            connectWallet={connectWallet}
+            connectedAddress={connectedAddress}
+            disconnectWallet={disconnectWallet}
+            className="w-full rounded-[14px]"
+          />
         )}
       </div>
       {ModalModel.visibility && (

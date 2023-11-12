@@ -20,6 +20,7 @@ import { INFTData } from "@/pages/marketplace/_components/create.nft.form";
 import AddPropertiesModal from "@/pages/marketplace/_components/add-properties-modal";
 import NftPreview from "@/pages/marketplace/_components/nft-preview";
 import { ConnectWalletComp } from "@/components/connect.wallet";
+import { useWallet } from "@/web3/hooks/use.wallet";
 
 enum ModalType {
   previewNft = "previewNft",
@@ -63,6 +64,7 @@ const FixedPriceForm = ({
   assetTab,
 }: FixedPriceFormProps) => {
   const { user: loggedInUser } = useUser();
+  const { connectWallet, connectedAddress, disconnectWallet } = useWallet();
   const { user } = useGetUser(loggedInUser?._id);
   const [propertyModal, setPropertyModal] = useState(false);
   const [propertyDetails, setPropertyDetails] = useState<any>([]);
@@ -380,7 +382,11 @@ const FixedPriceForm = ({
       )}
 
       {!library ? (
-        <ConnectWalletComp />
+        <ConnectWalletComp
+          connectWallet={connectWallet}
+          connectedAddress={connectedAddress}
+          disconnectWallet={disconnectWallet}
+        />
       ) : (
         <div className="mt-2 flex flex-col items-center gap-2 fsm:flex-row">
           <Button
