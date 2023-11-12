@@ -21,6 +21,13 @@ export const LoginForm: React.FC = () => {
   const { mutate } = useSWRConfig();
   const router = useRouter();
 
+  // const {
+  //   signMessage,
+  //   disconnectWallet,
+  //   getWalletType,
+  //   openWallet,
+  //   connectedAddress,
+  // } = useWallet();
   const {
     signMessage,
     disconnectWallet,
@@ -28,6 +35,7 @@ export const LoginForm: React.FC = () => {
     openWallet,
     connectedAddress,
   } = useWallet();
+
   const [isLoading, setIsLoading] = useState<LoadingState>("idle");
   const wallet_type = getWalletType();
 

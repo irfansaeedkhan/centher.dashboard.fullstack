@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { ethers } from "ethers";
 import { useWeb3React } from "@web3-react/core";
 import {
@@ -171,3 +177,11 @@ export const useWallet = () => {
     openWallet,
   };
 };
+
+// // eslint-disable-next-line react-hooks/rules-of-hooks
+// export const UserFeedbackContext = createContext(useWalletHook());
+
+// // a custom hook to access our context
+// export function useWallet() {
+//   return useContext(UserFeedbackContext);
+// }
