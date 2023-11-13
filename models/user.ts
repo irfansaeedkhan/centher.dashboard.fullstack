@@ -12,6 +12,7 @@ export interface User {
   social_media: SocialMedia;
   organization: {
     org_id: string;
+    profile_image: string;
     title: string;
     joined_at: string;
   } | null;

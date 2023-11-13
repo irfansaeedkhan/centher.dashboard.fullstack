@@ -5,12 +5,7 @@ import useUser from "@/hooks/use.user";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { useGetRoundsInfo } from "@/web3/hooks/use.contracts.functions";
-import {
-  BuyCentherWrapper,
-  PresaleCard,
-  PurchaseCentherCard,
-  RoundStats,
-} from "./_components";
+import { BuyCentherWrapper, PurchaseCentherCard } from "./_components";
 
 const Launchpad: NextPageWithLayout = () => {
   const { user } = useUser();
@@ -18,18 +13,15 @@ const Launchpad: NextPageWithLayout = () => {
   const round_number = router.query.round
     ? Number(router.query.round?.toString())
     : undefined;
-  const { roundsInfo, refreshRoundsInfo } = useGetRoundsInfo();
+  const { roundsInfo } = useGetRoundsInfo();
 
   if (!round_number) return null;
 
   return roundsInfo[round_number - 1] ? (
     <div className="flex flex-col gap-5">
-      <PresaleCard roundInfo={roundsInfo[round_number - 1]} />
-      <RoundStats roundInfo={roundsInfo[round_number - 1]} />
       <PurchaseCentherCard
         currentUserAddress={user?._id}
         roundInfo={roundsInfo[round_number - 1]}
-        refreshRoundsInfo={refreshRoundsInfo}
       />
     </div>
   ) : (

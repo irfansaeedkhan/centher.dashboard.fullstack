@@ -13,6 +13,7 @@ import useGetUser from "@/hooks/use.get.user";
 import { copyText } from "@/utils/copy.text";
 import { formatAddress } from "@/utils/format.address";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
+import { getUserImageUrl } from "@/utils/user.helpers";
 import { AppRoutes } from "@/constants/app.routes";
 import { ShareBigIcon, LinkIcon, TwitterSvg } from "@/assets/svgs";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
@@ -86,7 +87,7 @@ export const NFTRightSideComponent = ({
     nftOwner = {
       _id: nftOwnerAddress,
       display_name: nftOwnerAddress,
-      profile_image: "https://static.centher.io/avatars/avatar-1.png",
+      profile_image: getUserImageUrl({ type: "default-avatar" }),
       membership: {
         last_status: "none",
         status: "none",
