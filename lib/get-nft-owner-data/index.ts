@@ -1,5 +1,6 @@
 import { NFTCardData } from "@/components/nft.card";
 import { AppError } from "@/utils/app-error";
+import { getUserImageUrl } from "@/utils/user.helpers";
 import { getUserByIdFromDB } from "../get-user-by-id";
 
 export const getNFTOwnerData = async (
@@ -27,7 +28,7 @@ export const getNFTOwnerData = async (
           endAt: 0,
         },
         is_registered: false,
-        profile_image: "https://static.centher.io/avatars/avatar-1.png",
+        profile_image: getUserImageUrl({ type: "default-avatar" }),
       };
     }
     throw new AppError(error, "Can not load NFT Owner Data", "getNFTOwnerData");
