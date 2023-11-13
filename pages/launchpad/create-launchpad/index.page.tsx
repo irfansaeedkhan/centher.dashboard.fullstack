@@ -53,7 +53,7 @@ export type FormState = {
 
 const CreateLaunchpad: NextPageWithLayout = () => {
   const [formState, setFormState] = useState<FormState>({
-    current_round: "verify_token",
+    current_round: "rounds_settings",
     verify_token: {
       token_address: "",
       sale_rounds: 1,
@@ -81,7 +81,7 @@ const CreateLaunchpad: NextPageWithLayout = () => {
 
   return (
     <div>
-      <div className="flex w-full items-center gap-5">
+      <div className="flex w-full gap-5">
         {roundCardData.map((item) => (
           <RoundCard
             key={item.round_no}

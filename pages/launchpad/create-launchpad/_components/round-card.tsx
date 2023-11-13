@@ -21,7 +21,7 @@ const RoundCard: React.FC<Props> = ({
   current_round,
 }) => {
   return (
-    <div className="h-[174px] w-[263px] rounded-xl bg-black-shade-9 p-5">
+    <div className="h-auto min-h-[174px] w-[263px] rounded-xl bg-black-shade-9 p-5">
       <div className="flex items-center gap-4">
         <span
           className={clsx(
