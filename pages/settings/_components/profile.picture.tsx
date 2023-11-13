@@ -8,6 +8,7 @@ import { getUserImageUploadUrl, updateUserImage } from "@/lib/user";
 import Button from "@/components/button";
 import { LoggedInUser, UserImage } from "@/models/user";
 import { AvatarIcon, UploadIcon } from "@/assets/svgs";
+import { getUserImageUrl } from "@/utils/user.helpers";
 import AvatarModal from "./avatar.modal";
 import SelfieModal from "./selfie.modal";
 import CropProfilePicture from "./crop-profile-picture";
@@ -36,13 +37,17 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
   };
   useOnClickOutside(ref, handleClickOutside);
 
-  const handleSelectAvatar = (avatar: UserImage) => {
-    setProfileImage(avatar.path);
-    updateUserImage({
-      type: "profile_image",
-      object_name: avatar.object_name,
-    });
-    toast.success("Profile image updated successfully");
+  const handleSelectAvatar = async (avatar: UserImage) => {
+    try {
+      setProfileImage(avatar.path);
+      await updateUserImage({
+        type: "profile_image",
+        object_name: avatar.object_name,
+      });
+      toast.success("Profile image updated successfully");
+    } catch (err) {
+      toast.error("Error updating profile image");
+    }
   };
 
   const showPreviewImage: React.ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -100,7 +105,10 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
       // Upload file to S3
       await axios.post(presignedPostData.url, formData);
 
-      profileImageData.path = presignedPostData.url + "/" + data.objectName;
+      profileImageData.path = getUserImageUrl({
+        type: "custom-image",
+        object_name: data.objectName,
+      });
 
       // Update profile image in DB
       updateUserImage({
@@ -196,7 +204,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
             <div className="text-gradient-hover flex cursor-pointer items-center gap-2 text-white">
               <AvatarIcon />
               <span
-                className="text-sm font-medium  "
+                className="text-sm font-medium"
                 onClick={() => setProfileModal("avatar")}
               >
                 Choose Avatar
@@ -258,6 +266,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
         }}
         onAvatarSelect={handleSelectAvatar}
       />
+
       {cropModal && (
         <CropProfilePicture
           user={user}

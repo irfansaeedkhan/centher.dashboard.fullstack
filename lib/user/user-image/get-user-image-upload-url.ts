@@ -13,15 +13,15 @@ interface PresignedPostData {
 }
 
 interface Fields {
-  key: string;
-  acl: string;
   "Content-Type": string;
-  bucket: string;
+  Policy: string;
   "X-Amz-Algorithm": string;
   "X-Amz-Credential": string;
   "X-Amz-Date": string;
-  Policy: string;
   "X-Amz-Signature": string;
+  acl: string;
+  bucket: string;
+  key: string;
 }
 
 export const getUserImageUploadUrl = async (
