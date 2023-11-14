@@ -34,7 +34,7 @@ const purify = (text: string = "", entities: PostEntities) => {
   for (let i = 0; i < hashtags?.length; i++) {
     text = text?.replaceAll(
       texts.substring(hashtags[i].indices[0], hashtags[i].indices[1]),
-      '<span class="text-indigo-400">' +
+      '<span class="textGradient">' +
         texts.substring(hashtags[i].indices[0], hashtags[i].indices[1]) +
         " </span>"
     );
@@ -42,7 +42,7 @@ const purify = (text: string = "", entities: PostEntities) => {
   for (let i = 0; i < mentions?.length; i++) {
     text = text?.replaceAll(
       texts.substring(mentions[i].indices[0], mentions[i].indices[1]),
-      `<span class="text-indigo-400"><a href='/profile/${mentions[i].user_id}
+      `<span class="textGradient"><a href='/profile/${mentions[i].user_id}
       '>${texts.substring(
         mentions[i].indices[0],
         mentions[i].indices[1]

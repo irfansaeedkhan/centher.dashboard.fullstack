@@ -29,6 +29,7 @@ import cn from "@/utils/cn";
 import mentionsStyles from "./mentions-styles.module.css";
 import PostPreview from "../post.preview";
 import { FilesPreview } from "../files.preview";
+import { GrEmoji } from "react-icons/gr";
 
 export const PostEditor: React.FC = () => {
   const { user } = useUser();
@@ -229,7 +230,19 @@ export const PostEditor: React.FC = () => {
             </div>
             <div
               className={cn(
-                "absolute bottom-16 left-[154px] z-50 fsm:bottom-[14px] fsm:left-[335px]"
+                "absolute bottom-[60px] left-[154px] z-50 flex h-10 w-[62px] items-center justify-center rounded-full bg-white fsm:bottom-[12px] fsm:left-[335px]"
+                // modalType === "edit" && "left-6"
+              )}
+              onClick={() => {
+                ref.current!.focus();
+              }}
+            >
+              <GrEmoji className="h-6 w-6" />
+            </div>
+
+            <div
+              className={cn(
+                "custom-emoji absolute bottom-[60px] left-[154px] z-[60] fsm:bottom-[14px] fsm:left-[335px]"
                 // modalType === "edit" && "left-6"
               )}
               onClick={() => {
@@ -237,6 +250,7 @@ export const PostEditor: React.FC = () => {
               }}
             >
               <EmojiSuggestions />
+
               <EmojiSelect />
             </div>
           </div>
