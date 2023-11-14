@@ -114,7 +114,6 @@ export const RegisterForm: React.FC = () => {
       );
       setFeeModal((prev) => ({ ...prev, fee: registrationFee }));
     } catch (err: any) {
-      console.log(err);
       toast.error(err.message_description ?? "Could not get registration fee!");
       setFeeModal((prev) => ({ ...prev, isOpen: false }));
     }
