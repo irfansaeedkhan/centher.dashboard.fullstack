@@ -3,6 +3,7 @@ import clsx from "clsx";
 import toast from "react-hot-toast";
 import { FormState } from "../../index.page";
 import DateFields from "./date-fields";
+import StartDate from "./start-date";
 
 interface Props {
   formState: FormState;
@@ -160,7 +161,7 @@ const RoundsSettingsForm: React.FC<Props> = ({ formState, setFormState }) => {
               <span className={labelSpan}>*</span>
             </label>
             <div className={gradientBorderInputParent}>
-              <input
+              {/* <input
                 type="date"
                 id="start_time"
                 name="start_time"
@@ -168,7 +169,8 @@ const RoundsSettingsForm: React.FC<Props> = ({ formState, setFormState }) => {
                 className={gradientBorderInput}
                 value={currentComponent.start_time}
                 onChange={handleChangeEvent}
-              />
+              /> */}
+              <StartDate />
             </div>
           </div>
           <DateFields

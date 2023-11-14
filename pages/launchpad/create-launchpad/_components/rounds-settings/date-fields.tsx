@@ -17,7 +17,7 @@ const DateFields: React.FC<Props> = ({
 }) => {
   return (
     <div className="relative">
-      <IndexMain />
+      {/* <IndexMain /> */}
       <div className={gradientBorderInputMain}>
         <label htmlFor="end_time" className={label}>
           End Time

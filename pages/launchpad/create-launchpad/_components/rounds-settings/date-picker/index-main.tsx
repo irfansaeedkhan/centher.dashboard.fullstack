@@ -25,7 +25,7 @@ const IndexMain = () => {
   // const { time } = useContextTime();
   // const { timeButton } = useContextTimePropGetters();
   const {
-    data: { calendars, weekDays, formattedDates, months, years },
+    data: { calendars, weekDays, formattedDates, months, years, time },
     propGetters: {
       dayButton,
       addOffset,
@@ -34,6 +34,7 @@ const IndexMain = () => {
       nextYearsButton,
       previousYearsButton,
       yearButton,
+      timeButton,
     },
   } = useDatePicker({
     selectedDates,
@@ -50,7 +51,7 @@ const IndexMain = () => {
     evt.stopPropagation();
 
     // In case you need any additional action with date
-    console.log(date);
+    console.log(date, time);
   };
 
   return (
