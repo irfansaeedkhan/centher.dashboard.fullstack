@@ -33,7 +33,8 @@ const StakingDetails: NextPageWithLayout = () => {
   const [connectWalletModal, setConnectWalletModal] = useState(false);
 
   const [expireTime, setExpireTime] = useState(0);
-  const { getSigner, disconnectWallet } = useWallet();
+  const { getSigner, disconnectWallet, connectWallet, connectedAddress } =
+    useWallet();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -194,6 +195,9 @@ const StakingDetails: NextPageWithLayout = () => {
         <ConnectWalletModal
           setConnectWalletModal={setConnectWalletModal}
           loggedInUser={user}
+          connectWallet={connectWallet}
+          connectedAddress={connectedAddress}
+          disconnectWallet={disconnectWallet}
         />
       )}
       {!connectWalletModal && (isLoading || !userStaked) ? <PreLoader /> : ""}
