@@ -214,7 +214,10 @@ const ProfileHeader: React.FC<Props> = ({
       // Upload file to S3
       await axios.post(presignedPostData.url, formData);
 
-      coverImageData.path = presignedPostData.url + "/" + data.objectName;
+      coverImageData.path = getUserImageUrl({
+        type: "custom-image",
+        object_name: data.objectName,
+      });
 
       // Update profile image in DB
       updateUserImage({
@@ -481,10 +484,7 @@ const ProfileHeader: React.FC<Props> = ({
                     )}
                   >
                     <Image
-                      src={getUserImageUrl(
-                        user.organization.org_id,
-                        "profile-image"
-                      )}
+                      src={user.organization.profile_image}
                       alt={user.organization.org_id}
                       width={22}
                       height={22}

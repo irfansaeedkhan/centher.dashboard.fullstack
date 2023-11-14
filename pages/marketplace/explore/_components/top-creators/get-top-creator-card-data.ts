@@ -1,6 +1,7 @@
 import { TopCreator } from "@/models/top-creator";
 import { getUserByIdFromDB } from "@/lib/get-user-by-id";
 import { AppError } from "@/utils/app-error";
+import { getUserImageUrl } from "@/utils/user.helpers";
 import { TopCreatorCardData } from "./creator-card";
 
 export const getTopCreatorCardData = async (
@@ -22,7 +23,7 @@ export const getTopCreatorCardData = async (
       return {
         _id: topCreator.publicKey,
         display_name: topCreator.publicKey,
-        profile_image: "https://static.centher.io/avatars/avatar-1.png",
+        profile_image: getUserImageUrl({ type: "default-avatar" }),
         membership: {
           last_status: "none",
           status: "none",

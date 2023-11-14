@@ -45,7 +45,7 @@ const AvatarModal: React.FC<AvatarModalProps> = ({
             >
               <Image
                 src={avatar.path}
-                alt={avatar.name}
+                alt={avatar.path}
                 width={72}
                 height={72}
                 onClick={() => {
