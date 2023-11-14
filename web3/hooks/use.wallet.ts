@@ -1,10 +1,4 @@
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { useWeb3React } from "@web3-react/core";
 import {
@@ -27,24 +21,24 @@ export const useWallet = () => {
   const { account, activate, library, deactivate } = useWeb3React();
   const { address, connect, disconnect, sign, signer, send, showWallet } =
     useWalletService();
-  const [connectedAddress, setConnecteedAddress] = useState<
+  const [connectedAddress, setConnectedAddress] = useState<
     string | null | undefined
   >(null);
 
-  const updateConnectedAccount = async () => {
+  const updateConnectedAccount = useCallback(async () => {
     if (account || address) {
       const connected_wallet = getWalletType();
       if (connected_wallet) {
         if (connected_wallet == WalletEnum.METAMASK) {
           if (account) {
-            setConnecteedAddress(account);
+            setConnectedAddress(account);
             return account;
           } else {
             return undefined;
           }
         } else if (connected_wallet == WalletEnum.WALLET_SERVICE) {
           if (address) {
-            setConnecteedAddress(address);
+            setConnectedAddress(address);
             return address;
           } else {
             return undefined;
@@ -52,15 +46,14 @@ export const useWallet = () => {
         }
       }
     } else {
-      setConnecteedAddress(undefined);
+      setConnectedAddress(undefined);
       return undefined;
     }
-  };
+  }, [account, address]);
 
   useEffect(() => {
     updateConnectedAccount();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [account, address]);
+  }, [account, address, updateConnectedAccount]);
 
   const getSigner = useCallback((): JsonRpcSigner | null => {
     const connected_wallet = getWalletType();
@@ -76,7 +69,7 @@ export const useWallet = () => {
       }
     }
     return null;
-  }, [account, library, signer, address]);
+  }, [account, library, signer]);
 
   const setWalletType = (wallet: WalletEnum) => {
     localStorage.setItem(CONNECTED_WALLET_KEY, wallet);
@@ -154,7 +147,7 @@ export const useWallet = () => {
     } else {
       disconnect();
     }
-    setConnecteedAddress(undefined);
+    setConnectedAddress(undefined);
   };
 
   const openWallet = async () => {

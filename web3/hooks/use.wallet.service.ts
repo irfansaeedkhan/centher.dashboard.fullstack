@@ -6,8 +6,9 @@ import {
   TransactionResponse,
 } from "@ethersproject/providers";
 import { ethers } from "ethers";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { logger } from "../blockchain/helpers/alert.helper";
+import { customLog } from "@/utils/custom.log";
 
 type WalletMessage = {
   target: "wallet-service";
@@ -40,11 +41,13 @@ const wallet_url = WalletServiceBaseURL;
 
 export const useWalletService = () => {
   const PUBLICK_KEY_KEY = "publick_key";
-  const CALBACK_KEY = "callback";
+  const CALLBACK_KEY = "callback";
   const RPC_KEY = "rpc";
   const api_key = process.env.NEXT_PUBLIC_WALLET_SERVICE_API_KEY;
 
-  let globalPromise: Promise<any>;
+  let globalPromise = useRef<Promise<any> | null>(null);
+  // const videoRef = useRef(null);
+
   let globalPromiseResolve: (value: any) => void;
   let globalPromiseReject: (value: any) => void;
 
@@ -64,24 +67,43 @@ export const useWalletService = () => {
     }
   }
 
+  const sendTransaction = useCallback(
+    async (
+      data: ethers.utils.Deferrable<ethers.providers.TransactionRequest>,
+      description?: string
+    ): Promise<ethers.providers.TransactionResponse> => {
+      globalPromise.current = new Promise((resolve, reject) => {
+        const message = {
+          target: "wallet-service",
+          message: data,
+          description,
+        };
+        openWallet(`${wallet_url}/app/send`, message);
+        globalPromiseResolve = resolve;
+        globalPromiseReject = reject;
+      });
+      return globalPromise.current;
+    },
+    []
+  );
+
   useEffect(() => {
-    initSigner();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address]);
+    function initSigner() {
+      if (address) {
+        const rpc = localStorage.getItem(RPC_KEY);
+        if (rpc) {
+          const provider = new ethers.providers.JsonRpcProvider(rpc);
+          setProvider(provider);
+          const signer = provider.getSigner(address);
+          signer.sendTransaction = sendTransaction;
 
-  function initSigner() {
-    if (address) {
-      const rpc = localStorage.getItem(RPC_KEY);
-      if (rpc) {
-        const provider = new ethers.providers.JsonRpcProvider(rpc);
-        setProvider(provider);
-        const signer = provider.getSigner(address);
-        signer.sendTransaction = sendTransaction;
-
-        setSigner(signer);
+          setSigner(signer);
+        }
       }
     }
-  }
+
+    initSigner();
+  }, [address, sendTransaction]);
 
   function getProvider(): JsonRpcProvider {
     const rpc = localStorage.getItem(RPC_KEY);
@@ -95,18 +117,18 @@ export const useWalletService = () => {
       setProvider(null);
       localStorage.removeItem(PUBLICK_KEY_KEY);
       localStorage.removeItem(RPC_KEY);
-      localStorage.removeItem(CALBACK_KEY);
+      localStorage.removeItem(CALLBACK_KEY);
     } catch (error) {
       logger(error, "disconnect wallet");
     }
   }
   async function connect(): Promise<any> {
-    globalPromise = new Promise((resolve, reject) => {
+    globalPromise.current = new Promise((resolve, reject) => {
       openWallet(`${wallet_url}/app?apikey=${api_key}`);
       globalPromiseResolve = resolve;
       globalPromiseReject = reject;
     });
-    return globalPromise;
+    return globalPromise.current;
   }
 
   function openWallet(url: string, data?: any): Window | null {
@@ -167,7 +189,7 @@ export const useWalletService = () => {
           const loginMessage = data.data as SuccessLoginMessage;
           setAddress(null);
           localStorage.setItem(PUBLICK_KEY_KEY, loginMessage.publick_key);
-          localStorage.setItem(CALBACK_KEY, loginMessage.callback);
+          localStorage.setItem(CALLBACK_KEY, loginMessage.callback);
           if (loginMessage.rpc) {
             localStorage.setItem(RPC_KEY, loginMessage.rpc);
           }
@@ -204,7 +226,7 @@ export const useWalletService = () => {
           break;
       }
     } catch (error) {
-      console.log(error);
+      customLog(["development"], error);
     }
   }
 
@@ -224,49 +246,49 @@ export const useWalletService = () => {
   }
 
   async function sign(data: string): Promise<string> {
-    globalPromise = new Promise((resolve, reject) => {
+    globalPromise.current = new Promise((resolve, reject) => {
       const message = { target: "wallet-service", message: data };
       openWallet(`${wallet_url}/app/sign`, message);
       globalPromiseResolve = resolve;
       globalPromiseReject = reject;
     });
-    return globalPromise;
+    return globalPromise.current;
   }
 
-  async function sendTransaction(
-    data: ethers.utils.Deferrable<ethers.providers.TransactionRequest>,
-    description?: string
-  ): Promise<ethers.providers.TransactionResponse> {
-    globalPromise = new Promise((resolve, reject) => {
-      const message = { target: "wallet-service", message: data, description };
-      openWallet(`${wallet_url}/app/send`, message);
-      globalPromiseResolve = resolve;
-      globalPromiseReject = reject;
-    });
-    return globalPromise;
-  }
+  // async function sendTransaction(
+  //   data: ethers.utils.Deferrable<ethers.providers.TransactionRequest>,
+  //   description?: string
+  // ): Promise<ethers.providers.TransactionResponse> {
+  //   globalPromise = new Promise((resolve, reject) => {
+  //     const message = { target: "wallet-service", message: data, description };
+  //     openWallet(`${wallet_url}/app/send`, message);
+  //     globalPromiseResolve = resolve;
+  //     globalPromiseReject = reject;
+  //   });
+  //   return globalPromise;
+  // }
 
   async function send(
     data: ethers.PopulatedTransaction,
     description?: string
   ): Promise<TransactionReceipt> {
-    globalPromise = new Promise((resolve, reject) => {
+    globalPromise.current = new Promise((resolve, reject) => {
       const message = { target: "wallet-service", message: data, description };
       openWallet(`${wallet_url}/app/send`, message);
       globalPromiseResolve = resolve;
       globalPromiseReject = reject;
     });
-    return globalPromise;
+    return globalPromise.current;
   }
 
   async function showWallet(): Promise<TransactionReceipt> {
-    globalPromise = new Promise((resolve, reject) => {
+    globalPromise.current = new Promise((resolve, reject) => {
       const message = { target: "wallet-service" };
       openWallet(`${wallet_url}/app/account`, message);
       globalPromiseResolve = resolve;
       globalPromiseReject = reject;
     });
-    return globalPromise;
+    return globalPromise.current;
   }
 
   return {
