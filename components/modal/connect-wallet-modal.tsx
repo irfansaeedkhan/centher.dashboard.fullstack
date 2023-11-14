@@ -27,7 +27,7 @@ const ConnectWalletModal: React.FC<Props> = ({
   connectWallet,
 }) => {
   useEffect(() => {
-    if (!notloginCheck) {
+    if (connectedAddress && !notloginCheck) {
       if (loggedInUser?._id.toLowerCase() !== connectedAddress?.toLowerCase()) {
         toast.error("Please connect to correct account");
         disconnectWallet();

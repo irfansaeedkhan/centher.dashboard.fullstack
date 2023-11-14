@@ -42,8 +42,13 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
   const { user: loggedInUser } = useUser();
   const { unreadNotifications, unreadConversations } = useCentherLive();
   const [connectWalletModal, setConnectWalletModal] = useState(false);
-  const { connectedAddress, disconnectWallet, getWalletType, openWallet } =
-    useWallet();
+  const {
+    connectedAddress,
+    disconnectWallet,
+    getWalletType,
+    openWallet,
+    connectWallet,
+  } = useWallet();
   const wallet_type = getWalletType();
 
   const handleClickOutside = (e: MouseEvent) => {
@@ -145,19 +150,6 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
       ) : (
         <></>
       )}
-      <div className="border-b border-gray-shade-border-color p-4 ">
-        {wallet_type == WalletEnum.WALLET_SERVICE ? (
-          <Button
-            title="Open Wallet"
-            onClick={() => openWallet()}
-            variant="primary"
-            className="text-sm"
-            borderRounded="10px"
-          />
-        ) : (
-          <></>
-        )}
-      </div>
       <div className="border-b border-gray-shade-border-color p-4 ">
         <Button
           title={
@@ -349,6 +341,9 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
           setConnectWalletModal={setConnectWalletModal}
           loggedInUser={loggedInUser}
           notloginCheck={true}
+          connectWallet={connectWallet}
+          connectedAddress={connectedAddress}
+          disconnectWallet={disconnectWallet}
         />
       )}
     </div>
