@@ -211,7 +211,8 @@ export const PurchaseCentherCard: React.FC<Props> = ({
       {connectWalletModal && (
         <ConnectWalletModal
           connectWallet={connectWallet}
-          deactivate={disconnectWallet}
+          disconnectWallet={disconnectWallet}
+          connectedAddress={connectedAddress}
           loggedInUser={loggedInUser}
           setConnectWalletModal={setConnectWalletModal}
         />
