@@ -22,7 +22,6 @@ export enum WalletEnum {
 }
 
 const CONNECTED_WALLET_KEY = "connected_wallet";
-// const IS_WALLET_CONNECTED_KEY = "is_wallet_connected";
 
 export const useWallet = () => {
   const { account, activate, library, deactivate } = useWeb3React();
@@ -177,11 +176,3 @@ export const useWallet = () => {
     openWallet,
   };
 };
-
-// // eslint-disable-next-line react-hooks/rules-of-hooks
-// export const UserFeedbackContext = createContext(useWalletHook());
-
-// // a custom hook to access our context
-// export function useWallet() {
-//   return useContext(UserFeedbackContext);
-// }

@@ -37,7 +37,8 @@ enum ModalType {
 }
 
 const StakingReferrals: NextPageWithLayout = () => {
-  const { getSigner } = useWallet();
+  const { getSigner, disconnectWallet, connectWallet, connectedAddress } =
+    useWallet();
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
     title: "",
@@ -310,6 +311,9 @@ const StakingReferrals: NextPageWithLayout = () => {
         <ConnectWalletModal
           setConnectWalletModal={setConnectWalletModal}
           loggedInUser={user}
+          connectWallet={connectWallet}
+          connectedAddress={connectedAddress}
+          disconnectWallet={disconnectWallet}
         />
       )}
 

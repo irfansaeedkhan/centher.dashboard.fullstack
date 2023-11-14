@@ -36,7 +36,8 @@ enum ModalType {
 }
 
 const ClaimRewards: NextPageWithLayout = () => {
-  const { getSigner, disconnectWallet } = useWallet();
+  const { getSigner, disconnectWallet, connectWallet, connectedAddress } =
+    useWallet();
   const [stakingPool, setStakingPool] = useState<ListCardDataOBj | null>(null);
   const [coinsDetails, setCoinsDetails] = useState<
     Array<CoinDetails | undefined>
@@ -361,6 +362,9 @@ const ClaimRewards: NextPageWithLayout = () => {
         <ConnectWalletModal
           setConnectWalletModal={setConnectWalletModal}
           loggedInUser={user}
+          connectWallet={connectWallet}
+          connectedAddress={connectedAddress}
+          disconnectWallet={disconnectWallet}
         />
       )}
       {!connectWalletModal && (isLoading || !userStaked) ? <PreLoader /> : ""}

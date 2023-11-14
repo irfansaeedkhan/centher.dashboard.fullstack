@@ -11,7 +11,6 @@ import { getLibrary } from "@/web3";
 import ScriptTags from "@/components/script.tags";
 import { CookiesConstentModal } from "@/components/modal/cookies-consent.modal";
 import "@/styles/globals.css";
-// import { UserFeedbackContext, useWalletHook } from "@/web3/hooks/use.wallet";
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: React.ReactElement) => React.ReactNode;
@@ -25,7 +24,6 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   // Create a socket.io connection
   // useCreateSocketIOConnection();
   const getLayout = Component.getLayout || ((page) => page);
-  // const wallet = useWalletHook;
 
   return (
     <>

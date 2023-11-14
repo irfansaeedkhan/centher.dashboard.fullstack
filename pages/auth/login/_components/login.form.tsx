@@ -21,13 +21,6 @@ export const LoginForm: React.FC = () => {
   const { mutate } = useSWRConfig();
   const router = useRouter();
 
-  // const {
-  //   signMessage,
-  //   disconnectWallet,
-  //   getWalletType,
-  //   openWallet,
-  //   connectedAddress,
-  // } = useWallet();
   const {
     signMessage,
     disconnectWallet,
