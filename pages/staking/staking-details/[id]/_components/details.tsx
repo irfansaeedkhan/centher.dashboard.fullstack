@@ -155,7 +155,9 @@ const Details: React.FC<{ data: OptionalType<ListCardDataOBj> }> = ({
                 rel="noreferrer noopener"
                 className="centher-social-button flex select-none items-center gap-2 rounded-[11px] bg-elevation-1 px-[10px] py-[6px] text-xs font-medium text-gray-shade-14"
               >
-                <CentherIcon />
+                <span className="h-5 w-5 flex-shrink-0">
+                  <CentherIcon />
+                </span>
                 <span>Centher</span>
               </a>
             ) : null}

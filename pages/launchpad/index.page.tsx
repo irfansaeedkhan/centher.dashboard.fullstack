@@ -14,7 +14,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
     redirect: {
       destination: `/launchpad/${AddressFactory.getContractAddress(
         SmartContractName.DXC
-      )}/1`,
+      )}/3`,
       permanent: false,
     },
   };

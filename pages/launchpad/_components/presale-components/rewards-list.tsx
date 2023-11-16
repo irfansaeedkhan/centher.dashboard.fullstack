@@ -1,7 +1,6 @@
 import React from "react";
-
 import { BlockchainConfig } from "@/web3/blockchain/config";
-import { RewardBlockchain } from "../../pre-booking";
+import { RewardBlockchain } from "../../[token_address]/[round]/_components";
 
 interface Props {
   rewards: RewardBlockchain[];

@@ -63,11 +63,7 @@ export const sidebarData: SidebarData = {
         )}/3`,
         icon: Launchpad,
         available_for: "all",
-        activeList: [
-          AppRoutes.launchpad,
-          AppRoutes.launchpad_pre_booking.index,
-          AppRoutes.launchpad_pre_booking.booking,
-        ],
+        activeList: [AppRoutes.launchpad],
       },
     ],
   },
