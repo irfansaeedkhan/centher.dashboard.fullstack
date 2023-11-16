@@ -576,6 +576,46 @@ export class BlockchainRead {
     return data.presalePurchaseWithNtrHistories;
   }
 
+  static async getAllPurchasesByUser(
+    first: number,
+    skip: number,
+    publicKey: string
+  ): Promise<any[]> {
+    const variables = {
+      first,
+      skip,
+      publicKey,
+    };
+
+    const { data, error } = await ApolloProvider.query(
+      QueryNames.PURCHASE_BY_USER,
+      variables
+    );
+
+    if (error) {
+      throw error;
+    }
+
+    let filterData = [];
+
+    if (data.presalePurchaseWithBusdHistories.length > 0) {
+      for (let i = 0; i < data.presalePurchaseWithBusdHistories.length; i++) {
+        filterData.push(data.presalePurchaseWithBusdHistories[i]);
+      }
+    }
+
+    if (data.presalePurchaseWithNtrHistories.length) {
+      for (let i = 0; i < data.presalePurchaseWithNtrHistories.length; i++) {
+        filterData.push(data.presalePurchaseWithNtrHistories[i]);
+      }
+    }
+
+    return [
+      data.presalePurchaseWithBusdHistories,
+      data.presalePurchaseWithNtrHistories,
+    ];
+  }
+
   static async purchaseInBUSDByUser(
     first: number,
     skip: number,

@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from "react";
-import Image from "next/image";
 import { formatEther } from "ethers/lib/utils";
 import { DXCIconBG, USDTIcon } from "@/assets/svgs";
 import useUser from "@/hooks/use.user";
@@ -12,30 +11,35 @@ import { RoundInfo } from "@/web3/constants/types";
 import { useWallet } from "@/web3/hooks/use.wallet";
 import Button from "@/components/button";
 import ConnectWalletModal from "@/components/modal/connect-wallet-modal";
-import DetailsProject from "@/pages/launchpad/pre-booking/_components/details-project";
-import BookingMain from "@/pages/launchpad/pre-booking/_components/booking-main";
+import DetailsProject from "@/pages/launchpad/[token_address]/[round]/_components/details-project";
+import BookingMain from "@/pages/launchpad/[token_address]/[round]/_components/booking-main";
 import { SelectedTokenA, SelectedTokenB } from "./types";
-import { TimelinePeriod } from "./timeline-period";
+
 interface Props {
   roundInfo: RoundInfo;
   currentUserAddress: string | undefined;
+  round_number: number;
 }
 
 export const PurchaseCentherCard: React.FC<Props> = ({
   roundInfo,
   currentUserAddress,
+  round_number,
 }) => {
+  const [roundNo, setRoundNo] = useState<number>(-1);
   const { user: loggedInUser } = useUser();
   const { connectedAddress, getSigner, disconnectWallet, connectWallet } =
     useWallet();
   const [connectWalletModal, setConnectWalletModal] = useState(false);
-  const [currentTab, setCurrentTab] = useState<
-    "rewards" | "details" | "booking"
-  >("rewards");
-  const { contributionInfo, refreshContributionInfo } = useGetContributionInfo(
-    connectedAddress,
-    roundInfo
+  const [currentTab, setCurrentTab] = useState<"details" | "booking">(
+    "booking"
   );
+  const { contributionInfo, refreshContributionInfo, loadingState } =
+    useGetContributionInfo(
+      connectedAddress,
+      roundInfo,
+      roundNo === -1 ? round_number : roundNo
+    );
   const [selectedTokenA, setSelectedTokenA] = useState<SelectedTokenA>({
     tokenName: "USDT",
     tokenIcon: (
@@ -63,20 +67,7 @@ export const PurchaseCentherCard: React.FC<Props> = ({
   });
 
   useEffect(() => {
-    if (
-      contributionInfo &&
-      (contributionInfo.contributedBusdAmount > 0 ||
-        contributionInfo.contributedNtrAmount > 0)
-    ) {
-      setCurrentTab("rewards");
-    } else {
-      setCurrentTab("details");
-    }
-  }, [contributionInfo]);
-
-  useEffect(() => {
-    if (!connectedAddress) setConnectWalletModal(true);
-    if (!getSigner() || !roundInfo) return;
+    if (!connectedAddress || !getSigner() || !roundInfo) return;
     setSelectedTokenA((prev) => ({
       ...prev,
       tokenName: "USDT",
@@ -150,63 +141,33 @@ export const PurchaseCentherCard: React.FC<Props> = ({
   return (
     <div className="relative mt-4">
       <div className="my-4 flex items-center gap-2">
-        {contributionInfo &&
-          (contributionInfo.contributedBusdAmount > 0 ||
-            contributionInfo.contributedNtrAmount > 0) && (
-            <Button
-              title="Claim Rewards"
-              variant={currentTab === "rewards" ? "primary" : "secondary"}
-              className="rounded-[10px]"
-              onClick={() => setCurrentTab("rewards")}
-            />
-          )}
-        <Button
-          title="Project Details"
-          variant={currentTab === "details" ? "primary" : "secondary"}
-          className="rounded-[10px]"
-          onClick={() => setCurrentTab("details")}
-        />
         <Button
           title="Booking"
           variant={currentTab === "booking" ? "primary" : "secondary"}
           className="rounded-[10px]"
           onClick={() => setCurrentTab("booking")}
         />
+        <Button
+          title="Project Details"
+          variant={currentTab === "details" ? "primary" : "secondary"}
+          className="rounded-[10px]"
+          onClick={() => setCurrentTab("details")}
+        />
       </div>
-      {currentTab === "rewards" ? (
-        contributionInfo &&
-        (contributionInfo.contributedBusdAmount > 0 ||
-          contributionInfo.contributedNtrAmount > 0) ? (
-          <TimelinePeriod
-            isBUSD={contributionInfo.contributedBusdAmount > 0}
-            roundInfo={roundInfo}
-            signer={getSigner()!}
-            contributionInfo={contributionInfo}
-            refetchContributionInfo={refreshContributionInfo}
-          />
-        ) : !contributionInfo && getSigner() ? (
-          <div className="mt-5 flex w-full items-center justify-center">
-            <Image
-              src="/images/preloader.png"
-              alt="Preloader"
-              width={64}
-              height={64}
-              className="h-16 w-16 flex-shrink-0 object-cover"
-            />
-          </div>
-        ) : (
-          !connectedAddress && (
-            <div className="mt-5 flex w-full items-center justify-center">
-              <p className="text-xl font-semibold text-white">
-                Please Connect your Wallet
-              </p>
-            </div>
-          )
-        )
-      ) : currentTab === "details" ? (
+      {currentTab === "details" ? (
         <DetailsProject />
       ) : currentTab === "booking" ? (
-        <BookingMain />
+        <BookingMain
+          roundNo={roundNo}
+          setRoundNo={setRoundNo}
+          roundInfo={roundInfo}
+          loadingState={loadingState}
+          signer={getSigner()}
+          contributionInfo={contributionInfo}
+          refreshContributionInfo={refreshContributionInfo}
+          setConnectWalletModal={setConnectWalletModal}
+          connectedAddress={connectedAddress}
+        />
       ) : null}
       {connectWalletModal && (
         <ConnectWalletModal

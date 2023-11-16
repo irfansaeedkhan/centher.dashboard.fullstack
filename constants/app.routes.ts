@@ -71,11 +71,6 @@ export const AppRoutes = {
     create_launchpad: "/launchpad/create-launchpad",
   },
 
-  launchpad_pre_booking: {
-    index: "/launchpad/pre-booking",
-    booking: "/launchpad/pre-booking/bookings",
-  },
-
   staking: {
     index: "/staking",
     staking_details: {
