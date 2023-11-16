@@ -516,7 +516,7 @@ export const referrerClaimPresaleQuery = `
 
 export const purchaseWithBusdHistory = `
   query MyQuery($first: Int!, $skip: Int!) {
-    presalePurchaseWithBusdHistories(skip: $skip, first: $first) {
+    presalePurchaseWithBusdHistories(skip: $skip, first: $first, orderBy: createdAt, orderDirection: desc) {
       roundIndex
       publicKey
       createdAt
@@ -529,7 +529,7 @@ export const purchaseWithBusdHistory = `
 
 export const purchaseWithNtrHistory = `
   query MyQuery($first: Int!, $skip: Int!) {
-    presalePurchaseWithNtrHistories(first: $first, skip: $skip) {
+    presalePurchaseWithNtrHistories(first: $first, skip: $skip, orderBy: createdAt, orderDirection: desc) {
       roundIndex
       publicKey
       ntrAmountForOwner
@@ -538,6 +538,27 @@ export const purchaseWithNtrHistory = `
       txId
     }
   }
+`;
+
+export const allPurchasesHistoryByUser = `
+query MyQuery($first: Int!, $skip: Int!, $publicKey: Bytes = "") {
+  presalePurchaseWithBusdHistories(skip: $skip, first: $first, where: {publicKey: $publicKey}) {
+    roundIndex
+    publicKey
+    createdAt
+    busdAmountForOwner
+    busdAmount
+    txId
+  }
+  presalePurchaseWithNtrHistories(first: $first, skip: $skip, where: {publicKey: $publicKey}) {
+    roundIndex
+    publicKey
+    ntrAmountForOwner
+    ntrAmount
+    createdAt
+    txId
+  }
+}
 `;
 
 export const purchaseWithBusdHistoryByUser = `

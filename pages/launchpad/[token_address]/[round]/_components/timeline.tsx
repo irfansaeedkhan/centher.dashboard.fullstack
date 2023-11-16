@@ -85,7 +85,7 @@ export const Timeline: React.FC<TimelineProps> = ({
               claimable > 0 ? "text-white" : "text-[#45474D]"
             )}
           >
-            {claimable > 0 ? formatNum2DispNum(claimable) : "--"}
+            {claimable > 0 ? formatNum2DispNum(claimable) : 0}
           </h4>
         </div>
         <div className="min-w-[90px]">
@@ -96,12 +96,12 @@ export const Timeline: React.FC<TimelineProps> = ({
               claimed > 0 ? "text-white" : "text-[#45474D]"
             )}
           >
-            {claimed > 0 ? formatNum2DispNum(claimed) : "--"}
+            {claimed > 0 ? formatNum2DispNum(claimed) : 0}
           </h4>
         </div>
         <div className="min-w-[90px]">
           <p className="text-sm text-gray-shade-7">Action</p>
-          <div
+          <button
             className={clsx(
               "text-sm font-semibold",
               claimable
@@ -117,9 +117,10 @@ export const Timeline: React.FC<TimelineProps> = ({
                   : openClaimModal("NTR")
                 : null;
             }}
+            disabled={claimable === 0 || claimed > 0}
           >
-            {claimable || claimed ? "Claim now" : "--"}
-          </div>
+            Claim now
+          </button>
         </div>
       </div>
     </div>

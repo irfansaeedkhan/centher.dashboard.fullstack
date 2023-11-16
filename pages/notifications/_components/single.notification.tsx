@@ -227,12 +227,12 @@ const getNotificationUrl = (
       };
     case "presale_booking":
       return {
-        pathname: AppRoutes.launchpad_pre_booking.booking,
+        pathname: AppRoutes.launchpad,
         query: { tab: "my-bookings" },
       };
     case "presale_booking_referral":
       return {
-        pathname: AppRoutes.launchpad_pre_booking.booking,
+        pathname: AppRoutes.launchpad,
         query: { tab: "my-rewards" },
       };
     case "mention_in_post":
@@ -264,12 +264,12 @@ const getNotificationImageUrl = (
       };
     case "presale_booking":
       return {
-        pathname: AppRoutes.launchpad_pre_booking.booking,
+        pathname: AppRoutes.launchpad,
         query: { tab: "my-bookings" },
       };
     case "presale_booking_referral":
       return {
-        pathname: AppRoutes.launchpad_pre_booking.booking,
+        pathname: AppRoutes.launchpad,
         query: { tab: "my-rewards" },
       };
     default:

@@ -127,10 +127,13 @@ export const getRoundStatus = (
 
 export const useGetContributionInfo = (
   account: string | undefined | null,
-  roundInfo: RoundInfo
+  roundInfo: RoundInfo,
+  round_number: number
 ) => {
+  const [loadingState, setLoadingState] = useState(false);
   const [contributionInfo, setPurchasedInfo] =
     useState<ContributionInfo | null>(null);
+
   const presaleContract = useMemo(
     () => SmartContractProvider.getContract(SmartContractName.PRESALE),
     []
@@ -138,9 +141,10 @@ export const useGetContributionInfo = (
 
   const fetchContributionInfo = useCallback(
     async (account: string) => {
+      setLoadingState(true);
       const contributionInfoRes = await presaleContract.getContribute(
         account,
-        roundInfo?.round
+        round_number
       );
 
       const claimedTokenAmountForBusd = Number(
@@ -225,8 +229,9 @@ export const useGetContributionInfo = (
       };
 
       setPurchasedInfo(_contributionInfo);
+      setLoadingState(false);
     },
-    [presaleContract, roundInfo]
+    [presaleContract, roundInfo, round_number]
   );
 
   useEffect(() => {
@@ -237,7 +242,7 @@ export const useGetContributionInfo = (
     if (account) fetchContributionInfo(account);
   }, [account, fetchContributionInfo]);
 
-  return { contributionInfo, refreshContributionInfo };
+  return { contributionInfo, refreshContributionInfo, loadingState };
 };
 
 const isClaimable = (purchaseTime: BigNumber, lockMonths: number) => {
