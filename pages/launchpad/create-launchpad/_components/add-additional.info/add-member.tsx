@@ -2,14 +2,9 @@ import React, { useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { TeamMemberIcon } from "@/assets/svgs";
 import Button from "@/components/button";
-import { FormState } from "../../index.page";
+import { FormStateProps } from "../shared-types";
 
-interface Props {
-  formState: FormState;
-  setFormState: React.Dispatch<React.SetStateAction<FormState>>;
-}
-
-const AddMember: React.FC<Props> = ({ formState, setFormState }) => {
+const AddMember: React.FC<FormStateProps> = ({ formState, setFormState }) => {
   const [members, setMembers] = useState({
     job_title: "",
     wallet_address: "",

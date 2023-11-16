@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { BsArrowLeftShort } from "react-icons/bs";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import Button from "@/components/button";
@@ -7,49 +8,7 @@ import { roundCardData } from "./_components/round-card-data";
 import VerifyTokenForm from "./_components/verify-tokens/verify-token-form";
 import AdditionalInfoForm from "./_components/add-additional.info/additional-info-form";
 import RoundsSettingsForm from "./_components/rounds-settings/rounds-settings-form";
-import { BsArrowLeftShort } from "react-icons/bs";
-
-export type FormState = {
-  current_round:
-    | "verify_token"
-    | "rounds_settings"
-    | "add_additional_info"
-    | "finish";
-  verify_token: {
-    token_address: string;
-    sale_rounds: number;
-    currency: string;
-    fee_option: string;
-    liquidity_lockup: string;
-  };
-  add_additional_info: {
-    logo_url: string;
-    website_url: string;
-    facebook: string;
-    twitter: string;
-    github: string;
-    telegram: string;
-    instagram: string;
-    discord: string;
-    reddit: string;
-    description: string;
-    memberData: {
-      jobTitle: string;
-      walletAddress: string;
-    }[];
-  };
-  rounds_settings: {
-    round: {
-      round_no: number;
-      total_selling_amount: string;
-      soft_cap_busd: string;
-      start_time: string;
-      end_time: string;
-      min_contribution: string;
-      max_contribution: string;
-    }[];
-  };
-};
+import { FormState } from "./_components/shared-types";
 
 const CreateLaunchpad: NextPageWithLayout = () => {
   const [formState, setFormState] = useState<FormState>({
@@ -93,7 +52,7 @@ const CreateLaunchpad: NextPageWithLayout = () => {
           />
         ))}
       </div>
-      <div className="mt-6 rounded-xl border border-gray-shade-3 bg-black-shade-9 p-6">
+      <div className="mt-6 rounded-xl border border-gray-shade-3 bg-black-shade-9 p-4 fsm:p-6">
         {formState.current_round !== "verify_token" && (
           <button
             onClick={() => {

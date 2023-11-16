@@ -1,19 +1,8 @@
 import clsx from "clsx";
 import React from "react";
+import { RoundCardProps } from "./shared-types";
 
-interface Props {
-  current_round:
-    | "verify_token"
-    | "rounds_settings"
-    | "add_additional_info"
-    | "finish";
-  round: string;
-  round_no: number;
-  title: string;
-  description: string;
-}
-
-const RoundCard: React.FC<Props> = ({
+const RoundCard: React.FC<RoundCardProps> = ({
   round,
   title,
   description,

@@ -7,7 +7,7 @@ interface Props {
   handleClick: (value: number | string) => void;
 }
 
-const RadioButtonComponent: React.FC<Props> = ({
+export const RadioButtonComponent: React.FC<Props> = ({
   selectedValue,
   value,
   handleClick,
@@ -36,5 +36,3 @@ const RadioButtonComponent: React.FC<Props> = ({
     </div>
   );
 };
-
-export default RadioButtonComponent;

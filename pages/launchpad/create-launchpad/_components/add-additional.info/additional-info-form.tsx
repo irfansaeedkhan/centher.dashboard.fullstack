@@ -1,13 +1,11 @@
 import React from "react";
-import { FormState } from "../../index.page";
 import AddMember from "./add-member";
+import { FormStateProps } from "../shared-types";
 
-interface Props {
-  formState: FormState;
-  setFormState: React.Dispatch<React.SetStateAction<FormState>>;
-}
-
-const AdditionalInfoForm: React.FC<Props> = ({ formState, setFormState }) => {
+const AdditionalInfoForm: React.FC<FormStateProps> = ({
+  formState,
+  setFormState,
+}) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormState((prev) => {

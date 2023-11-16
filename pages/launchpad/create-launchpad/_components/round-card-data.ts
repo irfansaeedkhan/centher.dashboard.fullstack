@@ -1,3 +1,5 @@
+import { RoundCardData } from "./shared-types";
+
 export const roundCardData: RoundCardData[] = [
   {
     round_no: 1,
@@ -25,10 +27,3 @@ export const roundCardData: RoundCardData[] = [
     description: "Review your information",
   },
 ];
-
-export type RoundCardData = {
-  round_no: number;
-  round: string;
-  title: string;
-  description: string;
-};

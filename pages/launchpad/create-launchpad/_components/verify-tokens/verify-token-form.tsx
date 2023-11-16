@@ -2,14 +2,12 @@ import React from "react";
 import SaleRounds from "./sale-rounds";
 import Currency from "./currency";
 import FeeOptions from "./fee-options";
-import { FormState } from "../../index.page";
+import { FormStateProps } from "../shared-types";
 
-interface Props {
-  formState: FormState;
-  setFormState: React.Dispatch<React.SetStateAction<FormState>>;
-}
-
-const VerifyTokenForm: React.FC<Props> = ({ formState, setFormState }) => {
+const VerifyTokenForm: React.FC<FormStateProps> = ({
+  formState,
+  setFormState,
+}) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormState((prev) => {

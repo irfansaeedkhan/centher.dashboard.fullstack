@@ -1,13 +1,8 @@
 import React from "react";
-import RadioButtonComponent from "../radio-button-component";
-import { FormState } from "../../index.page";
+import { FormStateProps } from "../shared-types";
+import { RadioButtonComponent } from "@/components/shared";
 
-interface Props {
-  formState: FormState;
-  setFormState: React.Dispatch<React.SetStateAction<FormState>>;
-}
-
-const SaleRounds: React.FC<Props> = ({ formState, setFormState }) => {
+const SaleRounds: React.FC<FormStateProps> = ({ formState, setFormState }) => {
   const handleClick = (value: number) => {
     setFormState((prev) => {
       return {
@@ -20,8 +15,8 @@ const SaleRounds: React.FC<Props> = ({ formState, setFormState }) => {
                 round_no: index,
                 total_selling_amount: "",
                 soft_cap_busd: "",
-                start_time: "",
-                end_time: "",
+                start_time: null,
+                end_time: null,
                 min_contribution: "",
                 max_contribution: "",
               };

@@ -38,7 +38,6 @@
     "@floating-ui/react": "^0.26.0",
     "@hookform/resolvers": "^2.9.8",
     "@moralisweb3/evm-utils": "^2.22.5",
-    "@rehookify/datepicker": "^6.2.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^14.0.0",
     "@types/react-select": "^5.0.1",

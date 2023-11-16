@@ -1,13 +1,8 @@
 import React from "react";
-import RadioButtonComponent from "../radio-button-component";
-import { FormState } from "../../index.page";
+import { RadioButtonComponent } from "@/components/shared";
+import { FormStateProps } from "../shared-types";
 
-interface Props {
-  formState: FormState;
-  setFormState: React.Dispatch<React.SetStateAction<FormState>>;
-}
-
-const Currency: React.FC<Props> = ({ formState, setFormState }) => {
+const Currency: React.FC<FormStateProps> = ({ formState, setFormState }) => {
   const handleClick = (value: string) => {
     setFormState((prev) => {
       return {

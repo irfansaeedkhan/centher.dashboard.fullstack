@@ -1,13 +1,8 @@
 import React from "react";
-import RadioButtonComponent from "../radio-button-component";
-import { FormState } from "../../index.page";
+import { FormStateProps } from "../shared-types";
+import { RadioButtonComponent } from "@/components/shared";
 
-interface Props {
-  formState: FormState;
-  setFormState: React.Dispatch<React.SetStateAction<FormState>>;
-}
-
-const FeeOptions: React.FC<Props> = ({ formState, setFormState }) => {
+const FeeOptions: React.FC<FormStateProps> = ({ formState, setFormState }) => {
   return (
     <div className="col-span-1 mb-6 w-full text-sm font-medium text-white md:mb-0">
       <label

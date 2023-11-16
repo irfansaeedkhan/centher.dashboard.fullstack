@@ -1,22 +1,19 @@
 import React, { useState } from "react";
 import clsx from "clsx";
 import toast from "react-hot-toast";
-import { FormState } from "../../index.page";
-import DateFields from "./date-fields";
-import StartDate from "./start-date";
+import { DateInputField } from "@/components/shared";
+import { CurrentComponent, FormStateProps } from "../shared-types";
 
-interface Props {
-  formState: FormState;
-  setFormState: React.Dispatch<React.SetStateAction<FormState>>;
-}
-
-const RoundsSettingsForm: React.FC<Props> = ({ formState, setFormState }) => {
+const RoundsSettingsForm: React.FC<FormStateProps> = ({
+  formState,
+  setFormState,
+}) => {
   const [currentRound, setCurrentRound] = useState(1);
-  const [currentComponent, setCurrentComponent] = useState({
+  const [currentComponent, setCurrentComponent] = useState<CurrentComponent>({
     total_selling_amount: "",
     soft_cap_busd: "",
-    start_time: "",
-    end_time: "",
+    start_time: null,
+    end_time: null,
     min_contribution: "",
     max_contribution: "",
   });
@@ -30,7 +27,33 @@ const RoundsSettingsForm: React.FC<Props> = ({ formState, setFormState }) => {
       };
     });
     setFormState((prev) => {
-      console.log(prev);
+      return {
+        ...prev,
+        rounds_settings: {
+          ...prev.rounds_settings,
+          round: prev.rounds_settings.round.map((round) => {
+            if (round.round_no === currentRound) {
+              return {
+                ...round,
+                [name]: value,
+              };
+            } else {
+              return round;
+            }
+          }),
+        },
+      };
+    });
+  };
+
+  const handleDateChangeEvent = (value: Date | null, name: string) => {
+    setCurrentComponent((prev) => {
+      return {
+        ...prev,
+        [name]: value,
+      };
+    });
+    setFormState((prev) => {
       return {
         ...prev,
         rounds_settings: {
@@ -69,8 +92,8 @@ const RoundsSettingsForm: React.FC<Props> = ({ formState, setFormState }) => {
               if (
                 currentComponent.total_selling_amount === "" ||
                 currentComponent.soft_cap_busd === "" ||
-                currentComponent.start_time === "" ||
-                currentComponent.end_time === "" ||
+                currentComponent.start_time === null ||
+                currentComponent.end_time === null ||
                 currentComponent.min_contribution === "" ||
                 currentComponent.max_contribution === ""
               ) {
@@ -102,8 +125,8 @@ const RoundsSettingsForm: React.FC<Props> = ({ formState, setFormState }) => {
               setCurrentComponent({
                 total_selling_amount: "",
                 soft_cap_busd: "",
-                start_time: "",
-                end_time: "",
+                start_time: null,
+                end_time: null,
                 min_contribution: "",
                 max_contribution: "",
               });
@@ -155,47 +178,22 @@ const RoundsSettingsForm: React.FC<Props> = ({ formState, setFormState }) => {
           listing price.
         </p>
         <div className={gridParent}>
-          <div className={gradientBorderInputMain}>
-            <label htmlFor="start_time" className={label}>
-              Start Time
-              <span className={labelSpan}>*</span>
-            </label>
-            <div className={gradientBorderInputParent}>
-              {/* <input
-                type="date"
-                id="start_time"
-                name="start_time"
-                placeholder="Example: 0"
-                className={gradientBorderInput}
-                value={currentComponent.start_time}
-                onChange={handleChangeEvent}
-              /> */}
-              <StartDate />
-            </div>
-          </div>
-          <DateFields
-            formState={formState}
-            setFormState={setFormState}
-            currentComponent={currentComponent}
-            handleChangeEvent={handleChangeEvent}
+          <DateInputField
+            title="Start Time"
+            type="datetime"
+            value={currentComponent.start_time}
+            handleChangeEvent={(value: Date | null) =>
+              handleDateChangeEvent(value, "start_time")
+            }
           />
-          {/* <div className={gradientBorderInputMain}>
-            <label htmlFor="end_time" className={label}>
-              End Time
-              <span className={labelSpan}>*</span>
-            </label>
-            <div className={gradientBorderInputParent}>
-              <input
-                type="date"
-                id="end_time"
-                name="end_time"
-                placeholder="Example: 0"
-                className={gradientBorderInput}
-                value={currentComponent.end_time}
-                onChange={handleChangeEvent}
-              />
-            </div>
-          </div> */}
+          <DateInputField
+            title="End Time"
+            type="datetime"
+            value={currentComponent.end_time}
+            handleChangeEvent={(value: Date | null) =>
+              handleDateChangeEvent(value, "end_time")
+            }
+          />
         </div>
         <div className={gridParent}>
           <div className={gradientBorderInputMain}>
