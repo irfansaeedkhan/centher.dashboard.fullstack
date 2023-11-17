@@ -94,7 +94,7 @@ const CreateLaunchpad: NextPageWithLayout = () => {
           <VerifyTokenForm formState={formState} setFormState={setFormState} />
         )}
         <Button
-          title="Next"
+          title={formState.current_round === "finish" ? "Submit" : "Next"}
           // disabled={
           //   (formState.current_round === "verify_token" &&
           //     (formState.verify_token.token_address === "" ||
