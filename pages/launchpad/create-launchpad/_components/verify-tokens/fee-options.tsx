@@ -1,6 +1,6 @@
 import React from "react";
-import { FormStateProps } from "../shared-types";
 import { RadioButtonComponent } from "@/components/shared";
+import { FormStateProps } from "../shared-types";
 
 const FeeOptions: React.FC<FormStateProps> = ({ formState, setFormState }) => {
   return (

@@ -3,6 +3,7 @@ import clsx from "clsx";
 import toast from "react-hot-toast";
 import { DateInputField } from "@/components/shared";
 import { CurrentComponent, FormStateProps } from "../shared-types";
+import { NoteDisclamer } from "../note-disclamer";
 
 export const RoundsSettingsForm: React.FC<FormStateProps> = ({
   formState,
@@ -231,14 +232,7 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
             </div>
           </div>
         </div>
-        <p className="text-sm text-gray-shade-14">
-          <span className="text-white">Note: </span>
-          Disclaimer: The information provided shall not in any way constitute a
-          recommendation as to whether you should invest in any product
-          discussed. We accept no liability for any loss occasioned to any
-          person acting or refraining from action as a result of any material
-          provided or published.
-        </p>
+        <NoteDisclamer />
       </div>
     </div>
   );

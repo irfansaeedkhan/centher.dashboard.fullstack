@@ -3,6 +3,7 @@ import SaleRounds from "./sale-rounds";
 import Currency from "./currency";
 import FeeOptions from "./fee-options";
 import { FormStateProps } from "../shared-types";
+import { NoteDisclamer } from "../note-disclamer";
 
 export const VerifyTokenForm: React.FC<FormStateProps> = ({
   formState,
@@ -46,14 +47,7 @@ export const VerifyTokenForm: React.FC<FormStateProps> = ({
       <SaleRounds formState={formState} setFormState={setFormState} />
       <Currency formState={formState} setFormState={setFormState} />
       <FeeOptions formState={formState} setFormState={setFormState} />
-      <p className="text-sm text-gray-shade-14">
-        <span className="text-white">Note: </span>
-        Disclaimer: The information provided shall not in any way constitute a
-        recommendation as to whether you should invest in any product discussed.
-        We accept no liability for any loss occasioned to any person acting or
-        refraining from action as a result of any material provided or
-        published.
-      </p>
+      <NoteDisclamer />
       <div className={gradientBorderInputMain}>
         <label htmlFor="liquidity_lockup" className={label}>
           Liquidity lockup (days)

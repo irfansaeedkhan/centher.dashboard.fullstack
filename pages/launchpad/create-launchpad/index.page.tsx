@@ -67,6 +67,8 @@ const CreateLaunchpad: NextPageWithLayout = () => {
                       ? "verify_token"
                       : formState.current_round === "add_additional_info"
                       ? "rounds_settings"
+                      : formState.current_round === "finish"
+                      ? "add_additional_info"
                       : "verify_token",
                 };
               });
