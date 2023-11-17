@@ -10,7 +10,7 @@ export const RoundCard: React.FC<RoundCardProps> = ({
   current_round,
 }) => {
   return (
-    <div className="h-auto min-h-[174px] w-[263px] rounded-xl bg-black-shade-9 p-5">
+    <div className="col-span-1 h-auto min-h-[174px] max-w-full rounded-xl bg-black-shade-9 p-5 fmd:max-w-[263px]">
       <div className="flex items-center gap-4">
         <span
           className={clsx(

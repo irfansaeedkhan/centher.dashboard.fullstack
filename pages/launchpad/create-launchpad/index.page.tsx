@@ -43,7 +43,7 @@ const CreateLaunchpad: NextPageWithLayout = () => {
 
   return (
     <div>
-      <div className="flex w-full gap-5">
+      <div className="grid w-full grid-cols-1 gap-3 fsm:grid-cols-2 fsm:gap-5 fmd:grid-cols-3 flg:grid-cols-4">
         {roundCardData.map((item) => (
           <RoundCard
             key={item.round_no}
