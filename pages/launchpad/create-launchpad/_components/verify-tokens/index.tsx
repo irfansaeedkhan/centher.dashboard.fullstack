@@ -4,7 +4,7 @@ import Currency from "./currency";
 import FeeOptions from "./fee-options";
 import { FormStateProps } from "../shared-types";
 
-const VerifyTokenForm: React.FC<FormStateProps> = ({
+export const VerifyTokenForm: React.FC<FormStateProps> = ({
   formState,
   setFormState,
 }) => {
@@ -74,8 +74,6 @@ const VerifyTokenForm: React.FC<FormStateProps> = ({
     </div>
   );
 };
-
-export default VerifyTokenForm;
 
 const gradientBorderInputParent =
   "focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]";

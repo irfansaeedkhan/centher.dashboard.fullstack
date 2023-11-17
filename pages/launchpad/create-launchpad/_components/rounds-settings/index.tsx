@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { DateInputField } from "@/components/shared";
 import { CurrentComponent, FormStateProps } from "../shared-types";
 
-const RoundsSettingsForm: React.FC<FormStateProps> = ({
+export const RoundsSettingsForm: React.FC<FormStateProps> = ({
   formState,
   setFormState,
 }) => {
@@ -243,8 +243,6 @@ const RoundsSettingsForm: React.FC<FormStateProps> = ({
     </div>
   );
 };
-
-export default RoundsSettingsForm;
 
 const gradientBorderInputParent =
   "focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]";

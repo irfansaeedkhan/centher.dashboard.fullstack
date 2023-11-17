@@ -1,8 +1,8 @@
 import clsx from "clsx";
 import React from "react";
-import { RoundCardProps } from "./shared-types";
+import { RoundCardProps } from "../shared-types";
 
-const RoundCard: React.FC<RoundCardProps> = ({
+export const RoundCard: React.FC<RoundCardProps> = ({
   round,
   title,
   description,
@@ -32,5 +32,3 @@ const RoundCard: React.FC<RoundCardProps> = ({
     </div>
   );
 };
-
-export default RoundCard;

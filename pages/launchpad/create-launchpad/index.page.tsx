@@ -1,18 +1,21 @@
 import React, { useState } from "react";
 import { BsArrowLeftShort } from "react-icons/bs";
+import Button from "@/components/button";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import Button from "@/components/button";
-import RoundCard from "./_components/round-card";
-import { roundCardData } from "./_components/round-card-data";
-import VerifyTokenForm from "./_components/verify-tokens/verify-token-form";
-import AdditionalInfoForm from "./_components/add-additional.info/additional-info-form";
-import RoundsSettingsForm from "./_components/rounds-settings/rounds-settings-form";
 import { FormState } from "./_components/shared-types";
+import {
+  AdditionalInfoForm,
+  Preview,
+  RoundCard,
+  RoundsSettingsForm,
+  VerifyTokenForm,
+  roundCardData,
+} from "./_components";
 
 const CreateLaunchpad: NextPageWithLayout = () => {
   const [formState, setFormState] = useState<FormState>({
-    current_round: "rounds_settings",
+    current_round: "finish",
     verify_token: {
       token_address: "",
       sale_rounds: 1,
@@ -83,6 +86,8 @@ const CreateLaunchpad: NextPageWithLayout = () => {
             formState={formState}
             setFormState={setFormState}
           />
+        ) : formState.current_round === "finish" ? (
+          <Preview formState={formState} setFormState={setFormState} />
         ) : (
           <VerifyTokenForm formState={formState} setFormState={setFormState} />
         )}

@@ -1,4 +1,4 @@
-import { RoundCardData } from "./shared-types";
+import { RoundCardData } from "../shared-types";
 
 export const roundCardData: RoundCardData[] = [
   {

@@ -2,7 +2,7 @@ import React from "react";
 import AddMember from "./add-member";
 import { FormStateProps } from "../shared-types";
 
-const AdditionalInfoForm: React.FC<FormStateProps> = ({
+export const AdditionalInfoForm: React.FC<FormStateProps> = ({
   formState,
   setFormState,
 }) => {
@@ -213,8 +213,6 @@ const AdditionalInfoForm: React.FC<FormStateProps> = ({
     </div>
   );
 };
-
-export default AdditionalInfoForm;
 
 const gradientBorderInputParent =
   "focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]";
