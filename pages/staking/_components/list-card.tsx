@@ -272,10 +272,15 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
             }
           </p>
         </div>
-        <div className={section}>
-          <p className={label}>Burn Tax on claim</p>
-          <p className={value}>{card.burn_tax ? card.burn_tax : 0} </p>
-        </div>
+        {card.burn_tax && +card.burn_tax > 0 && (
+          <div className={section}>
+            <p className={label}>Burn Tax on claim</p>
+            <p className={value}>
+              {card.burn_tax ? +card.burn_tax / 100 : 0}%{" "}
+            </p>
+          </div>
+        )}
+
         <div className={section}>
           <p className={label}>Liquidity Pool Provided</p>
           <p className={value2}>{card.liquidity_pool_provided}</p>

@@ -90,4 +90,5 @@ export interface StakingProject {
   transfers?: UserStakingTransfers[];
   users?: StakingUser[];
   affiliate?: AffiliateSettings;
+  tax: number;
 }

@@ -335,7 +335,7 @@ const CreateStaking: NextPageWithLayout = () => {
       }),
     multilevel_rewards: Joi.string().max(100).label("multilevel rewards"),
     apy: Joi.number().min(0).label("apy"),
-    burn_tax: Joi.number().min(0).label("burn_tax"),
+    burn_tax: Joi.number().min(0).optional().allow("").label("burn_tax"),
     staking_reward_token_price_ratio: Joi.number()
       .max(1000000)
       .min(0)
@@ -617,6 +617,7 @@ const CreateStaking: NextPageWithLayout = () => {
       isUnstakable: data.is_cancelable == "yes" ? true : false,
       isLP: data.liquidity_pool_provided == "yes" ? true : false,
       showOnCenther: data.show_on_centher == "yes" ? true : false,
+      burnTax: data.burn_tax || 0,
     };
 
     const files: StakingFiles = {
@@ -2344,7 +2345,6 @@ const CreateStaking: NextPageWithLayout = () => {
                   </div>
                 </div>
               </div>
-
               {!isConnected ? (
                 <Button
                   title={"Connect Wallet"}

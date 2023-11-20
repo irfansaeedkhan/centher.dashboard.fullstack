@@ -46,6 +46,7 @@ const queries: Queries = {
       createdAt
       cancellationFees
       annualStakingRewardRate
+      tax
     }
   }`,
   GET_PROJECT: `query MyQuery($id: ID = "") {
@@ -80,6 +81,7 @@ const queries: Queries = {
       createdAt
       cancellationFees
       annualStakingRewardRate
+      tax
       transfers {
         endAt
         createdAt
@@ -108,7 +110,7 @@ const queries: Queries = {
   }`,
   GET_USER_CLAIMED_REWARDS: `query MyQuery($poolId: BigInt = "", $user: Bytes = "", $first: Int = 10, $skip: Int = 10) {
     rewardClaimeds(
-      where: {poolId: $poolId, user: $user, isRef: false}
+      where: {poolId: $poolId, user: $user, type: "main"}
       first: $first
       skip: $skip
       orderDirection: desc
@@ -121,11 +123,12 @@ const queries: Queries = {
       blockTimestamp
       blockNumber
       amount
+      paidTax
     }
   }`,
   GET_USER_CLAIMED_REF_REWARDS: `query MyQuery($first1: Int = 1000, $skip1: Int = 0, $projectId: BigInt = "", $user: Bytes = "") {
     rewards(
-      where: {projectId: $projectId, user: $user, isRef: true}
+      where: {projectId: $projectId, user: $user,  type: "ref"}
       first: $first1
       skip: $skip1
     ) {
@@ -135,11 +138,11 @@ const queries: Queries = {
       startDuration
       referral
       projectId
-      isRef
       id
       endDuration
       createdAt
       amount
+      paidTax
     }
   }`,
   GET_USER_REFERRALS: `query MyQuery($referrer: Bytes = "", $pool: BigInt = "") {
