@@ -482,6 +482,16 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                       }
                     </p>
                   </div>
+                  <div className={section}>
+                    <p className={label}>Burn Tax on claim</p>
+                    <p className={value}>
+                      {
+                        claimPeriodOptions.find(
+                          (e) => e.value == +data?.burn_tax
+                        )?.title
+                      }
+                    </p>
+                  </div>
 
                   {data?.liquidity_pool_provided === "yes" && (
                     <div className={section}>
