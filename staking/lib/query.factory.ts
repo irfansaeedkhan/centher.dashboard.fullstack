@@ -15,7 +15,7 @@ export class QueryFactory {
 
 const queries: Queries = {
   GET_PROJECTS: `query MyQuery($skip: Int , $first: Int ) {
-    pools(where: {showOnCenther: true}, skip: $skip, first: $first) {
+    pools(where: {showOnCenther: true, isActive : true}, skip: $skip, first: $first) {
       totalStakedAmount
       totalPaidReward
       startTime
