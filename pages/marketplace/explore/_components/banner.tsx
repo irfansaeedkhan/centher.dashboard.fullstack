@@ -18,21 +18,37 @@ export const Banner = () => {
         <p className="mt-3 text-[11px] font-medium text-gray-shade-18 fsm:text-sm fmd:text-base">
           Enjoy Your Time, Become a Creator NOW!
         </p>
-
-        <Link
-          href={
-            user?.membership.status === "citizen"
-              ? AppRoutes.marketplace.create_nft
-              : AppRoutes.citizenship
-          }
-        >
-          <Button
-            title="Create Nft"
-            variant="primary"
-            className="mt-6 h-10 w-[150px] text-[14px]"
-            borderRounded="14px"
-          />
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link
+            href={
+              user?.membership.status === "citizen"
+                ? AppRoutes.marketplace.create_nft
+                : AppRoutes.citizenship
+            }
+            className="w-fit"
+          >
+            <Button
+              title="Create Nft"
+              variant="primary"
+              className="mt-6 h-10 text-[14px]"
+              borderRounded="10px"
+            />
+          </Link>
+          <Link
+            href={
+              user?.membership.status === "citizen"
+                ? AppRoutes.marketplace.create_collection
+                : AppRoutes.citizenship
+            }
+          >
+            <Button
+              title="Create Collection"
+              variant="primary"
+              className="mt-6 h-10 w-fit text-[14px]"
+              borderRounded="10px"
+            />
+          </Link>
+        </div>
       </div>
       <Image
         src="/images/bg-explore.png"
