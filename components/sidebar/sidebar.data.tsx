@@ -1,16 +1,16 @@
-import { CreateCollection, Explore, Launchpad, CreateNFT } from "@/assets/svgs";
-import { CreateLaunchpad } from "@/assets/svgs/launchpad-v2";
+import { Explore, Launchpad } from "@/assets/svgs";
+import { AppRoutes } from "@/constants/app.routes";
 import { AddressFactory } from "@/web3/blockchain/providers/address.provider";
 import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.enum";
-import { AppRoutes } from "@/constants/app.routes";
+import { CreateLaunchpad } from "@/assets/svgs/launchpad-v2";
 import { SidebarData } from "./shared";
 
 export const sidebarData: SidebarData = {
   nft_marketplace: {
-    label: "NFT MARKETPLACE",
+    label: "Explore",
     items: [
       {
-        label: "Explore",
+        label: "NFT Marketplace",
         url: AppRoutes.marketplace.explore,
         icon: Explore,
         available_for: "all",
@@ -37,27 +37,6 @@ export const sidebarData: SidebarData = {
         badge: "citizen",
       },
       {
-        label: "Create Collection",
-        url: AppRoutes.marketplace.create_collection,
-        icon: CreateCollection,
-        activeList: [AppRoutes.marketplace.create_collection],
-        available_for: "citizen",
-        badge: "citizen",
-      },
-      {
-        label: "Create NFT",
-        url: AppRoutes.marketplace.create_nft,
-        icon: CreateNFT,
-        activeList: [AppRoutes.marketplace.create_nft],
-        available_for: "citizen",
-        badge: "citizen",
-      },
-    ],
-  },
-  dao_government: {
-    label: "DAO GOVERNMENT",
-    items: [
-      {
         label: "Launchpad",
         url: `/launchpad/${AddressFactory.getContractAddress(
           SmartContractName.DXC
@@ -77,7 +56,4 @@ export const sidebarData: SidebarData = {
   },
 };
 
-export const SidebarSections = [
-  sidebarData.nft_marketplace,
-  sidebarData.dao_government,
-];
+export const SidebarSections = [sidebarData.nft_marketplace];
