@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from "react";
 import Link from "next/link";
+import clsx from "clsx";
 import { useRouter } from "next/router";
-import Button from "@/components/button";
 import { AppRoutes } from "@/constants/app.routes";
 import { ListCardDataOBj } from "@/pages/staking/_components/list-card-data";
 
@@ -21,49 +21,56 @@ const PageButtonsWrapper: FC<Props> = ({ children, stakingPool }) => {
 
   return (
     <div className="mx-auto w-full max-w-[1144px] space-y-6">
-      <div className="scrollSetLight2 flex w-full max-w-[590px] flex-shrink-0 items-center gap-3 overflow-x-auto">
+      <div className="scrollSetLight2 flex w-full max-w-[470px] flex-shrink-0 items-center gap-4 overflow-x-auto border-b border-gray-shade-3 py-2">
         <Link href={`/staking/staking-details/${poolId}`}>
-          <Button
-            title="My Staking overview"
-            variant={
+          <span
+            className={clsx(
+              "w-fit flex-shrink-0 rounded-[10px] text-sm fsm:text-base",
               router.asPath === `/staking/staking-details/${poolId}`
-                ? "primary"
-                : "secondary"
-            }
-            className="w-[215px] flex-shrink-0 rounded-[10px] text-sm fsm:text-base"
-          />
+                ? "textGradient myBox pb-2 font-semibold"
+                : "text-gray-shade-18 hover:text-white"
+            )}
+          >
+            My Staking overview
+          </span>
         </Link>
         <Link href={`/staking/staking-details/${poolId}/rewards`}>
-          <Button
-            title="Claim Rewards"
-            variant={
-              router.pathname.includes("rewards") ? "primary" : "secondary"
-            }
-            className="w-[162px] flex-shrink-0 rounded-[10px] text-sm fsm:text-base"
-          />
+          <span
+            className={clsx(
+              "w-fit flex-shrink-0 rounded-[10px] text-sm fsm:text-base",
+              router.pathname.includes("rewards")
+                ? "textGradient myBox pb-2 font-semibold"
+                : "text-gray-shade-18 hover:text-white"
+            )}
+          >
+            Claim Rewards
+          </span>
         </Link>
         {stakingPool?.multilevel_rewards != "No referral" && (
           <Link href={`/staking/staking-details/${poolId}/referrals`}>
-            <Button
-              title="Referrals"
-              variant={
-                router.pathname.includes("referrals") ? "primary" : "secondary"
-              }
-              className="w-[109px] flex-shrink-0 rounded-[10px] text-sm fsm:text-base"
-            />
+            <span
+              className={clsx(
+                "w-fit flex-shrink-0 rounded-[10px] text-sm fsm:text-base",
+                router.pathname.includes("referrals")
+                  ? "textGradient myBox pb-2 font-semibold"
+                  : "text-gray-shade-18 hover:text-white"
+              )}
+            >
+              Referrals
+            </span>
           </Link>
         )}
         <Link href={AppRoutes.staking.faqs}>
-          <Button
-            title="FAQs"
-            variant={
+          <span
+            className={clsx(
+              "w-fit flex-shrink-0 rounded-[10px] text-sm fsm:text-base",
               router.pathname === AppRoutes.staking.faqs
-                ? "primary"
-                : "secondary"
-            }
-            className="h-9 w-full max-w-[68px] text-xs"
-            borderRounded="10px"
-          />
+                ? "textGradient myBox pb-2 font-semibold"
+                : "text-gray-shade-18 hover:text-white"
+            )}
+          >
+            FAQs
+          </span>
         </Link>
       </div>
       {children}
