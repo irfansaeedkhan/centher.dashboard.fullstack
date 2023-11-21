@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
-import Image from "next/image";
 import clsx from "clsx";
 import { useCountsStore } from "@/store/counts.store";
 import { LoggedInUser } from "@/models/user";
@@ -60,15 +59,6 @@ export const Section: React.FC<SectionProps> = (props) => {
                           : `stroke-gray-shade-7 stroke-[1.5] group-hover:stroke-white`
                       )}
                     />
-                    {item.badge === "citizen" && (
-                      <Image
-                        src="/images/citizen-icon.svg"
-                        alt="Citizen"
-                        width={10}
-                        height={10}
-                        className="absolute bottom-0 right-0 inline-block"
-                      />
-                    )}
                   </div>
                   <Link
                     href={
