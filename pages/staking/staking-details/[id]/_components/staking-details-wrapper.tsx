@@ -105,7 +105,7 @@ const StakingDetailsWrapper = ({ children }: Props) => {
         maxAmount: stakingPool.max_staking_amount,
       });
     }
-  }, [stakingPool]);
+  }, [stakingPool, stakingStat]);
 
   useEffect(() => {
     const getCoinDetails = async (tokens: string[]) => {
@@ -164,7 +164,7 @@ const StakingDetailsWrapper = ({ children }: Props) => {
         claim: claim * coef + "",
       });
     }
-  }, [stakingValue]);
+  }, [stakingValue, stakingPool]);
 
   const stakingValueChanges = (value: string) => {
     setStakingValue(value);
@@ -285,7 +285,7 @@ const StakingDetailsWrapper = ({ children }: Props) => {
   const modal = new ModalManager(setModalModel, modalTemplateCollection);
 
   return stakingStat ? (
-    <PageButtonsWrapper>
+    <PageButtonsWrapper stakingPool={stakingPool}>
       <div className="mx-auto h-auto w-full rounded-xl border border-gray-shade-3 bg-black-shade-9 px-5 pb-8 pt-10 fmd:px-10">
         <Details data={stakingPool} />
         <div className="flex h-fit flex-col gap-8 py-8 flg:flex-row">
@@ -407,31 +407,6 @@ const StakingDetailsWrapper = ({ children }: Props) => {
             </div>
           </div>
         </div>
-      </div>
-      <div className="scrollSetLight2 flex w-full max-w-[510px] flex-shrink-0 gap-2 overflow-x-auto p-2 sm:items-center">
-        <Link href={`/staking/staking-details/${poolId}`}>
-          <Button
-            title="My Staking overview"
-            variant={activeTab == "index" ? "primary" : "secondary"}
-            className="w-[215px] flex-shrink-0 rounded-[10px] text-sm fsm:text-base"
-          />
-        </Link>
-        <Link href={`/staking/staking-details/${poolId}/rewards`}>
-          <Button
-            title="Claim Rewards"
-            variant={activeTab == "rewards" ? "primary" : "secondary"}
-            className="w-[162px] flex-shrink-0 rounded-[10px] text-sm fsm:text-base"
-          />
-        </Link>
-        {stakingPool?.multilevel_rewards != "No referral" && (
-          <Link href={`/staking/staking-details/${poolId}/referrals`}>
-            <Button
-              title="Referrals"
-              variant={activeTab == "referrals" ? "primary" : "secondary"}
-              className="w-[109px] flex-shrink-0 rounded-[10px] text-sm fsm:text-base"
-            />
-          </Link>
-        )}
       </div>
       {children}
       {isLoading && <PreLoader />}
