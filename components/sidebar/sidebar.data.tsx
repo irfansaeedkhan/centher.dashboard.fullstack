@@ -52,6 +52,13 @@ export const sidebarData: SidebarData = {
         available_for: "all",
         activeList: [AppRoutes.launchpad.create_launchpad],
       },
+      {
+        label: "Launchpad List",
+        url: AppRoutes.launchpad.launchpad_list,
+        icon: CreateLaunchpad,
+        available_for: "all",
+        activeList: [AppRoutes.launchpad.launchpad_list],
+      },
     ],
   },
 };

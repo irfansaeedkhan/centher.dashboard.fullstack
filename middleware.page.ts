@@ -137,6 +137,7 @@ const _authenticatedUserPages: string[] = [
 
   AppRoutes.launchpad.index,
   AppRoutes.launchpad.create_launchpad,
+  AppRoutes.launchpad.launchpad_list,
 
   AppRoutes.staking.index,
   AppRoutes.staking.staking_details.index,
