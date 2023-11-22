@@ -482,6 +482,12 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                       }
                     </p>
                   </div>
+                  {data?.burn_tax && data?.burn_tax > 0 && (
+                    <div className={section}>
+                      <p className={label}>Burn Tax on claim</p>
+                      <p className={value}>{data?.burn_tax}%</p>
+                    </div>
+                  )}
 
                   {data?.liquidity_pool_provided === "yes" && (
                     <div className={section}>

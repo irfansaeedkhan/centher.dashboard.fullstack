@@ -82,22 +82,22 @@ export class CentherStaking {
       throw error;
     }
 
-    try {
-      // contract callstatic
-      statusController(CreatePoolStepsEnum.examinate, 0);
-      await BlockchainWrite.createStakingPool(
-        signer,
-        mappedData,
-        input.ownerAddress,
-        true
-      );
+    // try {
+    //   // contract callstatic
+    //   statusController(CreatePoolStepsEnum.examinate, 0);
+    //   await BlockchainWrite.createStakingPool(
+    //     signer,
+    //     mappedData,
+    //     input.ownerAddress,
+    //     true
+    //   );
 
-      statusController(CreatePoolStepsEnum.examinate, 100);
-    } catch (error: any) {
-      throw new CreatePoolCallStaticError(
-        error instanceof Error ? error.message : error
-      );
-    }
+    //   statusController(CreatePoolStepsEnum.examinate, 100);
+    // } catch (error: any) {
+    //   throw new CreatePoolCallStaticError(
+    //     error instanceof Error ? error.message : error
+    //   );
+    // }
 
     try {
       // upload files

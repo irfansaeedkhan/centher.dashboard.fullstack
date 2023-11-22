@@ -47,7 +47,13 @@ const RewardsTable: React.FC<{
               <tr>
                 <TableCell element={"th"}>Date</TableCell>
                 <TableCell element={"th"}>Transaction Hash</TableCell>
-                <TableCell element={"th"}>Claimed Amount</TableCell>
+                <TableCell element={"th"}>Total Amount</TableCell>
+                {+data?.[0]?.paidTax > 0 && (
+                  <TableCell element={"th"}>Tax Amount</TableCell>
+                )}
+                {+data?.[0]?.paidTax > 0 && (
+                  <TableCell element={"th"}>Profit</TableCell>
+                )}
               </tr>
             </thead>
             <tbody className="">
@@ -64,8 +70,23 @@ const RewardsTable: React.FC<{
                       {Check_Reward_Form_TransactionHash(e)}
                     </TableCell>
                     <TableCell element={"td"}>
-                      {normalizeValue(formatUnits(e.amount, decimals))} {token}
+                      {normalizeValue(
+                        formatUnits(+e.amount + +e.paidTax + "", decimals)
+                      )}{" "}
+                      {token}
                     </TableCell>
+                    {+e?.paidTax > 0 && (
+                      <TableCell element={"td"}>
+                        {normalizeValue(formatUnits(e.paidTax, decimals))}{" "}
+                        {token}
+                      </TableCell>
+                    )}
+                    {+e?.paidTax > 0 && (
+                      <TableCell element={"td"}>
+                        {normalizeValue(formatUnits(e.amount, decimals))}{" "}
+                        {token}
+                      </TableCell>
+                    )}
                   </TableRow>
                 ))
               )}
