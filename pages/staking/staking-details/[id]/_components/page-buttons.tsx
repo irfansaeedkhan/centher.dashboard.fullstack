@@ -21,7 +21,7 @@ const PageButtonsWrapper: FC<Props> = ({ children, stakingPool }) => {
 
   return (
     <div className="mx-auto w-full max-w-[1144px] space-y-6">
-      <div className="scrollSetLight2 flex w-full max-w-[470px] flex-shrink-0 items-center gap-4 overflow-x-auto border-b border-gray-shade-3 py-2">
+      <div className="scrollSetLight2 flex w-full max-w-[550px] flex-shrink-0 items-center gap-4 overflow-x-auto border-b border-gray-shade-3 py-2">
         <Link href={`/staking/staking-details/${poolId}`}>
           <span
             className={clsx(
@@ -60,6 +60,18 @@ const PageButtonsWrapper: FC<Props> = ({ children, stakingPool }) => {
             </span>
           </Link>
         )}
+        <Link href={AppRoutes.staking.index}>
+          <span
+            className={clsx(
+              "w-fit flex-shrink-0 rounded-[10px] text-sm fsm:text-base",
+              router.pathname === AppRoutes.staking.index
+                ? "textGradient myBox pb-2 font-semibold"
+                : "text-gray-shade-18 hover:text-white"
+            )}
+          >
+            Projects
+          </span>
+        </Link>
         <Link href={AppRoutes.staking.faqs}>
           <span
             className={clsx(
