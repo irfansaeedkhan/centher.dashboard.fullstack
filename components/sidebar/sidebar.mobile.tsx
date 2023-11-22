@@ -1,9 +1,7 @@
 import React, { RefObject, useRef } from "react";
-import Link from "next/link";
 import clsx from "clsx";
 import toast from "react-hot-toast";
 import { useOnClickOutside } from "usehooks-ts";
-import { IoSearchSharp } from "react-icons/io5";
 import { logout } from "@/lib/auth";
 import useUser from "@/hooks/use.user";
 import { Logout } from "@/assets/svgs";
@@ -61,29 +59,17 @@ export const SidebarMobile: React.FC<SidebarMobileProps> = ({
       <div
         className={`flex h-[calc(100vh-60px)] w-[15.5rem] flex-col justify-between gap-8 overflow-y-scroll bg-background-shade-1 py-5 font-monto fxl:hidden`}
       >
-        <div>
-          <div className={`mb-4 flex items-center gap-2 pl-6 md:hidden`}>
-            <IoSearchSharp className="text-xl text-gray-shade-7" />
-            <Link
-              href={AppRoutes.search}
-              className={`text-sm font-semibold text-gray-shade-7`}
-              onClick={onClose}
-            >
-              Search
-            </Link>
-          </div>
-          <div className={`flex flex-col gap-6`}>
-            {SidebarSections.map((section) => {
-              return (
-                <Section
-                  key={section.label}
-                  user={user}
-                  section={section}
-                  onClose={onClose}
-                />
-              );
-            })}
-          </div>
+        <div className={`flex flex-col gap-6`}>
+          {SidebarSections.map((section) => {
+            return (
+              <Section
+                key={section.label}
+                user={user}
+                section={section}
+                onClose={onClose}
+              />
+            );
+          })}
         </div>
         {user && (
           <div className="flex flex-col gap-8">

@@ -32,9 +32,16 @@ const ListClaimedRewardsTable: React.FC<{
       <thead className={`bg-elevation-1 text-left text-sm text-gray-shade-7`}>
         <tr>
           <TableCell element={"th"}>Date</TableCell>
-          <TableCell element={"th"}>Amount</TableCell>
           <TableCell element={"th"}>Referral</TableCell>
           <TableCell element={"th"}>Transaction</TableCell>
+          <TableCell element={"th"}>Amount</TableCell>
+
+          {+data?.[0]?.paidTax > 0 && (
+            <TableCell element={"th"}>Tax Amount</TableCell>
+          )}
+          {+data?.[0]?.paidTax > 0 && (
+            <TableCell element={"th"}>Profit</TableCell>
+          )}
         </tr>
       </thead>
       <tbody className="">
@@ -48,9 +55,7 @@ const ListClaimedRewardsTable: React.FC<{
               <TableCell element={"td"}>
                 {new Date(+e.createdAt * 1000).toLocaleDateString()}
               </TableCell>
-              <TableCell element={"td"}>
-                {formatUnits(e.amount, decimals)} {token}
-              </TableCell>
+
               <TableCell element={"td"}>
                 {" "}
                 {e.user.slice(0, 6)}...
@@ -59,6 +64,19 @@ const ListClaimedRewardsTable: React.FC<{
               <TableCell element={"td"}>
                 {Check_Reward_Form_TransactionHash(e)}
               </TableCell>
+              <TableCell element={"td"}>
+                {formatUnits(+e.amount + +e.paidTax + "", decimals)} {token}
+              </TableCell>
+              {+e?.paidTax > 0 && (
+                <TableCell element={"td"}>
+                  {formatUnits(e.paidTax, decimals)} {token}
+                </TableCell>
+              )}
+              {+e?.paidTax > 0 && (
+                <TableCell element={"td"}>
+                  {formatUnits(e.amount, decimals)} {token}
+                </TableCell>
+              )}
             </TableRow>
           ))
         )}

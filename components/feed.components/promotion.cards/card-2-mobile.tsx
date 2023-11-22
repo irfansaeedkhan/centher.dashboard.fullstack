@@ -1,10 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import clsx from "clsx";
-
 import { AppRoutes } from "@/constants/app.routes";
-import { AddressFactory } from "@/web3/blockchain/providers/address.provider";
-import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.enum";
 import Button from "@/components/button";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {}
@@ -16,34 +13,27 @@ export const PromotionCard2Mobile: React.FC<Props> = ({
   return (
     <div
       className={clsx(
-        `relative flex h-[348px] w-[272px] flex-col items-center justify-end overflow-hidden rounded-10px border border-gray-shade-3 bg-[url(/images/ad-g.png)] bg-cover bg-no-repeat p-6`,
+        `relative flex h-[348px] w-[272px] flex-col items-center justify-end overflow-hidden rounded-10px border border-gray-shade-3 bg-[url(/images/dexa-bomb.png)] bg-cover bg-no-repeat p-6`,
         className
       )}
       {...props}
     >
       <div>
         <p
-          className={`text-center text-sm font-medium uppercase leading-[17.07px] text-white`}
+          className={`w-full max-w-[220px] text-center text-sm font-medium uppercase leading-[17.07px] text-white`}
         >
-          Last round of presale is almost over! Come get your DXC here.
+          Buy and stake DXC coin on Centher
         </p>
       </div>
       <Link
-        href={{
-          pathname: AppRoutes.launchpad,
-          query: {
-            token_address: AddressFactory.getContractAddress(
-              SmartContractName.DXC
-            ),
-            round: 3,
-          },
-        }}
+        href={AppRoutes.staking.index}
+        className="flex w-full items-center justify-center"
       >
         <Button
-          title="Buy DeXa Token"
+          title="Let's Go"
           variant="primary"
           borderRounded="10px"
-          className="mt-4"
+          className="mt-4 w-full max-w-[149px] text-xs font-medium leading-6"
         />
       </Link>
     </div>

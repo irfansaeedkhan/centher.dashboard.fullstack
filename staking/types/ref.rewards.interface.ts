@@ -7,11 +7,11 @@ export interface RefReward {
   startDuration: string;
   referral: string;
   projectId: string;
-  isRef: boolean;
   id: string;
   endDuration: string;
   createdAt: string;
   amount: string;
+  paidTax: string;
 }
 
 export class GetRefRewardInput extends PaginatedRequest {

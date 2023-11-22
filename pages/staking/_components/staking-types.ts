@@ -31,6 +31,7 @@ export interface stakingFormInterface {
   reward_token_address: string;
   multilevel_rewards: MultiLevelRewards;
   apy: number | null;
+  burn_tax: number;
   staking_reward_token_price_ratio: number | null;
   staking_period: string;
   start_date: string;

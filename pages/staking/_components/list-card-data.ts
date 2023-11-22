@@ -21,6 +21,7 @@ export type ListCardDataOBj = {
   max_staking_amount: string;
   min_staking_amount: string;
   is_active: boolean;
+  burn_tax?: string;
   supply: string;
   totalStakedAmount: string;
   totalPaidReward: string;

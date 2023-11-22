@@ -196,24 +196,31 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
                   <div className="box rounded-xl border border-gray-shade-3 p-4">
                     <ul className="flex flex-col gap-2 text-sm font-medium text-white">
                       <li className="list-item-with-image">
-                        Giveaway as a service
+                        Staking as a service
+                      </li>
+                      <li className="list-item-with-image">
+                        Create collections
+                      </li>
+                      <li className="list-item-with-image">Create NFT</li>
+                      <li className="list-item-with-image">
+                        Airdrop as a service
                       </li>
                       <li className="list-item-with-image">
                         Launchpad as a service
                       </li>
                       <li className="list-item-with-image">
-                        Staking as a service
+                        Giveaway as a service (Coming Soon)
                       </li>
                       <li className="list-item-with-image">
-                        Airdrop as a service
+                        Bulk messaging (Private and Public Groups)
                       </li>
-                      <li className="list-item-with-image">Bulk messaging</li>
                       <li className="list-item-with-image">
-                        Create collections
+                        Group chat (Coming Soon)
                       </li>
-                      <li className="list-item-with-image">Group chat</li>
-                      <li className="list-item-with-image">Advertising</li>
-                      <li className="list-item-with-image text-gradient">
+                      <li className="list-item-with-image">
+                        Advertising (Coming Soon)
+                      </li>
+                      <li className="list-item-with-image textGradient">
                         And much more
                       </li>
                     </ul>
