@@ -20,9 +20,7 @@ export const Section: React.FC<SectionProps> = (props) => {
 
   return (
     <div className={`flex flex-col gap-1 px-3`}>
-      <span
-        className={`pl-6 pr-4 text-[11px] font-semibold text-gray-shade-11`}
-      >
+      <span className={`px-3 text-[11px] font-semibold text-gray-shade-11`}>
         {props.section.label}
       </span>
       <div className={`flex flex-col gap-[2px]`}>

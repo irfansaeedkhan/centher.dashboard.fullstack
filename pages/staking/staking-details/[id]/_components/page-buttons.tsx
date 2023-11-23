@@ -21,64 +21,63 @@ const PageButtonsWrapper: FC<Props> = ({ children, stakingPool }) => {
 
   return (
     <div className="mx-auto w-full max-w-[1144px] space-y-6">
-      <div className="scrollSetLight2 flex w-full max-w-[550px] flex-shrink-0 items-center gap-4 overflow-x-auto border-b border-gray-shade-3 py-2">
-        <Link href={`/staking/staking-details/${poolId}`}>
+      <div className="scrollSetLight2 flex w-full max-w-[575px] flex-shrink-0 items-center gap-4 overflow-x-auto py-2">
+        <Link
+          href={`/staking/staking-details/${poolId}`}
+          className="flex flex-shrink-0"
+        >
           <span
             className={clsx(
-              "w-fit flex-shrink-0 rounded-[10px] text-sm fsm:text-base",
-              router.asPath === `/staking/staking-details/${poolId}`
-                ? "textGradient myBox pb-2 font-semibold"
-                : "text-gray-shade-18 hover:text-white"
+              "w-fit flex-shrink-0 rounded-[10px] pb-2 text-sm font-semibold text-white fsm:text-base",
+              router.asPath === `/staking/staking-details/${poolId}` && "myBox"
             )}
           >
-            My Staking overview
+            Project Details
           </span>
         </Link>
-        <Link href={`/staking/staking-details/${poolId}/rewards`}>
+        <Link
+          href={`/staking/staking-details/${poolId}/rewards`}
+          className="flex flex-shrink-0"
+        >
           <span
             className={clsx(
-              "w-fit flex-shrink-0 rounded-[10px] text-sm fsm:text-base",
-              router.pathname.includes("rewards")
-                ? "textGradient myBox pb-2 font-semibold"
-                : "text-gray-shade-18 hover:text-white"
+              "w-fit flex-shrink-0 rounded-[10px] pb-2 text-sm font-semibold text-white fsm:text-base",
+              router.pathname.includes("rewards") && "myBox"
             )}
           >
             Claim Rewards
           </span>
         </Link>
         {stakingPool?.multilevel_rewards != "No referral" && (
-          <Link href={`/staking/staking-details/${poolId}/referrals`}>
+          <Link
+            href={`/staking/staking-details/${poolId}/referrals`}
+            className="flex flex-shrink-0"
+          >
             <span
               className={clsx(
-                "w-fit flex-shrink-0 rounded-[10px] text-sm fsm:text-base",
-                router.pathname.includes("referrals")
-                  ? "textGradient myBox pb-2 font-semibold"
-                  : "text-gray-shade-18 hover:text-white"
+                "w-fit flex-shrink-0 rounded-[10px] pb-2 text-sm font-semibold text-white fsm:text-base",
+                router.pathname.includes("referrals") && "myBox"
               )}
             >
               Referrals
             </span>
           </Link>
         )}
-        <Link href={AppRoutes.staking.index}>
+        <Link href={AppRoutes.staking.index} className="flex flex-shrink-0">
           <span
             className={clsx(
-              "w-fit flex-shrink-0 rounded-[10px] text-sm fsm:text-base",
-              router.pathname === AppRoutes.staking.index
-                ? "textGradient myBox pb-2 font-semibold"
-                : "text-gray-shade-18 hover:text-white"
+              "w-fit flex-shrink-0 rounded-[10px] pb-2 text-sm font-semibold text-white fsm:text-base",
+              router.pathname === AppRoutes.staking.index && "myBox"
             )}
           >
-            Projects
+            Staking Home
           </span>
         </Link>
-        <Link href={AppRoutes.staking.faqs}>
+        <Link href={AppRoutes.staking.faqs} className="flex flex-shrink-0">
           <span
             className={clsx(
-              "w-fit flex-shrink-0 rounded-[10px] text-sm fsm:text-base",
-              router.pathname === AppRoutes.staking.faqs
-                ? "textGradient myBox pb-2 font-semibold"
-                : "text-gray-shade-18 hover:text-white"
+              "w-fit flex-shrink-0 rounded-[10px] pb-2 text-sm font-semibold text-white fsm:text-base",
+              router.pathname === AppRoutes.staking.faqs && "myBox"
             )}
           >
             FAQs

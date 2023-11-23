@@ -5,13 +5,7 @@ import { clsx } from "clsx";
 import { toast } from "react-hot-toast";
 import { useEventListener, useOnClickOutside } from "usehooks-ts";
 import { SiBinance } from "react-icons/si";
-import {
-  FiArrowUpRight,
-  FiCopy,
-  FiGithub,
-  FiInstagram,
-  FiTwitter,
-} from "react-icons/fi";
+import { FiArrowUpRight, FiCopy, FiGithub, FiInstagram } from "react-icons/fi";
 import { isAddress } from "ethers/lib/utils";
 import {
   LinkNewIcon,
@@ -22,6 +16,7 @@ import {
   NewFacebookIcon,
   Whitepaper,
   Staking,
+  XIcon,
 } from "@/assets/svgs";
 import { sliceAccountAddress } from "@/utils/user.helpers";
 import { copyText } from "@/utils/copy.text";
@@ -635,7 +630,7 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                           rel="noreferrer noopener"
                           className={button}
                         >
-                          <FiTwitter className="h-5 w-5 group-hover:[&>*]:stroke-white" />
+                          <XIcon className="h-5 w-5 group-hover:[&>*]:stroke-white" />
                           <span>X.com</span>
                         </a>
                       )}

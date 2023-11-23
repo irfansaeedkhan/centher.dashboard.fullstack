@@ -6,7 +6,7 @@ import { HiOutlineMenuAlt3 } from "react-icons/hi";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import useUser from "@/hooks/use.user";
 import { AppRoutes } from "@/constants/app.routes";
-import { IconSearch, MenuClose } from "@/assets/svgs";
+import { MenuClose } from "@/assets/svgs";
 import { BuyCitizenshipModal } from "@/components/modal/buy-citizenship-modal";
 import { SidebarMobile } from "../sidebar/sidebar.mobile";
 import Button from "../button";
@@ -75,15 +75,6 @@ const Header = () => {
 
       <div className={`flex flex-grow items-center justify-end gap-6`}>
         {user && <SearchBar />}
-        {user && (
-          <Link
-            href={AppRoutes.search}
-            className={`flex flex-shrink-0 md:hidden`}
-          >
-            <IconSearch />
-          </Link>
-        )}
-
         {!user && !isUserLoading && (
           <Link href={AppRoutes.auth.login}>
             <Button
