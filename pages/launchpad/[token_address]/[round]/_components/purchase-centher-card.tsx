@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import clsx from "clsx";
 import { formatEther } from "ethers/lib/utils";
 import { DXCIconBG, USDTIcon } from "@/assets/svgs";
 import useUser from "@/hooks/use.user";
@@ -9,7 +10,6 @@ import {
 } from "@/web3/hooks/use.contracts.functions";
 import { RoundInfo } from "@/web3/constants/types";
 import { useWallet } from "@/web3/hooks/use.wallet";
-import Button from "@/components/button";
 import ConnectWalletModal from "@/components/modal/connect-wallet-modal";
 import DetailsProject from "@/pages/launchpad/[token_address]/[round]/_components/details-project";
 import BookingMain from "@/pages/launchpad/[token_address]/[round]/_components/booking-main";
@@ -19,17 +19,18 @@ interface Props {
   roundInfo: RoundInfo;
   currentUserAddress: string | undefined;
   round_number: number;
+  connectedAddress: string | undefined | null;
 }
 
 export const PurchaseCentherCard: React.FC<Props> = ({
   roundInfo,
   currentUserAddress,
   round_number,
+  connectedAddress,
 }) => {
   const [roundNo, setRoundNo] = useState<number>(-1);
   const { user: loggedInUser } = useUser();
-  const { connectedAddress, getSigner, disconnectWallet, connectWallet } =
-    useWallet();
+  const { getSigner, disconnectWallet, connectWallet } = useWallet();
   const [connectWalletModal, setConnectWalletModal] = useState(false);
   const [currentTab, setCurrentTab] = useState<"details" | "booking">(
     "booking"
@@ -140,19 +141,25 @@ export const PurchaseCentherCard: React.FC<Props> = ({
 
   return (
     <div className="relative mt-4">
-      <div className="my-4 flex items-center gap-2">
-        <Button
-          title="Booking"
-          variant={currentTab === "booking" ? "primary" : "secondary"}
-          className="rounded-[10px]"
+      <div className="my-4 flex w-fit items-center gap-5">
+        <span
+          className={clsx(
+            "w-fit flex-shrink-0 cursor-pointer pb-2 font-semibold text-white",
+            currentTab === "booking" && "myBox"
+          )}
           onClick={() => setCurrentTab("booking")}
-        />
-        <Button
-          title="Project Details"
-          variant={currentTab === "details" ? "primary" : "secondary"}
-          className="rounded-[10px]"
+        >
+          Booking
+        </span>
+        <span
+          className={clsx(
+            "w-fit flex-shrink-0 cursor-pointer pb-2 font-semibold text-white",
+            currentTab === "details" && "myBox"
+          )}
           onClick={() => setCurrentTab("details")}
-        />
+        >
+          Project Details
+        </span>
       </div>
       {currentTab === "details" ? (
         <DetailsProject />

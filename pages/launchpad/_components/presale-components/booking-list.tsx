@@ -1,12 +1,10 @@
 import React from "react";
-import { PreBookingRounds } from "@/lib/get-pre-bookings-stats/types";
 import { BlockchainConfig } from "@/web3/blockchain/config";
 import { PurchaseHistory } from "../../[token_address]/[round]/_components";
 
 interface Props {
   recievableTokenSymbol: string;
   bookings: PurchaseHistory[];
-  rounds: PreBookingRounds;
   bookingsTab: "recent-bookings" | "my-bookings" | "my-rewards";
   setRoundNo: (roundNo: number) => void;
 }

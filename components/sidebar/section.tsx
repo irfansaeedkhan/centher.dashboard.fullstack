@@ -20,9 +20,7 @@ export const Section: React.FC<SectionProps> = (props) => {
 
   return (
     <div className={`flex flex-col gap-1 px-3`}>
-      <span
-        className={`pl-6 pr-4 text-[11px] font-semibold text-gray-shade-11`}
-      >
+      <span className={`px-3 text-[11px] font-semibold text-gray-shade-11`}>
         {props.section.label}
       </span>
       <div className={`flex flex-col gap-[2px]`}>
@@ -41,7 +39,15 @@ export const Section: React.FC<SectionProps> = (props) => {
                   "gradient-border-3 w-full !rounded-full px-[1.5px]"
               )}
             >
-              <div
+              <Link
+                href={
+                  item.available_for === "citizen"
+                    ? user?.membership.status === "citizen"
+                      ? item.url
+                      : AppRoutes.citizenship
+                    : item.url
+                }
+                onClick={props.onClose}
                 className={clsx(
                   item.activeList.indexOf(router.pathname) !== -1
                     ? "w-full bg-black-shade-7"
@@ -60,15 +66,7 @@ export const Section: React.FC<SectionProps> = (props) => {
                       )}
                     />
                   </div>
-                  <Link
-                    href={
-                      item.available_for === "citizen"
-                        ? user?.membership.status === "citizen"
-                          ? item.url
-                          : AppRoutes.citizenship
-                        : item.url
-                    }
-                    onClick={props.onClose}
+                  <div
                     className={
                       item.activeList.indexOf(router.pathname) !== -1
                         ? `text-sm font-medium text-white`
@@ -76,7 +74,7 @@ export const Section: React.FC<SectionProps> = (props) => {
                     }
                   >
                     <span>{item.label}</span>
-                  </Link>
+                  </div>
                 </div>
                 {!!count && props.user && (
                   <span className="flex h-5 w-9 items-center justify-center rounded-lg bg-brand-primary px-2 py-[2px] text-sm font-semibold text-black-shade-7">
@@ -84,11 +82,11 @@ export const Section: React.FC<SectionProps> = (props) => {
                   </span>
                 )}
                 {item.label === "Launchpad" && (
-                  <span className="flex h-5 w-[52px] flex-shrink-0 items-center justify-center rounded-lg bg-red-shade-1/[0.16] text-[10px] font-semibold leading-3 text-red-shade-1">
+                  <span className="mr-2 flex h-5 w-[52px] flex-shrink-0 items-center justify-center rounded-lg bg-red-shade-1/[0.16] text-[10px] font-semibold leading-3 text-red-shade-1">
                     Hot 🔥
                   </span>
                 )}
-              </div>
+              </Link>
             </div>
           );
         })}

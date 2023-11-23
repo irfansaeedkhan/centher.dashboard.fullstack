@@ -8,6 +8,7 @@ export interface ClaimedRewards {
   blockTimestamp: number;
   blockNumber: number;
   amount: string;
+  paidTax: string;
 }
 
 export class GetClaimedRewardsInput extends PaginatedRequest {

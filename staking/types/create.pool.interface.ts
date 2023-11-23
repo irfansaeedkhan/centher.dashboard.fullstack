@@ -37,6 +37,7 @@ export interface CreatePoolInput {
   isUnstakable: boolean;
   isLP: boolean;
   showOnCenther: boolean;
+  burnTax: number;
 }
 
 export interface MappedCreatePoolInput {
@@ -58,6 +59,7 @@ export interface MappedCreatePoolInput {
   isUnstakable: boolean;
   isLP: boolean;
   showOnCenther: boolean;
+  taxationPercent: number;
 }
 
 export interface AddAffiliateSettingsInput {
