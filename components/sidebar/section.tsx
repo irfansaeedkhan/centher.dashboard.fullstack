@@ -82,7 +82,7 @@ export const Section: React.FC<SectionProps> = (props) => {
                   </span>
                 )}
                 {item.label === "Launchpad" && (
-                  <span className="flex h-5 w-[52px] flex-shrink-0 items-center justify-center rounded-lg bg-red-shade-1/[0.16] text-[10px] font-semibold leading-3 text-red-shade-1">
+                  <span className="mr-2 flex h-5 w-[52px] flex-shrink-0 items-center justify-center rounded-lg bg-red-shade-1/[0.16] text-[10px] font-semibold leading-3 text-red-shade-1">
                     Hot 🔥
                   </span>
                 )}
