@@ -39,7 +39,15 @@ export const Section: React.FC<SectionProps> = (props) => {
                   "gradient-border-3 w-full !rounded-full px-[1.5px]"
               )}
             >
-              <div
+              <Link
+                href={
+                  item.available_for === "citizen"
+                    ? user?.membership.status === "citizen"
+                      ? item.url
+                      : AppRoutes.citizenship
+                    : item.url
+                }
+                onClick={props.onClose}
                 className={clsx(
                   item.activeList.indexOf(router.pathname) !== -1
                     ? "w-full bg-black-shade-7"
@@ -58,15 +66,7 @@ export const Section: React.FC<SectionProps> = (props) => {
                       )}
                     />
                   </div>
-                  <Link
-                    href={
-                      item.available_for === "citizen"
-                        ? user?.membership.status === "citizen"
-                          ? item.url
-                          : AppRoutes.citizenship
-                        : item.url
-                    }
-                    onClick={props.onClose}
+                  <div
                     className={
                       item.activeList.indexOf(router.pathname) !== -1
                         ? `text-sm font-medium text-white`
@@ -74,7 +74,7 @@ export const Section: React.FC<SectionProps> = (props) => {
                     }
                   >
                     <span>{item.label}</span>
-                  </Link>
+                  </div>
                 </div>
                 {!!count && props.user && (
                   <span className="flex h-5 w-9 items-center justify-center rounded-lg bg-brand-primary px-2 py-[2px] text-sm font-semibold text-black-shade-7">
@@ -86,7 +86,7 @@ export const Section: React.FC<SectionProps> = (props) => {
                     Hot 🔥
                   </span>
                 )}
-              </div>
+              </Link>
             </div>
           );
         })}

@@ -6,9 +6,11 @@ import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { useGetRoundsInfo } from "@/web3/hooks/use.contracts.functions";
 import { BuyCentherWrapper, PurchaseCentherCard } from "./_components";
+import { useWallet } from "@/web3/hooks/use.wallet";
 
 const Launchpad: NextPageWithLayout = () => {
   const { user } = useUser();
+  const { connectedAddress } = useWallet();
   const router = useRouter();
   const round_number = router.query.round
     ? Number(router.query.round?.toString())
@@ -22,6 +24,7 @@ const Launchpad: NextPageWithLayout = () => {
         round_number={round_number - 1}
         currentUserAddress={user?._id}
         roundInfo={roundsInfo[round_number - 1]}
+        connectedAddress={connectedAddress}
       />
     </div>
   ) : (
