@@ -9,6 +9,8 @@ import { AppRoutes } from "@/constants/app.routes";
 import { Section } from "./section";
 import SidebarAuthModal from "./sidebar.auth.modal";
 import { SidebarSections } from "./sidebar.data";
+import { IoSearchSharp } from "react-icons/io5";
+import Link from "next/link";
 
 interface SidebarMobileProps {
   sidebarOpen: boolean;
@@ -59,17 +61,29 @@ export const SidebarMobile: React.FC<SidebarMobileProps> = ({
       <div
         className={`flex h-[calc(100vh-60px)] w-[15.5rem] flex-col justify-between gap-8 overflow-y-scroll bg-background-shade-1 py-5 font-monto fxl:hidden`}
       >
-        <div className={`flex flex-col gap-6`}>
-          {SidebarSections.map((section) => {
-            return (
-              <Section
-                key={section.label}
-                user={user}
-                section={section}
-                onClose={onClose}
-              />
-            );
-          })}
+        <div>
+          <div className={`mb-4 flex items-center gap-2 pl-6 md:hidden`}>
+            <IoSearchSharp className="text-xl text-gray-shade-7" />
+            <Link
+              href={AppRoutes.search}
+              className={`text-sm font-semibold text-gray-shade-7`}
+              onClick={onClose}
+            >
+              Search
+            </Link>
+          </div>
+          <div className={`flex flex-col gap-6`}>
+            {SidebarSections.map((section) => {
+              return (
+                <Section
+                  key={section.label}
+                  user={user}
+                  section={section}
+                  onClose={onClose}
+                />
+              );
+            })}
+          </div>
         </div>
         {user && (
           <div className="flex flex-col gap-8">

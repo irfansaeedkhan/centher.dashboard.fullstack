@@ -3,7 +3,6 @@ import Image from "next/image";
 import clsx from "clsx";
 import useUser from "@/hooks/use.user";
 import { RoundInfo } from "@/web3/constants/types";
-import { usePreBookingStats } from "@/hooks/use-pre-booking-stats";
 import { BookingList } from "../../../_components/presale-components/booking-list";
 import { RewardsList } from "../../../_components/presale-components/rewards-list";
 import {
@@ -50,7 +49,6 @@ const BookingMain: React.FC<Props> = ({
   const [myBookings, setMyBookings] = useState<PurchaseHistory[]>([]);
   const [allPurchases, setAllPurchases] = useState<PurchaseHistory[]>([]);
   const [rewards, setRewards] = useState<RewardBlockchain[]>([]);
-  const { loading, preBookingStats } = usePreBookingStats(user?._id);
   const [bookingsTab, setBookingsTab] = useState<
     "recent-bookings" | "my-bookings" | "my-rewards"
   >("my-bookings");
@@ -140,30 +138,7 @@ const BookingMain: React.FC<Props> = ({
   if (!myBookings) return null;
   if (!rewards) return null;
 
-  if (loading === "failed") {
-    return (
-      <div className="text-center font-medium text-red-400">
-        Failed to load data!
-      </div>
-    );
-  }
-
-  if (loading === "loading" || loading === "idle") {
-    return (
-      <div className="mt-5 flex w-full items-center justify-center">
-        <Image
-          src="/images/preloader.png"
-          alt="Preloader"
-          width={64}
-          height={64}
-          className="h-16 w-16 flex-shrink-0 object-cover"
-        />
-      </div>
-    );
-  }
-
   if (!connectedAddress) setConnectWalletModal(true);
-  if (!preBookingStats) return null;
 
   return (
     <div>
@@ -204,8 +179,7 @@ const BookingMain: React.FC<Props> = ({
           bookingsTab === "my-bookings") && (
           <BookingList
             setRoundNo={setRoundNo}
-            recievableTokenSymbol={preBookingStats.receivable_token_symbol}
-            rounds={preBookingStats.pre_booking.rounds}
+            recievableTokenSymbol="DXC"
             bookingsTab={bookingsTab}
             bookings={
               bookingsTab === "recent-bookings"

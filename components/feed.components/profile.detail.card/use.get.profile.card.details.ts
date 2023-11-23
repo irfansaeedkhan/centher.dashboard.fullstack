@@ -20,9 +20,7 @@ export const useGetProfileCardDetails = (user: User) => {
       (async () => {
         try {
           const users = await getAllUserGenealogy(userId);
-          console.log("Users in genealogy : \n",users);
           const res = await getProfileCardDetails(userId, !!loggedInUser);
-          console.log("Users length \n",users.flat());
           res.profileCardDetails.total_referrees = users.flat().length || 0;
           setProfileCard(res.profileCardDetails);
         } catch (error: any) {
