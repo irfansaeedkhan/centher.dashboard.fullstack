@@ -65,47 +65,34 @@ export const CollectionCardV2: React.FC<CollectionCardProps> = ({
         <div className={`break-all text-[15px] font-medium text-white`}>
           {data.name}
         </div>
-        {data.creator.is_registered ? (
-          <span
-            onClick={(e) => {
-              e.stopPropagation();
-              router.push({
-                pathname: AppRoutes.profile.user_id,
-                query: {
-                  user_id: data.creator._id,
-                },
-              });
-            }}
-            className={clsx(
-              `mt-2 flex items-center text-center text-xs font-medium text-white`
-            )}
-            title={data.creator.display_name}
-          >
-            <span className="block max-w-[238px] truncate break-words">
-              {sliceDisplayName(data.creator.display_name)}
-            </span>
-            {verificationTick && (
-              <Image
-                src={verificationTick}
-                alt={"Verified"}
-                width={16}
-                height={16}
-                className="ml-0.5"
-              />
-            )}
+        <span
+          onClick={(e) => {
+            e.stopPropagation();
+            router.push({
+              pathname: AppRoutes.profile.user_id,
+              query: {
+                user_id: data.creator._id,
+              },
+            });
+          }}
+          className={clsx(
+            `mt-2 flex items-center text-center text-xs font-medium text-white`
+          )}
+          title={data.creator.display_name}
+        >
+          <span className="block max-w-[238px] truncate break-words">
+            {sliceDisplayName(data.creator.display_name)}
           </span>
-        ) : (
-          <span
-            className={clsx(
-              `mt-2 flex items-center text-center text-xs font-medium text-white`
-            )}
-            title={data.creator.display_name}
-          >
-            <span className="block max-w-[238px] truncate break-words">
-              {sliceDisplayName(data.creator.display_name)}
-            </span>
-          </span>
-        )}
+          {verificationTick && (
+            <Image
+              src={verificationTick}
+              alt={"Verified"}
+              width={16}
+              height={16}
+              className="ml-0.5"
+            />
+          )}
+        </span>
         <p
           className={`mt-4 line-clamp-1 flex-grow whitespace-pre-wrap break-all text-center text-xs font-medium text-gray-shade-14`}
         >
@@ -126,6 +113,5 @@ export interface CollectionCardData {
     _id: User["_id"];
     display_name: User["display_name"];
     membership: User["membership"];
-    is_registered: boolean;
   };
 }

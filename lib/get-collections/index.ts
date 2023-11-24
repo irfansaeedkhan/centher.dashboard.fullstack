@@ -1,6 +1,6 @@
-import { Collection } from "@/models/nft";
+import { CFSCollection, Collection } from "@/models/nft";
+import { axiosCFS } from "@/utils/axios";
 import { AppError } from "@/utils/app-error";
-import { BlockchainRead } from "@/web3/blockchain";
 
 export const getCollections = async ({
   limit = 15,
@@ -8,10 +8,12 @@ export const getCollections = async ({
 }: {
   limit?: number;
   skip?: number;
-}): Promise<Collection[]> => {
+}): Promise<CFSCollection[]> => {
   try {
-    const result = await BlockchainRead.getAllCollections(limit, skip);
-    return result;
+    const response = await axiosCFS.get<{ collections: CFSCollection[] }>(
+      `/nfts/collections?first=${limit}&skip=${skip}`
+    );
+    return response.data.collections;
   } catch (error: any) {
     throw new AppError(error, "Can not load Collections", "getCollections");
   }
@@ -23,10 +25,12 @@ export const getHotCollections = async ({
 }: {
   limit?: number;
   skip?: number;
-}): Promise<Collection[]> => {
+}): Promise<CFSCollection[]> => {
   try {
-    const result = await BlockchainRead.getHotCollections(limit, skip);
-    return result;
+    const response = await axiosCFS.get<{ collections: CFSCollection[] }>(
+      `/nfts/hot-collections?first=${limit}&skip=${skip}`
+    );
+    return response.data.collections;
   } catch (error: any) {
     throw new AppError(error, "Can not load Collections", "getHotCollections");
   }

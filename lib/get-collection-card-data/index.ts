@@ -1,39 +1,24 @@
-import axios from "axios";
-
-import { Collection } from "@/models/nft";
+import { CFSCollection } from "@/models/nft";
 import { CollectionCardData } from "@/components/collection.card/collection-card-v2";
-import { formatIPFSUrl } from "@/utils/format.address";
 import { AppError } from "@/utils/app-error";
-
-import { getCollectionCreatorData } from "../get-collection-creator-data";
 import {
   getOldName,
   isOld,
 } from "@/web3/blockchain/helpers/native.collection.helper";
 
-export const getCollectionCardData = async (
-  collection: Collection
-): Promise<CollectionCardData> => {
+export const getCollectionCardData = (
+  collection: CFSCollection
+): CollectionCardData => {
   try {
-    const nftCreatorDataPromise = getCollectionCreatorData(collection.creator);
-    const formattedUrl = formatIPFSUrl(collection.ipfs);
-    const metadataPromise = axios.get(formattedUrl);
-    const [nftCreatorData, metadata] = await Promise.all([
-      nftCreatorDataPromise,
-      metadataPromise,
-    ]);
-
-    const profileImage = formatIPFSUrl(metadata.data.profileIPFSHash);
-    const coverImage = formatIPFSUrl(metadata.data.coverIPFSHash);
     const name = isOld(collection.collection) ? getOldName() : collection.name;
 
     return {
       address: collection.id,
       name,
-      profileImage,
-      coverImage,
-      description: metadata.data.description,
-      creator: nftCreatorData,
+      profileImage: collection.ipfs_metadata.profileIPFSHash,
+      coverImage: collection.ipfs_metadata.coverIPFSHash,
+      description: collection.ipfs_metadata.description,
+      creator: collection.creator_data,
     };
   } catch (error: any) {
     throw new AppError(

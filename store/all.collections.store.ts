@@ -37,32 +37,21 @@ export const useAllCollectionsStore = create<AllCollectionsStore>()(
             skip: get().offset,
           });
 
-          const collectionCardDataPromises = _collections.map((col) =>
+          const collectionCardData = _collections.map((col) =>
             getCollectionCardData(col)
           );
 
-          const collectionCardDataResults = (
-            await Promise.allSettled(collectionCardDataPromises)
-          ).filter(
-            (col) => col.status === "fulfilled"
-          ) as PromiseFulfilledResult<CollectionCardData>[];
-
-          // Remove nfts that are already in the store
-          const filteredCollections = collectionCardDataResults.filter(
+          // Remove collections that are already in the store
+          const filteredCollections = collectionCardData.filter(
             (col) =>
               !get().collections.some(
-                (stateCollection) =>
-                  stateCollection.address === col.value.address &&
-                  col.value.creator.membership.status === "citizen"
+                (stateCollection) => stateCollection.address === col.address
               )
           );
 
           set((state) => ({
             ...state,
-            collections: [
-              ...state.collections,
-              ...filteredCollections.map((col) => col.value),
-            ],
+            collections: [...state.collections, ...filteredCollections],
             loading: "loaded",
           }));
         } catch (error: any) {

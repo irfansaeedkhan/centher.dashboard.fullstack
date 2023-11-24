@@ -1,3 +1,5 @@
+import { User } from "./user";
+
 export interface NFT {
   id: string;
   collection: string;
@@ -42,6 +44,39 @@ export interface CollectionAdditionalInfo {
   listedPercent: number;
   minPrice: number;
   ownerIncome: number;
+}
+
+export interface CFSCollection {
+  id: string;
+  collection: string;
+  name: string;
+  symbol: string;
+  maxSupply: number;
+  totalSupply: number;
+  creator: string;
+  ipfs: string;
+  txTime: number;
+  ipfs_metadata: {
+    name: string;
+    symbol: string;
+    description: string;
+    totalsupply: {
+      type: "BigNumber";
+      hex: string;
+    };
+    url: string;
+    category: Category;
+    yoursite: string;
+    facebook: string;
+    twitter: string;
+    profileIPFSHash: string;
+    coverIPFSHash: string;
+  };
+  creator_data: {
+    _id: User["_id"];
+    display_name: User["display_name"];
+    membership: User["membership"];
+  };
 }
 
 export const categories = [
