@@ -46,32 +46,10 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
             ? `url(${formatIPFSUrl("ipfs:" + card.metadata.banner)})`
             : "url(/images/profile-header-cover.jpg)",
         }}
-      >
-        <div className="absolute right-6 top-5 flex items-center gap-4">
-          {/* <Link
-            href={"/staking/staking-details/" + card.id}
-            className="textGradient text-xs font-medium"
-          >
-            View project detail
-          </Link> */}
-          <Button
-            variant="primary"
-            className="h-7 text-[10px]"
-            title="View project detail"
-            borderRounded="10px"
-            onClick={() => router.push("/staking/staking-details/" + card.id)}
-          />
-          <div
-            className={clsx(
-              "w-fit rounded-[10px] bg-black-shade-3 px-3 py-[6px] text-xs font-semibold",
-              card.is_active ? "text-[#76E268]" : "textGradient"
-            )}
-          >
-            {card.is_active ? "Active" : "Unbalanced"}
-          </div>
-        </div>
-        <div className="absolute bottom-6 left-6 my-auto">
-          <div className="flex items-center gap-4">
+      ></div>
+      <div className="xs:block w-full gap-6 sm:flex sm:justify-between">
+        <div className="flex items-center gap-4">
+          <div>
             <Image
               src={
                 card.metadata
@@ -83,10 +61,32 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
               height={44}
               className="h-11 w-11 rounded-full object-cover"
             />
+          </div>
+          <div>
             <p className="text-xl font-bold text-white">{card.pack}</p>
+
+            <div
+              className={clsx(
+                "mt-1 w-fit text-sm font-semibold",
+                card.is_active ? "text-[#76E268]" : "textGradient"
+              )}
+            >
+              {card.is_active ? "Active" : "Unbalanced"}
+            </div>
           </div>
         </div>
+        <div className="hidden items-center gap-4 sm:visible sm:flex">
+          <Button
+            variant="primary"
+            className="xs:w-full h-9 text-[12px]"
+            title="View project detail"
+            borderRounded="10px"
+            onClick={() => router.push("/staking/staking-details/" + card.id)}
+          />
+        </div>
       </div>
+
+      <div className="border-b-2 border-gray-shade-3 "></div>
       <div className="grid w-full gap-6 fsm:grid-cols-2 fsm:gap-10 fmd:grid-cols-3 flg:grid-cols-4">
         <div className={section}>
           <p className={label}>Token Address</p>
@@ -143,7 +143,6 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
             }
           </p>
         </div>
-
         <div className={section}>
           <p className={label}>Details</p>
           <p className={value}>
@@ -274,21 +273,27 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
         </div>
         {card.burn_tax && +card.burn_tax > 0 && (
           <div className={section}>
-            <p className={label}>Burn Tax on claim</p>
+            <div className="flex">
+              <p className={label}>Burn Tax on claim </p>
+              {/* <AiOutlineInfoCircle className="ml-1 mt-1 h-4 w-4 text-sky-400 hover:text-white" /> */}
+            </div>
             <p className={value}>
               {card.burn_tax ? +card.burn_tax / 100 : 0}%{" "}
             </p>
           </div>
         )}
-
         <div className={section}>
-          <p className={label}>Liquidity Pool Provided</p>
-          <p className={value2}>{card.liquidity_pool_provided}</p>
+          <p className={label}>Start Time</p>
+          <p className={value}>
+            {new Date(+card.start_time * 1000).toDateString()}
+          </p>
         </div>
-        <div className={section}>
-          <p className={label}>Is Cancelable</p>
-          <p className={value2}>{card.is_cancelable}</p>
-        </div>
+        {card.is_cancelable == "yes" ? (
+          <div className={section}>
+            <p className={label}>Charge Fee on Cancel</p>
+            <p className={value}>{+card.charge_fee_on_cancel / 100} %</p>
+          </div>
+        ) : null}
         {card.supply && +card.supply > 0 ? (
           <div className={section}>
             <p className={label}>Total Supply</p>
@@ -302,20 +307,6 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
             </p>
           </div>
         ) : null}
-
-        {card.is_cancelable == "yes" ? (
-          <div className={section}>
-            <p className={label}>Charge Fee on Cancel</p>
-            <p className={value}>{+card.charge_fee_on_cancel / 100} %</p>
-          </div>
-        ) : null}
-
-        <div className={section}>
-          <p className={label}>Start Time</p>
-          <p className={value}>
-            {new Date(+card.start_time * 1000).toDateString()}
-          </p>
-        </div>
         {card.max_staking_amount && +card.max_staking_amount > 0 ? (
           <div className={section}>
             <p className={label}>Maximum Stakable Amount</p>
@@ -358,34 +349,74 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
           </div>
         </div>
       ) : null}
+      <div className="mt-9"></div>
 
-      {card.liquidity_pool_provided == "no" ? (
-        <div
-          className="mt-2 flex items-center gap-2 rounded-xl bg-[#F68D29]/[0.3] p-6  px-4 py-3 text-sm text-[#F68D29]"
-          role="alert"
-        >
-          <p>Warning! This staking pool does not provide Liquidity pool.</p>
-          <p
-            ref={refs.setReference}
-            {...getReferenceProps()}
-            className="relative"
-          >
-            <AiOutlineInfoCircle className="h-5 w-5 hover:text-white" />
-            {isOpen && (
-              <div
-                className="absolute bottom-6 right-0 w-[300px] rounded-lg border border-gray-shade-3 bg-elevation-1 p-3 text-xs text-gray-shade-14 shadow-lg"
-                ref={refs.setFloating}
-                {...getFloatingProps()}
-              >
-                Some projects need an open liquidity pool to utilise the funds
-                staked by users and generate profits to be shared. Other times
-                an open liquidity pool indicates a favourable ground for a scam.
-                That is why you ALWAYS Do Your Own Research before investing.
-              </div>
-            )}
-          </p>
+      {card.liquidity_pool_provided == "no" && (
+        <div className={section}>
+          <div className="flex">
+            <p
+              ref={refs.setReference}
+              {...getReferenceProps()}
+              className="relative"
+            >
+              <AiOutlineInfoCircle className="mr-1 h-4 w-4 min-w-min text-orange-600 hover:text-white" />
+
+              {isOpen && (
+                <div
+                  className="absolute bottom-6 w-[300px] rounded-lg border border-gray-shade-3 bg-elevation-1 p-3 text-xs text-gray-shade-14 shadow-lg"
+                  ref={refs.setFloating}
+                  {...getFloatingProps()}
+                >
+                  Some projects need an open liquidity pool to utilise the funds
+                  staked by users and generate profits to be shared. Other times
+                  an open liquidity pool indicates a favourable ground for a
+                  scam. That is why you ALWAYS Do Your Own Research before
+                  investing.
+                </div>
+              )}
+            </p>
+            <p className={label}>
+              This staking pool does not provide Liquidity pool.
+            </p>
+          </div>
         </div>
-      ) : null}
+      )}
+
+      {card.is_cancelable == "no" && (
+        <div className={section}>
+          <div className="flex">
+            <AiOutlineInfoCircle className="mr-1 h-4 w-4 min-w-min text-orange-600 hover:text-white" />
+            <p className={label}>
+              This staking pool is <strong>irreversible</strong>, you will be
+              forced to wait for the unblocking time specified in the contract
+              once the subscription has been activated.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {card.nonRefundable && (
+        <div className={section}>
+          <div className="flex">
+            <AiOutlineInfoCircle className="mr-1 min-w-min text-orange-600 hover:text-white" />
+
+            <p className={label}>
+              All tokens staked in this pool will be used in a minting service
+              and will not be refunded at the end of the staking period.
+            </p>
+          </div>
+        </div>
+      )}
+
+      <div className="visible items-center gap-4 sm:hidden">
+        <Button
+          variant="primary"
+          className="h-10 w-full text-[14px]"
+          title="View project detail"
+          borderRounded="10px"
+          onClick={() => router.push("/staking/staking-details/" + card.id)}
+        />
+      </div>
     </div>
   );
 };
