@@ -1,6 +1,6 @@
 import { QueryNames } from "./enum/query.names.enum";
 import { ApolloProvider } from "./providers/apollo.provider";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { parseEther } from "ethers/lib/utils";
 import { JsonRpcSigner, Web3Provider } from "@ethersproject/providers";
 import { CitizenShipType } from "@/store/citizen.store";
@@ -9,7 +9,12 @@ import {
   AddAffiliateSettingsInput,
   MappedCreatePoolInput,
 } from "@/staking/types";
-import { ClaimCentherFrom, TokenName, UserReferrer } from "./types";
+import {
+  ClaimCentherFrom,
+  SignerOrProvider,
+  TokenName,
+  UserReferrer,
+} from "./types";
 import { SmartContractProvider } from "./providers/smart.contract.provider";
 import { SmartContractName } from "./enum/smart.contract.name.enum";
 import { logger } from "./helpers/alert.helper";
@@ -893,8 +898,82 @@ export class BlockchainRead {
 
     return { nfts: nfts.nfts, history: data.marketplaceSaleHistories };
   }
+
+  static async getERC20Balance(
+    account: string,
+    tokenAddress: string,
+    signer: SignerOrProvider
+  ): Promise<string> {
+    try {
+      const tokenContract = SmartContractProvider.getErc20Contract(
+        tokenAddress,
+        signer
+      );
+      const balance = await tokenContract.functions.balanceOf(account);
+      const ethValue = ethers.utils.formatUnits(
+        BigNumber.from(balance.toString())
+      );
+      return ethValue.toString();
+    } catch (error) {
+      logger(error, "getERC20Balance");
+    }
+    return "0";
+  }
+
+  static async getWalletBalance(signer: JsonRpcSigner): Promise<string> {
+    try {
+      const balance = await signer.getBalance();
+      const ethValue = ethers.utils.formatUnits(
+        BigNumber.from(balance.toString())
+      );
+      return ethValue.toString();
+    } catch (error) {
+      logger(error, "getWalletBalance");
+    }
+    return "0";
+  }
 }
 export class BlockchainWrite {
+  static async transferERC20(
+    account: string,
+    tokenAddress: string,
+    amount: string,
+    signer: SignerOrProvider
+  ): Promise<void> {
+    try {
+      signer;
+      const tokenContract = SmartContractProvider.getErc20Contract(
+        tokenAddress,
+        signer
+      );
+      const ether_amount = ethers.utils.parseUnits(amount, "ether");
+      const balance = await tokenContract.functions.transfer(
+        account,
+        ether_amount
+      );
+      await balance.wait(1);
+    } catch (error) {
+      logger(error, "getERC20Balance");
+    }
+  }
+
+  static async transferNative(
+    to: string,
+    amount: string,
+    signer: JsonRpcSigner
+  ): Promise<void> {
+    try {
+      const tx = {
+        to: to,
+        value: ethers.utils.parseUnits(amount, "ether"),
+      };
+      const transaction = await signer.sendTransaction(tx);
+      await transaction.wait(1);
+    } catch (error) {
+      logger(error, "transferNative");
+    }
+  }
+
   static async adminUnPauseRegistration(
     signer: JsonRpcSigner
   ): Promise<string> {
