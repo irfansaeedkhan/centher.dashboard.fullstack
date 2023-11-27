@@ -24,6 +24,8 @@ import Details from "./details";
 import PageButtonsWrapper from "./page-buttons";
 import SuccessModalContent from "./success-modal-content";
 import FailedModalContent from "./failed-modal-content";
+import { SwapTokens } from "./swap";
+import { SwappingProjects } from "@/staking/config";
 
 const oneYearInSec = 31449600;
 
@@ -52,6 +54,7 @@ const StakingDetailsWrapper = ({ children }: Props) => {
     Array<CoinDetails | undefined>
   >([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasSwapping, setHasSwapping] = useState(false);
   const [stakingPool, setStakingPool] = useState<ListCardDataOBj | null>(null);
   const [rewardEstimation, setRewardEstimation] = useState<{
     claim: string;
@@ -165,6 +168,12 @@ const StakingDetailsWrapper = ({ children }: Props) => {
       });
     }
   }, [stakingValue, stakingPool]);
+
+  useEffect(() => {
+    if (stakingPool) {
+      setHasSwapping(SwappingProjects.includes(stakingPool.id));
+    }
+  }, [stakingPool]);
 
   const stakingValueChanges = (value: string) => {
     setStakingValue(value);
@@ -423,6 +432,8 @@ const StakingDetailsWrapper = ({ children }: Props) => {
             )}
           </div>
         )}
+      {hasSwapping ? <SwapTokens /> : null}
+
       {children}
       {isLoading && <PreLoader />}
       {ModalModel.visibility && (
