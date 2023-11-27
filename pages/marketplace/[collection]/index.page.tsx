@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import axios from "axios";
 import toast from "react-hot-toast";
 import clsx from "clsx";
 import { useOnClickOutside } from "usehooks-ts";
@@ -17,7 +16,6 @@ import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import useGetUser from "@/hooks/use.get.user";
 import { AppRoutes } from "@/constants/app.routes";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
-import { GlobalTokenBlackList } from "@/web3/blockchain/helpers/blacklist.helper";
 import { formatBNB2USD, formatIPFSUrl } from "@/utils/format.address";
 import { copyText } from "@/utils/copy.text";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
@@ -90,25 +88,18 @@ const Collection: NextPageWithLayout = () => {
   }));
 
   const { user } = useGetUser(info?.creator);
-  const [metadata, setMetadata] = useState<any>();
   const [orderdir, setOrderDir] = useState<OrderDirection>("desc");
   const [coverImageUrl, setCoverImageUrl] = useState("");
   const [profileImageUrl, setProfileImageUrl] = useState("");
   const verificationTick = useVerificationTick({ user });
 
   useEffect(() => {
-    const fetchMetadata = async (ipfs: string) => {
-      try {
-        const _metadata = await axios.get(formatIPFSUrl(ipfs));
-        setMetadata(_metadata.data);
-        setCoverImageUrl(formatIPFSUrl(_metadata.data.coverIPFSHash));
-        setProfileImageUrl(formatIPFSUrl(_metadata.data.profileIPFSHash));
-      } catch (error) {}
-    };
-    if (info && info.ipfs) {
-      fetchMetadata(info.ipfs);
+    if (info) {
+      setCoverImageUrl(formatIPFSUrl(info.ipfs_metadata.coverIPFSHash));
+      setProfileImageUrl(info.ipfs_metadata.profileIPFSHash);
     }
   }, [info]);
+
   const [lastNotiRef, _lastNotiInView, lastNotiEntry] = useInView();
 
   useEffect(() => {
@@ -130,15 +121,9 @@ const Collection: NextPageWithLayout = () => {
   useEffect(() => {
     if (collection) {
       fetchCollectionInfo(collection as string);
+      updateCollectionAdditionalInfo();
     }
-
-    if (collection && info?.creator) {
-      updateCollectionAdditionalInfo(
-        collection as string,
-        info.creator as string
-      );
-    }
-  }, [collection, fetchCollectionInfo, updateCollectionAdditionalInfo, info]);
+  }, [collection, fetchCollectionInfo, updateCollectionAdditionalInfo]);
 
   useOnClickOutside(menuRef, () => {
     setIsMenuVisible(false);
@@ -169,13 +154,13 @@ const Collection: NextPageWithLayout = () => {
         {loadingCollectionInfo === "loading" ||
         loadingCollectionInfo === "idle" ? (
           <NftCollectionProfileSkeleton />
-        ) : (
+        ) : info ? (
           <div className="rounded-xl bg-background-shade-3">
             <div className="relative h-[31vh] w-full rounded-t-2xl border-b border-gray-shade-5">
-              {metadata && metadata.coverIPFSHash && (
+              {info.ipfs_metadata.coverIPFSHash && (
                 <Image
                   src={coverImageUrl}
-                  alt={metadata.name}
+                  alt={info.ipfs_metadata.name}
                   fill
                   className="rounded-t-2xl object-cover"
                   onError={() =>
@@ -187,14 +172,14 @@ const Collection: NextPageWithLayout = () => {
               <div className="absolute bottom-4 right-6 text-sm">
                 <div ref={menuRef} className="relative">
                   <div className="flex items-center justify-center gap-5">
-                    {(metadata?.facebook ||
-                      metadata?.twitter ||
-                      metadata?.yoursite) && (
+                    {(info.ipfs_metadata.facebook ||
+                      info.ipfs_metadata.twitter ||
+                      info.ipfs_metadata.yoursite) && (
                       <div className="hidden h-[44px] w-[100px] items-center justify-center rounded-10px !bg-[#17171A]/30 fsm:flex">
                         <div className="flex items-center justify-center gap-3">
-                          {metadata.facebook && (
+                          {info.ipfs_metadata.facebook && (
                             <a
-                              href={metadata.facebook}
+                              href={info.ipfs_metadata.facebook}
                               target="_blank"
                               rel="noreferrer"
                             >
@@ -202,9 +187,9 @@ const Collection: NextPageWithLayout = () => {
                             </a>
                           )}
 
-                          {metadata.twitter && (
+                          {info.ipfs_metadata.twitter && (
                             <a
-                              href={metadata.twitter}
+                              href={info.ipfs_metadata.twitter}
                               target="_blank"
                               rel="noreferrer"
                             >
@@ -212,9 +197,9 @@ const Collection: NextPageWithLayout = () => {
                             </a>
                           )}
 
-                          {metadata.yoursite && (
+                          {info.ipfs_metadata.yoursite && (
                             <a
-                              href={metadata.yoursite}
+                              href={info.ipfs_metadata.yoursite}
                               target="_blank"
                               rel="noreferrer"
                             >
@@ -278,9 +263,9 @@ const Collection: NextPageWithLayout = () => {
                         isMobileMenuVisible ? "z-40 block" : "hidden"
                       )}
                     >
-                      {metadata?.facebook && (
+                      {info.ipfs_metadata.facebook && (
                         <a
-                          href={metadata.facebook}
+                          href={info.ipfs_metadata.facebook}
                           target="_blank"
                           rel="noreferrer"
                           className={menuButton}
@@ -288,9 +273,9 @@ const Collection: NextPageWithLayout = () => {
                           <TiSocialFacebook className={icon} /> Facebook Link
                         </a>
                       )}
-                      {metadata?.twitter && (
+                      {info.ipfs_metadata.twitter && (
                         <a
-                          href={metadata.twitter}
+                          href={info.ipfs_metadata.twitter}
                           target="_blank"
                           rel="noreferrer"
                           className={menuButton}
@@ -298,9 +283,9 @@ const Collection: NextPageWithLayout = () => {
                           <TiSocialTwitter className={icon} /> Twitter Link
                         </a>
                       )}
-                      {metadata?.yoursite && (
+                      {info.ipfs_metadata.yoursite && (
                         <a
-                          href={metadata.yoursite}
+                          href={info.ipfs_metadata.yoursite}
                           target="_blank"
                           rel="noreferrer"
                           className={menuButton}
@@ -330,7 +315,7 @@ const Collection: NextPageWithLayout = () => {
                 </div>
               </div>
 
-              {metadata && metadata.profileIPFSHash && (
+              {info.ipfs_metadata.profileIPFSHash && (
                 <div className="absolute -bottom-12 left-[50%] h-[112px] !w-[112px] translate-x-[-50%] cursor-pointer lg:left-6 lg:translate-x-[0]">
                   <Image
                     src={profileImageUrl}
@@ -428,7 +413,7 @@ const Collection: NextPageWithLayout = () => {
                   <div className="text-left fmd:text-center">
                     <h4 className={detailsCardTitle}>Market Price</h4>
                     <h5 className={detailsCardValue}>
-                      ${formatNumber(Number(info?.tradingVolumn))}
+                      ${formatNumber(Number(info.tradingVolumn))}
                     </h5>
                   </div>
                   <div className="text-left fmd:text-center">
@@ -436,8 +421,8 @@ const Collection: NextPageWithLayout = () => {
                     <h5 className={detailsCardValue}>
                       $
                       {formatNumber(
-                        info?.tradingVolumn && info?.tradingVolumn > 0
-                          ? formatBNB2USD(info?.tradingVolumn, bnbPrice)
+                        info?.tradingVolumn && Number(info.tradingVolumn) > 0
+                          ? formatBNB2USD(info.tradingVolumn, bnbPrice)
                           : 0
                       )}
                     </h5>
@@ -446,12 +431,12 @@ const Collection: NextPageWithLayout = () => {
               </div>
               <div className="mb-4 mt-6">
                 <p className="word-break text-sm font-normal leading-6 text-gray-shade-16">
-                  {metadata?.description}
+                  {info.ipfs_metadata.description}
                 </p>
               </div>
             </div>
           </div>
-        )}
+        ) : null}
         {/* nft tabs */}
         <div className="mt-6">
           <div className="flex flex-col items-center justify-between gap-5 fsm:flex-row">

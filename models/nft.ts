@@ -28,16 +28,17 @@ export interface Collection {
 }
 
 export interface CollectionInfo {
+  id: string;
+  collection: string;
+  name: string;
+  symbol: string;
+  maxSupply: number;
+  totalSupply: number;
+  creator: string;
+  ipfs: string;
   txTime: number;
   tradingVolumn: number;
-  totalSupply: number;
-  symbol: string;
-  name: string;
-  maxSupply: number;
-  ipfs: string;
-  creator: string;
   createHash: string;
-  collection: string;
 }
 
 export interface CollectionAdditionalInfo {
@@ -51,11 +52,13 @@ export interface CFSCollection {
   collection: string;
   name: string;
   symbol: string;
-  maxSupply: number;
-  totalSupply: number;
+  maxSupply: string;
+  totalSupply: string;
   creator: string;
   ipfs: string;
-  txTime: number;
+  txTime: string;
+  createHash: string;
+  tradingVolumn: string;
   ipfs_metadata: {
     name: string;
     symbol: string;

@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
-
 import { getCollections } from "@/lib/get-collections";
 import { getCollectionCardData } from "@/lib/get-collection-card-data";
 import { AppError } from "@/utils/app-error";

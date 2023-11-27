@@ -5,12 +5,12 @@ import axios from "axios";
 import clsx from "clsx";
 import { formatIPFSUrl } from "@/utils/format.address";
 import useGetUser from "@/hooks/use.get.user";
-import { Collection } from "@/models/nft";
+import { CFSCollection } from "@/models/nft";
 import { AppRoutes } from "@/constants/app.routes";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 
 export interface CollectionCardProps {
-  data: Collection;
+  data: CFSCollection;
 }
 
 export const CollectionCard: React.FC<CollectionCardProps> = ({ data }) => {

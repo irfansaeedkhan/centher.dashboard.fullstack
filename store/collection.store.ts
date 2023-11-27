@@ -2,24 +2,21 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { LoadingState } from "@/models/common";
 import {
+  CFSCollection,
   CFSNFT,
   CollectionAdditionalInfo,
-  CollectionInfo,
   NFTSaleStateFilter,
   OrderDirection,
 } from "@/models/nft";
 import { NFTCardData } from "@/components/nft.card";
 import { getNFTCardData } from "@/lib/get-nft-card-data/index";
+import { getSingleCollection } from "@/lib/get-single-collection";
 import { getNFTListOfSingleCollection } from "@/lib/get-nft-list-of-single-collection";
 import { BlockchainRead } from "@/web3/blockchain";
-import {
-  getOldName,
-  isOld,
-} from "@/web3/blockchain/helpers/native.collection.helper";
 import { customLog } from "@/utils/custom.log";
 
 export interface CollectionStore {
-  info: CollectionInfo | undefined;
+  info: CFSCollection | undefined;
   fetchCollectionInfo: (collection: string) => Promise<void>;
   nfts: NFTCardData[];
   fetchNFTs: (
@@ -37,7 +34,7 @@ export interface CollectionStore {
   loadingCollectionInfo: LoadingState;
   loadingNFTs: LoadingState;
   collectionAdditionalDetails: CollectionAdditionalInfo | undefined;
-  updateCollectionAdditionalInfo: (collection: string, user: string) => void;
+  updateCollectionAdditionalInfo: () => Promise<void>;
 }
 
 export const useCollectionStore = create<CollectionStore>()(
@@ -66,31 +63,13 @@ export const useCollectionStore = create<CollectionStore>()(
       fetchCollectionInfo: async (collection) => {
         try {
           set({ loadingCollectionInfo: "loading" });
-          let _collection: CollectionInfo = await BlockchainRead.getCollection(
+          let _collection: CFSCollection = await getSingleCollection(
             collection
           );
 
-          let col: CollectionInfo;
-          if (isOld(collection)) {
-            col = {
-              name: getOldName(),
-              txTime: _collection.txTime,
-              tradingVolumn: _collection.tradingVolumn,
-              totalSupply: _collection.totalSupply,
-              symbol: _collection.symbol,
-              maxSupply: _collection.maxSupply,
-              ipfs: _collection.ipfs,
-              creator: _collection.creator,
-              createHash: _collection.createHash,
-              collection: _collection.collection,
-            };
-          } else {
-            col = _collection;
-          }
-
-          set((state) => {
+          set(() => {
             return {
-              info: col,
+              info: _collection,
               loadingCollectionInfo: "loaded",
             };
           });
@@ -135,12 +114,15 @@ export const useCollectionStore = create<CollectionStore>()(
           customLog(["development", "staging"], error);
         }
       },
-      updateCollectionAdditionalInfo: async (
-        collection: string,
-        user: string
-      ) => {
+      updateCollectionAdditionalInfo: async () => {
+        const info = get().info;
+        if (!info) return;
+
         const { nfts: result, history } =
-          await BlockchainRead.getCollectionAdditionalInfo(collection, user);
+          await BlockchainRead.getCollectionAdditionalInfo(
+            info.collection,
+            info.creator
+          );
 
         const listedItems = result.filter(
           (e: any) =>

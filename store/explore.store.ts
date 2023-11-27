@@ -1,15 +1,13 @@
-// React, Next, NPM Packages
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
-
-// App imports
 import { LoadingState } from "@/models/common";
-import { Collection, NFT } from "@/models/nft";
+import { CFSCollection, NFT } from "@/models/nft";
 import { BlockchainRead } from "@/web3/blockchain";
+import { getHotCollections } from "@/lib/get-collections";
 
 export interface ExploreStore {
   hotNFTs: NFT[];
-  collections: Collection[];
+  collections: CFSCollection[];
   topCreators: string[];
   fetchHotNFTs: () => Promise<void>;
   fetchCollections: () => Promise<void>;
@@ -22,6 +20,7 @@ export interface ExploreStore {
 const MAX_TOP_CREATORS = 10;
 const MAX_HOT_NFTS = 10;
 const MAX_COLLECTIONS = 10;
+
 export const useExploreStore = create<ExploreStore>()(
   devtools(
     (set) => ({
@@ -78,12 +77,14 @@ export const useExploreStore = create<ExploreStore>()(
       fetchCollections: async () => {
         try {
           set({ loadingCollections: "loading" });
-          const _collections: Collection[] =
-            await BlockchainRead.getAllCollections(MAX_COLLECTIONS, 0);
+          const collections: CFSCollection[] = await getHotCollections({
+            limit: MAX_COLLECTIONS,
+            skip: 0,
+          });
 
-          set((state) => {
+          set(() => {
             return {
-              collections: _collections,
+              collections,
               loadingCollections: "loaded",
             };
           });
