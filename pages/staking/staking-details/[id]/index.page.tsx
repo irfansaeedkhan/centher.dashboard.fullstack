@@ -187,9 +187,10 @@ const StakingDetails: NextPageWithLayout = () => {
           </div>
           <div>
             <p className="text-xs font-medium text-gray-shade-14">
-              Locker Expiration
+              Staking Expiration
             </p>
             <p className="mt-[6px] font-semibold text-white">
+              {}
               {new Date(expireTime * 1000).toLocaleDateString()}
             </p>
           </div>

@@ -26,6 +26,7 @@ export type ListCardDataOBj = {
   totalStakedAmount: string;
   totalPaidReward: string;
   rate: number;
+  nonRefundable: boolean;
   multilevel_rewards?:
     | "No referral"
     | "Fix Commission (0 to 6 levels)"

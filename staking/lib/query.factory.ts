@@ -47,6 +47,7 @@ const queries: Queries = {
       cancellationFees
       annualStakingRewardRate
       tax
+      nonRefundable
     }
   }`,
   GET_PROJECT: `query MyQuery($id: ID = "") {
@@ -82,6 +83,7 @@ const queries: Queries = {
       cancellationFees
       annualStakingRewardRate
       tax
+      nonRefundable
       transfers {
         endAt
         createdAt
