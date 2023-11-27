@@ -86,6 +86,7 @@ export function setupCreatePoolData(
     isUnstakable: input.isUnstakable,
     isLP: input.isLP,
     showOnCenther: input.showOnCenther,
+    taxationPercent: input.burnTax * 100,
   };
 }
 
@@ -131,6 +132,8 @@ export function setupUiModels(input: StakingProject[]): ListCardDataOBj[] {
       metadataUrl: e.metadataUri,
       users: e.users,
       transfers: e.transfers,
+      burn_tax: e.tax + "",
+      nonRefundable: e.nonRefundable,
     };
   });
 }

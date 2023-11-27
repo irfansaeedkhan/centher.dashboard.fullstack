@@ -31,6 +31,7 @@ import {
   GET_USER_TOTAL_SOLD_NFTS,
   hotCollectionsQuery,
   purchaseWithBusdHistoryByUser,
+  allPurchasesHistoryByUser,
   purchaseWithNtrHistoryByUser,
 } from "@/subgraph/querys";
 import { QueryNames } from "../enum/query.names.enum";
@@ -64,6 +65,7 @@ export class QueryFactory {
     REFERRER_CLAIM_PRESALE: referrerClaimPresaleQuery,
     PURCHASE_WITH_BUSD: purchaseWithBusdHistory,
     PURCHASE_WITH_NTR: purchaseWithNtrHistory,
+    PURCHASE_BY_USER: allPurchasesHistoryByUser,
     PURCHASE_WITH_BUSD_BY_USER: purchaseWithBusdHistoryByUser,
     PURCHASE_WITH_NTR_BY_USER: purchaseWithNtrHistoryByUser,
     CLAIM_CENTHER_HISTORY: claimCentherHistory,

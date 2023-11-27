@@ -17,7 +17,7 @@ export const stakingPeriodOptions = [
   { title: "6 Months", value: 180 * 24 * 60 * 60 },
   { title: "12 Months", value: 1 * 365 * 24 * 60 * 60 },
   { title: "18 Months", value: 1 * 545 * 24 * 60 * 60 },
-  { title: "24 Months", value: 2 * 365 * 24 * 60 * 60 },
+  { title: "24 Months", value: 62899200 },
   { title: "36 Months", value: 3 * 365 * 24 * 60 * 60 },
   { title: "48 Months", value: 4 * 365 * 24 * 60 * 60 },
   { title: "Forever", value: 10 * 365 * 24 * 60 * 60 },

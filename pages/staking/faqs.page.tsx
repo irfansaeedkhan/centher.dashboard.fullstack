@@ -51,6 +51,17 @@ const Faqs: NextPageWithLayout = () => {
         </div>
       </div>
 
+      <div className="tracking-[1.4px] text-white">
+        You haven&apos;t found what you were searching for? visit{" "}
+        <Link
+          className=" text-brand-primary hover:underline"
+          href={"https://centher.io/academy/centher-features"}
+        >
+          Centher Academy
+        </Link>{" "}
+        to find out more about Staking and much else!
+      </div>
+
       <div className="flex w-full flex-col gap-4">
         {faqsData.map((faq) => {
           return <SingleFaq faq={faq} key={faq.id} />;

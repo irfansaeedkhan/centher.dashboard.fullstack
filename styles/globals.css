@@ -416,15 +416,13 @@
   .gradientborders2 {
     animation: animate 2s linear infinite;
     border: 1px transparent;
-    border-radius: 8px;
     background-image: linear-gradient(#1b1c22, #1b1c22),
       radial-gradient(
-        circle at top left,
-
+        circle at bottom left,
+        #76e268 2.54%,
+        #ffd505 17.11%,
         #5691ff -9.34%,
         #72f6d1 17.09%,
-        #76e268 48.54%,
-        #ffd505 78.11%,
         #ff5e52 107.63%
       );
     background-origin: border-box;
@@ -851,7 +849,7 @@
     border-top: transparent;
     border-right: transparent;
 
-    border-bottom: 2px solid transparent;
+    border-bottom: 3px solid transparent;
     border-image: linear-gradient(
       270.23deg,
       #5691ff -9.34%,

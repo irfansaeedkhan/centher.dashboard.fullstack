@@ -1,9 +1,7 @@
 import React, { RefObject, useRef } from "react";
-import Link from "next/link";
 import clsx from "clsx";
 import toast from "react-hot-toast";
 import { useOnClickOutside } from "usehooks-ts";
-import { IoSearchSharp } from "react-icons/io5";
 import { logout } from "@/lib/auth";
 import useUser from "@/hooks/use.user";
 import { Logout } from "@/assets/svgs";
@@ -11,6 +9,8 @@ import { AppRoutes } from "@/constants/app.routes";
 import { Section } from "./section";
 import SidebarAuthModal from "./sidebar.auth.modal";
 import { SidebarSections } from "./sidebar.data";
+import { IoSearchSharp } from "react-icons/io5";
+import Link from "next/link";
 
 interface SidebarMobileProps {
   sidebarOpen: boolean;

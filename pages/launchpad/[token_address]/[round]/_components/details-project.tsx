@@ -1,9 +1,6 @@
 import React from "react";
 import { FiInstagram, FiYoutube } from "react-icons/fi";
-import Image from "next/image";
 import { SiBinance } from "react-icons/si";
-import useUser from "@/hooks/use.user";
-import { usePreBookingStats } from "@/hooks/use-pre-booking-stats";
 import {
   LinkNewIcon,
   NewTelegramIcon,
@@ -14,37 +11,10 @@ import {
 import TeamMembers from "./team-members";
 
 const DetailsProject = () => {
-  const { user } = useUser();
-  const { loading, preBookingStats } = usePreBookingStats(user?._id);
-
-  if (loading === "failed") {
-    return (
-      <div className="text-center font-medium text-red-400">
-        Failed to load data!
-      </div>
-    );
-  }
-
-  if (loading === "loading" || loading === "idle") {
-    return (
-      <div className="mt-5 flex w-full items-center justify-center">
-        <Image
-          src="/images/preloader.png"
-          alt="Preloader"
-          width={64}
-          height={64}
-          className="h-16 w-16 flex-shrink-0 object-cover"
-        />
-      </div>
-    );
-  }
-
-  if (!preBookingStats) return null;
-
   return (
     <div className="flex h-auto w-full flex-col gap-6 rounded-xl border border-gray-shade-3 bg-black-shade-9 p-4 fsm:p-6 flg:p-8 fxl:p-10">
       <div className="text-base font-semibold text-white fmd:text-xl">
-        About {preBookingStats.receivable_token_name}
+        About DeXa Coin
       </div>
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-3">
@@ -115,7 +85,9 @@ const DetailsProject = () => {
               rel="noreferrer noopener"
               className="centher-social-button flex select-none items-center gap-2 rounded-[11px] bg-elevation-1 px-[10px] py-[6px] text-xs font-medium text-gray-shade-14"
             >
-              <CentherIcon />
+              <span className="h-5 w-5 flex-shrink-0">
+                <CentherIcon />
+              </span>
               <span>Centher</span>
             </a>
           </div>
@@ -177,4 +149,3 @@ const DetailsProject = () => {
 export default DetailsProject;
 
 const button = `group flex select-none items-center gap-2 rounded-[11px] bg-elevation-1 stroke-gray-shade-14 px-[10px] py-[6px] text-xs font-medium text-gray-shade-14 hover:text-white`;
-const centher_button = `group flex select-none items-center gap-2 rounded-[11px] bg-elevation-1 px-[10px] py-[6px] text-xs font-medium text-gray-shade-14 hover:text-white`;

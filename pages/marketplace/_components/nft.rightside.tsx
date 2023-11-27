@@ -15,7 +15,7 @@ import { formatAddress } from "@/utils/format.address";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 import { getUserImageUrl } from "@/utils/user.helpers";
 import { AppRoutes } from "@/constants/app.routes";
-import { ShareBigIcon, LinkIcon, TwitterSvg } from "@/assets/svgs";
+import { ShareBigIcon, LinkIcon, XIcon } from "@/assets/svgs";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import { User } from "@/models/user";
 import { useWallet } from "@/web3/hooks/use.wallet";
@@ -142,7 +142,7 @@ export const NFTRightSideComponent = ({
 
             <TwitterShareButton url={shareUrl} className="w-full">
               <span className={toggleListBtn}>
-                <TwitterSvg className={toggleListIcons} /> Share on twitter
+                <XIcon className={toggleListIcons} /> Share on twitter
               </span>
             </TwitterShareButton>
           </div>

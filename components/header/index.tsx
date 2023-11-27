@@ -8,14 +8,12 @@ import useUser from "@/hooks/use.user";
 import { AppRoutes } from "@/constants/app.routes";
 import { MenuClose } from "@/assets/svgs";
 import { BuyCitizenshipModal } from "@/components/modal/buy-citizenship-modal";
-import { useCentherLive } from "@/hooks/chat";
 import { SidebarMobile } from "../sidebar/sidebar.mobile";
 import Button from "../button";
 import HeaderProfile from "./header.profile";
 import SearchBar from "./search";
 
 const Header = () => {
-  const { adapter } = useCentherLive();
   const { width } = useWindowSize();
   const [showBuyCitizenshipModal, setShowBuyCitizenshipModal] = useState(false);
   const { user, isLoading: isUserLoading } = useUser();
@@ -77,7 +75,6 @@ const Header = () => {
 
       <div className={`flex flex-grow items-center justify-end gap-6`}>
         {user && <SearchBar />}
-
         {!user && !isUserLoading && (
           <Link href={AppRoutes.auth.login}>
             <Button

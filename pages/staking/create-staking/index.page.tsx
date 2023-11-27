@@ -333,6 +333,7 @@ const CreateStaking: NextPageWithLayout = () => {
       }),
     multilevel_rewards: Joi.string().max(100).label("multilevel rewards"),
     apy: Joi.number().min(0).label("apy"),
+    burn_tax: Joi.number().min(0).optional().allow("").label("burn_tax"),
     staking_reward_token_price_ratio: Joi.number()
       .max(1000000)
       .min(0)
@@ -498,6 +499,7 @@ const CreateStaking: NextPageWithLayout = () => {
       explorers: data.explorers,
       category: data.category,
       description: data.description,
+      burn_tax: data.burn_tax,
       centher: "",
       members: members,
     };
@@ -613,6 +615,7 @@ const CreateStaking: NextPageWithLayout = () => {
       isUnstakable: data.is_cancelable == "yes" ? true : false,
       isLP: data.liquidity_pool_provided == "yes" ? true : false,
       showOnCenther: data.show_on_centher == "yes" ? true : false,
+      burnTax: data.burn_tax || 0,
     };
 
     const files: StakingFiles = {
@@ -797,6 +800,7 @@ const CreateStaking: NextPageWithLayout = () => {
         token_address: "",
         multilevel_rewards: "",
         apy: null,
+        burn_tax: 0,
         staking_reward_token_price_ratio: null,
         staking_period: "",
         start_date: "",
@@ -1551,6 +1555,32 @@ const CreateStaking: NextPageWithLayout = () => {
                   {stakingForm.formState.errors.claim_period && (
                     <p className={`pb-2 text-xs font-medium text-red-500`}>
                       {stakingForm.formState.errors.claim_period.message}
+                    </p>
+                  )}
+                </div>
+                {/* Burn Tax on claim */}
+                <div className="col-span-2 mb-6 w-full text-sm font-medium text-white md:col-span-1 md:mb-0">
+                  <label
+                    htmlFor="burn_tax"
+                    className="block font-normal tracking-wide"
+                  >
+                    Burn Tax on claim
+                  </label>
+                  <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
+                    <input
+                      type="number"
+                      {...stakingForm.register("burn_tax")}
+                      id="burn_tax"
+                      placeholder="0%"
+                      className="block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
+                    />
+                  </div>
+                  <p className="text-gradient pb-2 pt-1 text-xs font-medium">
+                    By claiming your tokens X% of it will be burned
+                  </p>
+                  {stakingForm.formState.errors.burn_tax && (
+                    <p className={`pb-2 text-xs font-medium text-red-500`}>
+                      {stakingForm.formState.errors.burn_tax.message}
                     </p>
                   )}
                 </div>
@@ -2311,7 +2341,6 @@ const CreateStaking: NextPageWithLayout = () => {
                   </div>
                 </div>
               </div>
-
               {!isConnected ? (
                 <div>
                   <ConnectWalletComp

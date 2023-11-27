@@ -37,6 +37,7 @@ enum ModalType {
 }
 
 const StakingDetailsWrapper = ({ children }: Props) => {
+  const router = useRouter();
   const { getSigner, connectedAddress } = useWallet();
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
@@ -58,7 +59,6 @@ const StakingDetailsWrapper = ({ children }: Props) => {
   } | null>(null);
   const [stakingValue, setStakingValue] = useState<string>("0");
   const [stakeLoader, setStakeLoader] = useState<boolean>(false);
-  const router = useRouter();
 
   useEffect(() => {
     const poolId = router.query.id as string;
@@ -105,7 +105,7 @@ const StakingDetailsWrapper = ({ children }: Props) => {
         maxAmount: stakingPool.max_staking_amount,
       });
     }
-  }, [stakingPool]);
+  }, [stakingPool, stakingStat]);
 
   useEffect(() => {
     const getCoinDetails = async (tokens: string[]) => {
@@ -164,7 +164,7 @@ const StakingDetailsWrapper = ({ children }: Props) => {
         claim: claim * coef + "",
       });
     }
-  }, [stakingValue]);
+  }, [stakingValue, stakingPool]);
 
   const stakingValueChanges = (value: string) => {
     setStakingValue(value);
@@ -285,154 +285,140 @@ const StakingDetailsWrapper = ({ children }: Props) => {
   const modal = new ModalManager(setModalModel, modalTemplateCollection);
 
   return stakingStat ? (
-    <PageButtonsWrapper>
-      <div className="mx-auto h-auto w-full rounded-xl border border-gray-shade-3 bg-black-shade-9 px-5 pb-8 pt-10 fmd:px-10">
-        <Details data={stakingPool} />
-        <div className="flex h-fit flex-col gap-8 py-8 flg:flex-row">
-          {stakingStat && (
-            <StakeNow
-              data={stakingStat}
-              onValueChanged={stakingValueChanges}
-              onSubmit={stakeSubmit}
-              coins={coinsDetails}
-              start={stakingPool?.start_time || "1"}
-              stakingLoader={stakeLoader}
-            />
-          )}
-          <div className="h-auto w-full rounded-2xl border border-gray-shade-3 p-8 flg:max-w-[512px]">
-            <p className="textGradient text-xl font-semibold">
-              Reward Calculation
-            </p>
-            <div className="mt-11 flex items-center justify-between gap-5">
-              <p className="flex items-center gap-2 text-sm text-gray-shade-14">
-                <span>APY (%)</span>
-                <AiOutlineInfoCircle className="h-4 w-4" />
-              </p>
-              <p className="text-sm font-medium text-white">
-                {(stakingPool ? +stakingPool.apy : 0) / 100} %
-              </p>
-            </div>
-            <div className="mt-6 flex items-center justify-between gap-5">
-              <p className="flex items-center gap-2 text-sm text-gray-shade-14">
-                <span>Total staked</span>
-              </p>
-              <p className="text-sm font-medium text-white">
-                {Number(
-                  formatUnits(
-                    stakingPool?.totalStakedAmount + "",
-                    coinsDetails.find((e) =>
-                      eqAddress(e?.contractAddress, stakingPool?.token_address)
-                    )?.decimals || 18
-                  )
-                )?.toFixed(2)}{" "}
-                {
-                  coinsDetails.find((e) =>
-                    eqAddress(e?.contractAddress, stakingPool?.token_address)
-                  )?.symbol
-                }
-              </p>
-            </div>
-            <div className="mt-6 flex items-center justify-between gap-5">
-              <p className="flex items-center gap-2 text-sm text-gray-shade-14">
-                <span>Total paid rewards</span>
-              </p>
-              <p className="text-sm font-medium text-white">
-                {Number(
-                  formatUnits(
-                    stakingPool?.totalPaidReward + "",
-                    coinsDetails.find((e) =>
-                      eqAddress(
-                        e?.contractAddress,
-                        stakingPool?.reward_token_address
+    <PageButtonsWrapper stakingPool={stakingPool}>
+      {!router.pathname.includes("rewards") &&
+        !router.pathname.includes("referrals") && (
+          <div className="mx-auto h-auto w-full rounded-xl border border-gray-shade-3 bg-black-shade-9 px-5 pb-8 pt-10 fmd:px-10">
+            <Details data={stakingPool} />
+            <div className="flex h-fit flex-col gap-8 py-8 flg:flex-row">
+              {stakingStat && (
+                <StakeNow
+                  data={stakingStat}
+                  onValueChanged={stakingValueChanges}
+                  onSubmit={stakeSubmit}
+                  coins={coinsDetails}
+                  start={stakingPool?.start_time || "1"}
+                  stakingLoader={stakeLoader}
+                />
+              )}
+              <div className="h-auto w-full rounded-2xl border border-gray-shade-3 p-8 flg:max-w-[512px]">
+                <p className="textGradient text-xl font-semibold">
+                  Reward Calculation
+                </p>
+                <div className="mt-11 flex items-center justify-between gap-5">
+                  <p className="flex items-center gap-2 text-sm text-gray-shade-14">
+                    <span>APY (%)</span>
+                    <AiOutlineInfoCircle className="h-4 w-4" />
+                  </p>
+                  <p className="text-sm font-medium text-white">
+                    {(stakingPool ? +stakingPool.apy : 0) / 100} %
+                  </p>
+                </div>
+                <div className="mt-6 flex items-center justify-between gap-5">
+                  <p className="flex items-center gap-2 text-sm text-gray-shade-14">
+                    <span>Total staked</span>
+                  </p>
+                  <p className="text-sm font-medium text-white">
+                    {Number(
+                      formatUnits(
+                        stakingPool?.totalStakedAmount + "",
+                        coinsDetails.find((e) =>
+                          eqAddress(
+                            e?.contractAddress,
+                            stakingPool?.token_address
+                          )
+                        )?.decimals || 18
                       )
-                    )?.decimals || 18
-                  )
-                )?.toFixed(2)}{" "}
-                {
-                  coinsDetails.find((e) =>
-                    eqAddress(
-                      e?.contractAddress,
-                      stakingPool?.reward_token_address
-                    )
-                  )?.symbol
-                }
-              </p>
-            </div>
-            <div className="mb-6 mt-6 flex items-center justify-between gap-5">
-              <p className="flex items-center gap-2 text-sm text-gray-shade-14">
-                <span>Stakers</span>
-              </p>
-              <p className="text-sm font-medium text-white">
-                {stakingPool?.users ? stakingPool?.users.length : 0}
-              </p>
-            </div>
-            <div className="border-b-2 border-gray-shade-3"></div>
-            <div className="mt-6 flex items-center justify-between gap-5">
-              <p className="flex items-center gap-2 text-sm text-gray-shade-14">
-                <span>Your reward in each claim</span>
-              </p>
-              <p className="text-sm font-medium text-white">
-                {rewardEstimation ? (
-                  normalizeValue(rewardEstimation.claim) +
-                  " " +
-                  coinsDetails.find((e) =>
-                    eqAddress(
-                      e?.contractAddress,
-                      stakingPool?.reward_token_address
-                    )
-                  )?.symbol
-                ) : (
-                  <span className="textGradient text-sm">N/A</span>
-                )}
-              </p>
-            </div>
-            <div className="mt-6 flex items-center justify-between gap-5">
-              <p className="flex items-center gap-2 text-sm text-gray-shade-14">
-                <span>Your total reward</span>
-              </p>
-              <p className="text-sm font-medium text-white">
-                {rewardEstimation ? (
-                  Number(normalizeValue(rewardEstimation.total))?.toFixed(2) +
-                  " " +
-                  coinsDetails.find((e) =>
-                    eqAddress(
-                      e?.contractAddress,
-                      stakingPool?.reward_token_address
-                    )
-                  )?.symbol
-                ) : (
-                  <span className="textGradient text-sm">N/A</span>
-                )}
-              </p>
+                    )?.toFixed(2)}{" "}
+                    {
+                      coinsDetails.find((e) =>
+                        eqAddress(
+                          e?.contractAddress,
+                          stakingPool?.token_address
+                        )
+                      )?.symbol
+                    }
+                  </p>
+                </div>
+                <div className="mt-6 flex items-center justify-between gap-5">
+                  <p className="flex items-center gap-2 text-sm text-gray-shade-14">
+                    <span>Total paid rewards</span>
+                  </p>
+                  <p className="text-sm font-medium text-white">
+                    {Number(
+                      formatUnits(
+                        stakingPool?.totalPaidReward + "",
+                        coinsDetails.find((e) =>
+                          eqAddress(
+                            e?.contractAddress,
+                            stakingPool?.reward_token_address
+                          )
+                        )?.decimals || 18
+                      )
+                    )?.toFixed(2)}{" "}
+                    {
+                      coinsDetails.find((e) =>
+                        eqAddress(
+                          e?.contractAddress,
+                          stakingPool?.reward_token_address
+                        )
+                      )?.symbol
+                    }
+                  </p>
+                </div>
+                <div className="mb-6 mt-6 flex items-center justify-between gap-5">
+                  <p className="flex items-center gap-2 text-sm text-gray-shade-14">
+                    <span>Stakers</span>
+                  </p>
+                  <p className="text-sm font-medium text-white">
+                    {stakingPool?.users ? stakingPool?.users.length : 0}
+                  </p>
+                </div>
+                <div className="border-b-2 border-gray-shade-3"></div>
+                <div className="mt-6 flex items-center justify-between gap-5">
+                  <p className="flex items-center gap-2 text-sm text-gray-shade-14">
+                    <span>Your reward in each claim</span>
+                  </p>
+                  <p className="text-sm font-medium text-white">
+                    {rewardEstimation ? (
+                      normalizeValue(rewardEstimation.claim) +
+                      " " +
+                      coinsDetails.find((e) =>
+                        eqAddress(
+                          e?.contractAddress,
+                          stakingPool?.reward_token_address
+                        )
+                      )?.symbol
+                    ) : (
+                      <span className="textGradient text-sm">N/A</span>
+                    )}
+                  </p>
+                </div>
+                <div className="mt-6 flex items-center justify-between gap-5">
+                  <p className="flex items-center gap-2 text-sm text-gray-shade-14">
+                    <span>Your total reward</span>
+                  </p>
+                  <p className="text-sm font-medium text-white">
+                    {rewardEstimation ? (
+                      Number(normalizeValue(rewardEstimation.total))?.toFixed(
+                        2
+                      ) +
+                      " " +
+                      coinsDetails.find((e) =>
+                        eqAddress(
+                          e?.contractAddress,
+                          stakingPool?.reward_token_address
+                        )
+                      )?.symbol
+                    ) : (
+                      <span className="textGradient text-sm">N/A</span>
+                    )}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
-      <div className="scrollSetLight2 flex w-full max-w-[510px] flex-shrink-0 gap-2 overflow-x-auto p-2 sm:items-center">
-        <Link href={`/staking/staking-details/${poolId}`}>
-          <Button
-            title="My Staking overview"
-            variant={activeTab == "index" ? "primary" : "secondary"}
-            className="w-[215px] flex-shrink-0 rounded-[10px] text-sm fsm:text-base"
-          />
-        </Link>
-        <Link href={`/staking/staking-details/${poolId}/rewards`}>
-          <Button
-            title="Claim Rewards"
-            variant={activeTab == "rewards" ? "primary" : "secondary"}
-            className="w-[162px] flex-shrink-0 rounded-[10px] text-sm fsm:text-base"
-          />
-        </Link>
-        {stakingPool?.multilevel_rewards != "No referral" && (
-          <Link href={`/staking/staking-details/${poolId}/referrals`}>
-            <Button
-              title="Referrals"
-              variant={activeTab == "referrals" ? "primary" : "secondary"}
-              className="w-[109px] flex-shrink-0 rounded-[10px] text-sm fsm:text-base"
-            />
-          </Link>
         )}
-      </div>
       {children}
       {isLoading && <PreLoader />}
       {ModalModel.visibility && (

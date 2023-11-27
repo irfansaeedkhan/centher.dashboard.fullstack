@@ -1,12 +1,12 @@
 import React from "react";
-import { PreBookingRounds } from "@/lib/get-pre-bookings-stats/types";
 import { BlockchainConfig } from "@/web3/blockchain/config";
-import { PurchaseHistory } from "../../pre-booking";
+import { PurchaseHistory } from "../../[token_address]/[round]/_components";
 
 interface Props {
   recievableTokenSymbol: string;
   bookings: PurchaseHistory[];
-  rounds: PreBookingRounds;
+  bookingsTab: "recent-bookings" | "my-bookings" | "my-rewards";
+  setRoundNo: (roundNo: number) => void;
 }
 
 // TODO: Move this function to library file
@@ -51,6 +51,8 @@ const Check_PreBooking_Form_TransactionHash = (booking: PurchaseHistory) => {
 export const BookingList: React.FC<Props> = ({
   recievableTokenSymbol,
   bookings,
+  bookingsTab,
+  setRoundNo,
 }) => {
   return (
     <div className="scrollSetLight2 overflow-x-auto">
@@ -70,6 +72,11 @@ export const BookingList: React.FC<Props> = ({
             <th className="whitespace-nowrap px-4 py-2 text-start">Round</th>
             <th className="whitespace-nowrap px-4 py-2 text-start">Trx Hash</th>
             <th className="whitespace-nowrap px-4 py-2 text-start">Date</th>
+            {bookingsTab === "my-bookings" && (
+              <th className="whitespace-nowrap px-4 py-2 text-start">
+                Rewards
+              </th>
+            )}
           </tr>
         </thead>
         <tbody>
@@ -117,6 +124,14 @@ export const BookingList: React.FC<Props> = ({
                 <td className="whitespace-nowrap px-4 py-2">
                   {new Date(booking.createdAt * 1000).toLocaleDateString()}
                 </td>
+                {bookingsTab === "my-bookings" && (
+                  <td
+                    className="text-gradient cursor-pointer text-sm"
+                    onClick={() => setRoundNo(Number(booking.round) - 1)}
+                  >
+                    Timeline
+                  </td>
+                )}
               </tr>
             );
           })}

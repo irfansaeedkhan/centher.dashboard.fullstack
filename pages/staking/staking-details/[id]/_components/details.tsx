@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FiInstagram, FiTwitter } from "react-icons/fi";
+import { FiInstagram } from "react-icons/fi";
 import { RiFacebookCircleLine } from "react-icons/ri";
 import { SiBinance } from "react-icons/si";
 import { isAddress } from "ethers/lib/utils";
@@ -8,6 +8,7 @@ import {
   CentherIcon,
   NewTelegramIcon,
   Whitepaper,
+  XIcon,
 } from "@/assets/svgs";
 import { ListCardDataOBj } from "@/pages/staking/_components/list-card-data";
 import { OptionalType } from "@/staking/types";
@@ -111,7 +112,7 @@ const Details: React.FC<{ data: OptionalType<ListCardDataOBj> }> = ({
                 rel="noreferrer noopener"
                 className={button}
               >
-                <FiTwitter className="h-5 w-5 group-hover:[&>*]:stroke-white" />
+                <XIcon className="h-5 w-5 group-hover:[&>*]:stroke-white" />
                 <span>X.com</span>
               </a>
             ) : null}
@@ -155,7 +156,9 @@ const Details: React.FC<{ data: OptionalType<ListCardDataOBj> }> = ({
                 rel="noreferrer noopener"
                 className="centher-social-button flex select-none items-center gap-2 rounded-[11px] bg-elevation-1 px-[10px] py-[6px] text-xs font-medium text-gray-shade-14"
               >
-                <CentherIcon />
+                <span className="h-5 w-5 flex-shrink-0">
+                  <CentherIcon />
+                </span>
                 <span>Centher</span>
               </a>
             ) : null}

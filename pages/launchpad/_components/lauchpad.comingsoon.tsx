@@ -27,10 +27,7 @@ const LaunchpadComingSoon: NextPageWithLayout = () => {
             Our First Token Is About To Be Launched! Don&apos;t Miss The First
             Rounds Of Pre Sale!
           </h3>
-          <Link
-            href={AppRoutes.launchpad_pre_booking.index}
-            className="block w-fit"
-          >
+          <Link href={AppRoutes.launchpad} className="block w-fit">
             <Button
               className="w-fit rounded-lg px-4 py-2 text-sm font-semibold"
               title="Book Now"
