@@ -67,7 +67,6 @@ export class CentherStaking {
       mappedData = setupCreatePoolData(input);
       statusController(CreatePoolStepsEnum.preflight, 100);
     } catch (error) {
-      console.log(error);
       throw error;
     }
 
@@ -80,8 +79,6 @@ export class CentherStaking {
         statusController
       );
     } catch (error: any) {
-      console.log(error);
-
       throw error;
     }
 
@@ -96,7 +93,6 @@ export class CentherStaking {
       );
       statusController(CreatePoolStepsEnum.examinate, 100);
     } catch (error: any) {
-      console.log(error);
       throw new CreatePoolCallStaticError(
         error instanceof Error ? error.message : error
       );
