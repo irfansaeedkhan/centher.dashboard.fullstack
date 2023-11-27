@@ -36,6 +36,7 @@ const StakingDetails: NextPageWithLayout = () => {
   const { getSigner, disconnectWallet, connectWallet, connectedAddress } =
     useWallet();
   const [isLoading, setIsLoading] = useState(true);
+  const signer = getSigner();
 
   useEffect(() => {
     const getCoinDetails = async (tokens: string[]) => {
@@ -81,21 +82,20 @@ const StakingDetails: NextPageWithLayout = () => {
   }, [poolId, router]);
 
   useEffect(() => {
-    if (!getSigner()) {
+    if (!isLoading && signer == null && connectedAddress != null) {
       setConnectWalletModal(true);
     } else {
       setConnectWalletModal(false);
     }
-  }, [getSigner]);
+  }, [signer, isLoading, connectedAddress]);
 
   useEffect(() => {
-    const signer = getSigner();
     if (sdk && poolId && user && signer) {
       sdk.getUserStakes(signer!, +poolId, user._id).then((data) => {
         setUserStaked(data);
       });
     }
-  }, [poolId, sdk, user, getSigner]);
+  }, [poolId, sdk, user, signer]);
 
   useEffect(() => {
     if (stakingPool) {
