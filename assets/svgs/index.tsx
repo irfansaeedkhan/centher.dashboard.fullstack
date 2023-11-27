@@ -180,6 +180,8 @@ export { default as EyeOffFollow } from "./eye-off-following.svg";
 export { default as GradientArrowFill } from "./gradient-fill.svg";
 export { default as GradientArrowOutline } from "./gradient-outline.svg";
 export { default as IconSearch } from "./icon-search.svg";
+export { default as GradientCopy } from "./gradient-copy.svg";
+export { default as ArrowDiagonal } from "./arrow-diagonal.svg";
 
 export const CentherIcon: React.FC<IconProps> = (props) => {
   return (
