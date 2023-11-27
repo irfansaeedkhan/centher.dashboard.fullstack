@@ -10,7 +10,7 @@ export const formatAddress = (address: string | undefined) => {
     : "";
 };
 
-export const formatEther2Number = (num: number | undefined) => {
+export const formatEther2Number = (num: number | string | undefined) => {
   return Number(num ? ethers.utils.formatEther(`${num}`) : 0);
 };
 

@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import clsx from "clsx";
 import useGetUser from "@/hooks/use.get.user";
-import { NFT } from "@/models/nft";
+import { CFSNFT } from "@/models/nft";
 import { User } from "@/models/user";
 import {
   formatAddress,
@@ -45,7 +45,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
   });
 
   useEffect(() => {
-    if (data.endTime === 0) {
+    if (+data.endTime === 0) {
       setAuctionTimer({
         days: 0,
         hours: 0,
@@ -509,18 +509,18 @@ export interface NFTOwner
 }
 
 export interface NFTCardData {
-  owner: NFTOwner;
-  id: NFT["id"];
-  collection: NFT["collection"];
-  tokenId: NFT["tokenId"];
-  price: NFT["price"];
-  name: string;
-  description: string;
-  creator: NFTOwner;
-  mintHash: string;
-  imageUrl: string;
-  type: "image" | "video" | "audio";
-  unlock: NFT["unlock"];
-  endTime: NFT["endTime"];
-  videoThumbnail?: string;
+  owner: CFSNFT["owner_data"];
+  id: CFSNFT["id"];
+  collection: CFSNFT["collection"];
+  tokenId: CFSNFT["tokenId"];
+  price: CFSNFT["price"];
+  name: CFSNFT["ipfs_metadata"]["name"];
+  description: CFSNFT["ipfs_metadata"]["description"];
+  creator: CFSNFT["creator_data"];
+  mintHash: CFSNFT["mintHash"];
+  imageUrl: CFSNFT["ipfs_metadata"]["image"];
+  type: CFSNFT["ipfs_metadata"]["type"];
+  unlock: CFSNFT["unlock"];
+  endTime: CFSNFT["auctionInfo"]["endTime"];
+  videoThumbnail?: CFSNFT["ipfs_metadata"]["videoThumbnail"];
 }

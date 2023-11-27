@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-
 import { LoadingState } from "@/models/common";
 import { NFTCardData } from "@/components/nft.card";
 import { getNFTs } from "@/lib/get-nfts";
 import { getNFTCardData } from "@/lib/get-nft-card-data";
-import { GlobalTokenBlackList } from "@/web3/blockchain/helpers/blacklist.helper";
 
 export const useHotNFTs = () => {
   const [state, setState] = useState<{
@@ -25,25 +23,11 @@ export const useHotNFTs = () => {
           skip: 0,
         });
 
-        const formattedHotNFTsPromises = _hotNFTs.map((item) =>
-          getNFTCardData(item)
-        );
+        const formattedHotNFTs = _hotNFTs.map((item) => getNFTCardData(item));
 
-        const formattedHotNFTs = (
-          await Promise.allSettled(formattedHotNFTsPromises)
-        ).filter(
-          (item) => item.status === "fulfilled"
-        ) as PromiseFulfilledResult<NFTCardData>[];
-
-        const nfts = formattedHotNFTs
-          .map((item) => item.value)
-          .filter((item) => {
-            return (
-              item.type.startsWith("image") &&
-              !GlobalTokenBlackList.isBlocked(item.collection, +item.tokenId) &&
-              item.creator.membership.status === "citizen"
-            );
-          });
+        const nfts = formattedHotNFTs.filter((item) => {
+          return item.type.startsWith("image"); // FIXME: Video is already supported, why this line is still here
+        });
 
         setState((state) => ({
           ...state,

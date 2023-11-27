@@ -3,16 +3,16 @@ import { User } from "./user";
 export interface NFT {
   id: string;
   collection: string;
-  tokenId: number;
+  tokenId: string;
   creator: string;
   owner: string;
   mintHash: string;
   createTime: number;
   ipfs: string;
   saleState: string;
-  price: number;
+  price: string;
   endTime: number;
-  unlock: number;
+  unlock: string;
 }
 
 export interface Collection {
@@ -75,7 +75,59 @@ export interface CFSCollection {
   creator_data: {
     _id: User["_id"];
     display_name: User["display_name"];
+    profile_image: User["profile_image"];
     membership: User["membership"];
+  };
+}
+
+export interface CFSNFT {
+  collection: string;
+  createTime: string;
+  creator: string;
+  mintHash: string;
+  id: string;
+  ipfs: string;
+  saleState: string;
+  tokenId: string;
+  price: string;
+  owner: string;
+  unlock: string;
+  listInfo: {
+    price: string;
+    bidSize: number;
+  };
+  auctionInfo: {
+    endTime: string;
+    highestBidPrice: string;
+    highestBidAddress: string;
+    bidSize: number;
+    startPrice: string;
+  };
+  ipfs_metadata: {
+    name: string;
+    description: string;
+    supply: number;
+    image: string;
+    type: string;
+    collection: string;
+    attributes: {
+      Type: string;
+      PropertyName: string;
+    }[];
+    videoThumbnail?: string | null;
+  };
+  creator_data: {
+    _id: User["_id"];
+    display_name: User["display_name"];
+    profile_image: User["profile_image"];
+    membership: User["membership"];
+  };
+  owner_data: {
+    _id: User["_id"];
+    display_name: User["display_name"];
+    profile_image: User["profile_image"];
+    membership: User["membership"];
+    is_registered: boolean;
   };
 }
 
