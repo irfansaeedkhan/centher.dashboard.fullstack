@@ -248,7 +248,7 @@ const ClaimRewards: NextPageWithLayout = () => {
   return (
     <>
       <div className="flex w-full flex-col gap-5 rounded-xl border border-gray-shade-3 bg-black-shade-9 p-6">
-        <div className="text-[min(10vw, 20px)] textGradient font-semibold">
+        <div className="text-[min(10vw, 20px)] font-semibold text-white">
           Claim Rewards
         </div>
 

@@ -205,7 +205,7 @@ const StakingReferrals: NextPageWithLayout = () => {
   return (
     <>
       <div className="flex w-full flex-col gap-5 rounded-xl border border-gray-shade-3 bg-black-shade-9 p-6">
-        <div className="text-[min(10vw, 20px)] textGradient font-semibold">
+        <div className="text-[min(10vw, 20px)] font-semibold text-white">
           Referrals Overview
         </div>
         <div className="grid-col-1 mt-5 grid max-w-full flex-grow flex-wrap gap-5 fmd:grid-cols-2 flg:grid-cols-3">

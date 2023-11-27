@@ -1,7 +1,7 @@
 import React from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import Button from "@/components/button";
+import clsx from "clsx";
 import { AppRoutes } from "@/constants/app.routes";
 
 export const ProfileCommunityTabs: React.FC = () => {
@@ -14,51 +14,39 @@ export const ProfileCommunityTabs: React.FC = () => {
           pathname: AppRoutes.profile.followers,
           query: { user_id: router.query.user_id },
         }}
-        className="min-w-max"
+        className={clsx(
+          router.pathname === AppRoutes.profile.followers &&
+            "myBox font-medium",
+          "w-fit flex-shrink-0 px-4 py-1.5 text-xs leading-5 text-white fxm:text-sm fxm:leading-6"
+        )}
       >
-        <Button
-          title="Followers"
-          variant={`${
-            router.pathname === AppRoutes.profile.followers
-              ? "primary"
-              : "secondary"
-          }`}
-          className="rounded-[14px] text-xs sm:text-base fmd:px-6 fmd:py-2"
-        />
+        Followers
       </Link>
       <Link
         href={{
           pathname: AppRoutes.profile.following,
           query: { user_id: router.query.user_id },
         }}
-        className="min-w-max"
+        className={clsx(
+          router.pathname === AppRoutes.profile.following &&
+            "myBox font-medium",
+          "w-fit flex-shrink-0 px-4 py-1.5 text-xs leading-5 text-white fxm:text-sm fxm:leading-6"
+        )}
       >
-        <Button
-          title="Following"
-          variant={`${
-            router.pathname === AppRoutes.profile.following
-              ? "primary"
-              : "secondary"
-          }`}
-          className="rounded-[14px] text-xs sm:text-base fmd:px-6 fmd:py-2"
-        />
+        Following
       </Link>
       <Link
         href={{
           pathname: AppRoutes.profile.referrals,
           query: { user_id: router.query.user_id },
         }}
-        className="min-w-max"
+        className={clsx(
+          router.pathname === AppRoutes.profile.referrals &&
+            "myBox font-medium",
+          "w-fit flex-shrink-0 px-4 py-1.5 text-xs leading-5 text-white fxm:text-sm fxm:leading-6"
+        )}
       >
-        <Button
-          title="Referrals"
-          variant={`${
-            router.pathname === AppRoutes.profile.referrals
-              ? "primary"
-              : "secondary"
-          }`}
-          className="rounded-[14px] text-xs sm:text-base fmd:px-6 fmd:py-2"
-        />
+        Referrals
       </Link>
     </div>
   );

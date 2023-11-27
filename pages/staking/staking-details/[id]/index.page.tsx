@@ -113,8 +113,8 @@ const StakingDetails: NextPageWithLayout = () => {
   }, [stakingPool, user]);
 
   return (
-    <div className="w-full rounded-xl border border-gray-shade-3 bg-black-shade-9 p-6">
-      <div className="text-[min(10vw, 20px)] textGradient font-semibold">
+    <div className="w-full rounded-xl border border-gray-shade-3 bg-black-shade-9 p-4 fxm:p-6">
+      <div className="text-[min(10vw, 20px)] font-semibold text-white">
         My Staking overview
       </div>
       <div className="grid-col-1 mt-5 grid max-w-full flex-grow flex-wrap gap-5 fmd:grid-cols-2 flg:grid-cols-3">

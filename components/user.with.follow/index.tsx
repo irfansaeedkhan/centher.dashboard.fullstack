@@ -119,7 +119,7 @@ const UserWithFollow = React.forwardRef<HTMLDivElement, SingleSearchUserProps>(
               <EyeOffFollow />
             ) : (
               <Image
-                src={"/images/gradient-eye.png"}
+                src={"/images/gradient-eye.svg"}
                 alt={"Follow"}
                 width={24}
                 height={24}

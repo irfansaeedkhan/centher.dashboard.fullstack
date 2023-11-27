@@ -21,67 +21,63 @@ const PageButtonsWrapper: FC<Props> = ({ children, stakingPool }) => {
 
   return (
     <div className="mx-auto w-full max-w-[1144px] space-y-6">
-      <div className="scrollSetLight2 flex w-full max-w-[575px] flex-shrink-0 items-center gap-4 overflow-x-auto py-2">
+      <div className="scrollSetLight2 flex w-full max-w-[780px] flex-shrink-0 items-center gap-4 overflow-x-auto py-2">
         <Link
           href={`/staking/staking-details/${poolId}`}
-          className="flex flex-shrink-0"
+          className={clsx(
+            router.asPath === `/staking/staking-details/${poolId}` &&
+              "myBox font-medium",
+            "w-fit flex-shrink-0 px-4 py-1.5 text-xs leading-5 text-white fxm:text-sm fxm:leading-6"
+          )}
         >
-          <span
-            className={clsx(
-              "w-fit flex-shrink-0 rounded-[10px] pb-2 text-sm font-semibold text-white fsm:text-base",
-              router.asPath === `/staking/staking-details/${poolId}` && "myBox"
-            )}
-          >
-            Project Details
-          </span>
+          My Staking
         </Link>
         <Link
           href={`/staking/staking-details/${poolId}/rewards`}
-          className="flex flex-shrink-0"
+          className={clsx(
+            router.pathname.includes("rewards") && "myBox font-medium",
+            "w-fit flex-shrink-0 px-4 py-1.5 text-xs leading-5 text-white fxm:text-sm fxm:leading-6"
+          )}
         >
-          <span
-            className={clsx(
-              "w-fit flex-shrink-0 rounded-[10px] pb-2 text-sm font-semibold text-white fsm:text-base",
-              router.pathname.includes("rewards") && "myBox"
-            )}
-          >
-            Claim Rewards
-          </span>
+          Claim Rewards
         </Link>
         {stakingPool?.multilevel_rewards != "No referral" && (
           <Link
             href={`/staking/staking-details/${poolId}/referrals`}
-            className="flex flex-shrink-0"
+            className={clsx(
+              router.pathname.includes("referrals") && "myBox font-medium",
+              "w-fit flex-shrink-0 px-4 py-1.5 text-xs leading-5 text-white fxm:text-sm fxm:leading-6"
+            )}
           >
-            <span
-              className={clsx(
-                "w-fit flex-shrink-0 rounded-[10px] pb-2 text-sm font-semibold text-white fsm:text-base",
-                router.pathname.includes("referrals") && "myBox"
-              )}
-            >
-              Referrals
-            </span>
+            Referrals
           </Link>
         )}
-        <Link href={AppRoutes.staking.index} className="flex flex-shrink-0">
-          <span
-            className={clsx(
-              "w-fit flex-shrink-0 rounded-[10px] pb-2 text-sm font-semibold text-white fsm:text-base",
-              router.pathname === AppRoutes.staking.index && "myBox"
-            )}
-          >
-            Staking Home
-          </span>
+        <Link
+          href={`/staking/staking-details/${poolId}/project-details`}
+          className={clsx(
+            router.pathname.includes("project-details") && "myBox font-medium",
+            "w-fit flex-shrink-0 px-4 py-1.5 text-xs leading-5 text-white fxm:text-sm fxm:leading-6"
+          )}
+        >
+          Project Details
         </Link>
-        <Link href={AppRoutes.staking.faqs} className="flex flex-shrink-0">
-          <span
-            className={clsx(
-              "w-fit flex-shrink-0 rounded-[10px] pb-2 text-sm font-semibold text-white fsm:text-base",
-              router.pathname === AppRoutes.staking.faqs && "myBox"
-            )}
-          >
-            FAQs
-          </span>
+        <Link
+          href={AppRoutes.staking.index}
+          className={clsx(
+            router.pathname === AppRoutes.staking.index && "myBox font-medium",
+            "w-fit flex-shrink-0 px-4 py-1.5 text-xs leading-5 text-white fxm:text-sm fxm:leading-6"
+          )}
+        >
+          Staking Home
+        </Link>
+        <Link
+          href={AppRoutes.staking.faqs}
+          className={clsx(
+            router.pathname === AppRoutes.staking.faqs && "myBox font-medium",
+            "w-fit flex-shrink-0 px-4 py-1.5 text-xs leading-5 text-white fxm:text-sm fxm:leading-6"
+          )}
+        >
+          FAQs
         </Link>
       </div>
       {children}
