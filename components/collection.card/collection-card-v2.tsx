@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import clsx from "clsx";
-import { User } from "@/models/user";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 import { AppRoutes } from "@/constants/app.routes";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
+import { CFSCollection } from "@/models/nft";
 
 export interface CollectionCardProps {
   data: CollectionCardData;
@@ -104,14 +104,10 @@ export const CollectionCardV2: React.FC<CollectionCardProps> = ({
 };
 
 export interface CollectionCardData {
-  address: string;
-  name: string;
-  profileImage: string;
-  coverImage: string;
-  description: string;
-  creator: {
-    _id: User["_id"];
-    display_name: User["display_name"];
-    membership: User["membership"];
-  };
+  address: CFSCollection["id"];
+  name: CFSCollection["name"];
+  profileImage: CFSCollection["ipfs_metadata"]["profileIPFSHash"];
+  coverImage: CFSCollection["ipfs_metadata"]["coverIPFSHash"];
+  description: CFSCollection["ipfs_metadata"]["description"];
+  creator: CFSCollection["creator_data"];
 }
