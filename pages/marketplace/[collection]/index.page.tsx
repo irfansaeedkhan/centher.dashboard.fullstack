@@ -12,7 +12,7 @@ import { TiSocialFacebook, TiSocialTwitter } from "react-icons/ti";
 import { RiShareForwardLine } from "react-icons/ri";
 import { TbWorld } from "react-icons/tb";
 import { NextPageWithLayout } from "@/pages/_app.page";
-import { Filter, useCollectionStore } from "@/store/collection.store";
+import { useCollectionStore } from "@/store/collection.store";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import useGetUser from "@/hooks/use.get.user";
 import { AppRoutes } from "@/constants/app.routes";
@@ -34,13 +34,14 @@ import {
 } from "@/assets/svgs";
 import Button from "@/components/button";
 import cn from "@/utils/cn";
+import { NFTSaleStateFilter, OrderDirection } from "@/models/nft";
 
 const Collection: NextPageWithLayout = () => {
   const router = useRouter();
   const collection = router.query.collection;
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [isMobileMenuVisible, setIsMobileMenuVisible] = useState(false);
-  const [filterInView, setFilter] = useState<Filter>("All");
+  const [filterInView, setFilter] = useState<NFTSaleStateFilter>("All");
   const menuRef = React.useRef<HTMLDivElement>(null);
 
   const bnbPrice = useBNBPrice();
@@ -90,7 +91,7 @@ const Collection: NextPageWithLayout = () => {
 
   const { user } = useGetUser(info?.creator);
   const [metadata, setMetadata] = useState<any>();
-  const [orderdir, setOrderDir] = useState("desc");
+  const [orderdir, setOrderDir] = useState<OrderDirection>("desc");
   const [coverImageUrl, setCoverImageUrl] = useState("");
   const [profileImageUrl, setProfileImageUrl] = useState("");
   const verificationTick = useVerificationTick({ user });
@@ -149,11 +150,6 @@ const Collection: NextPageWithLayout = () => {
   const toggleMobileMenu = async () => {
     setIsMobileMenuVisible((prev) => !prev);
   };
-
-  // Remove the blacklisted nft from the nfts data array
-  const filteredNFTs = nfts.filter((item) => {
-    return !GlobalTokenBlackList.isBlocked(item.collection, +item.tokenId);
-  });
 
   function formatNumber(number?: number | string) {
     if (typeof number === "number") {
@@ -488,7 +484,9 @@ const Collection: NextPageWithLayout = () => {
                 <select
                   className={inputField}
                   value={orderdir}
-                  onChange={(e) => setOrderDir(e.target.value)}
+                  onChange={(e) =>
+                    setOrderDir(e.target.value as OrderDirection)
+                  }
                 >
                   <option value="asc">Low to high</option>
                   <option value="desc">High to Low</option>
@@ -502,7 +500,7 @@ const Collection: NextPageWithLayout = () => {
                 "mx-auto grid w-max grid-cols-[minmax(0,280px)] gap-5 fsm:grid-cols-[minmax(0,235px)_minmax(0,235px)] fmd:grid-cols-[minmax(0,255px)_minmax(0,255px)] flg:grid-cols-[minmax(0,310px)_minmax(0,310px)_minmax(0,310px)] flg:gap-6 f2xl:grid-cols-[minmax(0,267px)_minmax(0,267px)_minmax(0,267px)_minmax(0,267px)]"
               )}
             >
-              {filteredNFTs.map((data) => {
+              {nfts.map((data) => {
                 return <NFTCard data={data} key={data.id} />;
               })}
               {(loadingNFTs === "loading" || loadingNFTs === "idle") && (
@@ -515,7 +513,7 @@ const Collection: NextPageWithLayout = () => {
               <div ref={lastNotiRef} />
             </div>
 
-            {loadingNFTs === "loaded" && filteredNFTs.length === 0 && (
+            {loadingNFTs === "loaded" && nfts.length === 0 && (
               <div>
                 <div className="mt-[48px] flex justify-center">
                   <HotNftEmptyIcon />

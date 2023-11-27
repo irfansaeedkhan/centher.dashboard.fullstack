@@ -173,8 +173,10 @@ export type SortBy =
   | "price high to low"
   | "price low to high";
 
-export type OrderDirection = "desc" | "asc";
-
 export const orderBy = ["createTime", "tradingVolumn", "price"];
 
 export type OrderBy = "price" | "tradingVolumn" | "createTime";
+
+export type OrderDirection = "desc" | "asc";
+
+export type NFTSaleStateFilter = "All" | "List" | "Auction" | "NON";
