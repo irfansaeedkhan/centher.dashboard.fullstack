@@ -62,21 +62,16 @@ export class CentherStaking {
   ): Promise<void> {
     let mappedData;
     try {
-      console.log("32322323332233");
-
       // map data to solidity extractable data types
       statusController(CreatePoolStepsEnum.preflight, 0);
       mappedData = setupCreatePoolData(input);
       statusController(CreatePoolStepsEnum.preflight, 100);
     } catch (error) {
-      console.log("aaaaaaaaaaaaaaaaaa");
       console.log(error);
       throw error;
     }
 
     try {
-      console.log("qqqqqqqqqqqqqqqqqqqqqq");
-
       // set approval
       await this.handleTokenApprovals(
         signer,
@@ -84,16 +79,13 @@ export class CentherStaking {
         input.ownerAddress,
         statusController
       );
-      console.log("ggggggggggggggggggggggggg");
     } catch (error: any) {
-      console.log("rrrrrrrrrrrrrrrrrrrrrrrr");
       console.log(error);
 
       throw error;
     }
 
     try {
-      console.log("nnnnnnnnnnnnnnnnnnnnnnn");
       // contract callstatic
       statusController(CreatePoolStepsEnum.examinate, 0);
       await BlockchainWrite.createStakingPool(
@@ -102,10 +94,8 @@ export class CentherStaking {
         input.ownerAddress,
         true
       );
-      console.log("fffffffffffffffffffffffffffffffff");
       statusController(CreatePoolStepsEnum.examinate, 100);
     } catch (error: any) {
-      console.log("pppppppppppppppppppppppppppp");
       console.log(error);
       throw new CreatePoolCallStaticError(
         error instanceof Error ? error.message : error
@@ -114,7 +104,6 @@ export class CentherStaking {
 
     try {
       // upload files
-      console.log("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww");
 
       mappedData.poolMetadata = await this.uploadPoolMetadata(
         files,
@@ -127,7 +116,6 @@ export class CentherStaking {
 
     try {
       // call contract
-      console.log("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz");
 
       statusController(CreatePoolStepsEnum.contract, 0);
       await BlockchainWrite.createStakingPool(
@@ -143,7 +131,6 @@ export class CentherStaking {
         error instanceof Error ? error.message : error
       );
     }
-    console.log("vvvvvvvvvvvvvvvvvvvvvvvvvvv");
 
     const poolId = await BlockchainWrite.getCurrentStakingPoolId(signer);
     if (affiliateSettings) {

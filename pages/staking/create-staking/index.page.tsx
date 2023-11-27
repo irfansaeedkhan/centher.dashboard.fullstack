@@ -653,7 +653,6 @@ const CreateStaking: NextPageWithLayout = () => {
         );
       }
     }
-    console.log("777777777777777777777777777");
     await sdk.createPool(
       getSigner()!,
       input,
@@ -663,14 +662,12 @@ const CreateStaking: NextPageWithLayout = () => {
         progressCallbackHandler(title, value);
       }
     );
-    console.log("999999999999999999");
 
     await setProgressModel(null);
   };
 
   const progressCallbackHandler = useCallback(
     (title: CreatePoolStepsEnum, value: number) => {
-      console.log("88888888888888888888888");
       setProgressModel({
         title,
         value,
@@ -778,8 +775,6 @@ const CreateStaking: NextPageWithLayout = () => {
   };
 
   const previewBoxModalFunc = async (data: stakingFormInterfaceUpdated) => {
-    console.log("22222222222222222222222222222");
-
     setIsLoading(true);
     await setshowMsg(
       <StakingReviewModal
@@ -795,8 +790,6 @@ const CreateStaking: NextPageWithLayout = () => {
 
   const createStaking = async (data: stakingFormInterfaceUpdated) => {
     try {
-      console.log("0000000000000000000000000000000000000");
-
       await afterSubmitMapper(data);
       setshowMsg(<StakingSuccessModal onClickClose={onClickClose} />);
       stakingForm.reset({

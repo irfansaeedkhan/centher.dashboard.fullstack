@@ -9,8 +9,6 @@ import { CreatePoolParamsError } from "../errors/params.error";
 export function setupCreatePoolData(
   input: CreatePoolInput
 ): MappedCreatePoolInput {
-  console.log("5454545454454545445");
-
   const rewardIsDifferent =
     input.rewardToken?.length != 0 &&
     !eqAddress(input.stakeToken, input.rewardToken);
@@ -67,7 +65,6 @@ export function setupCreatePoolData(
       "Must be bigger than today"
     );
   }
-  console.log("36363636363636363636363");
 
   return {
     name: input.name,
