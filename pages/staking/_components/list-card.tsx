@@ -183,7 +183,7 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
           </span>
         </div>
       </div>
-      <p className="text-base font-semibold text-white">Pool details</p>
+      <p className="text-base font-semibold text-white">Pool Details</p>
       <div className={main}>
         <div className={mainSection}>
           <span className={label}>APY</span>
@@ -285,7 +285,7 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
         </div>
         {card.nonRefundable && (
           <div className={mainSection}>
-            <span className={label}>Refunded</span>
+            <span className={label}>Capital Release</span>
             <div className={clsx(value, "flex items-center gap-1.5")}>
               <span>Not Refunded</span>
               {card.liquidity_pool_provided == "no" && (
