@@ -57,7 +57,6 @@ export const AppRoutes = {
   marketplace: {
     nft: "/marketplace/[collection]/[tokenId]",
     explore: "/marketplace/explore",
-    nfts: "/marketplace/nfts",
     collections: "/marketplace/collections",
     collection: "/marketplace/[collection]",
     // Citizen Only Start
