@@ -7,9 +7,6 @@ on:
   pull_request:
     branches:
       - main
-  workflow_dispatch:
-    branches:
-      - main
 
 env:
   AWS_REGION: ${{ vars.AWS_REGION }}
@@ -69,7 +66,7 @@ jobs:
 
   lint-build-deploy:
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
+    if: github.event_name == 'push'
     environment:
       name: production
       url: https://app.centher.io
