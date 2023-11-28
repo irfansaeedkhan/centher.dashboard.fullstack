@@ -349,7 +349,7 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
                         : "text-gray-shade-14"
                     )}
                   >
-                    {Number(e.percent) / 100}%
+                    {(Number(e.percent) / 100) * 12}%
                   </span>
                 </div>
               ))}
