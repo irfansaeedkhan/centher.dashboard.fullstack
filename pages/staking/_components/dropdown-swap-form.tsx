@@ -1,9 +1,9 @@
 import React, { useRef, useState } from "react";
+import Image from "next/image";
 import { useOnClickOutside } from "usehooks-ts";
 import { SlArrowUp, SlArrowDown } from "react-icons/sl";
 import clsx from "clsx";
 import { SwapToken } from "@/models/swap";
-import Image from "next/image";
 
 export interface DropdownOption {
   title: string;

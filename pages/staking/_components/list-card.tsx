@@ -67,8 +67,9 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
               : "/images/profile-header-cover.jpg"
           }
           alt="token-address-symbol"
-          width={100}
-          height={180}
+          width={1040}
+          height={360}
+          quality={100}
           className="h-full w-full rounded-2xl object-cover"
         />
       </div>
@@ -81,8 +82,9 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
                 : "/images/profile-header-cover.jpg"
             }
             alt="token-address-symbol"
-            width={44}
-            height={44}
+            width={112}
+            height={112}
+            quality={100}
             className="h-11 w-11 flex-shrink-0 rounded-full object-cover fsm:h-12  fsm:w-12 fmd:h-14 fmd:w-14"
           />
           <div>
@@ -206,10 +208,12 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
           </span>
         </div>
         <div className={mainSection}>
-          <span className={label}>Liquidity pool provided</span>
+          <span className={label}>Liquidity Pool</span>
           <div className={clsx(value, "flex items-center gap-1.5")}>
             <span>
-              {card.liquidity_pool_provided == "no" ? "Not provided" : "yes"}
+              {card.liquidity_pool_provided == "no"
+                ? "Not provided"
+                : "Provided"}
             </span>
             {card.liquidity_pool_provided == "no" && (
               <p
@@ -244,7 +248,9 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
         <div className={mainSection}>
           <span className={label}>Is Cancelable</span>
           <div className={clsx(value, "flex items-center gap-1.5")}>
-            <span>{card.is_cancelable == "no" ? "Irreversible" : "yes"}</span>
+            <span>
+              {card.is_cancelable == "no" ? "Irreversible" : "Reversible"}
+            </span>
             {card.liquidity_pool_provided == "no" && (
               <p
                 ref={refs2.setReference}

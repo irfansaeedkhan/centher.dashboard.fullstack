@@ -7,4 +7,4 @@ export const config: ICentherStakingConfig = {
       : "https://api.thegraph.com/subgraphs/name/sasimraza/centher-staking",
 };
 
-export const SwappingProjects: string[] = ["30", "19"];
+export const SwappingProjects: string[] = ["4", "30", "19"];
