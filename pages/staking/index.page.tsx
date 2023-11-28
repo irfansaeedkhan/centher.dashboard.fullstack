@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import axios from "axios";
 import clsx from "clsx";
@@ -9,7 +10,6 @@ import Button from "@/components/button";
 import { BuyCitizenshipModal } from "@/components/modal/buy-citizenship-modal";
 import { NoStakingIcon } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
-import { PreLoader } from "@/components/pre.loader";
 import { useStaking } from "@/hooks/staking";
 import { GetStakingProjectInput } from "@/staking/types/get.projects.interface";
 import { ZeroAddress } from "@/web3/constants/common";
@@ -20,6 +20,7 @@ import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
 import StakingListContainer from "./_components/staking-list-container";
 import { ListCardDataOBj } from "./_components/list-card-data";
 import { project_metadata } from "@/staking/cache";
+import StakingMainWrapper from "./_components/staking-main-wrapper";
 
 const Staking: NextPageWithLayout = () => {
   const router = useRouter();
@@ -124,31 +125,44 @@ const Staking: NextPageWithLayout = () => {
           fetchTime={+new Date()}
           coins={coinsDetails}
         />
-      ) : (
-        <div className="flex max-w-[330px] flex-col items-center justify-center gap-2 text-center">
-          <NoStakingIcon className="mb-6" />
-          <h3 className="text-base font-semibold text-white ">
-            No Staking Projects yet!
-          </h3>
-          <p className="text-sm font-normal text-gray-shade-14">
-            There are currently no Staking Projects available. Create one
-            yourself!
-          </p>
-          {/* if member go to staking form other wise membership modal */}
-          <Button
-            title="Create New"
-            onClick={
-              loggedInUser?.membership.status === "citizen"
-                ? () =>
-                    router.push({
-                      pathname: AppRoutes.staking.create_staking,
-                    })
-                : () => setShowBuyCitizenshipModal(true)
-            }
-            variant="primary"
-            className="mt-6 px-5 py-3 text-sm"
+      ) : stakingList?.length === 0 && isLoading ? (
+        <div className="flex h-[calc(100vh-60px)] w-full items-center justify-center">
+          <Image
+            src="/images/preloader.png"
+            alt="Preloader"
+            width={64}
+            height={64}
+            className="h-16 w-16 flex-shrink-0 object-cover"
           />
         </div>
+      ) : (
+        stakingList?.length === 0 &&
+        !isLoading && (
+          <div className="flex max-w-[330px] flex-col items-center justify-center gap-2 text-center">
+            <NoStakingIcon className="mb-6" />
+            <h3 className="text-base font-semibold text-white ">
+              No Staking Projects yet!
+            </h3>
+            <p className="text-sm font-normal text-gray-shade-14">
+              There are currently no Staking Projects available. Create one
+              yourself!
+            </p>
+            {/* if member go to staking form other wise membership modal */}
+            <Button
+              title="Create New"
+              onClick={
+                loggedInUser?.membership.status === "citizen"
+                  ? () =>
+                      router.push({
+                        pathname: AppRoutes.staking.create_staking,
+                      })
+                  : () => setShowBuyCitizenshipModal(true)
+              }
+              variant="primary"
+              className="mt-6 px-5 py-3 text-sm"
+            />
+          </div>
+        )
       )}
 
       {showBuyCitizenshipModal && (
@@ -157,16 +171,13 @@ const Staking: NextPageWithLayout = () => {
           onClickClose={() => setShowBuyCitizenshipModal(false)}
         />
       )}
-      {isLoading && <PreLoader />}
     </section>
   );
 };
 
 Staking.getLayout = (page) => (
   <AllPagesWrapper pageTitle="Staking">
-    <div className="mx-auto w-full max-w-[1144px] bg-black-shade-3 font-monto">
-      {page}
-    </div>
+    <StakingMainWrapper>{page}</StakingMainWrapper>
   </AllPagesWrapper>
 );
 

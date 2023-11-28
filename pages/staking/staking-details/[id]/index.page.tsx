@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { BiLockAlt } from "react-icons/bi";
 import { IoWalletOutline } from "react-icons/io5";
@@ -14,15 +15,17 @@ import { ZeroAddress } from "@/web3/constants/common";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
 import { setupUiModels } from "@/staking/helpers/mappers.helper";
 import { RewardsStat } from "@/staking/types/rewards.interface";
+import { SwappingProjects } from "@/staking/config";
 import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
 import { eqAddress } from "@/live/utils/address.utils";
-import { PreLoader } from "@/components/pre.loader";
 import { MetamaskIcon2 } from "@/assets/svgs";
 import { CustomNewModal } from "@/components/modal/custom.new.modal";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { useWallet } from "@/web3/hooks/use.wallet";
-import StakingDetailsWrapper from "./_components/staking-details-wrapper";
 import { ListCardDataOBj } from "../../_components/list-card-data";
+import StakingDetailsTop from "./_components/staking-details-top";
+import StakingMainWrapper from "../../_components/staking-main-wrapper";
+import { SwapTokens } from "./_components/swap";
 
 const StakingDetails: NextPageWithLayout = () => {
   const { user } = useUser();
@@ -31,6 +34,7 @@ const StakingDetails: NextPageWithLayout = () => {
   const [poolId, setPoolId] = useState("0");
   const [userStaked, setUserStaked] = useState<RewardsStat | null>(null);
   const [stakingPool, setStakingPool] = useState<ListCardDataOBj | null>(null);
+  const [hasSwapping, setHasSwapping] = useState(false);
   const [coinsDetails, setCoinsDetails] = useState<
     Array<CoinDetails | undefined>
   >([]);
@@ -74,7 +78,6 @@ const StakingDetails: NextPageWithLayout = () => {
           setStakingPool(mappedPools[0]);
           setIsLoading(false);
         }
-        //else {//redirect to index}
       });
     }
   }, [stakingPool, poolId, sdk]);
@@ -103,6 +106,7 @@ const StakingDetails: NextPageWithLayout = () => {
 
   useEffect(() => {
     if (stakingPool) {
+      setHasSwapping(SwappingProjects.includes(stakingPool.id));
       const transfers = stakingPool.transfers
         ?.filter((e) => e.type == "stake" && eqAddress(e.user, user?._id))
         ?.sort((a, b) => a.endAt - b.endAt);
@@ -112,141 +116,154 @@ const StakingDetails: NextPageWithLayout = () => {
     }
   }, [stakingPool, user]);
 
-  return (
-    <div className="w-full rounded-xl border border-gray-shade-3 bg-black-shade-9 p-6">
-      <div className="text-[min(10vw, 20px)] textGradient font-semibold">
-        My Staking overview
-      </div>
-      <div className="grid-col-1 mt-5 grid max-w-full flex-grow flex-wrap gap-5 fmd:grid-cols-2 flg:grid-cols-3">
-        <div className="col-span-2 flex h-[96px] w-full gap-4 rounded-xl bg-elevation-1 px-5 py-6 fmd:col-span-1">
-          <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-brand-primary/60 bg-brand-primary/10">
-            <IoWalletOutline className="h-[18px] w-[18px] text-white" />
-          </div>
-          <div>
-            <p className="text-xs font-medium text-gray-shade-14">
-              Wallet Balance
-            </p>
-            <p className="mt-[6px] font-semibold text-white">
-              {
-                +normalizeValue(
-                  formatUnits(
-                    userStaked ? userStaked.totalClaimableReward : 0 + "",
-                    coinsDetails.find((e) =>
-                      eqAddress(
-                        stakingPool?.reward_token_address,
-                        e?.contractAddress
-                      )
-                    )?.decimals
-                  )
-                )
-              }{" "}
-              {
-                coinsDetails.find((e) =>
-                  eqAddress(
-                    stakingPool?.reward_token_address,
-                    e?.contractAddress
-                  )
-                )?.symbol
-              }
-            </p>
-          </div>
+  return !connectWalletModal && (isLoading || !userStaked) ? (
+    <div className="flex h-[calc(100vh-60px)] w-full items-center justify-center">
+      <Image
+        src="/images/preloader.png"
+        alt="preloader"
+        width={64}
+        height={64}
+        className="h-16 w-16 flex-shrink-0 object-cover"
+      />
+    </div>
+  ) : (
+    <>
+      <StakingDetailsTop />
+      {hasSwapping && <SwapTokens />}
+      <div className="w-full rounded-xl border border-gray-shade-3 bg-black-shade-9 p-4 fxm:p-6">
+        <div className="text-[min(10vw, 20px)] font-semibold text-white">
+          My Staking overview
         </div>
-        <div className="col-span-2 flex h-[96px] w-full gap-4 rounded-xl bg-elevation-1 px-5 py-6 fmd:col-span-1">
-          <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-[#D35DB9]/60 bg-[#D35DB9]/10">
-            <BiLockAlt className="h-[18px] w-[18px] text-white" />
-          </div>
-          <div>
-            <p className="text-xs font-medium text-gray-shade-14">
-              Locked Token
-            </p>
-            <p className="mt-[6px] font-semibold text-white">
-              {
-                +normalizeValue(
-                  formatUnits(
-                    userStaked ? userStaked.totalStakeAmount : 0 + "",
-                    coinsDetails.find((e) =>
-                      eqAddress(
-                        stakingPool?.reward_token_address,
-                        e?.contractAddress
-                      )
-                    )?.decimals
+        <div className="grid-col-1 mt-5 grid max-w-full flex-grow flex-wrap gap-5 fmd:grid-cols-2 flg:grid-cols-3">
+          <div className="col-span-2 flex h-[96px] w-full gap-4 rounded-xl bg-elevation-1 px-5 py-6 fmd:col-span-1">
+            <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-brand-primary/60 bg-brand-primary/10">
+              <IoWalletOutline className="h-[18px] w-[18px] text-white" />
+            </div>
+            <div>
+              <p className="text-xs font-medium text-gray-shade-14">
+                Wallet Balance
+              </p>
+              <p className="mt-[6px] font-semibold text-white">
+                {
+                  +normalizeValue(
+                    formatUnits(
+                      userStaked ? userStaked.totalClaimableReward : 0 + "",
+                      coinsDetails.find((e) =>
+                        eqAddress(
+                          stakingPool?.reward_token_address,
+                          e?.contractAddress
+                        )
+                      )?.decimals
+                    )
                   )
-                )
-              }{" "}
-              {
-                coinsDetails.find((e) =>
-                  eqAddress(stakingPool?.token_address, e?.contractAddress)
-                )?.symbol
-              }
-            </p>
-          </div>
-        </div>
-        <div className="col-span-2 flex h-[96px] w-full gap-4 rounded-xl bg-elevation-1 px-5 py-6 flg:col-span-1">
-          <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-[#5F97FF]/60 bg-[#5F97FF]/10">
-            <BiLockAlt className="h-[18px] w-[18px] text-white" />
-          </div>
-          <div>
-            <p className="text-xs font-medium text-gray-shade-14">
-              Staking Expiration
-            </p>
-            <p className="mt-[6px] font-semibold text-white">
-              {}
-              {new Date(expireTime * 1000).toLocaleDateString()}
-            </p>
-          </div>
-        </div>
-      </div>
-      {connectWalletModal && (
-        <CustomNewModal
-          onClose={() => {
-            setConnectWalletModal(false);
-          }}
-          title={"Connect to wallet"}
-        >
-          <div className="mb-8 flex w-full justify-center px-5 md:px-10">
-            <p className="mt-2 w-full max-w-[366px] text-center text-sm text-gray-shade-14">
-              Please Connect your wallet to continue, the system support
-              following wallet.
-            </p>
-          </div>
-          <div className="flex w-full justify-center px-5 md:px-10">
-            <div className="flex w-full max-w-[400px] items-center justify-between gap-10 rounded-xl border border-brand-primary px-5 py-3">
-              <div className="flex items-center gap-3 fsm:gap-6">
-                <MetamaskIcon2 />
-                <h3 className="text-sm font-semibold text-white fmd:text-base">
-                  Metamask
-                </h3>
-              </div>
-              <button
-                onClick={async () => {
-                  if (!user) {
-                    toast.error("Please login to buy this membership");
-                    setConnectWalletModal(false);
-                    return;
-                  }
-                  const _account = await connectWallet();
-                  if (user._id.toLowerCase() !== _account?.toLowerCase()) {
-                    toast.error("Please connect to correct account");
-                    disconnectWallet();
-                  }
-                  setConnectWalletModal(false);
-                }}
-              >
-                <FiArrowRight className="h-6 w-6 text-brand-primary fsm:h-8 fsm:w-8" />
-              </button>
+                }{" "}
+                {
+                  coinsDetails.find((e) =>
+                    eqAddress(
+                      stakingPool?.reward_token_address,
+                      e?.contractAddress
+                    )
+                  )?.symbol
+                }
+              </p>
             </div>
           </div>
-        </CustomNewModal>
-      )}
-      {!connectWalletModal && (isLoading || !userStaked) ? <PreLoader /> : ""}
-    </div>
+          <div className="col-span-2 flex h-[96px] w-full gap-4 rounded-xl bg-elevation-1 px-5 py-6 fmd:col-span-1">
+            <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-[#D35DB9]/60 bg-[#D35DB9]/10">
+              <BiLockAlt className="h-[18px] w-[18px] text-white" />
+            </div>
+            <div>
+              <p className="text-xs font-medium text-gray-shade-14">
+                Locked Token
+              </p>
+              <p className="mt-[6px] font-semibold text-white">
+                {
+                  +normalizeValue(
+                    formatUnits(
+                      userStaked ? userStaked.totalStakeAmount : 0 + "",
+                      coinsDetails.find((e) =>
+                        eqAddress(
+                          stakingPool?.reward_token_address,
+                          e?.contractAddress
+                        )
+                      )?.decimals
+                    )
+                  )
+                }{" "}
+                {
+                  coinsDetails.find((e) =>
+                    eqAddress(stakingPool?.token_address, e?.contractAddress)
+                  )?.symbol
+                }
+              </p>
+            </div>
+          </div>
+          <div className="col-span-2 flex h-[96px] w-full gap-4 rounded-xl bg-elevation-1 px-5 py-6 flg:col-span-1">
+            <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-[#5F97FF]/60 bg-[#5F97FF]/10">
+              <BiLockAlt className="h-[18px] w-[18px] text-white" />
+            </div>
+            <div>
+              <p className="text-xs font-medium text-gray-shade-14">
+                Staking Expiration
+              </p>
+              <p className="mt-[6px] font-semibold text-white">
+                {}
+                {new Date(expireTime * 1000).toLocaleDateString()}
+              </p>
+            </div>
+          </div>
+        </div>
+        {connectWalletModal && (
+          <CustomNewModal
+            onClose={() => {
+              setConnectWalletModal(false);
+            }}
+            title={"Connect to wallet"}
+          >
+            <div className="mb-8 flex w-full justify-center px-5 md:px-10">
+              <p className="mt-2 w-full max-w-[366px] text-center text-sm text-gray-shade-14">
+                Please Connect your wallet to continue, the system support
+                following wallet.
+              </p>
+            </div>
+            <div className="flex w-full justify-center px-5 md:px-10">
+              <div className="flex w-full max-w-[400px] items-center justify-between gap-10 rounded-xl border border-brand-primary px-5 py-3">
+                <div className="flex items-center gap-3 fsm:gap-6">
+                  <MetamaskIcon2 />
+                  <h3 className="text-sm font-semibold text-white fmd:text-base">
+                    Metamask
+                  </h3>
+                </div>
+                <button
+                  onClick={async () => {
+                    if (!user) {
+                      toast.error("Please login to buy this membership");
+                      setConnectWalletModal(false);
+                      return;
+                    }
+                    const _account = await connectWallet();
+                    if (user._id.toLowerCase() !== _account?.toLowerCase()) {
+                      toast.error("Please connect to correct account");
+                      disconnectWallet();
+                    }
+                    setConnectWalletModal(false);
+                  }}
+                >
+                  <FiArrowRight className="h-6 w-6 text-brand-primary fsm:h-8 fsm:w-8" />
+                </button>
+              </div>
+            </div>
+          </CustomNewModal>
+        )}
+      </div>
+    </>
   );
 };
 
 StakingDetails.getLayout = (page) => {
   return (
     <AllPagesWrapper pageTitle="Staking Details">
-      <StakingDetailsWrapper>{page}</StakingDetailsWrapper>
+      <StakingMainWrapper>{page}</StakingMainWrapper>
     </AllPagesWrapper>
   );
 };

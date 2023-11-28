@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { formatUnits } from "ethers/lib/utils";
 import { CgSpinner } from "react-icons/cg";
@@ -21,17 +22,16 @@ import {
 } from "@/staking/types/rewards.interface";
 import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
 import { eqAddress } from "@/live/utils/address.utils";
-import { PreLoader } from "@/components/pre.loader";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { useWallet } from "@/web3/hooks/use.wallet";
 import { CustomNewModal } from "@/components/modal/custom.new.modal";
 import { MetamaskIcon2 } from "@/assets/svgs";
 import RewardsTable from "./_components/rewards-table";
 import { ListCardDataOBj } from "../../_components/list-card-data";
-import StakingDetailsWrapper from "./_components/staking-details-wrapper";
 import UnstakeModal from "./_components/unstake-modal";
 import SuccessModalContent from "./_components/success-modal-content";
 import FailedModalContent from "./_components/failed-modal-content";
+import StakingMainWrapper from "../../_components/staking-main-wrapper";
 
 enum ModalType {
   cancelStakingModal = "cancelStakingModal",
@@ -245,10 +245,20 @@ const ClaimRewards: NextPageWithLayout = () => {
   }, [poolId, sdk, user, getSigner]);
 
   const modal = new ModalManager(setModalModel, rewardsModal);
-  return (
+  return !connectWalletModal && (isLoading || !userStaked) ? (
+    <div className="flex h-[calc(100vh-60px)] w-full items-center justify-center">
+      <Image
+        src="/images/preloader.png"
+        alt="preloader"
+        width={64}
+        height={64}
+        className="h-16 w-16 flex-shrink-0 object-cover"
+      />
+    </div>
+  ) : (
     <>
       <div className="flex w-full flex-col gap-5 rounded-xl border border-gray-shade-3 bg-black-shade-9 p-6">
-        <div className="text-[min(10vw, 20px)] textGradient font-semibold">
+        <div className="text-[min(10vw, 20px)] font-semibold text-white">
           Claim Rewards
         </div>
 
@@ -404,7 +414,6 @@ const ClaimRewards: NextPageWithLayout = () => {
           </div>
         </CustomNewModal>
       )}
-      {!connectWalletModal && (isLoading || !userStaked) ? <PreLoader /> : ""}
     </>
   );
 };
@@ -412,7 +421,7 @@ const ClaimRewards: NextPageWithLayout = () => {
 ClaimRewards.getLayout = (page) => {
   return (
     <AllPagesWrapper pageTitle="Staking Details">
-      <StakingDetailsWrapper>{page}</StakingDetailsWrapper>
+      <StakingMainWrapper>{page}</StakingMainWrapper>
     </AllPagesWrapper>
   );
 };

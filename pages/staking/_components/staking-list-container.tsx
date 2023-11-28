@@ -1,5 +1,4 @@
 import React, { FC, useEffect, useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { AiOutlineUnorderedList } from "react-icons/ai";
 import clsx from "clsx";
@@ -31,11 +30,7 @@ interface ComponentProp {
   coins: Array<CoinDetails | undefined>;
 }
 
-const StakingListContainer: FC<ComponentProp> = ({
-  pools,
-  fetchTime,
-  coins,
-}) => {
+const StakingListContainer: FC<ComponentProp> = ({ pools, coins }) => {
   const router = useRouter();
   const [layout, setLayout] = useState<"grid" | "list">("grid");
   const [showItems, setShowItems] = useState<string>("1");
@@ -75,14 +70,6 @@ const StakingListContainer: FC<ComponentProp> = ({
                   : () => setShowBuyCitizenshipModal(true)
               }
             />
-            <Link href={AppRoutes.staking.faqs} className="w-full">
-              <Button
-                title="FAQs"
-                variant={"secondary"}
-                className="h-9 w-full text-xs fsm:max-w-[68px]"
-                borderRounded="10px"
-              />
-            </Link>
           </div>
         </div>
         <div className="hidden items-center gap-2 fsm:flex">
@@ -153,7 +140,7 @@ const StakingListContainer: FC<ComponentProp> = ({
         </div>
       </div>
       {layout === "grid" ? (
-        <div className="mb-2 mt-7 flex h-full w-full max-w-full flex-col gap-6">
+        <div className="mb-2 mt-7 grid h-full w-full max-w-full grid-cols-1 gap-6 fmd:grid-cols-2">
           {data.map((card, index) => (
             <GridLayoutCard key={index} card={card} coins={coins} />
           ))}

@@ -17,18 +17,21 @@ const SettingsTopBar: React.FC<Props> = ({ sidebarData }) => {
         <Link
           href={item.link}
           className={clsx(
-            "flex h-9 w-full flex-shrink-0 rounded-[14px] bg-[#17171A] p-[1px]",
-            item.label === "Team Members" ? "max-w-[130px]" : "max-w-[100px] "
+            "w-fit flex-shrink-0"
+            // item.label === "Team Members" ? "max-w-[130px]" : "max-w-[100px] "
           )}
           key={item.label}
         >
           <span
             className={clsx(
-              "flex w-full flex-grow items-center justify-center rounded-[14px] bg-[#17171A] py-1 text-sm font-semibold text-white"
+              "flex w-full flex-grow items-center justify-center text-xs leading-5 text-white fxm:text-sm fxm:leading-6"
             )}
           >
             <span
-              className={clsx("pb-2", item.link === router.pathname && "myBox")}
+              className={clsx(
+                "px-4 py-1.5",
+                item.link === router.pathname && "myBox"
+              )}
             >
               {item.label}
             </span>
