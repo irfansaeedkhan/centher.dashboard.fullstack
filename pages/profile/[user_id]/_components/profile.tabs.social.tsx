@@ -57,11 +57,11 @@ export const ProfileTabsSocial: React.FC<ProfileProps> = ({
           query: { user_id: user._id },
         }}
         className={clsx(
-          router.pathname === AppRoutes.profile.owned ||
+          (router.pathname === AppRoutes.profile.owned ||
             router.pathname === AppRoutes.profile.created ||
             router.pathname === AppRoutes.profile.listed ||
-            (router.pathname === AppRoutes.profile.collection &&
-              "bg-gradient bg-[length:100%_3px] bg-bottom bg-no-repeat pb-4 font-medium"),
+            router.pathname === AppRoutes.profile.collection) &&
+            "bg-gradient bg-[length:100%_3px] bg-bottom bg-no-repeat pb-4 font-medium",
           "min-w-max cursor-pointer px-4 py-2 text-white"
         )}
       >
@@ -89,10 +89,10 @@ export const ProfileTabsSocial: React.FC<ProfileProps> = ({
             query: { user_id: user._id },
           }}
           className={clsx(
-            router.pathname === AppRoutes.profile.followers ||
+            (router.pathname === AppRoutes.profile.followers ||
               router.pathname === AppRoutes.profile.following ||
-              (router.pathname === AppRoutes.profile.referrals &&
-                "bg-gradient bg-[length:100%_3px] bg-bottom bg-no-repeat pb-4 font-medium"),
+              router.pathname === AppRoutes.profile.referrals) &&
+              "bg-gradient bg-[length:100%_3px] bg-bottom bg-no-repeat pb-4 font-medium",
             "min-w-max cursor-pointer px-4 py-2 text-white"
           )}
         >

@@ -29,10 +29,12 @@ import { CustomNewModal } from "@/components/modal/custom.new.modal";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { useWallet } from "@/web3/hooks/use.wallet";
 import { ListCardDataOBj } from "../../_components/list-card-data";
-import StakingDetailsWrapper from "./_components/staking-details-wrapper";
+import StakingDetailsWrapper from "./_components/staking-details-top";
 import ReferralsTable from "./_components/referrals-table";
 import SuccessModalContent from "./_components/success-modal-content";
 import FailedModalContent from "./_components/failed-modal-content";
+import StakingMainWrapper from "../../_components/staking-main-wrapper";
+import Image from "next/image";
 
 enum ModalType {
   successFuncModal = "successFuncModal",
@@ -202,10 +204,20 @@ const StakingReferrals: NextPageWithLayout = () => {
 
   const modal = new ModalManager(setModalModel, modalTemplateCollection);
 
-  return (
+  return !connectWalletModal && (isLoading || !referralsInfo) ? (
+    <div className="flex h-[calc(100vh-60px)] w-full items-center justify-center">
+      <Image
+        src="/images/preloader.png"
+        alt="Chat Background"
+        width={64}
+        height={64}
+        className="h-16 w-16 flex-shrink-0 object-cover"
+      />
+    </div>
+  ) : (
     <>
       <div className="flex w-full flex-col gap-5 rounded-xl border border-gray-shade-3 bg-black-shade-9 p-6">
-        <div className="text-[min(10vw, 20px)] textGradient font-semibold">
+        <div className="text-[min(10vw, 20px)] font-semibold text-white">
           Referrals Overview
         </div>
         <div className="grid-col-1 mt-5 grid max-w-full flex-grow flex-wrap gap-5 fmd:grid-cols-2 flg:grid-cols-3">
@@ -352,12 +364,6 @@ const StakingReferrals: NextPageWithLayout = () => {
           </div>
         </CustomNewModal>
       )}
-
-      {!connectWalletModal && (isLoading || !referralsInfo) ? (
-        <PreLoader />
-      ) : (
-        ""
-      )}
     </>
   );
 };
@@ -365,7 +371,7 @@ const StakingReferrals: NextPageWithLayout = () => {
 StakingReferrals.getLayout = (page) => {
   return (
     <AllPagesWrapper pageTitle="Staking Details">
-      <StakingDetailsWrapper>{page}</StakingDetailsWrapper>
+      <StakingMainWrapper>{page}</StakingMainWrapper>
     </AllPagesWrapper>
   );
 };

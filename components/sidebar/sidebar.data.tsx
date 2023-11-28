@@ -1,4 +1,4 @@
-import { Explore, Launchpad } from "@/assets/svgs";
+import { Explore, Launchpad, Staking } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 import { AddressFactory } from "@/web3/blockchain/providers/address.provider";
 import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.enum";
@@ -24,7 +24,7 @@ export const sidebarData: SidebarData = {
       {
         label: "Staking",
         url: AppRoutes.staking.index,
-        icon: Launchpad,
+        icon: Staking,
         activeList: [
           AppRoutes.staking.index,
           AppRoutes.staking.create_staking,

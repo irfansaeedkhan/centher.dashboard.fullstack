@@ -950,6 +950,23 @@
     padding: 5px 10px;
     cursor: pointer;
   }
+  .glass-card {
+    background: black;
+    background: linear-gradient(
+      to right bottom,
+      rgba(0, 0, 0, 0.4),
+      rgba(0, 0, 0, 0.2)
+    );
+    backdrop-filter: blur(5rem);
+    width: 60%;
+    height: 60%;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5rem;
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
+  }
 }
 
 @layer utilities {
