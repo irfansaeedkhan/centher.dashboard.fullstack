@@ -46,9 +46,9 @@ const ListClaimedRewardsTable: React.FC<{
       </thead>
       <tbody className="">
         {!data?.length ? (
-          <TableRow>
-            <p className="m-8 text-gray-shade-7">No record available</p>
-          </TableRow>
+          <p className="m-8 w-full text-center text-gray-shade-7">
+            No record found!
+          </p>
         ) : (
           data.map((e: RefReward, i: number) => (
             <TableRow key={i}>

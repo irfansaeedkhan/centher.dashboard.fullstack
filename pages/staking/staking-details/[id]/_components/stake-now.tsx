@@ -53,7 +53,9 @@ const Booking: React.FC<Props> = ({
     <div className="w-full flex-shrink-0 flg:max-w-[512px]">
       <div className="h-[140px] rounded-2xl bg-[#1b1c22] bg-[url(/images/bg-launchpad.png)] bg-cover p-4 fsm:p-6 fmd:h-[158px] flg:p-8">
         <div className="flex items-center justify-between gap-10">
-          <h6 className="text-xl font-semibold text-white">Staked</h6>
+          <h6 className="text-[min(10vw, 20px)] font-semibold text-white">
+            Staked
+          </h6>
         </div>
         <div
           className={clsx(
@@ -105,7 +107,7 @@ const Booking: React.FC<Props> = ({
             placeholder="Add referrals here"
             className="w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm text-white focus:ring-1 focus:ring-brand-primary"
           /> */}
-          <p className="mt-10 text-sm text-white">Add Value</p>
+          <p className="text-sm text-white">Add Value</p>
           <div className="focus-within:gradient-border-3 relative flex h-12 w-full items-center justify-between gap-2 !rounded-lg bg-black-shade-3 p-[1px] focus-within:ring-1 flg:max-w-full">
             <CustomNumberInput
               name={
