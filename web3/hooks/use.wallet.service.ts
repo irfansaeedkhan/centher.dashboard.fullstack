@@ -46,7 +46,6 @@ export const useWalletService = () => {
   const api_key = process.env.NEXT_PUBLIC_WALLET_SERVICE_API_KEY;
 
   let globalPromise = useRef<Promise<any> | null>(null);
-  // const videoRef = useRef(null);
 
   let globalPromiseResolve: (value: any) => void;
   let globalPromiseReject: (value: any) => void;
@@ -254,19 +253,6 @@ export const useWalletService = () => {
     });
     return globalPromise.current;
   }
-
-  // async function sendTransaction(
-  //   data: ethers.utils.Deferrable<ethers.providers.TransactionRequest>,
-  //   description?: string
-  // ): Promise<ethers.providers.TransactionResponse> {
-  //   globalPromise = new Promise((resolve, reject) => {
-  //     const message = { target: "wallet-service", message: data, description };
-  //     openWallet(`${wallet_url}/app/send`, message);
-  //     globalPromiseResolve = resolve;
-  //     globalPromiseReject = reject;
-  //   });
-  //   return globalPromise;
-  // }
 
   async function send(
     data: ethers.PopulatedTransaction,
