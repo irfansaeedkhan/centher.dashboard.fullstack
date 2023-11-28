@@ -140,7 +140,7 @@ const StakingListContainer: FC<ComponentProp> = ({ pools, coins }) => {
         </div>
       </div>
       {layout === "grid" ? (
-        <div className="mb-2 mt-7 grid h-full w-full max-w-full grid-cols-1 gap-6 fmd:grid-cols-2">
+        <div className="mb-2 mt-7 grid h-auto w-full max-w-full grid-cols-1 gap-6 fmd:grid-cols-2">
           {data.map((card, index) => (
             <GridLayoutCard key={index} card={card} coins={coins} />
           ))}
