@@ -497,6 +497,10 @@ export class GlobalTokenBlackList {
             collection: "0x08b660beec8d1f9a0162e3c04416c84eac8d334b",
             tokenId: "1",
           },
+          {
+            collection: "0x67d19ebb78a0c4610f9a51a95b41868e39864d04",
+            tokenId: "1",
+          },
         ]
       : [
           {
