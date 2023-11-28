@@ -13,14 +13,14 @@ import { ZeroAddress } from "@/web3/constants/common";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
 import { setupUiModels } from "@/staking/helpers/mappers.helper";
 import { RewardsStat } from "@/staking/types/rewards.interface";
+import { SwappingProjects } from "@/staking/config";
 import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
 import { eqAddress } from "@/live/utils/address.utils";
-import { PreLoader } from "@/components/pre.loader";
 import { useWallet } from "@/web3/hooks/use.wallet";
-import StakingDetailsWrapper from "./_components/staking-details-top";
 import { ListCardDataOBj } from "../../_components/list-card-data";
 import StakingDetailsTop from "./_components/staking-details-top";
 import StakingMainWrapper from "../../_components/staking-main-wrapper";
+import { SwapTokens } from "./_components/swap";
 import ConnectWalletModal from "@/components/modal/connect-wallet-modal";
 
 const StakingDetails: NextPageWithLayout = () => {
@@ -30,6 +30,7 @@ const StakingDetails: NextPageWithLayout = () => {
   const [poolId, setPoolId] = useState("0");
   const [userStaked, setUserStaked] = useState<RewardsStat | null>(null);
   const [stakingPool, setStakingPool] = useState<ListCardDataOBj | null>(null);
+  const [hasSwapping, setHasSwapping] = useState(false);
   const [coinsDetails, setCoinsDetails] = useState<
     Array<CoinDetails | undefined>
   >([]);
@@ -74,7 +75,6 @@ const StakingDetails: NextPageWithLayout = () => {
           setStakingPool(mappedPools[0]);
           setIsLoading(false);
         }
-        //else {//redirect to index}
       });
     }
   }, [stakingPool, poolId, sdk]);
@@ -102,6 +102,7 @@ const StakingDetails: NextPageWithLayout = () => {
 
   useEffect(() => {
     if (stakingPool) {
+      setHasSwapping(SwappingProjects.includes(stakingPool.id));
       const transfers = stakingPool.transfers
         ?.filter((e) => e.type == "stake" && eqAddress(e.user, user?._id))
         ?.sort((a, b) => a.endAt - b.endAt);
@@ -115,7 +116,7 @@ const StakingDetails: NextPageWithLayout = () => {
     <div className="flex h-[calc(100vh-60px)] w-full items-center justify-center">
       <Image
         src="/images/preloader.png"
-        alt="Chat Background"
+        alt="preloader"
         width={64}
         height={64}
         className="h-16 w-16 flex-shrink-0 object-cover"
@@ -124,6 +125,7 @@ const StakingDetails: NextPageWithLayout = () => {
   ) : (
     <>
       <StakingDetailsTop />
+      {hasSwapping && <SwapTokens />}
       <div className="w-full rounded-xl border border-gray-shade-3 bg-black-shade-9 p-4 fxm:p-6">
         <div className="text-[min(10vw, 20px)] font-semibold text-white">
           My Staking overview
@@ -216,7 +218,6 @@ const StakingDetails: NextPageWithLayout = () => {
             disconnectWallet={disconnectWallet}
           />
         )}
-        {!connectWalletModal && (isLoading || !userStaked) ? <PreLoader /> : ""}
       </div>
     </>
   );

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import axios from "axios";
 import clsx from "clsx";
@@ -9,7 +10,6 @@ import Button from "@/components/button";
 import { BuyCitizenshipModal } from "@/components/modal/buy-citizenship-modal";
 import { NoStakingIcon } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
-import { PreLoader } from "@/components/pre.loader";
 import { useStaking } from "@/hooks/staking";
 import { GetStakingProjectInput } from "@/staking/types/get.projects.interface";
 import { ZeroAddress } from "@/web3/constants/common";
@@ -21,7 +21,6 @@ import StakingListContainer from "./_components/staking-list-container";
 import { ListCardDataOBj } from "./_components/list-card-data";
 import { project_metadata } from "@/staking/cache";
 import StakingMainWrapper from "./_components/staking-main-wrapper";
-import Image from "next/image";
 
 const Staking: NextPageWithLayout = () => {
   const router = useRouter();
@@ -130,7 +129,7 @@ const Staking: NextPageWithLayout = () => {
         <div className="flex h-[calc(100vh-60px)] w-full items-center justify-center">
           <Image
             src="/images/preloader.png"
-            alt="Chat Background"
+            alt="Preloader"
             width={64}
             height={64}
             className="h-16 w-16 flex-shrink-0 object-cover"

@@ -21,11 +21,9 @@ import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
 import { eqAddress } from "@/live/utils/address.utils";
 import { IModalHandler, ModalManager, TemplateCollection } from "@/utils/modal";
 import { CustomModal } from "@/components/modal/custom.modal";
-import { PreLoader } from "@/components/pre.loader";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { useWallet } from "@/web3/hooks/use.wallet";
 import { ListCardDataOBj } from "../../_components/list-card-data";
-import StakingDetailsWrapper from "./_components/staking-details-top";
 import ReferralsTable from "./_components/referrals-table";
 import SuccessModalContent from "./_components/success-modal-content";
 import FailedModalContent from "./_components/failed-modal-content";
@@ -205,7 +203,7 @@ const StakingReferrals: NextPageWithLayout = () => {
     <div className="flex h-[calc(100vh-60px)] w-full items-center justify-center">
       <Image
         src="/images/preloader.png"
-        alt="Chat Background"
+        alt="preloader"
         width={64}
         height={64}
         className="h-16 w-16 flex-shrink-0 object-cover"

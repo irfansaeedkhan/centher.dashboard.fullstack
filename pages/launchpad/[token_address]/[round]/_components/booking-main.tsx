@@ -217,7 +217,7 @@ const BookingMain: React.FC<Props> = ({
           <div className="mt-10 flex w-full items-center justify-center">
             <Image
               src="/images/preloader.png"
-              alt="Chat Background"
+              alt="Preloader"
               width={64}
               height={64}
               className="h-16 w-16 flex-shrink-0 object-cover"
