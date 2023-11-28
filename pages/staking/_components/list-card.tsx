@@ -104,8 +104,8 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
         </div>
         <Button
           variant="primary"
-          className="hidden px-3 text-xs font-medium fxm:block"
-          title="Project details"
+          className="hidden flex-shrink-0 px-3 text-xs font-medium fxm:block"
+          title="Project Details"
           borderRounded="10px"
           onClick={() => router.push("/staking/staking-details/" + card.id)}
         />
@@ -363,6 +363,6 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
 export default GridLayoutCard;
 
 const label = `text-sm text-gray-shade-14`;
-const value = `text-sm font-medium text-white`;
+const value = `text-sm font-medium text-white flex-shrink-0`;
 const mainSection = `flex w-full items-center justify-between gap-5`;
 const main = `flex w-full flex-col gap-3.5 rounded-[10px] border border-gray-shade-3 p-4`;
