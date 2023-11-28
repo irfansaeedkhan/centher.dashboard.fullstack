@@ -329,7 +329,7 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
         {card.multilevel_rewards &&
           card.multilevel_rewards !== "No referral" && (
             <div className={mainSection}>
-              <span className={label}>Affiliate system</span>
+              <span className={label}>Affiliate Program APY</span>
             </div>
           )}
         {card.multilevel_rewards &&
