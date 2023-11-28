@@ -1,7 +1,7 @@
 import React, { FC, useState } from "react";
 import { FiMinus, FiPlus } from "react-icons/fi";
-import { Faq } from "./faqs-data";
 import { clsx } from "clsx";
+import { Faq } from "./faqs-data";
 
 interface Props {
   faq: Faq;

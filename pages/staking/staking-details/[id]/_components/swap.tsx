@@ -1,21 +1,20 @@
+import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { useQRCode } from "next-qrcode";
 import Button from "@/components/button";
 import { GetSwapRates, SwapRates, SwapToken } from "@/models/swap";
 import DropdownSwapForm, {
   DropdownOption,
 } from "@/pages/staking/_components/dropdown-swap-form";
 import { axiosCIS } from "@/utils/axios";
-import { useEffect, useState } from "react";
-import { useQRCode } from "next-qrcode";
-import { WalletServiceBaseURL } from "@/constants/base-urls";
 import { copyText } from "@/utils/copy.text";
-import { FiCopy } from "react-icons/fi";
-import toast from "react-hot-toast";
+import { WalletServiceBaseURL } from "@/constants/base-urls";
 import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
 import { useWallet } from "@/web3/hooks/use.wallet";
+import { GradientCopy } from "@/assets/svgs";
 
 export const SwapTokens = () => {
   const wallet_url = WalletServiceBaseURL;
-
   const { SVG } = useQRCode();
   const { connectedAddress, getSigner } = useWallet();
   const [swapRates, setSwapRates] = useState<SwapRates[] | null>(null);
@@ -179,11 +178,11 @@ export const SwapTokens = () => {
 
   return (
     <div className="w-full rounded-xl border border-gray-shade-3 bg-black-shade-9 p-6">
-      <div className="text-[min(10vw, 20px)] textGradient mb-4 font-semibold">
+      <div className="text-[min(10vw, 20px)] font-semibold text-white">
         Swap your token
       </div>
-      <div className="flex flex-col justify-between sm:flex-row">
-        <div className="m-2 flex w-full flex-col rounded-xl bg-elevation-1 px-5 py-6 sm:w-3/6 fmd:col-span-1">
+      <div className="mt-5 flex flex-col justify-between gap-5 flg:flex-row">
+        <div className="flex w-full flex-shrink-0 flex-col rounded-xl bg-elevation-1 px-5 py-6 fmd:col-span-1 flg:max-w-[512px]">
           <p className="font-small ml-1 text-sm text-gray-shade-14">Pay</p>
 
           <div className="flex w-full flex-row">
@@ -255,7 +254,7 @@ export const SwapTokens = () => {
           />
         </div>
 
-        <div className="m-2 flex w-full justify-center rounded-xl bg-elevation-1 px-5 py-6 sm:w-2/6 fmd:col-span-1">
+        <div className="flex w-full justify-center rounded-xl bg-elevation-1 px-5 py-6 fmd:col-span-1">
           <div className="flex w-1/2">
             {wallet ? (
               <div className="flex w-full flex-col items-center justify-center ">
@@ -289,8 +288,8 @@ export const SwapTokens = () => {
                   <p className="font-small mt-4 h-11 w-56 break-words  text-sm text-white">
                     {wallet}
                   </p>
-                  <FiCopy
-                    className="ml-2 h-6 w-6 truncate stroke-gray-shade-14 hover:stroke-brand-primary"
+                  <GradientCopy
+                    className="cursor-pointer"
                     onClick={async () => {
                       await copyText(wallet);
                       toast.success("Wallet address copied");

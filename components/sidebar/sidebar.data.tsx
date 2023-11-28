@@ -27,10 +27,12 @@ export const sidebarData: SidebarData = {
         icon: Staking,
         activeList: [
           AppRoutes.staking.index,
+          AppRoutes.staking.faqs,
           AppRoutes.staking.create_staking,
           AppRoutes.staking.staking_details.index,
           AppRoutes.staking.staking_details.rewards,
           AppRoutes.staking.staking_details.referrals,
+          AppRoutes.staking.staking_details.project_details,
         ],
         available_for: "all",
         badge: "citizen",
