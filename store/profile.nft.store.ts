@@ -2,21 +2,16 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { EvmChain } from "@moralisweb3/common-evm-utils";
 import { LoadingState } from "@/models/common";
-import { Collection } from "@/models/nft";
+import { CFSCollection } from "@/models/nft";
 import { MoralisFetcher } from "@/utils/fetch.files.tools/moralis.fetcher.util";
 import { BlockchainRead } from "@/web3/blockchain";
 import { AddressFactory } from "@/web3/blockchain/providers/address.provider";
 import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.enum";
-import {
-  getOldName,
-  isOld,
-} from "@/web3/blockchain/helpers/native.collection.helper";
 import { SwapCollection } from "@/web3/blockchain/config";
-import {
-  NFTLockedDetailsProps,
-  getUsersByIdsFromDB,
-} from "@/lib/get-user-by-id";
-import { blackListedAddresses } from "@/utils/blacklist_addresses/collection_addresses";
+import { getUsersByIdsFromDB } from "@/lib/get-user-by-id";
+import { getNFTListOfSingleCreatorFromAnyCollection } from "@/lib/get-nft-list-of-single-creator-from-any-collection";
+import { NFTImageCardData } from "@/components/nft.image.card/types";
+import { getCollectionListOfSingleCreator } from "@/lib/get-collection-list-of-single-creator";
 
 const dexaCollection = "0x08b660beec8d1f9a0162e3c04416c84eac8d334b";
 const dexaProfile = "0xa638d0182d075278a9ea6480c1430c6e7fb490c9";
@@ -26,21 +21,20 @@ const externalCollectionsToShow = [...swappingCollections];
 
 export interface ProfileNFTStore {
   allowedCollections: string[];
-  collections: Collection[] | undefined;
-  ownedNfts: NFTLockedDetailsProps[];
-  listedNfts: NFTLockedDetailsProps[];
-  listedUserNfts: NFTLockedDetailsProps[];
-  createdNfts: NFTLockedDetailsProps[];
-  fetchCollections: (account: string) => Promise<void>;
+  collections: CFSCollection[];
+  ownedNfts: NFTImageCardData[];
+  listedNfts: NFTImageCardData[];
+  listedUserNfts: NFTImageCardData[];
+  createdNfts: NFTImageCardData[];
+  fetchCollections: (creatorId: string) => Promise<void>;
   fetchOwnedNFTs: (account: string) => Promise<void>;
   fetchCreatedNFTs: (
-    account: string,
+    creatorId: string,
     offset?: number,
-    limit?: number,
-    reload?: boolean
+    limit?: number
   ) => Promise<void>;
   fetchListedNFTs: (
-    account: string,
+    ownerId: string,
     offset?: number,
     limit?: number,
     reload?: boolean
@@ -107,29 +101,18 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
           createdOffset: state.createdNfts.length,
         })),
 
-      fetchCollections: async (account) => {
+      fetchCollections: async (creatorId) => {
         try {
           set({ loadingCollections: "loading" });
-          let _collections = await BlockchainRead.getCollectionByAccount(
-            account
-          );
-
-          const filteredCollection = _collections.filter(
-            (e) => !blackListedAddresses.includes(e.collection)
-          );
-
-          _collections = filteredCollection.map((collection) => {
-            if (isOld(collection.collection)) {
-              return {
-                ...collection,
-                name: getOldName(),
-              };
-            } else return collection;
+          const collections = await getCollectionListOfSingleCreator({
+            creator_address: creatorId,
+            limit: 100,
+            skip: 0,
           });
 
-          set((state) => {
+          set(() => {
             return {
-              collections: _collections,
+              collections,
               loadingCollections: "loaded",
             };
           });
@@ -140,16 +123,16 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
         }
       },
 
-      fetchListedNFTs: async (account, offset = 0, limit = 20, reload) => {
+      fetchListedNFTs: async (ownerId, offset = 0, limit = 20) => {
         try {
           set({ loadingListedNFTs: "loading" });
 
-          let _nfts: NFTLockedDetailsProps[] = [];
+          let _nfts: NFTImageCardData[] = [];
 
           const result = await BlockchainRead.getAccountListedNfts(
             limit,
             offset,
-            account
+            ownerId
           );
           if (result?.length) {
             const users = await getUsers(
@@ -178,7 +161,7 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
             const filteredNFTs = state.listedNfts.filter(
               (stateNFTs) =>
                 !_nfts.some(
-                  (nfts: NFTLockedDetailsProps) => stateNFTs.id === nfts.id
+                  (nfts: NFTImageCardData) => stateNFTs.id === nfts.id
                 )
             );
 
@@ -198,7 +181,7 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
         try {
           set({ loadingListedUserNFTs: "loading" });
 
-          let _nfts: NFTLockedDetailsProps[] = [];
+          let _nfts: NFTImageCardData[] = [];
 
           const result = await BlockchainRead.getUserListedNfts(
             limit,
@@ -245,7 +228,7 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
         try {
           set({ loadingOwnedNFTs: "loading" });
           let allowedCollections: string[] = [];
-          let _nfts: NFTLockedDetailsProps[] = [];
+          let _nfts: NFTImageCardData[] = [];
           const fetcher = new MoralisFetcher();
           const result = await fetcher.getWalletNfts({
             address: account,
@@ -330,7 +313,7 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
                 saleState,
                 price: item.amount,
                 owner: owner ? owner : null,
-                endTime: 0,
+                endTime: "0",
                 unlock: unlock,
                 mintHash: item.tokenHash,
                 external: !internal,
@@ -352,53 +335,41 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
         }
       },
 
-      fetchCreatedNFTs: async (account, offset = 0, limit = 20, reload) => {
+      fetchCreatedNFTs: async (creatorId, offset = 0, limit = 20) => {
         try {
           set({ loadingCreatedNFTs: "loading" });
-          let _nfts: NFTLockedDetailsProps[] = [];
-          const result = await BlockchainRead.getAccountCreatedNfts(
-            account,
+
+          const nfts = await getNFTListOfSingleCreatorFromAnyCollection({
+            creator_address: creatorId,
             limit,
-            offset
-          );
-          if (result?.length) {
-            const users = await getUsers(
-              result.map((e) => [e.creator, e.owner]).flat()
-            );
+            skip: offset,
+          });
 
-            _nfts = result.map((item: any) => {
-              let _endTime = 0;
-              if (item.saleState === "Auction") {
-                _endTime = item.auctionInfo.endTime;
-              }
-
-              const creator = users.find((e) =>
-                isAddressesMatch(e._id, item.creator)
-              );
-              const owner = users.find((e) =>
-                isAddressesMatch(e._id, item.owner)
-              );
-
-              return {
-                id: item.id,
-                collection: item.collection,
-                tokenId: item.tokenId,
-                creator: creator ? creator : null,
-                createTime: item.createTime,
-                ipfs: item.ipfs,
-                saleState: item.saleState,
-                price: item.price,
-                owner: owner ? owner : null,
-                endTime: _endTime,
-                unlock: item.unlock,
-                mintHash: item.mintHash,
-              };
-            });
-          }
-
-          set((state) => {
+          const nftImageCardDataList: NFTImageCardData[] = nfts.map((item) => {
             return {
-              createdNfts: _nfts,
+              id: item.id,
+              collection: item.collection,
+              tokenId: item.tokenId,
+              creator: item.creator,
+              createTime: item.createTime,
+              ipfs: item.ipfs,
+              saleState: item.saleState,
+              price: item.price,
+              owner: item.owner,
+              endTime:
+                item.saleState === "Auction" ? item.auctionInfo.endTime : "0",
+              unlock: item.unlock,
+              mintHash: item.mintHash,
+              owner_data: item.owner_data,
+              creator_data: item.creator_data,
+              ipfs_metadata: item.ipfs_metadata,
+              external: false,
+            };
+          });
+
+          set(() => {
+            return {
+              createdNfts: nftImageCardDataList,
               loadingCreatedNFTs: "loaded",
             };
           });

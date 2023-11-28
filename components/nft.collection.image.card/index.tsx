@@ -1,33 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import axios from "axios";
-import { Collection } from "@/models/nft";
-import { formatIPFSUrl } from "@/utils/format.address";
+import { CFSCollection } from "@/models/nft";
 import { AppRoutes } from "@/constants/app.routes";
 
 export interface NFTCardProps {
-  data: Collection;
+  data: CFSCollection;
 }
 
 export const NFTCollectionImageCard: React.FC<NFTCardProps> = ({ data }) => {
-  const [imageUrl, setImageUrl] = useState("");
-
-  useEffect(() => {
-    const fetchMetadata = async (ipfs: string) => {
-      try {
-        const formattedUrl = formatIPFSUrl(ipfs);
-        const { data: metadata } = await axios.get(formattedUrl);
-        const imgUrl = formatIPFSUrl(metadata.coverIPFSHash);
-        setImageUrl(imgUrl);
-      } catch (error) {
-        console.dir(error);
-      }
-    };
-    if (data && data.ipfs) {
-      fetchMetadata(data.ipfs);
-    }
-  }, [data]);
+  const [imageUrl, setImageUrl] = useState(data.ipfs_metadata.coverIPFSHash);
 
   return (
     <div
@@ -44,10 +26,8 @@ export const NFTCollectionImageCard: React.FC<NFTCardProps> = ({ data }) => {
       >
         {imageUrl ? (
           <Image
-            src={
-              imageUrl.includes("mp3") ? "/images/default-music.png" : imageUrl
-            }
-            alt="nft"
+            src={imageUrl}
+            alt={data.name}
             height={275}
             width={275}
             className="absolute inset-0 h-full w-full rounded-xl object-cover"

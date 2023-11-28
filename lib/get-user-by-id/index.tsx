@@ -2,29 +2,6 @@ import { User } from "@/models/user";
 import { axiosCIS } from "@/utils/axios";
 import { AppError } from "@/utils/app-error";
 
-export interface IMappedUser {
-  _id: User["_id"];
-  display_name: User["display_name"];
-  membership: User["membership"];
-  is_registered?: boolean;
-}
-
-export interface NFTLockedDetailsProps {
-  id: string;
-  collection: string;
-  tokenId: number;
-  creator: IMappedUser | null;
-  owner: IMappedUser | null;
-  mintHash: string;
-  createTime: number;
-  ipfs: string;
-  saleState: string;
-  price: number;
-  endTime: number;
-  unlock: number;
-  external?: boolean;
-}
-
 export const getUserByIdFromDB = async (userId: string): Promise<User> => {
   try {
     const { data } = await axiosCIS.get<User>(`/users/${userId}`);
@@ -34,9 +11,16 @@ export const getUserByIdFromDB = async (userId: string): Promise<User> => {
   }
 };
 
+type MappedUser = Pick<
+  User,
+  "_id" | "display_name" | "profile_image" | "membership"
+> & {
+  is_registered: boolean;
+};
+
 export const getUsersByIdsFromDB = async (
   addresses: string[]
-): Promise<IMappedUser[]> => {
+): Promise<MappedUser[]> => {
   const arr: string[] = [];
   addresses.forEach((e) => {
     if (arr.indexOf(e) === -1) {
@@ -53,25 +37,28 @@ export const getUsersByIdsFromDB = async (
 
     const mappedUsers = users.map((e) => e.value);
 
-    return addresses.map((e) => {
-      return userMapper(
-        mappedUsers.find(
-          (user) => user._id.toLowerCase() === e.toLowerCase()
-        ) as User
-      );
-    }) as any;
+    return addresses
+      .map((e) => {
+        return userMapper(
+          mappedUsers.find(
+            (user) => user._id.toLowerCase() === e.toLowerCase()
+          ) as User
+        );
+      })
+      .filter((e) => e != null) as MappedUser[];
   } catch (err) {
     throw err;
   }
 };
 
-function userMapper(user: User | undefined): IMappedUser | null {
+function userMapper(user: User | undefined): MappedUser | null {
   if (!user) {
     return null;
   }
   return {
     _id: user._id,
     display_name: user.display_name,
+    profile_image: user.profile_image,
     membership: user.membership,
     is_registered: true,
   };

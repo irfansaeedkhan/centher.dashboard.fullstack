@@ -1,44 +1,32 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 import clsx from "clsx";
 import { HotNftEmptyIcon } from "@/assets/svgs";
 import { NFTImageCard } from "@/components/nft.image.card";
-import { NFTLockedDetailsProps } from "@/lib/get-user-by-id";
 import { useProfileNFTStore } from "@/store/profile.nft.store";
 import { LoadingStatus } from "@/utils/enums/loading.status.enum";
-import { GlobalTokenBlackList } from "@/web3/blockchain/helpers/blacklist.helper";
 import useGetUser from "@/hooks/use.get.user";
 import { AppRoutes } from "@/constants/app.routes";
 
+// FIXME: No Pagination on this page?
 const CreatedPage = () => {
   const router = useRouter();
-  const account = useMemo(() => {
+  const userId = useMemo(() => {
     return router.query.user_id as string;
   }, [router.query.user_id]);
-  const { user } = useGetUser(account);
+  const { user } = useGetUser(userId);
   const { createdNfts, fetchCreatedNFTs, loadingCreatedNFTs } =
     useProfileNFTStore((state) => ({
       createdNfts: state.createdNfts,
       fetchCreatedNFTs: state.fetchCreatedNFTs,
       loadingCreatedNFTs: state.loadingCreatedNFTs,
     }));
-  const [displayNFTs, setDisplayNFTs] = useState<NFTLockedDetailsProps[]>([]);
 
   useEffect(() => {
-    if (account) {
-      fetchCreatedNFTs(account, 0, 100, true);
+    if (userId) {
+      fetchCreatedNFTs(userId, 0, 100);
     }
-  }, [account, fetchCreatedNFTs]);
-
-  useEffect(() => {
-    if (loadingCreatedNFTs == LoadingStatus.loaded) {
-      setDisplayNFTs([
-        ...createdNfts.filter(
-          (nft) => !GlobalTokenBlackList.isBlocked(nft.collection, +nft.tokenId)
-        ),
-      ]);
-    }
-  }, [loadingCreatedNFTs, createdNfts]);
+  }, [userId, fetchCreatedNFTs]);
 
   useEffect(() => {
     if (user && user?.membership.status !== "citizen") {
@@ -52,9 +40,9 @@ const CreatedPage = () => {
 
   return (
     <>
-      {loadingCreatedNFTs == LoadingStatus.loaded && displayNFTs.length ? (
+      {loadingCreatedNFTs == LoadingStatus.loaded && !!createdNfts.length ? (
         <div className={clsx(`grid grid-cols-[1fr,1fr,1fr] gap-2`)}>
-          {displayNFTs.map((nft) => (
+          {createdNfts.map((nft) => (
             <NFTImageCard data={nft} key={nft.id} />
           ))}
         </div>
@@ -76,4 +64,5 @@ const CreatedPage = () => {
     </>
   );
 };
+
 export default CreatedPage;
