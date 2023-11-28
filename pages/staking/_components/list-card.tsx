@@ -335,10 +335,10 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
         {card.multilevel_rewards &&
           card.multilevel_rewards !== "No referral" &&
           card.rewards_level?.length && (
-            <div className="flex w-full flex-wrap items-center gap-2">
+            <div className="grid w-full grid-cols-2 items-center gap-2 fxm:grid-cols-3 flg:grid-cols-4">
               {card.rewards_level.map((e, i: number) => (
                 <div
-                  className="rounded-full border border-gray-shade-3 px-3 py-1 text-xs font-medium"
+                  className="col-span-1 rounded-full border border-gray-shade-3 px-2 py-1 text-center text-xs font-medium"
                   key={i}
                 >
                   <span className="text-gray-shade-14">L {e.level} - </span>
@@ -349,7 +349,7 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
                         : "text-gray-shade-14"
                     )}
                   >
-                    {e.percent}%
+                    {(Number(e.percent) / 100) * 12}%
                   </span>
                 </div>
               ))}

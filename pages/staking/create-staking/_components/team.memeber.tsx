@@ -32,7 +32,7 @@ const SingleTeamMember: React.FC<{ member: Memb }> = ({ member }) => {
         query: { user_id: member.address },
       }}
       target="_blank"
-      className="flex items-center gap-3 rounded-[14px] bg-background-shade-3 px-3 py-2"
+      className="flex w-full flex-shrink-0 items-center gap-3 rounded-[14px] bg-background-shade-3 px-3 py-2 fsm:w-fit"
     >
       <Image
         src={member.userImage}
