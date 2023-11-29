@@ -116,10 +116,10 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
           <ArrowDiagonal />
         </span>
       </div>
-      <p className="text-base font-semibold text-white">Staking token</p>
+      <p className="text-base font-semibold text-white">Token Details</p>
       <div className={main}>
         <div className={mainSection}>
-          <span className={label}>Project Name</span>
+          <span className={label}>Token Name</span>
           <span className={value}>
             {
               coins.find((e) =>
@@ -183,7 +183,7 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
           </span>
         </div>
       </div>
-      <p className="text-base font-semibold text-white">Pool details</p>
+      <p className="text-base font-semibold text-white">Pool Details</p>
       <div className={main}>
         <div className={mainSection}>
           <span className={label}>APY</span>
@@ -285,7 +285,7 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
         </div>
         {card.nonRefundable && (
           <div className={mainSection}>
-            <span className={label}>Refunded</span>
+            <span className={label}>Capital Release</span>
             <div className={clsx(value, "flex items-center gap-1.5")}>
               <span>Not Refunded</span>
               {card.liquidity_pool_provided == "no" && (
@@ -329,16 +329,16 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
         {card.multilevel_rewards &&
           card.multilevel_rewards !== "No referral" && (
             <div className={mainSection}>
-              <span className={label}>Affiliate system</span>
+              <span className={label}>Affiliate Program APY</span>
             </div>
           )}
         {card.multilevel_rewards &&
           card.multilevel_rewards !== "No referral" &&
           card.rewards_level?.length && (
-            <div className="flex w-full flex-wrap items-center gap-2">
+            <div className="grid w-full grid-cols-2 items-center gap-2 fxm:grid-cols-3 flg:grid-cols-4">
               {card.rewards_level.map((e, i: number) => (
                 <div
-                  className="rounded-full border border-gray-shade-3 px-3 py-1 text-xs font-medium"
+                  className="col-span-1 rounded-full border border-gray-shade-3 px-2 py-1 text-center text-xs font-medium"
                   key={i}
                 >
                   <span className="text-gray-shade-14">L {e.level} - </span>
@@ -349,7 +349,7 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
                         : "text-gray-shade-14"
                     )}
                   >
-                    {e.percent}%
+                    {(Number(e.percent) / 100) * 12}%
                   </span>
                 </div>
               ))}
