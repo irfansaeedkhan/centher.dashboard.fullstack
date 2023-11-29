@@ -13,10 +13,9 @@ import { TbWorld } from "react-icons/tb";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { useCollectionStore } from "@/store/collection.store";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
-import useGetUser from "@/hooks/use.get.user";
 import { AppRoutes } from "@/constants/app.routes";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
-import { formatBNB2USD, formatIPFSUrl } from "@/utils/format.address";
+import { formatBNB2USD } from "@/utils/format.address";
 import { copyText } from "@/utils/copy.text";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
@@ -41,7 +40,6 @@ const Collection: NextPageWithLayout = () => {
   const [isMobileMenuVisible, setIsMobileMenuVisible] = useState(false);
   const [filterInView, setFilter] = useState<NFTSaleStateFilter>("All");
   const menuRef = React.useRef<HTMLDivElement>(null);
-
   const bnbPrice = useBNBPrice();
   const shareUrl = useMemo(() => {
     if (typeof window !== "undefined") {
@@ -87,20 +85,23 @@ const Collection: NextPageWithLayout = () => {
     updateCollectionAdditionalInfo: state.updateCollectionAdditionalInfo,
   }));
 
-  const { user } = useGetUser(info?.creator);
   const [orderdir, setOrderDir] = useState<OrderDirection>("desc");
   const [coverImageUrl, setCoverImageUrl] = useState("");
   const [profileImageUrl, setProfileImageUrl] = useState("");
-  const verificationTick = useVerificationTick({ user });
+  const verificationTick = useVerificationTick({ user: info?.creator_data });
+
+  const [lastNotiRef, _lastNotiInView, lastNotiEntry] = useInView();
 
   useEffect(() => {
     if (info) {
-      setCoverImageUrl(formatIPFSUrl(info.ipfs_metadata.coverIPFSHash));
-      setProfileImageUrl(info.ipfs_metadata.profileIPFSHash);
+      setCoverImageUrl(
+        info.ipfs_metadata.coverIPFSHash ?? "/images/placeholder-rectangle.svg"
+      );
+      setProfileImageUrl(
+        info.ipfs_metadata.profileIPFSHash ?? "/images/placeholder-square.svg"
+      );
     }
   }, [info]);
-
-  const [lastNotiRef, _lastNotiInView, lastNotiEntry] = useInView();
 
   useEffect(() => {
     if (lastNotiEntry?.isIntersecting) {
@@ -343,21 +344,23 @@ const Collection: NextPageWithLayout = () => {
                       href={{
                         pathname: AppRoutes.profile.nfts,
                         query: {
-                          user_id: info?.creator,
+                          user_id: info?.creator_data._id,
                         },
                       }}
                       className="ml-1 flex max-w-[calc(100vw-140px)] items-center text-sm font-semibold text-gray-shade-18 hover:text-brand-primary"
-                      title={user?.display_name}
+                      title={info?.creator_data?.display_name}
                     >
                       <span className="block truncate break-words">
-                        {user && sliceDisplayName(user?.display_name)}
+                        {info?.creator_data &&
+                          sliceDisplayName(info?.creator_data?.display_name)}
                       </span>
                       {!!verificationTick && (
                         <span className="verifiedIcon ml-1 inline-flex h-5 w-5 min-w-[1.25rem]">
                           <Image
                             src={verificationTick}
                             alt={
-                              user?.membership.status === "citizen"
+                              info?.creator_data?.membership.status ===
+                              "citizen"
                                 ? "Citizen"
                                 : "Verified"
                             }
