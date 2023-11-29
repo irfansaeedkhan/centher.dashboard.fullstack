@@ -58,14 +58,14 @@ const DropdownSwapForm: React.FC<DropdownProps> = ({
         )}
         onClick={() => setIsOpen(!isOpen)}
       >
-        <div className="flex w-full items-center justify-between">
+        <div className="flex w-full items-center justify-between gap-2">
           {selectedLabel ? (
             <Image
               src={`/images/${selectedValue?.icon}`}
               alt={"passport-banner"}
               height={100}
               width={100}
-              className="w-7 rounded-xl object-cover"
+              className="h-6 w-6 flex-shrink-0 rounded-xl object-cover"
             />
           ) : null}{" "}
           {selectedLabel || placeholder}{" "}
@@ -85,7 +85,7 @@ const DropdownSwapForm: React.FC<DropdownProps> = ({
               key={option.value.id}
               className={`word-break cursor-pointer border-b border-gray-shade-3 px-4 py-2 first:rounded-t-2xl last:rounded-b-2xl last:border-none hover:bg-black-shade-9 ${
                 option.value === selectedValue
-                  ? "bg-black-shade-6 font-bold"
+                  ? "bg-black-shade-6 font-semibold"
                   : ""
               }`}
               onClick={() => handleOptionClick(option)}
