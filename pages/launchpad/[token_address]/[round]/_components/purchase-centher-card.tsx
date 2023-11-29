@@ -67,6 +67,7 @@ export const PurchaseCentherCard: React.FC<Props> = ({
       : 0,
   });
 
+  const signer = getSigner();
   useEffect(() => {
     if (!connectedAddress || !getSigner() || !roundInfo) return;
     setSelectedTokenA((prev) => ({
@@ -85,17 +86,17 @@ export const PurchaseCentherCard: React.FC<Props> = ({
       inputMinValue: roundInfo?.minContributionForBusd,
       inputMaxValue: roundInfo?.maxContributionForBusd,
     }));
-  }, [currentUserAddress, getSigner, roundInfo, connectedAddress]);
+  }, [currentUserAddress, signer, roundInfo, connectedAddress]);
 
   // Get selectedTokenA balance
   useEffect(() => {
-    if (!currentUserAddress || !getSigner()) return;
+    if (!currentUserAddress || !signer) return;
     const getSelectedTokenBalance = async () => {
       getTokenBalance(
         selectedTokenA.tokenName,
         18,
         currentUserAddress,
-        getSigner()!
+        signer!
       ).then((tokenBalanace) =>
         setSelectedTokenA((prev) => ({
           ...prev,
@@ -104,17 +105,17 @@ export const PurchaseCentherCard: React.FC<Props> = ({
       );
     };
     getSelectedTokenBalance();
-  }, [currentUserAddress, selectedTokenA.tokenName, getSigner]);
+  }, [currentUserAddress, selectedTokenA.tokenName, signer]);
 
   // Get selectedTokenB balance
   useEffect(() => {
-    if (!currentUserAddress || !getSigner()) return;
+    if (!currentUserAddress || !signer) return;
     const getSelectedTokenBalance = async () => {
       getTokenBalance(
         selectedTokenB.tokenName,
         18,
         currentUserAddress,
-        getSigner()!
+        signer!
       ).then((tokenBalanace) =>
         setSelectedTokenB((prev) => ({
           ...prev,
@@ -123,16 +124,24 @@ export const PurchaseCentherCard: React.FC<Props> = ({
       );
     };
     getSelectedTokenBalance();
-  }, [currentUserAddress, selectedTokenB.tokenName, getSigner]);
+  }, [currentUserAddress, selectedTokenB.tokenName, signer]);
+
+  useEffect(() => {
+    if (signer == null && connectedAddress != null) {
+      setConnectWalletModal(true);
+    } else {
+      setConnectWalletModal(false);
+    }
+  }, [signer, connectedAddress]);
 
   const checkSelectedTokenAllowance = useCallback(async () => {
-    if (!connectedAddress || !getSigner) return;
+    if (!connectedAddress || !signer) return;
     await getTokenAllowance(
       selectedTokenA.tokenName,
       connectedAddress,
-      getSigner()!
+      signer!
     );
-  }, [connectedAddress, selectedTokenA.tokenName, getSigner]);
+  }, [connectedAddress, selectedTokenA.tokenName, signer]);
 
   // Get selected token allowance
   useEffect(() => {
@@ -179,7 +188,8 @@ export const PurchaseCentherCard: React.FC<Props> = ({
       {connectWalletModal && (
         <ConnectWalletModal
           connectWallet={connectWallet}
-          deactivate={disconnectWallet}
+          disconnectWallet={disconnectWallet}
+          connectedAddress={connectedAddress}
           loggedInUser={loggedInUser}
           setConnectWalletModal={setConnectWalletModal}
         />

@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { formatUnits, isAddress } from "ethers/lib/utils";
-import { FiArrowRight } from "react-icons/fi";
-import toast from "react-hot-toast";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import { ClaimableReward, MetamaskIcon2, StakingUsers } from "@/assets/svgs";
+import { ClaimableReward, StakingUsers } from "@/assets/svgs";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
 import useUser from "@/hooks/use.user";
 import { useStaking } from "@/hooks/staking";
@@ -23,8 +21,6 @@ import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
 import { eqAddress } from "@/live/utils/address.utils";
 import { IModalHandler, ModalManager, TemplateCollection } from "@/utils/modal";
 import { CustomModal } from "@/components/modal/custom.modal";
-import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
-import { CustomNewModal } from "@/components/modal/custom.new.modal";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { useWallet } from "@/web3/hooks/use.wallet";
 import { ListCardDataOBj } from "../../_components/list-card-data";
@@ -33,6 +29,7 @@ import SuccessModalContent from "./_components/success-modal-content";
 import FailedModalContent from "./_components/failed-modal-content";
 import StakingMainWrapper from "../../_components/staking-main-wrapper";
 import Image from "next/image";
+import ConnectWalletModal from "@/components/modal/connect-wallet-modal";
 
 enum ModalType {
   successFuncModal = "successFuncModal",
@@ -40,7 +37,8 @@ enum ModalType {
 }
 
 const StakingReferrals: NextPageWithLayout = () => {
-  const { getSigner, disconnectWallet } = useWallet();
+  const { getSigner, disconnectWallet, connectWallet, connectedAddress } =
+    useWallet();
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
     title: "",
@@ -61,7 +59,6 @@ const StakingReferrals: NextPageWithLayout = () => {
   const [currentTab, setCurrentTab] = useState<"rewards" | "referrals">(
     "rewards"
   );
-  const { connectWallet } = useConnectWallet();
   const [connectWalletModal, setConnectWalletModal] = useState(false);
   const [claimRefRewardInProgress, setClaimRefRewardInProgress] = useState("");
 
@@ -321,46 +318,13 @@ const StakingReferrals: NextPageWithLayout = () => {
         </CustomModal>
       )}
       {connectWalletModal && (
-        <CustomNewModal
-          onClose={() => {
-            setConnectWalletModal(false);
-          }}
-          title={"Connect to wallet"}
-        >
-          <div className="mb-8 flex w-full justify-center px-5 md:px-10">
-            <p className="mt-2 w-full max-w-[366px] text-center text-sm text-gray-shade-14">
-              Please Connect your wallet to continue, the system support
-              following wallet.
-            </p>
-          </div>
-          <div className="flex w-full justify-center px-5 md:px-10">
-            <div className="flex w-full max-w-[400px] items-center justify-between gap-10 rounded-xl border border-brand-primary px-5 py-3">
-              <div className="flex items-center gap-3 fsm:gap-6">
-                <MetamaskIcon2 />
-                <h3 className="text-sm font-semibold text-white fmd:text-base">
-                  Metamask
-                </h3>
-              </div>
-              <button
-                onClick={async () => {
-                  if (!user) {
-                    toast.error("Please login to buy this membership");
-                    setConnectWalletModal(false);
-                    return;
-                  }
-                  const _account = await connectWallet();
-                  if (user._id.toLowerCase() !== _account?.toLowerCase()) {
-                    toast.error("Please connect to correct account");
-                    disconnectWallet();
-                  }
-                  setConnectWalletModal(false);
-                }}
-              >
-                <FiArrowRight className="h-6 w-6 text-brand-primary fsm:h-8 fsm:w-8" />
-              </button>
-            </div>
-          </div>
-        </CustomNewModal>
+        <ConnectWalletModal
+          setConnectWalletModal={setConnectWalletModal}
+          loggedInUser={user}
+          connectWallet={connectWallet}
+          connectedAddress={connectedAddress}
+          disconnectWallet={disconnectWallet}
+        />
       )}
     </>
   );
