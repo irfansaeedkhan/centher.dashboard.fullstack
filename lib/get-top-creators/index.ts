@@ -1,13 +1,25 @@
 import { TopCreator } from "@/models/top-creator";
 import { AppError } from "@/utils/app-error";
-import { BlockchainRead } from "@/web3/blockchain";
+import { axiosCFS } from "@/utils/axios";
 
-const MAX_TOP_CREATORS = 10;
-
-export const getTopCreators = async (): Promise<TopCreator[]> => {
+export const getTopCreators = async ({
+  first = 10,
+  skip = 0,
+}: {
+  first?: number;
+  skip?: number;
+}): Promise<TopCreator[]> => {
   try {
-    const result = await BlockchainRead.getTopCreator(MAX_TOP_CREATORS, 0);
-    return result;
+    const { data } = await axiosCFS.get<{ users: TopCreator[] }>(
+      "/nfts/top-creators",
+      {
+        params: {
+          first,
+          skip,
+        },
+      }
+    );
+    return data.users;
   } catch (error: any) {
     throw new AppError(error, "Can not load Top Creators", "getTopCreators");
   }

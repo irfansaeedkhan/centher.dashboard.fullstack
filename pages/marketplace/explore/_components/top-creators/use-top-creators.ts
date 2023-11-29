@@ -1,16 +1,13 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-
 import { getTopCreators } from "@/lib/get-top-creators";
 import { LoadingState } from "@/models/common";
-
-import { TopCreatorCardData } from "./creator-card";
-import { getTopCreatorCardData } from "./get-top-creator-card-data";
+import { TopCreator } from "@/models/top-creator";
 
 export const useTopCreators = () => {
   const [state, setState] = useState<{
     loading: LoadingState;
-    topCreators: TopCreatorCardData[];
+    topCreators: TopCreator[];
   }>({
     loading: "idle",
     topCreators: [],
@@ -19,23 +16,14 @@ export const useTopCreators = () => {
   useEffect(() => {
     (async () => {
       try {
-        const topCreators = await getTopCreators();
-
-        const topCreatorsCardDataPromises = topCreators.map((item) =>
-          getTopCreatorCardData(item)
-        );
-
-        const topCreatorsCardData = (
-          await Promise.allSettled(topCreatorsCardDataPromises)
-        ).filter(
-          (item) => item.status === "fulfilled"
-        ) as PromiseFulfilledResult<TopCreatorCardData>[];
+        const topCreators = await getTopCreators({
+          first: 10,
+          skip: 0,
+        });
 
         setState((state) => ({
           ...state,
-          topCreators: topCreatorsCardData
-            .map((item) => item.value)
-            .filter((creator) => creator.membership.status === "citizen"),
+          topCreators,
           loading: "loaded",
         }));
       } catch (error: any) {
