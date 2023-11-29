@@ -116,10 +116,10 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
           <ArrowDiagonal />
         </span>
       </div>
-      <p className="text-base font-semibold text-white">Staking token</p>
+      <p className="text-base font-semibold text-white">Token Details</p>
       <div className={main}>
         <div className={mainSection}>
-          <span className={label}>Project Name</span>
+          <span className={label}>Token Name</span>
           <span className={value}>
             {
               coins.find((e) =>

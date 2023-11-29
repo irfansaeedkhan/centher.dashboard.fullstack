@@ -185,8 +185,8 @@ export const SwapTokens = () => {
         <div className="flex w-full flex-shrink-0 flex-col rounded-xl bg-elevation-1 px-5 py-6 fmd:col-span-1 flg:max-w-[512px]">
           <p className="font-small ml-1 text-sm text-gray-shade-14">Pay</p>
 
-          <div className="flex w-full flex-row">
-            <div className="col-span-2 w-full  text-sm font-medium text-white md:col-span-2">
+          <div className="flex w-full flex-row gap-2">
+            <div className="col-span-2 w-full text-sm font-medium text-white md:col-span-2">
               <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
                 <input
                   type="number"
@@ -216,8 +216,8 @@ export const SwapTokens = () => {
           <div className="my-1 border-b-2 border-gray-shade-3"></div>
           <p className="font-small ml-1 text-sm text-gray-shade-14">Receive</p>
 
-          <div className="flex w-full flex-row">
-            <div className="col-span-2 w-full  text-sm font-medium text-white md:col-span-2">
+          <div className="flex w-full flex-row gap-2">
+            <div className="col-span-2 w-full text-sm font-medium text-white md:col-span-2">
               <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
                 <input
                   type="number"
