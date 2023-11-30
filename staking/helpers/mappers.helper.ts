@@ -133,6 +133,7 @@ export function setupUiModels(input: StakingProject[]): ListCardDataOBj[] {
       users: e.users,
       transfers: e.transfers,
       burn_tax: e.tax + "",
+      nonRefundable: e.nonRefundable,
     };
   });
 }

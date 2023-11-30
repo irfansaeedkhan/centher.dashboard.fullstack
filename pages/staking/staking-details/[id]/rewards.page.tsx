@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { formatUnits } from "ethers/lib/utils";
 import { CgSpinner } from "react-icons/cg";
-import toast from "react-hot-toast";
-import { FiArrowRight } from "react-icons/fi";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { IModalHandler, ModalManager, TemplateCollection } from "@/utils/modal";
@@ -21,17 +20,17 @@ import {
 } from "@/staking/types/rewards.interface";
 import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
 import { eqAddress } from "@/live/utils/address.utils";
-import { PreLoader } from "@/components/pre.loader";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { useWallet } from "@/web3/hooks/use.wallet";
 import { CustomNewModal } from "@/components/modal/custom.new.modal";
 import { MetamaskIcon2 } from "@/assets/svgs";
 import RewardsTable from "./_components/rewards-table";
 import { ListCardDataOBj } from "../../_components/list-card-data";
-import StakingDetailsWrapper from "./_components/staking-details-wrapper";
 import UnstakeModal from "./_components/unstake-modal";
 import SuccessModalContent from "./_components/success-modal-content";
 import FailedModalContent from "./_components/failed-modal-content";
+import StakingMainWrapper from "../../_components/staking-main-wrapper";
+import ConnectWalletModal from "@/components/modal/connect-wallet-modal";
 
 enum ModalType {
   cancelStakingModal = "cancelStakingModal",
@@ -40,7 +39,8 @@ enum ModalType {
 }
 
 const ClaimRewards: NextPageWithLayout = () => {
-  const { getSigner, disconnectWallet } = useWallet();
+  const { getSigner, disconnectWallet, connectWallet, connectedAddress } =
+    useWallet();
   const [stakingPool, setStakingPool] = useState<ListCardDataOBj | null>(null);
   const [coinsDetails, setCoinsDetails] = useState<
     Array<CoinDetails | undefined>
@@ -64,7 +64,6 @@ const ClaimRewards: NextPageWithLayout = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [claimInProcess, setClaimInProcess] = useState(false);
   const [cancelInProcess, setCancelInProcess] = useState(false);
-  const { connectWallet } = useConnectWallet();
   const [connectWalletModal, setConnectWalletModal] = useState(false);
   const [restakeInProgress, setRestakeInProgress] = useState(false);
 
@@ -245,10 +244,20 @@ const ClaimRewards: NextPageWithLayout = () => {
   }, [poolId, sdk, user, getSigner]);
 
   const modal = new ModalManager(setModalModel, rewardsModal);
-  return (
+  return !connectWalletModal && (isLoading || !userStaked) ? (
+    <div className="flex h-[calc(100vh-60px)] w-full items-center justify-center">
+      <Image
+        src="/images/preloader.png"
+        alt="preloader"
+        width={64}
+        height={64}
+        className="h-16 w-16 flex-shrink-0 object-cover"
+      />
+    </div>
+  ) : (
     <>
       <div className="flex w-full flex-col gap-5 rounded-xl border border-gray-shade-3 bg-black-shade-9 p-6">
-        <div className="text-[min(10vw, 20px)] textGradient font-semibold">
+        <div className="text-[min(10vw, 20px)] font-semibold text-white">
           Claim Rewards
         </div>
 
@@ -363,48 +372,14 @@ const ClaimRewards: NextPageWithLayout = () => {
         </CustomModal>
       )}
       {connectWalletModal && (
-        <CustomNewModal
-          onClose={() => {
-            setConnectWalletModal(false);
-          }}
-          title={"Connect to wallet"}
-        >
-          <div className="mb-8 flex w-full justify-center px-5 md:px-10">
-            <p className="mt-2 w-full max-w-[366px] text-center text-sm text-gray-shade-14">
-              Please Connect your wallet to continue, the system support
-              following wallet.
-            </p>
-          </div>
-          <div className="flex w-full justify-center px-5 md:px-10">
-            <div className="flex w-full max-w-[400px] items-center justify-between gap-10 rounded-xl border border-brand-primary px-5 py-3">
-              <div className="flex items-center gap-3 fsm:gap-6">
-                <MetamaskIcon2 />
-                <h3 className="text-sm font-semibold text-white fmd:text-base">
-                  Metamask
-                </h3>
-              </div>
-              <button
-                onClick={async () => {
-                  if (!user) {
-                    toast.error("Please login to buy this membership");
-                    setConnectWalletModal(false);
-                    return;
-                  }
-                  const _account = await connectWallet();
-                  if (user._id.toLowerCase() !== _account?.toLowerCase()) {
-                    toast.error("Please connect to correct account");
-                    disconnectWallet();
-                  }
-                  setConnectWalletModal(false);
-                }}
-              >
-                <FiArrowRight className="h-6 w-6 text-brand-primary fsm:h-8 fsm:w-8" />
-              </button>
-            </div>
-          </div>
-        </CustomNewModal>
+        <ConnectWalletModal
+          setConnectWalletModal={setConnectWalletModal}
+          loggedInUser={user}
+          connectWallet={connectWallet}
+          connectedAddress={connectedAddress}
+          disconnectWallet={disconnectWallet}
+        />
       )}
-      {!connectWalletModal && (isLoading || !userStaked) ? <PreLoader /> : ""}
     </>
   );
 };
@@ -412,7 +387,7 @@ const ClaimRewards: NextPageWithLayout = () => {
 ClaimRewards.getLayout = (page) => {
   return (
     <AllPagesWrapper pageTitle="Staking Details">
-      <StakingDetailsWrapper>{page}</StakingDetailsWrapper>
+      <StakingMainWrapper>{page}</StakingMainWrapper>
     </AllPagesWrapper>
   );
 };

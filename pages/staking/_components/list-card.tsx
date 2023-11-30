@@ -5,7 +5,7 @@ import { formatUnits } from "ethers/lib/utils";
 import { useFloating, useHover, useInteractions } from "@floating-ui/react";
 import clsx from "clsx";
 import { AiOutlineInfoCircle } from "react-icons/ai";
-import { FiArrowUpRight, FiCopy } from "react-icons/fi";
+import { FiArrowUpRight } from "react-icons/fi";
 import { toast } from "react-hot-toast";
 import { sliceAccountAddress } from "@/utils/user.helpers";
 import { copyText } from "@/utils/copy.text";
@@ -13,11 +13,10 @@ import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { formatIPFSUrl } from "@/utils/format.address";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
 import { eqAddress } from "@/live/utils/address.utils";
-import { Staking } from "@/assets/svgs";
+import { ArrowDiagonal, GradientCopy, Staking } from "@/assets/svgs";
 import { BlockchainConfig } from "@/web3/blockchain/config";
 import Button from "@/components/button";
 import { claimPeriodOptions, stakingPeriodOptions } from "../constants";
-import { metaDataType } from "./staking-types";
 import { ListCardDataOBj } from "./list-card-data";
 
 export interface ListCardProps {
@@ -27,73 +26,114 @@ export interface ListCardProps {
 
 const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpenPool, setIsOpenPool] = useState(false);
+  const [isOpenCancel, setIsOpenCancel] = useState(false);
+  const [isOpenRefunded, setIsOpenRefunded] = useState(false);
 
-  const { refs, floatingStyles, context } = useFloating({
-    open: isOpen,
-    onOpenChange: setIsOpen,
+  const { refs, context } = useFloating({
+    open: isOpenPool,
+    onOpenChange: setIsOpenPool,
   });
+  const { refs: refs2, context: context2 } = useFloating({
+    open: isOpenCancel,
+    onOpenChange: setIsOpenCancel,
+  });
+  const { refs: refs3, context: context3 } = useFloating({
+    open: isOpenRefunded,
+    onOpenChange: setIsOpenRefunded,
+  });
+
   const hover = useHover(context);
+  const hover2 = useHover(context2);
+  const hover3 = useHover(context3);
 
   const { getReferenceProps, getFloatingProps } = useInteractions([hover]);
+  const {
+    getReferenceProps: getReferenceProps2,
+    getFloatingProps: getFloatingProps2,
+  } = useInteractions([hover2]);
+  const {
+    getReferenceProps: getReferenceProps3,
+    getFloatingProps: getFloatingProps3,
+  } = useInteractions([hover3]);
 
   return (
-    <div className="flex w-full max-w-full flex-col gap-5 rounded-2xl bg-elevation-1 p-5 fsm:p-8">
-      <div
-        className="relative h-[200px] w-full rounded-2xl bg-[url(/images/profile-header-cover.jpg)] bg-cover bg-center"
-        style={{
-          backgroundImage: card.metadata?.banner?.length
-            ? `url(${formatIPFSUrl("ipfs:" + card.metadata.banner)})`
-            : "url(/images/profile-header-cover.jpg)",
-        }}
-      >
-        <div className="absolute right-6 top-5 flex items-center gap-4">
-          {/* <Link
-            href={"/staking/staking-details/" + card.id}
-            className="textGradient text-xs font-medium"
-          >
-            View project detail
-          </Link> */}
-          <Button
-            variant="primary"
-            className="h-7 text-[10px]"
-            title="View project detail"
-            borderRounded="10px"
-            onClick={() => router.push("/staking/staking-details/" + card.id)}
-          />
-          <div
-            className={clsx(
-              "w-fit rounded-[10px] bg-black-shade-3 px-3 py-[6px] text-xs font-semibold",
-              card.is_active ? "text-[#76E268]" : "textGradient"
-            )}
-          >
-            {card.is_active ? "Active" : "Unbalanced"}
-          </div>
-        </div>
-        <div className="absolute bottom-6 left-6 my-auto">
-          <div className="flex items-center gap-4">
-            <Image
-              src={
-                card.metadata
-                  ? formatIPFSUrl("ipfs:" + card.metadata.icon)
-                  : "/images/profile-header-cover.jpg"
-              }
-              alt="token-address-symbol"
-              width={44}
-              height={44}
-              className="h-11 w-11 rounded-full object-cover"
-            />
-            <p className="text-xl font-bold text-white">{card.pack}</p>
-          </div>
-        </div>
+    <div className="flex w-full flex-col gap-4 rounded-2xl bg-black-shade-9 p-4">
+      <div className="h-[180px] w-full">
+        <Image
+          src={
+            card.metadata?.banner?.length
+              ? formatIPFSUrl("ipfs:" + card.metadata.banner)
+              : "/images/profile-header-cover.jpg"
+          }
+          alt="token-address-symbol"
+          width={1040}
+          height={360}
+          quality={100}
+          className="h-full w-full rounded-2xl object-cover"
+        />
       </div>
-      <div className="grid w-full gap-6 fsm:grid-cols-2 fsm:gap-10 fmd:grid-cols-3 flg:grid-cols-4">
-        <div className={section}>
-          <p className={label}>Token Address</p>
-          <p
+      <div className="flex w-full items-center justify-between gap-5">
+        <div className="flex items-center gap-4">
+          <Image
+            src={
+              card.metadata
+                ? formatIPFSUrl("ipfs:" + card.metadata.icon)
+                : "/images/profile-header-cover.jpg"
+            }
+            alt="token-address-symbol"
+            width={112}
+            height={112}
+            quality={100}
+            className="h-11 w-11 flex-shrink-0 rounded-full object-cover fsm:h-12  fsm:w-12 fmd:h-14 fmd:w-14"
+          />
+          <div>
+            <p className="text-sm font-semibold text-white flg:text-base">
+              {card.pack}
+            </p>
+
+            <div
+              className={clsx(
+                "mt-1.5 w-fit text-xs font-medium",
+                card.is_active ? "text-[#76E268]" : "textGradient"
+              )}
+            >
+              {card.is_active ? "Active" : "Unbalanced"}
+            </div>
+          </div>
+        </div>
+        <Button
+          variant="primary"
+          className="hidden flex-shrink-0 px-3 text-xs font-medium fxm:block"
+          title="Project Details"
+          borderRounded="10px"
+          onClick={() => router.push("/staking/staking-details/" + card.id)}
+        />
+        <span
+          className="flex h-6 w-6 flex-shrink-0 fxm:hidden"
+          onClick={() => router.push("/staking/staking-details/" + card.id)}
+        >
+          <ArrowDiagonal />
+        </span>
+      </div>
+      <p className="text-base font-semibold text-white">Token Details</p>
+      <div className={main}>
+        <div className={mainSection}>
+          <span className={label}>Token Name</span>
+          <span className={value}>
+            {
+              coins.find((e) =>
+                eqAddress(e?.contractAddress, card.token_address)
+              )?.name
+            }
+          </span>
+        </div>
+        <div className={mainSection}>
+          <span className={label}>Token Address</span>
+          <span
             className={clsx(
-              value,
-              "word-break flex items-center gap-2 truncate"
+              "word-break flex items-center gap-2 truncate",
+              value
             )}
           >
             {coins.find((e) =>
@@ -113,41 +153,19 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
               <Staking className="h-5 w-5 group-hover:[&>*]:stroke-white" />
             )}
 
-            <span>{sliceAccountAddress(card.token_address)} </span>
-            <FiCopy
-              className="h-5 w-5 cursor-pointer stroke-gray-shade-14 hover:stroke-brand-primary"
+            <span>{sliceAccountAddress(card.token_address)}</span>
+            <GradientCopy
+              className="cursor-pointer"
               onClick={async () => {
                 await copyText(card.token_address ?? "");
                 toast.success("Token address copied!");
               }}
             />
-          </p>
+          </span>
         </div>
-        <div className={section}>
-          <p className={label}>Token Project Name</p>
-          <p className={value}>
-            {
-              coins.find((e) =>
-                eqAddress(e?.contractAddress, card.token_address)
-              )?.name
-            }
-          </p>
-        </div>
-        <div className={section}>
-          <p className={label}>Symbol</p>
-          <p className={value}>
-            {
-              coins.find((e) =>
-                eqAddress(e?.contractAddress, card.token_address)
-              )?.symbol
-            }
-          </p>
-        </div>
-
-        <div className={section}>
-          <p className={label}>Details</p>
-          <p className={value}>
-            {" "}
+        <div className={mainSection}>
+          <span className={label}>Details</span>
+          <span className={value}>
             <a
               href={`${BlockchainConfig.scanner.url}/address/${card.token_address}`}
               target={"_blank"}
@@ -159,240 +177,192 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
                 View on {BlockchainConfig.scanner.name}
               </span>
               <FiArrowUpRight
-                className={`cursor-pointer text-sm group-hover:text-brand-primary`}
+                className={`group-hover:text-gradient cursor-pointer text-sm`}
               />
             </a>
-          </p>
+          </span>
         </div>
       </div>
-      {!eqAddress(card.token_address, card.reward_token_address) && (
-        <div className="grid w-full gap-6 fsm:grid-cols-2 fsm:gap-10 fmd:grid-cols-3 flg:grid-cols-4">
-          <div className={section}>
-            <p className={label}>Reward Token Address</p>
-            <p
-              className={clsx(
-                value,
-                "word-break flex items-center gap-2 truncate"
-              )}
-            >
-              {coins.find((e) =>
-                eqAddress(e?.contractAddress, card.reward_token_address)
-              )?.logo ? (
-                <Image
-                  src={
-                    coins.find((e) =>
-                      eqAddress(e?.contractAddress, card.reward_token_address)
-                    )?.logo as string
-                  }
-                  alt="token-address-symbol"
-                  width={20}
-                  height={20}
-                />
-              ) : (
-                <Staking className="h-5 w-5 group-hover:[&>*]:stroke-white" />
-              )}
-
-              <span>{sliceAccountAddress(card.reward_token_address)}</span>
-              <FiCopy
-                className="h-5 w-5 cursor-pointer stroke-gray-shade-14 hover:stroke-brand-primary"
-                onClick={async () => {
-                  await copyText(card.reward_token_address ?? "");
-                  toast.success("Token address copied!");
-                }}
-              />
-            </p>
-          </div>
-          <div className={section}>
-            <p className={label}>Token Project Name</p>
-            <p className={value}>
-              {
-                coins.find((e) =>
-                  eqAddress(e?.contractAddress, card.reward_token_address)
-                )?.name
-              }
-            </p>
-          </div>
-
-          <div className={section}>
-            <p className={label}>Symbol</p>
-            <p className={value}>
-              {
-                coins.find((e) =>
-                  eqAddress(e?.contractAddress, card.reward_token_address)
-                )?.symbol
-              }
-            </p>
-          </div>
-
-          <div className={section}>
-            <p className={label}>Details</p>
-            <p className={value}>
-              {" "}
-              <a
-                href={`${BlockchainConfig.scanner.url}/address/${card.reward_token_address}`}
-                target={"_blank"}
-                rel="noreferrer"
-                title="View on Explorer"
-                className={`group flex items-center gap-1 text-white`}
-              >
-                <span
-                  className={`text-gradient-hover text-xs text-gray-shade-7`}
-                >
-                  View on {BlockchainConfig.scanner.name}
-                </span>
-                <FiArrowUpRight
-                  className={`cursor-pointer text-sm group-hover:text-brand-primary`}
-                />
-              </a>
-            </p>
-          </div>
+      <p className="text-base font-semibold text-white">Pool Details</p>
+      <div className={main}>
+        <div className={mainSection}>
+          <span className={label}>APY</span>
+          <span className={value}>{+card.apy / 100} %</span>
         </div>
-      )}
-      <div className="border-b-2 border-gray-shade-3"></div>
-      <div className="grid w-full gap-6 fsm:grid-cols-2 fsm:gap-10 fmd:grid-cols-3 flg:grid-cols-4">
-        <div className={section}>
-          <p className={label}>APY</p>
-          <p className={value}>{+card.apy / 100} %</p>
-        </div>
-        <div className={section}>
-          <p className={label}>Staking Period</p>
-          <p className={value}>
+        <div className={mainSection}>
+          <span className={label}>Staking Period</span>
+          <span className={value}>
             {
               stakingPeriodOptions.find((e) => e.value == +card.staking_period)
                 ?.title
             }
-          </p>
+          </span>
         </div>
-        <div className={section}>
-          <p className={label}>Claim Period</p>
-          <p className={value}>
+        <div className={mainSection}>
+          <span className={label}>Claim Period</span>
+          <span className={value}>
             {
               claimPeriodOptions.find((e) => e.value == +card.claim_period)
                 ?.title
             }
-          </p>
+          </span>
         </div>
-        {card.burn_tax && +card.burn_tax > 0 && (
-          <div className={section}>
-            <p className={label}>Burn Tax on claim</p>
-            <p className={value}>
-              {card.burn_tax ? +card.burn_tax / 100 : 0}%{" "}
-            </p>
+        <div className={mainSection}>
+          <span className={label}>Liquidity Pool</span>
+          <div className={clsx(value, "flex items-center gap-1.5")}>
+            <span>
+              {card.liquidity_pool_provided == "no"
+                ? "Not provided"
+                : "Provided"}
+            </span>
+            {card.liquidity_pool_provided == "no" && (
+              <p
+                ref={refs.setReference}
+                {...getReferenceProps()}
+                className="relative"
+              >
+                <AiOutlineInfoCircle className="h-4 w-4 min-w-min cursor-pointer text-orange-600 hover:text-white" />
+
+                {isOpenPool && (
+                  <span
+                    className="absolute -bottom-[5.5rem] -right-[1rem] z-[100] flex w-[300px] max-w-[220px] flex-col gap-2 rounded-lg border border-[#262A2D] bg-transparent p-3 text-xs text-white shadow-lg backdrop-blur-[50px]"
+                    ref={refs.setFloating}
+                    {...getFloatingProps()}
+                  >
+                    <AiOutlineInfoCircle className="h-4 w-4 min-w-min text-orange-600" />
+                    <span>
+                      This staking pool does not provide Liquidity pool.
+                    </span>
+                  </span>
+                )}
+              </p>
+            )}
+          </div>
+        </div>
+        <div className={mainSection}>
+          <span className={label}>Burn tax on claim</span>
+          <span className={value}>
+            {card.burn_tax ? +card.burn_tax / 100 : 0}%{" "}
+          </span>
+        </div>
+        <div className={mainSection}>
+          <span className={label}>Is Cancelable</span>
+          <div className={clsx(value, "flex items-center gap-1.5")}>
+            <span>
+              {card.is_cancelable == "no" ? "Irreversible" : "Reversible"}
+            </span>
+            {card.liquidity_pool_provided == "no" && (
+              <p
+                ref={refs2.setReference}
+                {...getReferenceProps2()}
+                className="relative"
+              >
+                <AiOutlineInfoCircle className="h-4 w-4 min-w-min cursor-pointer text-orange-600 hover:text-white" />
+
+                {isOpenCancel && (
+                  <span
+                    className="absolute -right-[1rem] top-[18px] z-[100] flex w-[300px] max-w-[220px] flex-col gap-2 rounded-lg border border-[#262A2D] bg-transparent p-3 text-xs text-white shadow-lg backdrop-blur-[50px]"
+                    ref={refs2.setFloating}
+                    {...getFloatingProps2()}
+                  >
+                    <AiOutlineInfoCircle className="h-4 w-4 min-w-min text-orange-600" />
+                    <span>
+                      This staking pool is irreversible, you will be forced to
+                      wait for the unblocking time specified in the contract
+                      once the subscription has been activated.
+                    </span>
+                  </span>
+                )}
+              </p>
+            )}
+          </div>
+        </div>
+        <div className={mainSection}>
+          <span className={label}>Created on</span>
+          <span className={value}>
+            {new Date(+card.start_time * 1000).toDateString()}
+          </span>
+        </div>
+        {card.nonRefundable && (
+          <div className={mainSection}>
+            <span className={label}>Capital Release</span>
+            <div className={clsx(value, "flex items-center gap-1.5")}>
+              <span>Not Refunded</span>
+              {card.liquidity_pool_provided == "no" && (
+                <p
+                  ref={refs3.setReference}
+                  {...getReferenceProps3()}
+                  className="relative"
+                >
+                  <AiOutlineInfoCircle className="h-4 w-4 min-w-min cursor-pointer text-orange-600 hover:text-white" />
+
+                  {isOpenRefunded && (
+                    <span
+                      className="absolute -right-[1rem] top-[18px] z-[100] flex w-[300px] max-w-[220px] flex-col gap-2 rounded-lg border border-[#262A2D] bg-transparent p-3 text-xs text-white shadow-lg backdrop-blur-[50px]"
+                      ref={refs3.setFloating}
+                      {...getFloatingProps3()}
+                    >
+                      <AiOutlineInfoCircle className="h-4 w-4 min-w-min text-orange-600" />
+                      <span>
+                        All tokens staked in this pool will be used in a minting
+                        service and will not be refunded at the end of the
+                        staking period.
+                      </span>
+                    </span>
+                  )}
+                </p>
+              )}
+            </div>
           </div>
         )}
-
-        <div className={section}>
-          <p className={label}>Liquidity Pool Provided</p>
-          <p className={value2}>{card.liquidity_pool_provided}</p>
-        </div>
-        <div className={section}>
-          <p className={label}>Is Cancelable</p>
-          <p className={value2}>{card.is_cancelable}</p>
-        </div>
-        {card.supply && +card.supply > 0 ? (
-          <div className={section}>
-            <p className={label}>Total Supply</p>
-            <p className={value2}>
-              {normalizeValue(formatUnits(card.supply, 18).toString())}{" "}
-              {
-                coins.find((e) =>
-                  eqAddress(e?.contractAddress, card.token_address)
-                )?.symbol
-              }
-            </p>
-          </div>
-        ) : null}
-
-        {card.is_cancelable == "yes" ? (
-          <div className={section}>
-            <p className={label}>Charge Fee on Cancel</p>
-            <p className={value}>{+card.charge_fee_on_cancel / 100} %</p>
-          </div>
-        ) : null}
-
-        <div className={section}>
-          <p className={label}>Start Time</p>
-          <p className={value}>
-            {new Date(+card.start_time * 1000).toDateString()}
-          </p>
-        </div>
-        {card.max_staking_amount && +card.max_staking_amount > 0 ? (
-          <div className={section}>
-            <p className={label}>Maximum Stakable Amount</p>
-            <p className={value}>
-              {normalizeValue(formatUnits(card.max_staking_amount, 18))}{" "}
-              {
-                coins.find((e) =>
-                  eqAddress(e?.contractAddress, card.token_address)
-                )?.symbol
-              }
-            </p>
-          </div>
-        ) : null}
-
-        <div className={section}>
-          <p className={label}>Minimum Stakable Amount</p>
-          <p className={value}>
+        <div className={mainSection}>
+          <span className={label}>Minimum Stakable Amount</span>
+          <span className={value}>
             {normalizeValue(formatUnits(card.min_staking_amount, 18))}{" "}
             {
               coins.find((e) =>
                 eqAddress(e?.contractAddress, card.token_address)
               )?.symbol
             }
-          </p>
+          </span>
         </div>
+        {card.multilevel_rewards &&
+          card.multilevel_rewards !== "No referral" && (
+            <div className={mainSection}>
+              <span className={label}>Affiliate Program APY</span>
+            </div>
+          )}
+        {card.multilevel_rewards &&
+          card.multilevel_rewards !== "No referral" &&
+          card.rewards_level?.length && (
+            <div className="grid w-full grid-cols-2 items-center gap-2 fxm:grid-cols-3 flg:grid-cols-4">
+              {card.rewards_level.map((e, i: number) => (
+                <div
+                  className="col-span-1 rounded-full border border-gray-shade-3 px-2 py-1 text-center text-xs font-medium"
+                  key={i}
+                >
+                  <span className="text-gray-shade-14">L {e.level} - </span>
+                  <span
+                    className={clsx(
+                      Number(e.percent) > 0
+                        ? "text-white"
+                        : "text-gray-shade-14"
+                    )}
+                  >
+                    {(Number(e.percent) / 100) * 12}%
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
       </div>
-      {card.metadata?.library?.length ? (
-        <div>
-          <p className={label}>Project Metadata</p>
-          <div className="grid w-full items-center gap-5 fsm:grid-cols-2 fsm:gap-10 fmd:grid-cols-3 flg:grid-cols-4">
-            {card.metadata.library.map((data: metaDataType, index: number) => (
-              <div
-                className="gradient-border-3 col-span-2 mt-[6px] flex h-[72px] flex-col items-center justify-center rounded-[10px] p-[1px] fsm:col-span-1"
-                key={index}
-              >
-                <p className="textGradient text-xs font-medium">{data.title}</p>
-                <p className={value}>{data.data}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      ) : null}
-
-      {card.liquidity_pool_provided == "no" ? (
-        <div
-          className="mt-2 flex items-center gap-2 rounded-xl bg-[#F68D29]/[0.3] p-6  px-4 py-3 text-sm text-[#F68D29]"
-          role="alert"
-        >
-          <p>Warning! This staking pool does not provide Liquidity pool.</p>
-          <p
-            ref={refs.setReference}
-            {...getReferenceProps()}
-            className="relative"
-          >
-            <AiOutlineInfoCircle className="h-5 w-5 hover:text-white" />
-            {isOpen && (
-              <div
-                className="absolute bottom-6 right-0 w-[300px] rounded-lg border border-gray-shade-3 bg-elevation-1 p-3 text-xs text-gray-shade-14 shadow-lg"
-                ref={refs.setFloating}
-                {...getFloatingProps()}
-              >
-                Some projects need an open liquidity pool to utilise the funds
-                staked by users and generate profits to be shared. Other times
-                an open liquidity pool indicates a favourable ground for a scam.
-                That is why you ALWAYS Do Your Own Research before investing.
-              </div>
-            )}
-          </p>
-        </div>
-      ) : null}
     </div>
   );
 };
 
 export default GridLayoutCard;
 
-const label = `text-sm text-gray-shade-14 mb-[2px]`;
-const value = `text-sm font-medium text-white`;
-const value2 = `text-sm font-medium text-green-shade-1`;
-const section = `col-span-2 fsm:col-span-1`;
+const label = `text-sm text-gray-shade-14`;
+const value = `text-sm font-medium text-white flex-shrink-0`;
+const mainSection = `flex w-full items-center justify-between gap-5`;
+const main = `flex w-full flex-col gap-3.5 rounded-[10px] border border-gray-shade-3 p-4`;

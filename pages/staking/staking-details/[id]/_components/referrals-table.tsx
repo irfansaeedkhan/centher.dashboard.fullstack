@@ -41,8 +41,8 @@ const ReferralsTable: React.FC<{
         <div className="flex items-center gap-8 rounded-t-xl bg-elevation-1 px-8 pb-4 pt-8">
           <p
             className={clsx(
-              "text-[min(10vw, 20px)] hover:textGradient cursor-pointer font-semibold",
-              currentTab === "rewards" ? "textGradient" : "text-white"
+              currentTab === "rewards" && "myBox font-medium",
+              "w-fit flex-shrink-0 cursor-pointer px-4 py-1.5 text-xs leading-5 text-white fxm:text-sm fxm:leading-6"
             )}
             onClick={() => setCurrentTab("rewards")}
           >
@@ -50,9 +50,13 @@ const ReferralsTable: React.FC<{
           </p>
           <p
             className={clsx(
-              "text-[min(10vw, 20px)] hover:textGradient cursor-pointer font-semibold",
-              currentTab === "referrals" ? "textGradient" : "text-white"
+              currentTab === "referrals" && "myBox font-medium",
+              "w-fit flex-shrink-0 cursor-pointer px-4 py-1.5 text-xs leading-5 text-white fxm:text-sm fxm:leading-6"
             )}
+            // className={clsx(
+            //   "text-[min(10vw, 20px)] hover:textGradient cursor-pointer font-semibold",
+            //   currentTab === "referrals" ? "textGradient" : "text-white"
+            // )}
             onClick={() => setCurrentTab("referrals")}
           >
             List of Referrals

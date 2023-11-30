@@ -143,6 +143,7 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.staking.staking_details.index,
   AppRoutes.staking.staking_details.rewards,
   AppRoutes.staking.staking_details.referrals,
+  AppRoutes.staking.staking_details.project_details,
 
   AppRoutes.staking.faqs,
 ];

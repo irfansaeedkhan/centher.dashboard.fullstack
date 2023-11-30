@@ -433,7 +433,7 @@ const ProfileHeader: React.FC<Props> = ({
                   <EyeOffFollow />
                 ) : (
                   <Image
-                    src={"/images/gradient-eye.png"}
+                    src={"/images/gradient-eye.svg"}
                     alt={"Follow"}
                     width={24}
                     height={24}
@@ -553,7 +553,7 @@ const ProfileHeader: React.FC<Props> = ({
                       <EyeOffFollow />
                     ) : (
                       <Image
-                        src={"/images/gradient-eye.png"}
+                        src={"/images/gradient-eye.svg"}
                         alt={"Follow"}
                         width={24}
                         height={24}

@@ -12,33 +12,32 @@ const SettingsTopBar: React.FC<Props> = ({ sidebarData }) => {
   const router = useRouter();
 
   return (
-    <div className="mb-8 w-full  flex-shrink-0 overflow-x-auto bg-[#17171A] px-2 py-2 pb-3">
-      <div className="justify-centerrounded-3xl flex w-full items-center gap-2">
-        {sidebarData.map((item) => (
-          <Link
-            href={item.link}
+    <div className="scrollSetLight2 flex w-full max-w-[600px] flex-shrink-0 gap-4 overflow-x-auto py-3">
+      {sidebarData.map((item) => (
+        <Link
+          href={item.link}
+          className={clsx(
+            "w-fit flex-shrink-0"
+            // item.label === "Team Members" ? "max-w-[130px]" : "max-w-[100px] "
+          )}
+          key={item.label}
+        >
+          <span
             className={clsx(
-              "flex h-8 min-w-max rounded-[14px] bg-[#17171A] p-[1px]",
-              item.link === router.pathname && "bg-gradient-pattern"
+              "flex w-full flex-grow items-center justify-center text-xs leading-5 text-white fxm:text-sm fxm:leading-6"
             )}
-            key={item.label}
           >
             <span
               className={clsx(
-                "left-6 flex flex-grow items-center justify-center rounded-[14px] bg-[#17171A] px-4 py-1 text-sm font-medium"
+                "px-4 py-1.5",
+                item.link === router.pathname && "myBox"
               )}
             >
-              <span
-                className={clsx(
-                  item.link === router.pathname ? "text-gradient" : "text-white"
-                )}
-              >
-                {item.label}
-              </span>
+              {item.label}
             </span>
-          </Link>
-        ))}
-      </div>
+          </span>
+        </Link>
+      ))}
     </div>
   );
 };

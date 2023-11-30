@@ -101,6 +101,7 @@ export class CentherStaking {
 
     try {
       // upload files
+
       mappedData.poolMetadata = await this.uploadPoolMetadata(
         files,
         input.poolMetadata,
@@ -112,6 +113,7 @@ export class CentherStaking {
 
     try {
       // call contract
+
       statusController(CreatePoolStepsEnum.contract, 0);
       await BlockchainWrite.createStakingPool(
         signer,

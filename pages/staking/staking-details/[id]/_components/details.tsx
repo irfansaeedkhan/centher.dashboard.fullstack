@@ -72,7 +72,7 @@ const Details: React.FC<{ data: OptionalType<ListCardDataOBj> }> = ({
   }, [data?.metadata]);
 
   return (
-    <div className="flex flex-col gap-6 border-b border-gray-shade-3 pb-8">
+    <div className="flex flex-col gap-6">
       <p className="text-xl font-semibold text-white">{data?.pack}</p>
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-3">

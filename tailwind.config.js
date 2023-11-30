@@ -12,6 +12,7 @@ module.exports = {
     screens: {
       // From Small to big
       fxs: "320px",
+      fxm: "400px",
       sm: "320px",
       fsm: "560px",
       md: "767px",

@@ -31,7 +31,7 @@ const Launchpad: NextPageWithLayout = () => {
     <div className="flex h-[calc(100vh-60px)] w-full items-center justify-center">
       <Image
         src="/images/preloader.png"
-        alt="Chat Background"
+        alt="preloader"
         width={64}
         height={64}
         className="h-16 w-16 flex-shrink-0 object-cover"

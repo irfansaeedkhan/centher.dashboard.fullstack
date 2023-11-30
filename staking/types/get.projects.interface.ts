@@ -91,4 +91,5 @@ export interface StakingProject {
   users?: StakingUser[];
   affiliate?: AffiliateSettings;
   tax: number;
+  nonRefundable: boolean;
 }
