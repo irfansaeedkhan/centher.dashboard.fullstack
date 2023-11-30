@@ -19,6 +19,9 @@ const CONNECTED_WALLET_KEY = "connected_wallet";
 
 export const useWallet = () => {
   const { account, activate, library, deactivate } = useWeb3React();
+  const [metamaskSigner, setMetamaskSigner] = useState<
+    JsonRpcSigner | undefined
+  >();
   const { address, connect, disconnect, sign, signer, send, showWallet } =
     useWalletService();
   const [connectedAddress, setConnectedAddress] = useState<
@@ -61,15 +64,22 @@ export const useWallet = () => {
       if (
         connected_wallet == WalletEnum.METAMASK &&
         account &&
-        library != undefined
+        library != undefined &&
+        metamaskSigner != undefined
       ) {
-        return library.getSigner();
+        return metamaskSigner;
       } else if (connected_wallet == WalletEnum.WALLET_SERVICE) {
         return signer;
       }
     }
     return null;
-  }, [account, library, signer]);
+  }, [account, library, signer, metamaskSigner]);
+
+  useEffect(() => {
+    if (library) {
+      setMetamaskSigner(library.getSigner());
+    }
+  }, [library, account]);
 
   const setWalletType = (wallet: WalletEnum) => {
     localStorage.setItem(CONNECTED_WALLET_KEY, wallet);
