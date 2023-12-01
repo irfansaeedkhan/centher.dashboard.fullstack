@@ -1,75 +1,80 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import toast from "react-hot-toast";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { ArrowLeftSimpleIcon } from "@/assets/svgs";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import { fetchNft, INFTDetailData } from "@/hooks/use.get.nft.data.ts";
+import { getSingleNFTPageData } from "@/lib/get-single-nft-page-data";
+import { CFSNFTForPage } from "@/lib/get-single-nft-page-data/types";
+import useUser from "@/hooks/use.user";
 import { NFTLeftSideComponent, NFTRightSideComponent } from "../../_components";
 
 const NFT: NextPageWithLayout = () => {
   const router = useRouter();
-  const collection = router.query.collection;
-  const tokenId = router.query.tokenId;
-  const [nftData, setNftDatas] = useState<INFTDetailData>();
-  const [reload, setReload] = useState<boolean>(false);
+  const { user: loggedInUser } = useUser();
+  const [nft, setNft] = useState<CFSNFTForPage>();
+
+  const fetchNFT = useCallback(async () => {
+    if (router.query.collection && router.query.tokenId) {
+      getSingleNFTPageData({
+        collection_address: router.query.collection.toString(),
+        token_id: router.query.tokenId.toString(),
+      })
+        .then((data) => {
+          setNft(data);
+        })
+        .catch((err) => {
+          toast.error(err.message);
+        });
+    }
+  }, [router.query]);
+
+  const refetchNFT = useCallback(() => {
+    fetchNFT();
+  }, [fetchNFT]);
 
   useEffect(() => {
-    async function fetchNFTData(collection: string, tokenId: number) {
-      const result = await fetchNft(collection, tokenId);
-      setNftDatas(result as any);
-    }
+    fetchNFT();
+  }, [fetchNFT]);
 
-    if ((collection as string) && tokenId) {
-      fetchNFTData(collection as string, Number(tokenId as string));
-    }
-  }, [collection, reload, tokenId]);
-  const setNftData = () => {
-    setReload(!reload);
-  };
-  return (
+  return nft && loggedInUser ? (
     <>
       <Head>
-        <title>{nftData?.name}</title>
+        <title>{nft.ipfs_metadata.name}</title>
       </Head>
       <div className="w-full pb-16">
-        <button className={backBtn} onClick={() => router.back()}>
+        <button
+          className={`mb-8 flex h-12 w-12 items-center justify-center rounded-full bg-black-shade-10`}
+          onClick={() => router.back()}
+        >
           <ArrowLeftSimpleIcon />
         </button>
         <div className="flex items-start gap-9 [@media(max-width:1279px)]:flex-col">
-          <NFTLeftSideComponent
-            image={nftData?.image}
-            type={nftData?.type}
-            nftId={nftData?.nftId}
-            mintTx={nftData?.mintTx}
-            collection={nftData?.collection}
-            attributes={nftData?.attributes}
-            collectionMintedTokens={
-              !nftData?.collectionMintedTokens
-                ? 0
-                : +nftData.collectionMintedTokens
-            }
+          <NFTLeftSideComponent nft={nft} />
+          <NFTRightSideComponent
+            nft={nft}
+            refetchNFT={refetchNFT}
+            loggedInUser={loggedInUser}
           />
-          <NFTRightSideComponent data={nftData} setNftData={setNftData} />
         </div>
       </div>
     </>
-  );
+  ) : null;
 };
 
 NFT.getLayout = (page) => {
   return (
     <AllPagesWrapper>
-      <div className={dashboardContentContainer}>
-        <div className={feedContainer}>{page}</div>
+      <div
+        className={`relative mx-auto h-full w-full max-w-[1160px] bg-black-shade-3 font-monto [@media(max-width:1279px)]:max-w-[544px]`}
+      >
+        <div className={`flex flex-col gap-5 flg:flex-row flg:items-start`}>
+          {page}
+        </div>
       </div>
     </AllPagesWrapper>
   );
 };
 
 export default NFT;
-
-// styling
-const feedContainer = `flex flex-col lg:flex-row gap-5 lg:items-start`;
-const backBtn = `bg-black-shade-10 rounded-full flex items-center justify-center w-12 h-12 mb-8`;
-const dashboardContentContainer = `bg-black-shade-3 w-full h-full font-monto [@media(max-width:1279px)]:max-w-[544px] max-w-[1160px] mx-auto relative`;

@@ -5,7 +5,6 @@ import Button from "@/components/button";
 import { IModalProps } from "@/components/modal/standard.modal";
 import { BNBIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
-import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import {
   formatAddress,
   formatBNB2USD,
@@ -19,12 +18,8 @@ import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { useWallet } from "@/web3/hooks/use.wallet";
+import { CFSNFTForPage } from "@/lib/get-single-nft-page-data/types";
 import AuctionCountdownRenderer from "./auction-countdown.renderer";
-
-interface AuctionNftDescriptionProps {
-  data: INFTDetailData | undefined;
-  setNftData: () => void;
-}
 
 enum ModalType {
   cancelAuctionFuncModal = "cancelAuctionFuncModal",
@@ -33,50 +28,48 @@ enum ModalType {
   endAuctionFuncModal = "endAuctionFuncModal",
 }
 
-export const AuctionNftDescription = ({
-  data,
-  setNftData,
-}: AuctionNftDescriptionProps) => {
+interface Props {
+  nft: CFSNFTForPage;
+  refetchNFT: () => void;
+}
+
+export const AuctionNftDescription: React.FC<Props> = ({ nft, refetchNFT }) => {
   const { getSigner } = useWallet();
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
     title: "",
     content: "",
   });
-  const [nowTime, setNowTime] = useState(new Date());
-  const [endTime, setEndTime] = useState(new Date());
-  const [hasBid, sethasBid] = useState(false);
-
   const bnbPrice = useBNBPrice();
-
-  useEffect(() => {
-    if (data) {
-      var hasBid = data.auctionInfo.bids?.length > 0;
-      var endtime = new Date(data?.auctionInfo.endTime * 1000);
-      var now = new Date();
-      setNowTime(now);
-      setEndTime(endtime);
-      sethasBid(hasBid);
-    }
-  }, [data, setNftData]);
+  const hasBid = nft.auctionInfo.bids.length > 0;
+  const nowTime = new Date();
+  const endTime = new Date(+nft.auctionInfo.endTime * 1000);
 
   const cancelAuctionFunc = () => {
+    const signer = getSigner();
+    if (!signer) {
+      toast.error("Connect your wallet");
+      return;
+    }
     try {
-      validateProvider();
       modal.dismissModal();
       modal.createModal(ModalType.cancelAuctionFuncModal);
     } catch (err: any) {
-      toastError("something went wrong");
+      toast.error("something went wrong");
     }
   };
 
   const endAuctionFunc = () => {
+    const signer = getSigner();
+    if (!signer) {
+      toast.error("Connect your wallet");
+      return;
+    }
     try {
-      validateProvider();
       modal.dismissModal();
       modal.createModal(ModalType.endAuctionFuncModal);
     } catch (err: any) {
-      toastError("something went wrong");
+      toast.error("something went wrong");
     }
   };
 
@@ -90,21 +83,28 @@ export const AuctionNftDescription = ({
       modal.dismissModal();
       modal.createModal(ModalType.successFuncModal, { txStatus, msg });
     } catch (err: any) {
-      !txStatus && toastError("Something went wrong");
+      !txStatus && toast.error("Something went wrong");
     }
   };
 
   const handleEndAuction = async () => {
+    const signer = getSigner();
+    if (!signer) {
+      toast.error("Connect your wallet");
+      return;
+    }
+
     ProceedFunc();
-    let response = { success: false, message: "" };
+    const response = { success: false, message: "" };
+
     try {
       const result = await BlockchainWrite.callEndAuction(
-        getSigner()!,
-        (data as INFTDetailData).collection,
-        (data as INFTDetailData).nftId
+        signer,
+        nft.collection,
+        +nft.tokenId
       );
       if (result?.length) {
-        setNftData();
+        refetchNFT();
         response.success = true;
         response.message =
           "Congratulations! You have successfully ended the auction of ";
@@ -118,17 +118,24 @@ export const AuctionNftDescription = ({
   };
 
   const handleCancelAuction = async () => {
+    const signer = getSigner();
+    if (!signer) {
+      toast.error("Connect your wallet");
+      return;
+    }
+
     ProceedFunc();
-    let response = { success: false, message: "" };
+    const response = { success: false, message: "" };
+
     try {
       const result = await BlockchainWrite.callCancelAuction(
-        getSigner()!,
-        (data as INFTDetailData).collection,
-        (data as INFTDetailData).nftId
+        signer,
+        nft.collection,
+        +nft.tokenId
       );
 
       if (!!result) {
-        setNftData();
+        refetchNFT();
         response.success = true;
         response.message =
           "Congratulations! You have successfully canceled auction of ";
@@ -165,8 +172,6 @@ export const AuctionNftDescription = ({
     successFuncModal: {
       title: "Checkout",
       visibility: true,
-      // give them types
-
       content: ({ txStatus, msg }: IModalProps) => (
         <SuccessMessageModal
           heading={
@@ -187,8 +192,10 @@ export const AuctionNftDescription = ({
           subHeading={
             <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
               {msg}
-              <span className="word-break text-white">{data?.name} </span> NFT
-              on <b> Centher </b> platform.
+              <span className="word-break text-white">
+                {nft.ipfs_metadata.name}{" "}
+              </span>{" "}
+              NFT on <b> Centher </b> platform.
             </p>
           }
           txStatus={txStatus}
@@ -208,8 +215,8 @@ export const AuctionNftDescription = ({
         <MessageModal
           heading="Click Proceed to announce winner of your NFT!"
           subHeading={`Your NFT will go to{" "}
-          ${formatAddress(data?.auctionInfo.highestBidAddress)} and you will
-          receive ${formatEther2Number(data?.auctionInfo.highestBidPrice)} BNB`}
+          ${formatAddress(nft.auctionInfo.highestBidAddress)} and you will
+          receive ${formatEther2Number(nft.auctionInfo.highestBidPrice)} BNB`}
           dismissModal={() => {
             modal.dismissModal();
           }}
@@ -220,16 +227,6 @@ export const AuctionNftDescription = ({
   };
 
   const modal = new ModalManager(setModalModel, modalTemplateCollection);
-
-  function validateProvider(): void {
-    if (!getSigner()) {
-      throw new Error("Connect your wallet");
-    }
-  }
-
-  function toastError(err: any): void {
-    toast.error(err?.message ? err.message : err);
-  }
 
   useEffect(() => {
     if (ModalModel.visibility) {
@@ -243,28 +240,30 @@ export const AuctionNftDescription = ({
   }, [ModalModel.visibility]);
 
   return (
-    <div className={nftDescriptionContainer}>
+    <div className={`flex w-full flex-col gap-5`}>
       <div className={greyBoxContainer}>
         <h4 className={greyTxt}>Minimum Bid</h4>
         <div className="flex items-center  gap-3">
           <BNBIcon className="[&>*]:fill-[#E35259]" />
-          <h5 className={BnBNum}>
+          <h5 className={`text-base font-bold text-white`}>
             {`${normalizeValue(
-              formatEther2Number(data?.auctionInfo.highestBidPrice)
+              formatEther2Number(nft.auctionInfo.highestBidPrice)
             )} BNB`}
           </h5>
           <h6 className={greyTxt}>
             {" "}
-            =${formatBNB2USD(data?.auctionInfo.highestBidPrice, bnbPrice)}
+            =${formatBNB2USD(nft.auctionInfo.highestBidPrice, bnbPrice)}
           </h6>
         </div>
       </div>
       <div className={greyBoxContainer}>
-        <h4 className={desTitle}>Description</h4>
-        <p className={`${greyTxt} word-break leading-6`}>{data?.description}</p>
-        {data && data.auctionInfo.endTime && (
+        <h4 className={`text-sm font-semibold text-white`}>Description</h4>
+        <p className={`${greyTxt} word-break leading-6`}>
+          {nft.ipfs_metadata.description}
+        </p>
+        {nft.auctionInfo.endTime && (
           <Countdown
-            date={new Date(data.auctionInfo.endTime * 1000)}
+            date={new Date(+nft.auctionInfo.endTime * 1000)}
             renderer={AuctionCountdownRenderer}
           />
         )}
@@ -284,9 +283,7 @@ export const AuctionNftDescription = ({
             variant="primary"
             onClick={hasBid ? endAuctionFunc : cancelAuctionFunc}
             className="w-full rounded-[14px]"
-            disabled={
-              data && nowTime > new Date(data?.auctionInfo.endTime * 1000)
-            }
+            disabled={nowTime > new Date(+nft.auctionInfo.endTime * 1000)}
           />
         )}
       </div>
@@ -304,11 +301,6 @@ export const AuctionNftDescription = ({
     </div>
   );
 };
-// styling
-const BnBNum = `text-base font-bold text-white`;
-const desTitle = `text-sm font-semibold text-white`;
+
 const greyTxt = `text-sm font-normal text-gray-shade-7`;
-const footerBtnContainer = `flex items-center gap-4 mt-2`;
-const nftDescriptionContainer = `w-full flex flex-col gap-5`;
 const greyBoxContainer = `bg-background-shade-3 rounded-10px flex flex-col gap-2 p-6`;
-const modalBodyWrapper = `flex flex-col gap-2 w-full fmd:px-4 px-2 fmd:pt-4 pt-2 text-center`;

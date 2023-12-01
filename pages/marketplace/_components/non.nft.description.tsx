@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
 import clsx from "clsx";
-
-// App imports
 import Button from "@/components/button";
 import { IModalProps } from "@/components/modal/standard.modal";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { BNBIcon, AuctionIcon, GreenTick, CircularClose } from "@/assets/svgs";
-import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
 import SuccessMessageModal from "@/utils/modal/success-modal";
@@ -20,14 +16,11 @@ import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { TokenBlackList } from "@/web3/blockchain/helpers/blacklist.helper";
 import { useWallet } from "@/web3/hooks/use.wallet";
+import { CFSNFTForPage } from "@/lib/get-single-nft-page-data/types";
+import { LoggedInUser } from "@/models/user";
 import ChangePriceListModal from "./change.price.list.modal";
 import CreateNFTAuctionModal from "./create.nft.auction.modal";
 import SendNFTModal from "./send.nft.modal";
-
-interface NonNFTDescriptionProps {
-  data: INFTDetailData | undefined;
-  setNftData: () => void;
-}
 
 enum ModalType {
   auctionModal = "auctionModal",
@@ -40,11 +33,18 @@ enum ModalType {
   successSendFuncModal = "successSendFuncModal",
 }
 
-export const NonNFTDescription = ({
-  data,
-  setNftData,
-}: NonNFTDescriptionProps) => {
-  const { getSigner, connectedAddress } = useWallet();
+interface Props {
+  nft: CFSNFTForPage;
+  loggedInUser: LoggedInUser;
+  refetchNFT: () => void;
+}
+
+export const NonNFTDescription: React.FC<Props> = ({
+  nft,
+  loggedInUser,
+  refetchNFT,
+}) => {
+  const { getSigner } = useWallet();
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
     title: "",
@@ -54,27 +54,20 @@ export const NonNFTDescription = ({
   const [hours, setHours] = useState<number>(0);
   const [minutes, setMinutes] = useState<number>(0);
   const [seconds, setSeconds] = useState<number>(0);
-  const [nowTime, setNowTime] = useState(new Date());
-  const [endTime, setEndTime] = useState(new Date());
-  const [end, setEnd] = useState(true);
   const [sendNftModal, setSendNftModal] = useState(false);
   const [transferable, setTransferable] = useState(false);
   const bnbPrice = useBNBPrice();
-  const isApproved = useGetApprovedForAll(connectedAddress, data?.collection);
+  const isApproved = useGetApprovedForAll(loggedInUser._id, nft.collection);
 
   useEffect(() => {
-    if (data) {
-      setTransferable(!TokenBlackList.isBlocked(data?.collection, data.nftId));
-      var endtime = new Date(data?.unlock * 1000);
-      var now = new Date();
-      setNowTime(now);
-      setEndTime(endtime);
+    if (nft) {
+      setTransferable(!TokenBlackList.isBlocked(nft.collection, +nft.tokenId)); // TokenBlackList is used to check if the NFT is allowed to be transferred or not
 
       // TODO: Use react-countdown package
       var updateTime = setInterval(() => {
         var now = new Date().getTime();
 
-        var difference = data.unlock * 1000 - now;
+        var difference = +nft.unlock * 1000 - now;
 
         var newDays = Math.floor(difference / (1000 * 60 * 60 * 24));
         var newHours = Math.floor(
@@ -96,9 +89,6 @@ export const NonNFTDescription = ({
           setHours(0);
           setMinutes(0);
           setSeconds(0);
-          setEnd(true);
-        } else {
-          setEnd(false);
         }
       });
     }
@@ -106,119 +96,122 @@ export const NonNFTDescription = ({
     return () => {
       clearInterval(updateTime);
     };
-  }, [data]);
+  }, [nft]);
 
   const handleListNFT = async (bidPrice: any) => {
     if (bidPrice) {
       modal.dismissModal();
       saleWithListing(bidPrice);
     } else {
-      toastError("Provide accurate listing price");
+      toast.error("Provide accurate bid price");
     }
   };
+
   const saleWithListing = (listingPrice: any) => {
     if (listingPrice) {
       modal.dismissModal();
       modal.createModal(ModalType.saleWithListingModal, listingPrice);
     } else {
-      toastError("Provide accurate listing price");
+      toast.error("Provide accurate listing price");
     }
   };
+
   const listingFunc = () => {
-    validateProvider();
+    const signer = getSigner();
+    if (!signer) {
+      toast.error("Connect your wallet");
+      return;
+    }
     modal.dismissModal();
     modal.createModal(ModalType.listingFuncModal);
   };
 
   const handleListing = async (listingPrice: any) => {
-    ProceedFunc();
     const signer = getSigner();
-    if (signer && data) {
-      let response = { success: false, message: "" };
-      try {
-        if (!isApproved) {
-          const approveResult =
-            await BlockchainWrite.callApproveNFTToMarketplace(
-              signer,
-              data.collection
-            );
+    if (!signer) {
+      toast.error("Connect your wallet");
+      return;
+    }
 
-          if (!approveResult?.length) {
-            throw new Error();
-          }
-        }
-        const result = await BlockchainWrite.callListItemForSale(
+    ProceedFunc();
+
+    let response = { success: false, message: "" };
+    try {
+      if (!isApproved) {
+        const approveResult = await BlockchainWrite.callApproveNFTToMarketplace(
           signer,
-          data.collection,
-          data.nftId,
-          listingPrice
+          nft.collection
         );
 
-        if (result?.length) {
-          setNftData();
-          response.success = true;
-          response.message = "Congratulations! You have successfully listed ";
-        } else {
+        if (!approveResult?.length) {
           throw new Error();
         }
-      } catch (error) {
-        response.success = false;
-        response.message = "Something went wrong with listing";
-      } finally {
-        SuccessFunc(response.success, response.message);
       }
+      const result = await BlockchainWrite.callListItemForSale(
+        signer,
+        nft.collection,
+        +nft.tokenId,
+        listingPrice
+      );
+
+      if (result?.length) {
+        refetchNFT();
+        response.success = true;
+        response.message = "Congratulations! You have successfully listed ";
+      } else {
+        throw new Error();
+      }
+    } catch (error) {
+      response.success = false;
+      response.message = "Could not list NFT for sale";
+    } finally {
+      SuccessFunc(response.success, response.message);
     }
   };
+
   const handleAuction = async (data: any) => {
     try {
       modal.dismissModal();
       modal.createModal(ModalType.saleWithAuction, data);
     } catch (err: any) {
-      !data && toastError("failed to auction");
+      !data && toast.error("failed to auction");
     }
   };
-  const setupAuctionModal = () => {
-    try {
-      validateProvider();
-      modal.dismissModal();
-      modal.createModal(ModalType.auctionModal);
-    } catch (err: any) {
-      toastError("failed to auction");
-    }
-  };
+
   const handleAuctionProc = async (auctionPrice: any, auctionDate: any) => {
-    const endTime = Math.floor(auctionDate * 24 * 60 * 60);
+    const signer = getSigner();
+    if (!signer) {
+      toast.error("connect your wallet");
+      return;
+    }
+
     ProceedFunc();
 
+    const endTime = Math.floor(auctionDate * 24 * 60 * 60);
     let response = { success: false, message: "" };
     try {
-      if (getSigner() && data) {
-        if (!isApproved) {
-          const approveResult =
-            await BlockchainWrite.callApproveNFTToMarketplace(
-              getSigner()!,
-              data.collection
-            );
-
-          if (!approveResult?.length) {
-            throw new Error("something went wrong");
-          }
-        }
-
-        const result = await BlockchainWrite.callCreateAuction(
-          getSigner()!,
-          data.collection,
-          data.nftId,
-          Number(auctionPrice),
-          endTime
+      if (!isApproved) {
+        const approveResult = await BlockchainWrite.callApproveNFTToMarketplace(
+          signer,
+          nft.collection
         );
-        if (!!result) {
-          setNftData();
-          response.success = true;
-          response.message = "Congratulations! You have successfully auctioned";
+
+        if (!approveResult?.length) {
+          throw new Error("something went wrong");
         }
-      } else {
-        toast.error("connect your wallet");
+      }
+
+      const result = await BlockchainWrite.callCreateAuction(
+        signer,
+        nft.collection,
+        +nft.tokenId,
+        Number(auctionPrice),
+        endTime
+      );
+      if (!!result) {
+        refetchNFT();
+        response.success = true;
+        response.message = "Congratulations! You have successfully auctioned";
       }
     } catch (err) {
       response.success = false;
@@ -227,48 +220,54 @@ export const NonNFTDescription = ({
       SuccessFunc(response.success, response.message);
     }
   };
+
   const handleSendNFT = async (input: {
     ReceiverAddress: string;
     LockEndTime: number;
   }) => {
+    const signer = getSigner();
+    if (!signer) {
+      toast.error("connect your wallet");
+      return;
+    }
+
     ProceedFunc();
-    let response = { success: false, message: "" };
-    if (getSigner() && data) {
-      try {
-        if (!isApproved) {
-          const approveResult =
-            await BlockchainWrite.callApproveNFTToMarketplace(
-              getSigner()!,
-              data.collection
-            );
 
-          if (!approveResult?.length) {
-            throw new Error("something went wrong");
-          }
-        }
+    const response = { success: false, message: "" };
 
-        const result = await BlockchainWrite.transferNftWithLock(
-          getSigner()!,
-          data.collection,
-          data.nftId,
-          input.ReceiverAddress,
-          input.LockEndTime
+    try {
+      if (!isApproved) {
+        const approveResult = await BlockchainWrite.callApproveNFTToMarketplace(
+          signer,
+          nft.collection
         );
 
-        if (!!result) {
-          setNftData();
-          response.success = true;
-          response.message = "Congratulations! You have successfully sent ";
-        } else {
-          setSendNftModal(false);
-          throw new Error();
+        if (!approveResult?.length) {
+          throw new Error("something went wrong");
         }
-      } catch (error) {
-        response.success = false;
-        response.message = "failed to send nft";
-      } finally {
-        SuccessFunc(response.success, response.message);
       }
+
+      const result = await BlockchainWrite.transferNftWithLock(
+        signer,
+        nft.collection,
+        +nft.tokenId,
+        input.ReceiverAddress,
+        input.LockEndTime
+      );
+
+      if (!!result) {
+        refetchNFT();
+        response.success = true;
+        response.message = "Congratulations! You have successfully sent ";
+      } else {
+        setSendNftModal(false);
+        throw new Error();
+      }
+    } catch (error) {
+      response.success = false;
+      response.message = "failed to send nft";
+    } finally {
+      SuccessFunc(response.success, response.message);
     }
   };
 
@@ -282,7 +281,7 @@ export const NonNFTDescription = ({
       modal.dismissModal();
       modal.createModal(ModalType.successFuncModal, { txStatus, msg });
     } catch (err: any) {
-      !txStatus && toastError("Something went wrong");
+      !txStatus && toast.error("Something went wrong");
     }
   };
 
@@ -355,7 +354,10 @@ export const NonNFTDescription = ({
           }
           subHeading={
             <p className="text-14px font-normal leading-6 text-gray-shade-2">
-              {msg} <span className="word-break text-white">{data?.name}</span>{" "}
+              {msg}{" "}
+              <span className="word-break text-white">
+                {nft.ipfs_metadata.name}
+              </span>{" "}
               NFT on <b>Centher </b>
               platform.
             </p>
@@ -375,13 +377,12 @@ export const NonNFTDescription = ({
       visibility: true,
       content: () => (
         <ChangePriceListModal
+          nft={nft}
           handleListNFT={handleListNFT}
-          data={data}
           handleAuction={handleAuction}
         />
       ),
     },
-
     saleWithListingModal: {
       title: "List for sale",
       visibility: true,
@@ -402,7 +403,9 @@ export const NonNFTDescription = ({
       title: "Send NFT",
       visibility: true,
       content: ({ txStatus, msg }: IModalProps) => (
-        <div className={modalBodyWrapper}>
+        <div
+          className={`flex w-full flex-col gap-2 px-2 pt-2 text-center fmd:px-4 fmd:pt-4`}
+        >
           <div className="flex flex-col items-center justify-center">
             {txStatus ? <GreenTick /> : <CircularClose />}
             <h2 className="text-base font-semibold text-white f2xl:text-lg">
@@ -419,7 +422,7 @@ export const NonNFTDescription = ({
               {msg ?? "Transaction Failed."}
             </p>
           )}
-          <div className={footerBtnContainer}>
+          <div className={`mt-2 flex items-center gap-4`}>
             <Button
               title={"View item"}
               variant="primary"
@@ -437,16 +440,6 @@ export const NonNFTDescription = ({
 
   const modal = new ModalManager(setModalModel, modalTemplateCollection);
 
-  function validateProvider(): void {
-    if (!getSigner()) {
-      throw new Error("Connect your wallet");
-    }
-  }
-
-  function toastError(err: any): void {
-    toast.error(err?.message ? err.message : err);
-  }
-
   useEffect(() => {
     if (ModalModel.visibility) {
       document.body.classList.add("modal-open");
@@ -459,29 +452,29 @@ export const NonNFTDescription = ({
   }, [ModalModel.visibility]);
 
   return (
-    <div className={nftDescriptionContainer}>
+    <div className={`flex w-full flex-col gap-5`}>
       <div className={greyBoxContainer}>
         <h4 className={greyTxt}>Current Price</h4>
         <div className="flex items-center gap-3">
           <BNBIcon />
-          <h5 className={BnBNum}>
-            {`${normalizeValue(formatEther2Number(data?.listInfo.price))} BNB`}
+          <h5 className={`text-base font-bold text-white`}>
+            {`${normalizeValue(formatEther2Number(nft.listInfo.price))} BNB`}
           </h5>
           <h6 className={greyTxt}>
             {" "}
-            =${formatBNB2USD(data?.listInfo.price, bnbPrice)}
+            =${formatBNB2USD(nft.listInfo.price, bnbPrice)}
           </h6>
         </div>
       </div>
       <div className={greyBoxContainer}>
-        <h4 className={desTitle}>Description</h4>
+        <h4 className={`text-sm font-semibold text-white`}>Description</h4>
         <p
           className={clsx(greyTxt, `word-break whitespace-pre-wrap leading-6`)}
         >
-          {data?.description}
+          {nft.ipfs_metadata.description}
         </p>
       </div>
-      {data!.unlock < +new Date() / 1000 ? (
+      {+nft.unlock < +new Date() / 1000 ? (
         <div className="buttonContainer flex items-center gap-4">
           <Button
             title="Sell"
@@ -549,7 +542,7 @@ export const NonNFTDescription = ({
       )}
       {sendNftModal && (
         <SendNFTModal
-          data={data}
+          nft={nft}
           handleSend={handleSendNFT}
           onClose={() => {
             setSendNftModal(false);
@@ -570,11 +563,6 @@ export const NonNFTDescription = ({
     </div>
   );
 };
-// styling
-const modalBodyWrapper = `flex flex-col gap-2 w-full fmd:px-4 px-2 fmd:pt-4 pt-2 text-center`;
-const footerBtnContainer = `flex items-center gap-4 mt-2`;
-const nftDescriptionContainer = `w-full flex flex-col gap-5`;
+
 const greyBoxContainer = `bg-background-shade-3 rounded-10px flex flex-col gap-2 p-6`;
 const greyTxt = `text-sm font-normal text-gray-shade-7`;
-const desTitle = `text-sm font-semibold text-white`;
-const BnBNum = `text-base font-bold text-white`;
