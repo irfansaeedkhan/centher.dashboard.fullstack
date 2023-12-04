@@ -1,23 +1,26 @@
-import { CFSNFT } from "@/models/nft";
+import { CFSNFT, NFTSaleStateFilter } from "@/models/nft";
 import { axiosCFS } from "@/utils/axios";
 import { AppError } from "@/utils/app-error";
 
-export const getNFTListOfSingleCreatorFromAnyCollection = async ({
-  creator_address,
+export const getNFTListOfSingleOwnerFromAnyCollection = async ({
+  owner_address,
+  saleState = "All",
   limit = 15,
   skip = 0,
 }: {
-  creator_address: string;
+  owner_address: string;
+  saleState?: NFTSaleStateFilter;
   limit?: number;
   skip?: number;
 }): Promise<CFSNFT[]> => {
   try {
     const { data } = await axiosCFS.get<{ nfts: CFSNFT[] }>(
-      `/nfts/creator/${creator_address}`,
+      `/nfts/owner/${owner_address}`,
       {
         params: {
           first: limit,
           skip,
+          saleState,
         },
       }
     );
@@ -26,7 +29,7 @@ export const getNFTListOfSingleCreatorFromAnyCollection = async ({
     throw new AppError(
       error,
       "Can not load NFTs",
-      "getNFTListOfSingleCreatorFromAnyCollection"
+      "getNFTListOfSingleOwnerFromAnyCollection"
     );
   }
 };

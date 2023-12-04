@@ -12,6 +12,7 @@ import { getUsersByIdsFromDB } from "@/lib/get-user-by-id";
 import { getNFTListOfSingleCreatorFromAnyCollection } from "@/lib/get-nft-list-of-single-creator-from-any-collection";
 import { NFTImageCardData } from "@/components/nft.image.card/types";
 import { getCollectionListOfSingleCreator } from "@/lib/get-collection-list-of-single-creator";
+import { getNFTListOfSingleOwnerFromAnyCollection } from "@/lib/get-nft-list-of-single-owner-from-any-collection";
 
 const dexaCollection = "0x08b660beec8d1f9a0162e3c04416c84eac8d334b";
 const dexaProfile = "0xa638d0182d075278a9ea6480c1430c6e7fb490c9";
@@ -24,7 +25,6 @@ export interface ProfileNFTStore {
   collections: CFSCollection[];
   ownedNfts: NFTImageCardData[];
   listedNfts: NFTImageCardData[];
-  listedUserNfts: NFTImageCardData[];
   createdNfts: NFTImageCardData[];
   fetchCollections: (creatorId: string) => Promise<void>;
   fetchOwnedNFTs: (account: string) => Promise<void>;
@@ -35,12 +35,6 @@ export interface ProfileNFTStore {
   ) => Promise<void>;
   fetchListedNFTs: (
     ownerId: string,
-    offset?: number,
-    limit?: number,
-    reload?: boolean
-  ) => Promise<void>;
-  fetchListedUserNFTs: (
-    account: string,
     offset?: number,
     limit?: number,
     reload?: boolean
@@ -68,7 +62,6 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
       collections: [],
       ownedNfts: [],
       listedNfts: [],
-      listedUserNfts: [],
       createdNfts: [],
       listedOffset: 0,
       listedUserOffset: 0,
@@ -127,98 +120,49 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
         try {
           set({ loadingListedNFTs: "loading" });
 
-          let _nfts: NFTImageCardData[] = [];
-
-          const result = await BlockchainRead.getAccountListedNfts(
+          const nfts = await getNFTListOfSingleOwnerFromAnyCollection({
+            owner_address: ownerId,
+            saleState: "List",
             limit,
-            offset,
-            ownerId
-          );
-          if (result?.length) {
-            const users = await getUsers(
-              result.map((e) => [e.creator, e.owner]).flat()
-            );
+            skip: offset,
+          });
 
-            _nfts = result.map((item: any) => {
-              let _endTime = 0;
-              if (item.saleState === "Auction") {
-                _endTime = item.auctionInfo.endTime;
-              }
-              const { creator, owner, ...rest } = item;
-              return {
-                ...rest,
-                creator: users.find((e) =>
-                  isAddressesMatch(e._id, item.creator)
-                ),
-                owner: users.find((e) => isAddressesMatch(e._id, item.owner)),
-                endTime: _endTime,
-              };
-            });
-          }
+          const nftImageCardDataList: NFTImageCardData[] = nfts.map((item) => {
+            return {
+              id: item.id,
+              collection: item.collection,
+              tokenId: item.tokenId,
+              creator: item.creator,
+              createTime: item.createTime,
+              ipfs: item.ipfs,
+              saleState: item.saleState,
+              price: item.price,
+              owner: item.owner,
+              endTime:
+                item.saleState === "Auction" ? item.auctionInfo.endTime : "0",
+              unlock: item.unlock,
+              mintHash: item.mintHash,
+              owner_data: item.owner_data,
+              creator_data: item.creator_data,
+              ipfs_metadata: item.ipfs_metadata,
+              external: false,
+            };
+          });
 
           set((state) => {
             // Filter out all nfts that are already in the store
-            const filteredNFTs = state.listedNfts.filter(
-              (stateNFTs) =>
-                !_nfts.some(
-                  (nfts: NFTImageCardData) => stateNFTs.id === nfts.id
-                )
+            const filteredNFTs = nftImageCardDataList.filter(
+              (nft) =>
+                !state.listedNfts.find((listedNFT) => listedNFT.id === nft.id)
             );
 
             return {
-              listedNfts: _nfts,
+              listedNfts: [...state.listedNfts, ...filteredNFTs],
               loadingListedNFTs: "loaded",
             };
           });
         } catch (error) {
           set({ loadingListedNFTs: "failed" });
-          process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
-            console.error(error);
-        }
-      },
-
-      fetchListedUserNFTs: async (account, offset = 0, limit = 20, reload) => {
-        try {
-          set({ loadingListedUserNFTs: "loading" });
-
-          let _nfts: NFTImageCardData[] = [];
-
-          const result = await BlockchainRead.getUserListedNfts(
-            limit,
-            offset,
-            account
-          );
-
-          if (result?.length) {
-            const users = await getUsers(
-              result.map((e) => [e.creator, e.owner]).flat()
-            );
-
-            _nfts = result.map((item: any) => {
-              let _endTime = 0;
-              if (item.saleState === "Auction") {
-                _endTime = item.auctionInfo.endTime;
-              }
-              const { creator, owner, ...rest } = item;
-              return {
-                ...rest,
-                creator: users.find((e) =>
-                  isAddressesMatch(e._id, item.creator)
-                ),
-                owner: users.find((e) => isAddressesMatch(e._id, item.owner)),
-                endTime: _endTime,
-              };
-            });
-          }
-
-          set((state) => {
-            return {
-              listedUserNfts: _nfts,
-              loadingListedUserNFTs: "loaded",
-            };
-          });
-        } catch (error) {
-          set({ loadingListedUserNFTs: "failed" });
           process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
             console.error(error);
         }
@@ -321,7 +265,7 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
             }
           }
 
-          set((state) => {
+          set(() => {
             return {
               allowedCollections,
               ownedNfts: _nfts,
