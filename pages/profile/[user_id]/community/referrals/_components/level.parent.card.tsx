@@ -1,5 +1,4 @@
 import React from "react";
-import { BigNumber } from "ethers";
 import { formatEther } from "ethers/lib/utils";
 
 export const LevelParentCard = ({ parentData }: any) => {
@@ -49,7 +48,9 @@ export const LevelParentCard = ({ parentData }: any) => {
           </h5>
           {parentData && (
             <h6 className="text-sm font-semibold text-white-shade-1">
-              {`${formatEther(BigNumber.from(parentData.generatedBUSD))} BUSD`}
+              {`${Number(
+                formatEther(parentData.generatedBUSD.toString())
+              ).toFixed(2)} BUSD`}
             </h6>
           )}
           {/* <h6 className="text-white-shade-1 text-sm font-semibold">
