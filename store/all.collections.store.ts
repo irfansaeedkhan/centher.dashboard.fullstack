@@ -4,7 +4,7 @@ import { getCollections } from "@/lib/get-collections";
 import { getCollectionCardData } from "@/lib/get-collection-card-data";
 import { AppError } from "@/utils/app-error";
 import { LoadingState } from "@/models/common";
-import { CollectionCardData } from "@/components/collection.card/collection-card-v2";
+import { CollectionCardData } from "@/components/collection.card";
 
 export interface AllCollectionsStore {
   collections: CollectionCardData[];

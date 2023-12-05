@@ -1,91 +1,113 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { useRouter } from "next/router";
 import Image from "next/image";
-import Link from "next/link";
-import axios from "axios";
 import clsx from "clsx";
-import { formatIPFSUrl } from "@/utils/format.address";
-import useGetUser from "@/hooks/use.get.user";
-import { CFSCollection } from "@/models/nft";
-import { AppRoutes } from "@/constants/app.routes";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
+import { AppRoutes } from "@/constants/app.routes";
+import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
+import { CFSCollection } from "@/models/nft";
 
-export interface CollectionCardProps {
-  data: CFSCollection;
+interface CollectionCardProps {
+  data: CollectionCardData;
+  className?: string;
 }
 
-export const CollectionCard: React.FC<CollectionCardProps> = ({ data }) => {
-  const { user } = useGetUser(data?.creator);
-  const [coverImage, setCoverImage] = useState("");
-  const [profileImage, setProfileImage] = useState("");
-  const [description, setDescription] = useState("");
-  useEffect(() => {
-    const fetchMetadata = async (ipfs: string) => {
-      try {
-        const metadata = await axios.get(formatIPFSUrl(ipfs));
-        setCoverImage(formatIPFSUrl(metadata.data.coverIPFSHash));
-        setProfileImage(formatIPFSUrl(metadata.data.profileIPFSHash));
-        setDescription(metadata.data.description);
-      } catch (error) {}
-    };
-    if (data && data.ipfs) {
-      fetchMetadata(data.ipfs);
-    }
-  }, [data]);
+export const CollectionCard: React.FC<CollectionCardProps> = ({
+  data,
+  className,
+}) => {
+  const router = useRouter();
+  const [coverImageUrl, setCoverImageUrl] = useState(data.coverImage);
+  const [profileImageUrl, setProfileImageUrl] = useState(data.profileImage);
+  const verificationTick = useVerificationTick({
+    user: {
+      membership: data.creator.membership,
+    },
+  });
+
   return (
-    <div className="px-2 py-1">
-      <Link
-        href={{
+    <div
+      onClick={() => {
+        router.push({
           pathname: AppRoutes.marketplace.collection,
           query: {
-            collection: data.collection,
+            collection: data.address,
           },
-        }}
-        className={`flex h-[360px] w-auto flex-col gap-12 rounded-lg border border-gray-shade-3 [@media(max-width:650px)]:w-full `}
+        });
+      }}
+      className={clsx(
+        `flex w-full max-w-[300px] cursor-pointer flex-col rounded-lg border border-gray-shade-3`,
+        className
+      )}
+    >
+      <div className={`relative flex justify-center`}>
+        <Image
+          src={coverImageUrl}
+          alt={data.name}
+          width={340}
+          height={180}
+          className={`h-[180px] w-full rounded-t-lg object-cover`}
+          onError={() => setCoverImageUrl("/images/placeholder-square.svg")}
+        />
+        <Image
+          src={profileImageUrl}
+          alt={data.name}
+          width={64}
+          height={64}
+          className={`absolute top-full z-0 !h-16 !w-16 -translate-y-1/2 transform rounded-full border-2 border-gray-shade-3 object-cover`}
+          onError={() => setProfileImageUrl("/images/placeholder-square.svg")}
+        />
+      </div>
+
+      <div
+        className={`mt-10 flex flex-grow flex-col items-center px-2 pb-8 fsm:px-4`}
       >
-        <div className={`relative flex justify-center`}>
-          {coverImage && (
-            <Image
-              src={coverImage}
-              alt="collection Image"
-              width={340}
-              height={180}
-              className={`h-[180px] w-full rounded-t-lg object-cover`}
-              onError={() => setCoverImage("/images/placeholder-square.svg")}
-            />
-          )}
-          {profileImage && (
-            <Image
-              src={profileImage}
-              alt="Logo Image"
-              width={64}
-              height={64}
-              className={`absolute -bottom-[1.8rem] z-0 !h-16 rounded-full object-cover`}
-              onError={() => setProfileImage("/images/placeholder-square.svg")}
-            />
-          )}
+        <div className={`break-all text-[15px] font-medium text-white`}>
+          {data.name}
         </div>
-        <div className={`flex flex-col items-center px-4`}>
-          <div className={`word-break text-base font-bold text-white`}>
-            {data.name}
-          </div>
-          <span
-            className={clsx(
-              `mt-1 text-sm font-semibold text-white`,
-              user?.display_name.includes(" ")
-                ? "line-clamp-1 text-ellipsis"
-                : " block w-full max-w-full overflow-hidden truncate"
-            )}
-            title={user?.display_name}
-          >
-            {user && sliceDisplayName(user.display_name)}
+        <span
+          onClick={(e) => {
+            e.stopPropagation();
+            router.push({
+              pathname: AppRoutes.profile.user_id,
+              query: {
+                user_id: data.creator._id,
+              },
+            });
+          }}
+          className={clsx(
+            `mt-2 flex items-center text-center text-xs font-medium text-white`
+          )}
+          title={data.creator.display_name}
+        >
+          <span className="block max-w-[238px] truncate break-words">
+            {sliceDisplayName(data.creator.display_name)}
           </span>
-          <p
-            className={`mt-2 line-clamp-3 whitespace-pre-wrap text-center text-xs font-medium text-gray-shade-14`}
-          >
-            {description}
-          </p>
-        </div>
-      </Link>
+          {verificationTick && (
+            <Image
+              src={verificationTick}
+              alt={"Verified"}
+              width={16}
+              height={16}
+              className="ml-0.5"
+            />
+          )}
+        </span>
+        <p
+          className={`mt-4 line-clamp-1 flex-grow whitespace-pre-wrap break-all text-center text-xs font-medium text-gray-shade-14`}
+        >
+          {data.description}
+        </p>
+      </div>
     </div>
   );
 };
+
+export interface CollectionCardData {
+  address: CFSCollection["id"];
+  name: CFSCollection["name"];
+  profileImage: CFSCollection["ipfs_metadata"]["profileIPFSHash"];
+  coverImage: CFSCollection["ipfs_metadata"]["coverIPFSHash"];
+  description: CFSCollection["ipfs_metadata"]["description"];
+  creator: CFSCollection["creator_data"];
+}

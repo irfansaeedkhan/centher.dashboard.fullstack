@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { LoadingState } from "@/models/common";
-import { CollectionCardData } from "@/components/collection.card/collection-card-v2";
+import { CollectionCardData } from "@/components/collection.card";
 import { getCollectionCardData } from "@/lib/get-collection-card-data";
 import { getHotCollections } from "@/lib/get-collections";
 

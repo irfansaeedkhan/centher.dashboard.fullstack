@@ -6,7 +6,7 @@ import clsx from "clsx";
 import { useAllCollectionsStore } from "@/store/all.collections.store";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import { CollectionCardV2 } from "@/components/collection.card/collection-card-v2";
+import { CollectionCard } from "@/components/collection.card";
 import NftCollectionSkeleton from "@/components/loading.skeletons/nft.collection.skeleton";
 import { NftsCollectionEmpty } from "@/assets/svgs";
 
@@ -58,9 +58,7 @@ const AllNFTCollection: NextPageWithLayout = () => {
         )}
       >
         {collections.map((collection) => {
-          return (
-            <CollectionCardV2 data={collection} key={collection.address} />
-          );
+          return <CollectionCard data={collection} key={collection.address} />;
         })}
 
         {(loading === "loading" || loading === "idle") && (

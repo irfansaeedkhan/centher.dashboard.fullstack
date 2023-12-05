@@ -1,5 +1,5 @@
 import { CFSCollection } from "@/models/nft";
-import { CollectionCardData } from "@/components/collection.card/collection-card-v2";
+import { CollectionCardData } from "@/components/collection.card";
 import { AppError } from "@/utils/app-error";
 
 export const getCollectionCardData = (
