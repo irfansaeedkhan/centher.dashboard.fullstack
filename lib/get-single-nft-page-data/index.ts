@@ -11,7 +11,7 @@ export const getSingleNFTPageData = async ({
 }): Promise<CFSNFTForPage> => {
   try {
     const response = await axiosCFS.get<CFSNFTForPage>(
-      `/nfts/${collection_address}/${token_id}/page-data`
+      `/marketplace/nfts/${collection_address}/${token_id}/page-data`
     );
 
     return response.data;

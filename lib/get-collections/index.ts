@@ -15,7 +15,13 @@ export const getCollections = async ({
 }): Promise<CFSCollection[]> => {
   try {
     const response = await axiosCFS.get<{ collections: CFSCollection[] }>(
-      `/nfts/collections?first=${limit}&skip=${skip}`
+      `/marketplace/collections`,
+      {
+        params: {
+          first: limit,
+          skip,
+        },
+      }
     );
     return response.data.collections.map((collection) => {
       if (isOld(collection.collection)) {
@@ -37,7 +43,13 @@ export const getHotCollections = async ({
 }): Promise<CFSCollection[]> => {
   try {
     const response = await axiosCFS.get<{ collections: CFSCollection[] }>(
-      `/nfts/hot-collections?first=${limit}&skip=${skip}`
+      `/marketplace/collections/hot-collections`,
+      {
+        params: {
+          first: limit,
+          skip,
+        },
+      }
     );
     return response.data.collections.map((collection) => {
       if (isOld(collection.collection)) {

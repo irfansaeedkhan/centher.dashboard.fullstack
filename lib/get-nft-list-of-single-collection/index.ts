@@ -17,7 +17,7 @@ export const getNFTListOfSingleCollection = async ({
 }): Promise<CFSNFT[]> => {
   try {
     const { data } = await axiosCFS.get<{ nfts: CFSNFT[] }>(
-      `/nfts/${collection_address}`,
+      `/marketplace/nfts/${collection_address}`,
       {
         params: {
           first: limit,
