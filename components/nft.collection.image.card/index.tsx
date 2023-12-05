@@ -24,18 +24,14 @@ export const NFTCollectionImageCard: React.FC<NFTCardProps> = ({ data }) => {
         }}
         className={`flex h-full w-full justify-center`}
       >
-        {imageUrl ? (
-          <Image
-            src={imageUrl}
-            alt={data.name}
-            height={275}
-            width={275}
-            className="absolute inset-0 h-full w-full rounded-xl object-cover"
-            onError={() => setImageUrl("/images/placeholder-square.svg")}
-          />
-        ) : (
-          <div className="absolute inset-0 h-full w-full animate-pulse rounded-xl bg-[#3C3F4A] object-cover"></div>
-        )}
+        <Image
+          src={imageUrl}
+          alt={data.name}
+          height={275}
+          width={275}
+          className="absolute inset-0 h-full w-full rounded-xl object-cover"
+          onError={() => setImageUrl("/images/placeholder-square.svg")}
+        />
       </Link>
     </div>
   );
