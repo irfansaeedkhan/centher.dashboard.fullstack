@@ -5,7 +5,6 @@ import {
   checkMatch,
   isAdmin,
   isAuthenticated,
-  isNFTBlacklisted,
   isCitizen,
 } from "@/utils/middleware.helpers";
 import { AppRoutes } from "@/constants/app.routes";
@@ -24,12 +23,6 @@ export async function middleware(request: NextRequest) {
       url.pathname = AppRoutes.coming_soon;
       return NextResponse.redirect(url);
     }
-  }
-
-  // Check if the URL collection and tokenId are blacklisted
-  if (isNFTBlacklisted(request.nextUrl.pathname)) {
-    const url = request.nextUrl.origin + "/not-found";
-    return NextResponse.redirect(url);
   }
 
   // Citizen Only Pages

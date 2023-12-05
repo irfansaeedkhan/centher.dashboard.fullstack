@@ -14,7 +14,7 @@ import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 import { useGetApprovedForAll } from "@/web3/hooks/use.contracts.functions";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { BlockchainWrite } from "@/web3/blockchain";
-import { TokenBlackList } from "@/web3/blockchain/helpers/blacklist.helper";
+import { TransferableTokenBlackList } from "@/web3/blockchain/helpers/blacklist.helper";
 import { useWallet } from "@/web3/hooks/use.wallet";
 import { CFSNFTForPage } from "@/lib/get-single-nft-page-data/types";
 import { LoggedInUser } from "@/models/user";
@@ -61,7 +61,9 @@ export const NonNFTDescription: React.FC<Props> = ({
 
   useEffect(() => {
     if (nft) {
-      setTransferable(!TokenBlackList.isBlocked(nft.collection, +nft.tokenId)); // TokenBlackList is used to check if the NFT is allowed to be transferred or not
+      setTransferable(
+        !TransferableTokenBlackList.isBlocked(nft.collection, +nft.tokenId)
+      );
 
       // TODO: Use react-countdown package
       var updateTime = setInterval(() => {

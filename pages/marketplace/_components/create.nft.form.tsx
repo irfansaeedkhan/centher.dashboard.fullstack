@@ -3,11 +3,12 @@ import clsx from "clsx";
 import Button from "@/components/button";
 import { useGetMyCollections } from "@/hooks/use.get.my.collections";
 import { JsonRpcSigner } from "@ethersproject/providers";
-import { useWallet } from "@/web3/hooks/use.wallet";
+import { LoggedInUser } from "@/models/user";
 import AuctionForm from "./auction.form";
 import FixedPriceForm from "./fixed.price.form";
 
 export interface CreateNFTFormProps {
+  user: LoggedInUser;
   createNFT: (values: INFTData) => void;
   clearForm: boolean;
   asset: Blob | undefined;
@@ -28,15 +29,16 @@ export interface INFTData {
   collection: string;
   properties: IProperty[];
 }
+
 export const CreateNFTForm = ({
+  user,
   createNFT,
   clearForm,
   asset,
   library,
   assetTab,
 }: CreateNFTFormProps) => {
-  const { connectedAddress } = useWallet();
-  const collections = useGetMyCollections(connectedAddress);
+  const collections = useGetMyCollections(user._id);
   const [tab, setTab] = useState("fixed");
 
   return (
@@ -84,7 +86,6 @@ export const CreateNFTForm = ({
     </div>
   );
 };
-// styling
 
 const Tab = `w-full cursor-pointer rounded-[14px]`;
 const activeTab = `text-black-shade-3 [&>*>*]:stroke-black-shade-3`;
