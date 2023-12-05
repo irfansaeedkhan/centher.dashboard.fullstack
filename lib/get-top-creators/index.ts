@@ -11,7 +11,7 @@ export const getTopCreators = async ({
 }): Promise<TopCreator[]> => {
   try {
     const { data } = await axiosCFS.get<{ users: TopCreator[] }>(
-      "/marketplace/nfts/top-creators",
+      "/marketplace/collections/top-creators",
       {
         params: {
           first,
