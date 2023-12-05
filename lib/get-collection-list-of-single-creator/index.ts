@@ -8,7 +8,7 @@ import {
 
 export const getCollectionListOfSingleCreator = async ({
   creator_address,
-  limit = 15,
+  limit = 50,
   skip = 0,
 }: {
   creator_address: string;

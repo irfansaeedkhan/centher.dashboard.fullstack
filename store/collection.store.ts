@@ -44,7 +44,7 @@ export const useCollectionStore = create<CollectionStore>()(
       nfts: [],
       offset: 0,
       filter: "All",
-      limit: 20,
+      limit: 50,
       loadingCollectionInfo: "idle",
       loadingNFTs: "idle",
       collectionAdditionalDetails: undefined,
@@ -85,7 +85,7 @@ export const useCollectionStore = create<CollectionStore>()(
         saleState,
         orderDir,
         offset = 0,
-        limit = 20
+        limit = 50
       ) => {
         try {
           set({ loadingNFTs: "loading" });
@@ -114,6 +114,7 @@ export const useCollectionStore = create<CollectionStore>()(
           customLog(["development", "staging"], error);
         }
       },
+      // TODO: Move it to CFS
       updateCollectionAdditionalInfo: async () => {
         const info = get().info;
         if (!info) return;

@@ -217,8 +217,8 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
             src={
               data.type.includes("audio")
                 ? "/images/default-music.png"
-                : data.type.includes("video")
-                ? data.videoThumbnail ?? "/images/default-music.png"
+                : data.type.includes("video") && data.videoThumbnail
+                ? data.videoThumbnail
                 : imageUrl
             }
             alt={data.name}

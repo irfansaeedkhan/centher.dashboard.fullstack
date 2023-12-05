@@ -4,7 +4,7 @@ import { AppError } from "@/utils/app-error";
 
 export const getNFTListOfSingleCreatorFromAnyCollection = async ({
   creator_address,
-  limit = 15,
+  limit = 50,
   skip = 0,
 }: {
   creator_address: string;

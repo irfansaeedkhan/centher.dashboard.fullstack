@@ -1,46 +1,5 @@
 import { User } from "./user";
 
-export interface NFT {
-  id: string;
-  collection: string;
-  tokenId: string;
-  creator: string;
-  owner: string;
-  mintHash: string;
-  createTime: number;
-  ipfs: string;
-  saleState: string;
-  price: string;
-  endTime: number;
-  unlock: string;
-}
-
-export interface Collection {
-  id: string;
-  collection: string;
-  name: string;
-  symbol: string;
-  maxSupply: number;
-  totalSupply: number;
-  creator: string;
-  ipfs: string;
-  txTime: number;
-}
-
-export interface CollectionInfo {
-  id: string;
-  collection: string;
-  name: string;
-  symbol: string;
-  maxSupply: number;
-  totalSupply: number;
-  creator: string;
-  ipfs: string;
-  txTime: number;
-  tradingVolumn: number;
-  createHash: string;
-}
-
 export interface CollectionAdditionalInfo {
   listedPercent: number;
   minPrice: number;

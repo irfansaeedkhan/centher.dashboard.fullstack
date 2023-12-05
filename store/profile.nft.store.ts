@@ -77,7 +77,7 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
           set({ loadingCollections: "loading" });
           const collections = await getCollectionListOfSingleCreator({
             creator_address: creatorId,
-            limit: 100,
+            limit: 50,
             skip: 0,
           });
 
@@ -94,7 +94,7 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
         }
       },
 
-      fetchListedNFTs: async (ownerId, offset = 0, limit = 20) => {
+      fetchListedNFTs: async (ownerId, offset = 0, limit = 50) => {
         try {
           set({ loadingListedNFTs: "loading" });
 
@@ -146,7 +146,7 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
         }
       },
 
-      fetchOwnedNFTs: async (ownerId, offset = 0, limit = 20) => {
+      fetchOwnedNFTs: async (ownerId, offset = 0, limit = 50) => {
         try {
           set({ loadingOwnedNFTs: "loading" });
 
@@ -197,7 +197,7 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
         }
       },
 
-      fetchCreatedNFTs: async (creatorId, offset = 0, limit = 20) => {
+      fetchCreatedNFTs: async (creatorId, offset = 0, limit = 50) => {
         try {
           set({ loadingCreatedNFTs: "loading" });
 

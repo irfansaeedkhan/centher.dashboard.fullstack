@@ -3,7 +3,7 @@ import { AppError } from "@/utils/app-error";
 import { axiosCFS } from "@/utils/axios";
 
 export const getNFTs = async ({
-  limit = 15,
+  limit = 50,
   skip = 0,
 }: {
   limit?: number;

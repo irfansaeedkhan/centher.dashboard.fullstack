@@ -24,7 +24,7 @@ const CreatedPage = () => {
 
   useEffect(() => {
     if (userId) {
-      fetchCreatedNFTs(userId, 0, 100);
+      fetchCreatedNFTs(userId, 0, 50);
     }
   }, [userId, fetchCreatedNFTs]);
 

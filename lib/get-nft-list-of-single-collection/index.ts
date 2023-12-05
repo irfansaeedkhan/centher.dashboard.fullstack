@@ -6,7 +6,7 @@ export const getNFTListOfSingleCollection = async ({
   collection_address,
   orderDir = "desc",
   saleState = "All",
-  limit = 15,
+  limit = 50,
   skip = 0,
 }: {
   collection_address: string;

@@ -1,4 +1,4 @@
-import { CFSNFT, Collection, NFT } from "@/models/nft";
+import { CFSCollection, CFSNFT } from "@/models/nft";
 
 interface CFSNFTBid {
   bidder: string;
@@ -9,8 +9,8 @@ interface CFSNFTBid {
 
 interface MarketplaceSaleHistory {
   id: string;
-  collection: Collection["id"];
-  tokenId: NFT["tokenId"];
+  collection: CFSCollection["id"];
+  tokenId: CFSNFT["tokenId"];
   type:
     | "AcceptBid"
     | "BuyItem"
@@ -45,6 +45,6 @@ export interface CFSNFTForPage extends CFSNFT {
     seller_data: CFSNFT["owner_data"];
   }[];
   collectionInfo: {
-    totalSupply: Collection["totalSupply"];
+    totalSupply: CFSCollection["totalSupply"];
   };
 }

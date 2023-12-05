@@ -115,13 +115,13 @@ const Collection: NextPageWithLayout = () => {
 
   useEffect(() => {
     if (collection) {
-      fetchNFTs(collection as string, filter, orderdir, offset, limit);
+      fetchNFTs(collection.toString(), filter, orderdir, offset, limit);
     }
   }, [collection, fetchNFTs, filter, limit, offset, orderdir]);
 
   useEffect(() => {
     if (collection) {
-      fetchCollectionInfo(collection as string);
+      fetchCollectionInfo(collection.toString());
       updateCollectionAdditionalInfo();
     }
   }, [collection, fetchCollectionInfo, updateCollectionAdditionalInfo]);

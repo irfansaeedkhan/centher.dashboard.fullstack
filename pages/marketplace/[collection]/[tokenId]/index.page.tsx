@@ -60,7 +60,7 @@ const NFT: NextPageWithLayout = () => {
         </div>
       </div>
     </>
-  ) : null;
+  ) : null; // TODO: Add a loading spinner and 404 page
 };
 
 NFT.getLayout = (page) => {

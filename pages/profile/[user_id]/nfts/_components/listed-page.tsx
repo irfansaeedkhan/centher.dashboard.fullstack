@@ -22,7 +22,7 @@ const ListedPage = () => {
 
   useEffect(() => {
     if (userId) {
-      fetchListedNFTs(userId, 0, 20);
+      fetchListedNFTs(userId, 0, 50);
     }
   }, [userId, fetchListedNFTs]);
 

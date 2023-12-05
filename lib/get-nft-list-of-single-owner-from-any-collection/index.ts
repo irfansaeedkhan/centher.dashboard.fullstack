@@ -5,7 +5,7 @@ import { AppError } from "@/utils/app-error";
 export const getNFTListOfSingleOwnerFromAnyCollection = async ({
   owner_address,
   saleState = "All",
-  limit = 15,
+  limit = 50,
   skip = 0,
 }: {
   owner_address: string;
