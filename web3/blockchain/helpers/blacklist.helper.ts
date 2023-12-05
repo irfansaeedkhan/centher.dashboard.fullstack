@@ -13,7 +13,6 @@ export class OldMarketplaceCollectionBlackList {
           "0xe9ee190f98af25616d8cd1928a7da2ea3a5c252d",
         ]
       : [
-          "0x0fb63a3666bf6078d0beb546ea82cb39d85a3b55",
           "0x4c971b621e15dc8abfc03ce3dcccf6cb63a848ae",
           "0x5740512e4e88dd0a80a3e9cf505ff72c4dce8f37",
           "0x6dd0edf61b73acd04db22ff7e6976ad0054d06f0",
