@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { LoadingState } from "@/models/common";
 import { NFTCardData } from "@/components/nft.card";
-import { getNFTs } from "@/lib/get-nfts";
+import { getHotNFTs } from "@/lib/get-hot-nfts";
 import { getNFTCardData } from "@/lib/get-nft-card-data";
 
 export const useHotNFTs = () => {
@@ -18,7 +18,7 @@ export const useHotNFTs = () => {
     (async () => {
       try {
         setState((state) => ({ ...state, loading: "loading" }));
-        const _hotNFTs = await getNFTs({
+        const _hotNFTs = await getHotNFTs({
           limit: 15,
           skip: 0,
         });
