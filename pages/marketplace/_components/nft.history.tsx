@@ -44,7 +44,6 @@ export const NFTHistory = ({ prices }: any) => {
       const _prices = prices.sort(
         (item1: any, item2: any) => item1.txTime - item2.txTime
       );
-      // const _priceHistory = await _prices.map((item: IListHistory) => {
       const _priceHistory = await _prices.map((item: any) => {
         return {
           price: formatEther2Number(item.price),
