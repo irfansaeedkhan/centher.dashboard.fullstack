@@ -20,7 +20,7 @@ export const useAllCollectionsStore = create<AllCollectionsStore>()(
     (set, get) => ({
       collections: [],
       offset: 0,
-      limit: 10,
+      limit: 50,
       loading: "idle",
       updateOffset: () =>
         set((state) => ({
