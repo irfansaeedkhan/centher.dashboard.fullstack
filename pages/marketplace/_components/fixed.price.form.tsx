@@ -47,12 +47,12 @@ interface FixedPriceFormProps {
   assetTab: string;
 }
 interface FormFields {
-  NFTName: String;
-  Description: String;
+  NFTName: string;
+  Description: string;
   NFTAmount: number | null;
   NFTPrice: number | null;
   NFTSupply: number | null;
-  Collection: String;
+  Collection: string;
 }
 
 const FixedPriceForm = ({

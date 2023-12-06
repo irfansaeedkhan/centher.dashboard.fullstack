@@ -1,7 +1,7 @@
 import React from "react";
 import clsx from "clsx";
 import { SectionTitle } from "@/pages/marketplace/_components";
-import { CollectionCardV2 } from "@/components/collection.card/collection-card-v2";
+import { CollectionCard } from "@/components/collection.card";
 import NFTCollectionSkeleton from "@/components/loading.skeletons/nft.collection.skeleton";
 import { AppRoutes } from "@/constants/app.routes";
 import { NftsCollectionEmpty } from "@/assets/svgs";
@@ -31,9 +31,7 @@ export const HotCollections: React.FC = () => {
         )}
       >
         {hotCollections.map((collection) => {
-          return (
-            <CollectionCardV2 data={collection} key={collection.address} />
-          );
+          return <CollectionCard data={collection} key={collection.address} />;
         })}
         {(loading === "loading" || loading === "idle") && (
           <>

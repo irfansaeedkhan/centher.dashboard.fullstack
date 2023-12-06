@@ -1,16 +1,15 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 import clsx from "clsx";
 import { HotNftEmptyIcon } from "@/assets/svgs";
 import { NFTImageCard } from "@/components/nft.image.card";
-import { NFTLockedDetailsProps } from "@/lib/get-user-by-id";
 import { useProfileNFTStore } from "@/store/profile.nft.store";
 import { LoadingStatus } from "@/utils/enums/loading.status.enum";
-import { GlobalTokenBlackList } from "@/web3/blockchain/helpers/blacklist.helper";
 
+// FIXME: No Pagination on this page?
 const ListedPage = () => {
   const router = useRouter();
-  const account = useMemo(() => {
+  const userId = useMemo(() => {
     return router.query.user_id as string;
   }, [router.query.user_id]);
   const { listedNFTs, fetchListedNFTs, loadingListedNFTs } = useProfileNFTStore(
@@ -22,28 +21,16 @@ const ListedPage = () => {
   );
 
   useEffect(() => {
-    if (account) {
-      fetchListedNFTs(account, 0, 1000);
+    if (userId) {
+      fetchListedNFTs(userId, 0, 50);
     }
-  }, [account, fetchListedNFTs]);
-
-  const [displayNFTs, setDisplayNFTs] = useState<NFTLockedDetailsProps[]>([]);
-
-  useEffect(() => {
-    if (loadingListedNFTs == LoadingStatus.loaded) {
-      setDisplayNFTs([
-        ...listedNFTs.filter(
-          (nft) => !GlobalTokenBlackList.isBlocked(nft.collection, +nft.tokenId)
-        ),
-      ]);
-    }
-  }, [loadingListedNFTs, listedNFTs]);
+  }, [userId, fetchListedNFTs]);
 
   return (
     <>
-      {loadingListedNFTs == LoadingStatus.loaded && displayNFTs?.length ? (
+      {loadingListedNFTs == LoadingStatus.loaded && !!listedNFTs.length ? (
         <div className={clsx(`grid grid-cols-[1fr,1fr,1fr] gap-2`)}>
-          {displayNFTs.map((nft) => (
+          {listedNFTs.map((nft) => (
             <NFTImageCard data={nft} key={nft.id} />
           ))}
         </div>
@@ -52,7 +39,7 @@ const ListedPage = () => {
           <div className="!h-[104px] !w-full animate-pulse rounded-xl bg-[#3C3F4A] [@media(min-width:768px)]:!h-[275px] [@media(min-width:768px)]:!w-[275px]"></div>
         )
       )}
-      {loadingListedNFTs == LoadingStatus.loaded && !listedNFTs?.length && (
+      {loadingListedNFTs == LoadingStatus.loaded && !listedNFTs.length && (
         <>
           <div className="flex items-center justify-center text-white">
             <HotNftEmptyIcon />

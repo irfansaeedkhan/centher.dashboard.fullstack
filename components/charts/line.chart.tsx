@@ -17,7 +17,6 @@ import {
   getElementAtEvent,
   getElementsAtEvent,
 } from "react-chartjs-2";
-import { IListHistory } from "@/hooks/use.get.nft.data.ts";
 
 const options = {
   scales: {
@@ -40,10 +39,6 @@ ChartJS.register(
   Legend,
   Tooltip
 );
-
-interface LineChartPros {
-  history: IListHistory[] | undefined;
-}
 
 // export const LineChart = ({ history }: LineChartPros) => {
 export const LineChart = ({ data }: any) => {

@@ -5,7 +5,6 @@ import Button from "@/components/button";
 import { IModalProps } from "@/components/modal/standard.modal";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { ModalMigrate } from "@/components/modal/modal.migrate";
-import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
@@ -16,6 +15,7 @@ import { BNBIcon, MigrateIcon } from "@/assets/svgs";
 import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { useWallet } from "@/web3/hooks/use.wallet";
+import { CFSNFTForPage } from "@/lib/get-single-nft-page-data/types";
 import ChangePriceBidModal from "./change.price.bid.modal";
 
 enum ModalType {
@@ -27,20 +27,17 @@ enum ModalType {
   migrate = "migrate",
 }
 
-export interface bidForm {
-  bidPrice: number;
+interface Props {
+  nft: CFSNFTForPage;
+  refetchNFT: () => void;
 }
 
-interface FixedPriceNFTDescriptionProps {
-  data: INFTDetailData | undefined;
-  setNftData: () => void;
-}
-
-export const FixedPriceNFTDescription = ({
-  data,
-  setNftData,
-}: FixedPriceNFTDescriptionProps) => {
+export const FixedPriceNFTDescription: React.FC<Props> = ({
+  nft,
+  refetchNFT,
+}) => {
   const { getSigner } = useWallet();
+  const bnbPrice = useBNBPrice();
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
     title: "",
@@ -54,11 +51,11 @@ export const FixedPriceNFTDescription = ({
 
   useEffect(() => {
     const CheckStatus = async () => {
-      if (data?.saleState === "List") {
+      if (nft.saleState === "List") {
         const Status = await BlockchainRead.isCurrentMarketplaceOwner(
-          getSigner()!,
-          data.collection,
-          data.nftId
+          getSigner()!, // FIXME: getSinger() can be null ???
+          nft.collection,
+          +nft.tokenId
         );
         if (!Status) {
           setMigrateModal({
@@ -91,16 +88,23 @@ export const FixedPriceNFTDescription = ({
     };
 
     const migrateNowHandler = async () => {
-      let response = { success: false, message: "" };
+      const signer = getSigner();
+      if (!signer) {
+        toast.error("Connect your wallet");
+        return;
+      }
+
+      const response = { success: false, message: "" };
+
       try {
-        setMigrateModal({ ...migrateModal, visibility: false });
+        setMigrateModal((prev) => ({ ...prev, visibility: false }));
         setupWaitingModal();
         const result = await BlockchainWrite.transferNftToCurrentMarketplace(
-          getSigner()!,
-          data?.collection as string,
-          data?.nftId as number,
-          data?.listInfo?.price as number,
-          data?.auctionInfo.endTime as number
+          signer,
+          nft.collection,
+          +nft.tokenId,
+          +nft.listInfo.price,
+          +nft.auctionInfo.endTime
         );
 
         if (!result?.length) {
@@ -117,15 +121,19 @@ export const FixedPriceNFTDescription = ({
         setupSuccessModal(response.success, response.message);
       }
     };
-    CheckStatus();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, getSigner]);
 
-  const bnbPrice = useBNBPrice();
+    CheckStatus();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nft, getSigner]);
 
   const setupCancelItemPriceModal = () => {
+    const signer = getSigner();
+    if (!signer) {
+      toast.error("Connect your wallet");
+      return;
+    }
     try {
-      validateProvider();
       modal.createModal(ModalType.cancelPrice);
     } catch (err: any) {
       toast.error("something went wrong, please try again later");
@@ -133,8 +141,12 @@ export const FixedPriceNFTDescription = ({
   };
 
   const setupBidNftModal = () => {
+    const signer = getSigner();
+    if (!signer) {
+      toast.error("Connect your wallet");
+      return;
+    }
     try {
-      validateProvider();
       modal.createModal(ModalType.bidNft);
     } catch (err: any) {
       toast.error("something went wrong, please try again later");
@@ -158,22 +170,29 @@ export const FixedPriceNFTDescription = ({
     try {
       modal.createModal(ModalType.success, { txStatus, msg });
     } catch (err: any) {
-      toastError("something went wrong, please try again later");
+      toast.error("something went wrong, please try again later");
     }
   };
 
   const handleCancelListing = async () => {
+    const signer = getSigner();
+    if (!signer) {
+      toast.error("Connect your wallet");
+      return;
+    }
+
     setupWaitingModal();
-    let response = { success: false, message: "" };
+    const response = { success: false, message: "" };
+
     try {
       const result = await BlockchainWrite.callCancelItemForSale(
-        getSigner()!,
-        (data as INFTDetailData).collection,
-        (data as INFTDetailData).nftId
+        signer,
+        nft.collection,
+        +nft.tokenId
       );
 
       if (!!result) {
-        setNftData();
+        refetchNFT();
         response.success = true;
         response.message =
           "Congratulations! You have successfully canceled your listing of NFT ";
@@ -188,27 +207,31 @@ export const FixedPriceNFTDescription = ({
   };
 
   const handleEditPrice = async (newPrice: any) => {
-    let result;
-    let response = { success: false, message: "" };
-    setupWaitingModal();
-    try {
-      validateProvider();
-      const signer = getSigner();
-      if (!data?.collection || !data?.nftId || !newPrice || !signer) {
-        throw new Error(
-          "Something went wrong. please refresh the page or try later."
-        );
-      }
+    if (!newPrice) {
+      toast.error("Please enter a valid price");
+      return;
+    }
 
+    const signer = getSigner();
+    if (!signer) {
+      toast.error("Connect your wallet");
+      return;
+    }
+
+    let result;
+    const response = { success: false, message: "" };
+    setupWaitingModal();
+
+    try {
       result = await BlockchainWrite.callEditItemForSale(
-        signer!,
-        data.collection,
-        data.nftId,
+        signer,
+        nft.collection,
+        +nft.tokenId,
         newPrice
       );
 
       if (!!result) {
-        setNftData();
+        refetchNFT();
         response.success = true;
         response.message =
           "Congratulations! You have successfully updated price of your NFT ";
@@ -245,7 +268,7 @@ export const FixedPriceNFTDescription = ({
       visibility: true,
       content: () => (
         <ChangePriceBidModal
-          data={data}
+          nft={nft}
           setupEditListingItemPriceModal={setupEditListingItemPriceModal}
         />
       ),
@@ -291,7 +314,10 @@ export const FixedPriceNFTDescription = ({
           }
           subHeading={
             <p className="text-sm font-normal leading-6 text-gray-shade-2">
-              {msg} <span className="word-break text-white">{data?.name}</span>{" "}
+              {msg}{" "}
+              <span className="word-break text-white">
+                {nft.ipfs_metadata.name}
+              </span>{" "}
               on
               <b> Centher </b> NFT platform.
             </p>
@@ -310,16 +336,6 @@ export const FixedPriceNFTDescription = ({
 
   const modal = new ModalManager(setModalModel, modalTemplateCollection);
 
-  function validateProvider(): void {
-    if (!getSigner()) {
-      throw new Error("Connect your wallet");
-    }
-  }
-
-  function toastError(err: any): void {
-    toast.error(err?.message ? err.message : err);
-  }
-
   useEffect(() => {
     if (ModalModel.visibility) {
       document.body.classList.add("modal-open");
@@ -332,30 +348,28 @@ export const FixedPriceNFTDescription = ({
   }, [ModalModel.visibility]);
 
   return (
-    <div className={nftDescriptionContainer}>
+    <div className={`flex w-full flex-col gap-5`}>
       <div className={greyBoxContainer}>
         <h4 className={greyTxt}>Current Price</h4>
         <div className="flex flex-col items-start gap-3 fsm:flex-row  fsm:items-center">
           <div className="flex items-center gap-2">
             <BNBIcon />
-            <h5 className={BnBNum}>
-              {`${normalizeValue(
-                formatEther2Number(data?.listInfo.price)
-              )} BNB`}
+            <h5 className={`text-base font-bold text-white`}>
+              {`${normalizeValue(formatEther2Number(nft.listInfo.price))} BNB`}
             </h5>
           </div>
           <h6 className={greyTxt}>
             {" "}
-            =${formatBNB2USD(data?.listInfo.price, bnbPrice)}
+            =${formatBNB2USD(nft.listInfo.price, bnbPrice)}
           </h6>
         </div>
       </div>
       <div className={greyBoxContainer}>
-        <h4 className={desTitle}>Description</h4>
+        <h4 className={`text-sm font-semibold text-white`}>Description</h4>
         <p
           className={clsx(greyTxt, `word-break whitespace-pre-wrap leading-6`)}
         >
-          {data?.description}
+          {nft.ipfs_metadata.description}
         </p>
       </div>
       <div className="buttonContainer flex items-center gap-4">
@@ -389,7 +403,7 @@ export const FixedPriceNFTDescription = ({
       {migrateModal.visibility && (
         <ModalMigrate
           onClose={() => {
-            setMigrateModal({ ...migrateModal, visibility: false });
+            setMigrateModal((prev) => ({ ...prev, visibility: false }));
           }}
           title={migrateModal.title as string}
         >
@@ -400,30 +414,5 @@ export const FixedPriceNFTDescription = ({
   );
 };
 
-// styling
-const modalBodyWrapper = `
-  flex flex-col gap-2 w-full fmd:px-4 px-2 fmd:pt-4 pt-2 text-center
-`;
-const footerBtnContainer = `
-flex items-center gap-4
-`;
-
-const nftDescriptionContainer = `
-w-full flex flex-col gap-5
-`;
-
-const greyBoxContainer = `
-bg-background-shade-3 rounded-10px flex flex-col gap-2 p-3 fsm:p-6 
-`;
-const greyTxt = `
-text-sm font-normal text-gray-shade-7
-`;
-const desTitle = `
-text-sm font-semibold text-white
-`;
-const BnBNum = `
-text-base font-bold text-white
-`;
-const ImgStyling = `
-w-[64px] h-[64px]  rounded-2xl object-contain mx-auto
-`;
+const greyBoxContainer = `bg-background-shade-3 rounded-10px flex flex-col gap-2 p-3 fsm:p-6`;
+const greyTxt = `text-sm font-normal text-gray-shade-7`;

@@ -2,14 +2,13 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import clsx from "clsx";
-import { User } from "@/models/user";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 import { AppRoutes } from "@/constants/app.routes";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
-import { formatAddress } from "@/utils/format.address";
+import { TopCreator } from "@/models/top-creator";
 
 interface CreatorCardProps {
-  data: TopCreatorCardData;
+  data: TopCreator;
   className?: string;
 }
 
@@ -25,59 +24,37 @@ const CreatorCard: React.FC<CreatorCardProps> = ({ data, className }) => {
         alt={data.display_name}
         className="!h-12 !w-12 flex-shrink-0 rounded-full object-cover"
       />
-      {data.is_registered ? (
-        <Link
-          href={{
-            pathname: AppRoutes.profile.nfts,
-            query: {
-              user_id: data._id,
-            },
-          }}
-          className={clsx(
-            `text-gradient-hover !flex items-center  text-sm font-medium text-white`,
-            data.display_name.includes(" ")
-              ? "line-clamp-1 text-ellipsis"
-              : "block w-full max-w-full overflow-hidden truncate"
-          )}
-          title={data.display_name}
-        >
-          {sliceDisplayName(data.display_name)}
-          {verificationTick && (
-            <span className="verifiedIcon ml-0.5 inline-flex h-[18px] w-[18px] min-w-[18px] fsm:ml-1">
-              <Image
-                src={verificationTick}
-                alt={
-                  data.membership.status === "citizen" ? "Citizen" : "Verified"
-                }
-                width={16}
-                height={16}
-              />
-            </span>
-          )}
-        </Link>
-      ) : (
-        <span
-          className={clsx(
-            `text-gradient-hover !flex items-center  text-sm font-medium text-white`,
-            data.display_name.includes(" ")
-              ? "line-clamp-1 text-ellipsis"
-              : "block w-full max-w-full overflow-hidden truncate"
-          )}
-          title={data.display_name}
-        >
-          {formatAddress(data.display_name)}
-        </span>
-      )}
+      <Link
+        href={{
+          pathname: AppRoutes.profile.nfts,
+          query: {
+            user_id: data._id,
+          },
+        }}
+        className={clsx(
+          `text-gradient-hover !flex items-center  text-sm font-medium text-white`,
+          data.display_name.includes(" ")
+            ? "line-clamp-1 text-ellipsis"
+            : "block w-full max-w-full overflow-hidden truncate"
+        )}
+        title={data.display_name}
+      >
+        {sliceDisplayName(data.display_name)}
+        {verificationTick && (
+          <span className="verifiedIcon ml-0.5 inline-flex h-[18px] w-[18px] min-w-[18px] fsm:ml-1">
+            <Image
+              src={verificationTick}
+              alt={
+                data.membership.status === "citizen" ? "Citizen" : "Verified"
+              }
+              width={16}
+              height={16}
+            />
+          </span>
+        )}
+      </Link>
     </div>
   );
 };
 
 export default CreatorCard;
-
-export interface TopCreatorCardData {
-  _id: User["_id"];
-  display_name: User["display_name"];
-  profile_image: User["profile_image"];
-  membership: User["membership"];
-  is_registered: boolean;
-}

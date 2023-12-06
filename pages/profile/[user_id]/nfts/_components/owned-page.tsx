@@ -1,16 +1,15 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 import clsx from "clsx";
 import { HotNftEmptyIcon } from "@/assets/svgs";
 import { NFTImageCard } from "@/components/nft.image.card";
-import { NFTLockedDetailsProps } from "@/lib/get-user-by-id";
 import { useProfileNFTStore } from "@/store/profile.nft.store";
 import { LoadingStatus } from "@/utils/enums/loading.status.enum";
-import { GlobalTokenBlackList } from "@/web3/blockchain/helpers/blacklist.helper";
 
+// FIXME: No Pagination on this page?
 const OwnedPage = () => {
   const router = useRouter();
-  const account = useMemo(() => {
+  const userId = useMemo(() => {
     return router.query.user_id as string;
   }, [router.query.user_id]);
   const { ownedNfts, fetchOwnedNFTs, loadingOwnedNFTs } = useProfileNFTStore(
@@ -22,28 +21,16 @@ const OwnedPage = () => {
   );
 
   useEffect(() => {
-    if (account) {
-      fetchOwnedNFTs(account);
+    if (userId) {
+      fetchOwnedNFTs(userId);
     }
-  }, [account, fetchOwnedNFTs]);
-
-  const [displayNFTs, setDisplayNFTs] = useState<NFTLockedDetailsProps[]>([]);
-
-  useEffect(() => {
-    if (loadingOwnedNFTs == LoadingStatus.loaded) {
-      setDisplayNFTs([
-        ...ownedNfts.filter(
-          (nft) => !GlobalTokenBlackList.isBlocked(nft.collection, +nft.tokenId)
-        ),
-      ]);
-    }
-  }, [loadingOwnedNFTs, ownedNfts]);
+  }, [userId, fetchOwnedNFTs]);
 
   return (
     <>
-      {loadingOwnedNFTs == LoadingStatus.loaded && displayNFTs?.length ? (
+      {loadingOwnedNFTs == LoadingStatus.loaded && !!ownedNfts.length ? (
         <div className={clsx(`grid grid-cols-[1fr,1fr,1fr] gap-2`)}>
-          {displayNFTs.map((nft) => (
+          {ownedNfts.map((nft) => (
             <NFTImageCard data={nft} key={nft.id} />
           ))}
         </div>
