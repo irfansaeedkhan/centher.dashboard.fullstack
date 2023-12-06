@@ -13,6 +13,10 @@ import { MutualFollowersData } from "@/models/user";
 import ProfileHeader from "./profile.header";
 import { CardsContainerLeft } from "./cards.container.left";
 import { UserNotFound } from "./user.not.found";
+import {
+  PromotionCard8,
+  PromotionCard9,
+} from "@/components/feed.components/promotion.cards";
 
 interface AllPagesWrapperProps {
   children: React.ReactNode;
@@ -95,7 +99,9 @@ export const ProfilePageWrapper: React.FC<AllPagesWrapperProps> = ({
             <div className={`hidden space-y-3 f2xl:col-start-3 f2xl:block`}>
               {loggedInUser && <SuggestedCard />}
               <PromotionCard6 />
-              <PromotionCard3 className="sticky top-[84px]" />
+              <PromotionCard3 />
+              <PromotionCard9 />
+              <PromotionCard8 className="sticky top-[84px]" />
             </div>
           )}
         </div>

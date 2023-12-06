@@ -15,7 +15,6 @@ export const sidebarData: SidebarData = {
         available_for: "all",
         activeList: [
           AppRoutes.marketplace.explore,
-          AppRoutes.marketplace.nfts,
           AppRoutes.marketplace.collections,
           AppRoutes.marketplace.collection,
           AppRoutes.marketplace.nft,

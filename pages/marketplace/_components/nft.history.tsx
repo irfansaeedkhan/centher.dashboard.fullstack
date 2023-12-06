@@ -1,13 +1,10 @@
-// React, Next, NPM Packages
 import { useEffect, useState } from "react";
 import moment from "moment";
-
-// App import
 import { CustomModal } from "@/components/modal/custom.modal";
 import { LineChart } from "@/components/charts";
-import { IListHistory } from "@/hooks/use.get.nft.data.ts";
-import { formatEther2Number } from "@/utils/format.address";
 import Button from "@/components/button";
+import { formatEther2Number } from "@/utils/format.address";
+
 interface PriceHistory {
   price: number;
   txTime: number;
@@ -47,7 +44,7 @@ export const NFTHistory = ({ prices }: any) => {
       const _prices = prices.sort(
         (item1: any, item2: any) => item1.txTime - item2.txTime
       );
-      const _priceHistory = await _prices.map((item: IListHistory) => {
+      const _priceHistory = await _prices.map((item: any) => {
         return {
           price: formatEther2Number(item.price),
           txTime: item.txTime,

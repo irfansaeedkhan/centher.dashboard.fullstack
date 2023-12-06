@@ -1,68 +1,63 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import clsx from "clsx";
+import { CFSNFTForPage } from "@/lib/get-single-nft-page-data/types";
+import { useNFTImageSrc } from "@/hooks/use-nft-image-src";
 import { NFTDetails } from "./nft.details";
 import { NFTProperties } from "./nft.properties";
-import { IProperty } from "./create.nft.form";
 import AudioPlayer from "./audio.player";
-interface NFTLeftSideComponentProps {
-  image: string | undefined;
-  type: string | undefined;
-  nftId: number | undefined;
-  mintTx: string | undefined;
-  collection: string | undefined;
-  attributes: IProperty[] | undefined;
-  collectionMintedTokens: number;
+
+interface Props {
+  nft: CFSNFTForPage;
 }
 
-export const NFTLeftSideComponent = (props: NFTLeftSideComponentProps) => {
-  const [imageUrl, setImageUrl] = useState(props.image);
+export const NFTLeftSideComponent: React.FC<Props> = ({ nft }) => {
+  const { nftImageSrc, setNftImageSrc, DEFAULT_NFT_IMAGE_SRC } =
+    useNFTImageSrc(nft);
+  const [nftVideoSrc, setNftVideoSrc] = useState<string>("");
 
   useEffect(() => {
-    setImageUrl(props.image);
-  }, [props.image]);
+    if (nft.ipfs_metadata.type?.includes("video")) {
+      setNftVideoSrc(nft.ipfs_metadata.image);
+    }
+  }, [nft]);
 
   return (
     <div className={`flex w-full max-w-[508px] flex-col gap-6`}>
       <div
         className={clsx(
           `relative w-full rounded-2xl border border-gray-shade-3 bg-black-shade-9`,
-          props.type?.includes("audio") ? `` : `pb-[100%]`
+          !nft.ipfs_metadata.type?.includes("audio") && `pb-[100%]`
         )}
       >
-        {props.image && imageUrl && props.type && (
+        {nft.ipfs_metadata.type && (
           <div>
-            {props.type.includes("audio") ? (
-              <AudioPlayer src={props.image} />
-            ) : props.type.includes("video") ? (
+            {nft.ipfs_metadata.type.includes("audio") ? (
+              <AudioPlayer src={nft.ipfs_metadata.image} />
+            ) : nft.ipfs_metadata.type.includes("video") ? (
               <video
                 className={`absolute h-full w-full rounded-2xl object-contain`}
-                src={imageUrl}
+                src={nftVideoSrc}
                 height={270}
                 width={270}
-                onError={() => setImageUrl("/images/placeholder-square.svg")}
+                onError={() => setNftVideoSrc(DEFAULT_NFT_IMAGE_SRC)}
                 controls
               />
             ) : (
               <Image
                 className={`absolute h-full w-full rounded-2xl object-cover`}
-                src={imageUrl}
-                alt="image"
+                src={nftImageSrc}
+                alt={nft.ipfs_metadata.name}
                 height={270}
                 width={270}
-                onError={() => setImageUrl("/images/placeholder-square.svg")}
+                onError={() => setNftImageSrc(DEFAULT_NFT_IMAGE_SRC)}
               />
             )}
           </div>
         )}
       </div>
-      <NFTDetails
-        nftId={props.nftId}
-        mintTx={props.mintTx}
-        collection={props.collection}
-        collectionMintedTokens={props.collectionMintedTokens}
-      />
-      <NFTProperties attributes={props.attributes} />
+      <NFTDetails nft={nft} />
+      <NFTProperties attributes={nft.ipfs_metadata.attributes ?? []} />
     </div>
   );
 };

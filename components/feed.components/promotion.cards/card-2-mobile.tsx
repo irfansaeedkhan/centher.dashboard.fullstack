@@ -33,7 +33,7 @@ export const PromotionCard2Mobile: React.FC<Props> = ({
           title="Let's Go"
           variant="primary"
           borderRounded="10px"
-          className="mt-4 w-full max-w-[149px] text-xs font-medium leading-6"
+          className="mt-4 w-full max-w-[149px]"
         />
       </Link>
     </div>

@@ -2,14 +2,12 @@ import React from "react";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import clsx from "clsx";
-
 import { useAllCollectionsStore } from "@/store/all.collections.store";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import { CollectionCardV2 } from "@/components/collection.card/collection-card-v2";
+import { CollectionCard } from "@/components/collection.card";
 import NftCollectionSkeleton from "@/components/loading.skeletons/nft.collection.skeleton";
 import { NftsCollectionEmpty } from "@/assets/svgs";
-
 import { SectionTitle } from "../_components";
 
 const AllNFTCollection: NextPageWithLayout = () => {
@@ -58,9 +56,7 @@ const AllNFTCollection: NextPageWithLayout = () => {
         )}
       >
         {collections.map((collection) => {
-          return (
-            <CollectionCardV2 data={collection} key={collection.address} />
-          );
+          return <CollectionCard data={collection} key={collection.address} />;
         })}
 
         {(loading === "loading" || loading === "idle") && (
@@ -74,17 +70,17 @@ const AllNFTCollection: NextPageWithLayout = () => {
         <div ref={lastCollectionRef} />
       </div>
 
-      {((loading === "loaded" && collections.length === 0) ||
-        loading === "failed") && (
-        <>
-          <div className="flex items-center justify-center text-white">
-            <NftsCollectionEmpty />
-          </div>
-          <div className="flex items-center justify-center text-[16px] font-semibold text-white">
-            No collection found yet
-          </div>
-        </>
-      )}
+      {(loading === "loaded" || loading === "failed") &&
+        collections.length === 0 && (
+          <>
+            <div className="flex items-center justify-center text-white">
+              <NftsCollectionEmpty />
+            </div>
+            <div className="flex items-center justify-center text-[16px] font-semibold text-white">
+              No collection found yet
+            </div>
+          </>
+        )}
     </div>
   );
 };

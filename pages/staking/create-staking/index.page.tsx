@@ -19,8 +19,6 @@ import Button from "@/components/button";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { eqAddress } from "@/live/utils/address.utils";
 import { CreatePoolStepsEnum } from "@/staking/enum/create-pool-steps.enum";
-import useUser from "@/hooks/use.user";
-import ConnectWalletModal from "@/components/modal/connect-wallet-modal";
 import {
   CreatePoolCallContractError,
   CreatePoolCallStaticError,
@@ -37,7 +35,7 @@ import { PreLoader } from "@/components/pre.loader";
 import { useStaking } from "@/hooks/staking";
 import { BlockchainRead } from "@/web3/blockchain";
 import { useWallet } from "@/web3/hooks/use.wallet";
-import { StakingSuccessModal } from "./_components/staking-success-modal";
+import { StakingSuccessModal } from "@/pages/staking/create-staking/_components/staking-success-modal";
 import {
   MultiLevelRewards,
   levelDataType,
@@ -45,9 +43,9 @@ import {
   stakingFormInterface,
   stakingFormInterfaceUpdated,
   teamMember,
-} from "../_components/staking-types";
-import { StakingFailureModal } from "./_components/staking-failure-modal";
-import { StakingReviewModal } from "./_components/staking-review-modal";
+} from "@/pages/staking/_components/staking-types";
+import { StakingFailureModal } from "@/pages/staking/create-staking/_components/staking-failure-modal";
+import { StakingReviewModal } from "@/pages/staking/create-staking/_components/staking-review-modal";
 import {
   AddAffiliateSettingsInput,
   CreatePoolInput,
@@ -55,14 +53,15 @@ import {
   OptionalType,
   StakingFiles,
 } from "@/staking/types";
-import { StakingProgressModal } from "./_components/staking-progress-modal";
-import { ProgressModal } from "./dto/progress-modal.dto";
+import { StakingProgressModal } from "@/pages/staking/create-staking/_components/staking-progress-modal";
+import { ProgressModal } from "@/pages/staking/create-staking/dto/progress-modal.dto";
 import {
   claimPeriodOptions,
   firstReward,
   stakingPeriodOptions,
 } from "../constants";
-import DropdownStakingForm from "../_components/dropdown-staking-form";
+import DropdownStakingForm from "@/pages/staking/_components/dropdown-staking-form";
+import { ConnectWalletComp } from "@/components/connect.wallet";
 
 const categoryOptions = [
   { value: "Metaverse", label: "Metaverse" },
@@ -89,9 +88,8 @@ const CreateStaking: NextPageWithLayout = () => {
     null
   );
   const [isConnected, setIsConnected] = useState<boolean>(false);
-  const [connectWalletModal, setConnectWalletModal] = useState(false);
-  const { user: loggedInUser } = useUser();
-  const { connectWallet, disconnectWallet, getSigner, connectedAddress } =
+
+  const { getSigner, connectedAddress, connectWallet, disconnectWallet } =
     useWallet();
   const [isLoading, setIsLoading] = useState(false);
   const { sdk } = useStaking();
@@ -658,7 +656,6 @@ const CreateStaking: NextPageWithLayout = () => {
         );
       }
     }
-
     await sdk.createPool(
       getSigner()!,
       input,
@@ -668,6 +665,7 @@ const CreateStaking: NextPageWithLayout = () => {
         progressCallbackHandler(title, value);
       }
     );
+
     await setProgressModel(null);
   };
 
@@ -1864,12 +1862,10 @@ const CreateStaking: NextPageWithLayout = () => {
                 )}
               </div>
               {!isConnected ? (
-                <Button
-                  title={"Connect Wallet"}
-                  variant="primary"
-                  onClick={() => {
-                    setConnectWalletModal(true);
-                  }}
+                <ConnectWalletComp
+                  connectWallet={connectWallet}
+                  connectedAddress={connectedAddress}
+                  disconnectWallet={disconnectWallet}
                   className="mx-auto mt-5 w-[45%] text-sm"
                 />
               ) : (
@@ -2346,14 +2342,14 @@ const CreateStaking: NextPageWithLayout = () => {
                 </div>
               </div>
               {!isConnected ? (
-                <Button
-                  title={"Connect Wallet"}
-                  variant="primary"
-                  onClick={() => {
-                    setConnectWalletModal(true);
-                  }}
-                  className="mx-auto mt-5 w-[45%] text-sm"
-                />
+                <div>
+                  <ConnectWalletComp
+                    connectWallet={connectWallet}
+                    connectedAddress={connectedAddress}
+                    disconnectWallet={disconnectWallet}
+                    className="mx-auto mt-5 w-[45%] text-sm"
+                  />
+                </div>
               ) : (
                 <Button
                   title="Review and Submit"
@@ -2369,14 +2365,6 @@ const CreateStaking: NextPageWithLayout = () => {
           </motion.div>
         </div>
       </div>
-      {connectWalletModal && (
-        <ConnectWalletModal
-          connectWallet={connectWallet}
-          deactivate={disconnectWallet}
-          loggedInUser={loggedInUser}
-          setConnectWalletModal={setConnectWalletModal}
-        />
-      )}
       {showMsg && showMsg}
       {progressModel && (
         <StakingProgressModal

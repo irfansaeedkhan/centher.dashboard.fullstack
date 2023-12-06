@@ -5,8 +5,6 @@ import { IModalProps } from "@/components/modal/standard.modal";
 import Button from "@/components/button";
 import { BNBIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
-import ConnectWalletModal from "@/components/modal/connect-wallet-modal";
-import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import {
   formatAddress,
   formatBNB2USD,
@@ -18,18 +16,13 @@ import SuccessMessageModal from "@/utils/modal/success-modal";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { useGetBNBBalance } from "@/web3/hooks/use.get.balances";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
-import useUser from "@/hooks/use.user";
 import { useWallet } from "@/web3/hooks/use.wallet";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
-import AuctionBidModal from "./auction.bid.modal";
-
-import AuctionCountdownRenderer from "./auction-countdown.renderer";
-
-interface AuctionNFTBuyerDescriptionProps {
-  data: INFTDetailData | undefined;
-  setNftData: () => void;
-}
+import AuctionBidModal from "@/pages/marketplace/_components/auction.bid.modal";
+import AuctionCountdownRenderer from "@/pages/marketplace/_components/auction-countdown.renderer";
+import { ConnectWalletComp } from "@/components/connect.wallet";
+import { CFSNFTForPage } from "@/lib/get-single-nft-page-data/types";
 
 enum ModalType {
   proceedFuncModal = "proceedFuncModal",
@@ -37,24 +30,27 @@ enum ModalType {
   endAuctionFuncModal = "endAuctionFuncModal",
 }
 
-export const AuctionNFTBuyerDescription = ({
-  data,
-  setNftData,
-}: AuctionNFTBuyerDescriptionProps) => {
-  const { user: loggedInUser } = useUser();
+interface Props {
+  nft: CFSNFTForPage;
+  refetchNFT: () => void;
+}
+
+export const AuctionNFTBuyerDescription: React.FC<Props> = ({
+  nft,
+  refetchNFT,
+}) => {
   const { getSigner, connectedAddress, connectWallet, disconnectWallet } =
     useWallet();
   const bnbBalance = useGetBNBBalance(connectedAddress);
   const bnbPrice = useBNBPrice();
   const price =
-    Number(data?.auctionInfo.highestBidPrice) === 0
-      ? data?.auctionInfo.startPrice
-      : data?.auctionInfo.highestBidPrice;
-  const [nowTime, setNowTime] = useState(new Date());
-  const [endTime, setEndTime] = useState(new Date());
-  const [BidModal, setBidModal] = useState(false);
+    Number(nft.auctionInfo.highestBidPrice) === 0
+      ? nft.auctionInfo.startPrice
+      : nft.auctionInfo.highestBidPrice;
+  const nowTime = new Date();
+  const endTime = new Date(+nft.auctionInfo.endTime * 1000);
+  const [bidModal, setBidModal] = useState(false);
   const [isUserWinner, SetIsUserWinner] = useState(false);
-  const [connectWalletModal, setConnectWalletModal] = useState(false);
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
     title: "",
@@ -62,19 +58,13 @@ export const AuctionNFTBuyerDescription = ({
   });
 
   useEffect(() => {
-    if (data) {
-      var endtime = new Date(data?.auctionInfo.endTime * 1000);
-      var now = new Date();
-      setNowTime(now);
-      setEndTime(endtime);
-      if (
-        connectedAddress?.toLowerCase() ==
-        data?.auctionInfo.highestBidAddress?.toLowerCase()
-      ) {
-        SetIsUserWinner(true);
-      }
+    if (
+      connectedAddress?.toLowerCase() ==
+      nft.auctionInfo.highestBidAddress?.toLowerCase()
+    ) {
+      SetIsUserWinner(true);
     }
-  }, [connectedAddress, data]);
+  }, [connectedAddress, nft]);
 
   useEffect(() => {
     if (ModalModel.visibility) {
@@ -92,7 +82,7 @@ export const AuctionNFTBuyerDescription = ({
       modal.dismissModal();
       modal.createModal(ModalType.successFuncModal, { txStatus, msg });
     } catch (err: any) {
-      !txStatus && toastError("Something went wrong, please try again later.");
+      !txStatus && toast.error("Something went wrong, please try again later.");
     }
   };
 
@@ -102,8 +92,6 @@ export const AuctionNFTBuyerDescription = ({
   };
 
   const onSubmit = async (bidPriceVal: any) => {
-    validateProvider();
-    let response = { success: false, message: "" };
     if (Number(bidPriceVal) <= formatEther2Number(price)) {
       toast.error(
         `Bid price must be greater than ${formatEther2Number(price)}.`
@@ -115,24 +103,29 @@ export const AuctionNFTBuyerDescription = ({
       return;
     }
 
+    const signer = getSigner();
+    if (!signer) {
+      toast.error("Connect your wallet");
+      return;
+    }
+
+    const response = { success: false, message: "" };
     setBidModal(false);
     ProceedFunc();
-    try {
-      const signer = getSigner();
-      if (signer && data) {
-        const result = await BlockchainWrite.callBidOnAuction(
-          signer,
-          data.collection,
-          data.nftId,
-          bidPriceVal
-        );
 
-        if (!!result?.length) {
-          setNftData();
-          response.success = true;
-          response.message = "Bid placed successfully on auctioned on ";
-        } else throw new Error();
-      }
+    try {
+      const result = await BlockchainWrite.callBidOnAuction(
+        signer,
+        nft.collection,
+        +nft.tokenId,
+        bidPriceVal
+      );
+
+      if (!!result?.length) {
+        refetchNFT();
+        response.success = true;
+        response.message = "Bid placed successfully on auctioned on ";
+      } else throw new Error();
     } catch (error) {
       response.success = false;
       response.message = "Something went wrong, auction failed";
@@ -142,16 +135,23 @@ export const AuctionNFTBuyerDescription = ({
   };
 
   const handleEndAuction = async () => {
-    let response = { success: false, message: "" };
+    const signer = getSigner();
+    if (!signer) {
+      toast.error("Connect your wallet");
+      return;
+    }
+
+    const response = { success: false, message: "" };
     ProceedFunc();
+
     try {
       const result = await BlockchainWrite.callEndAuction(
-        getSigner()!,
-        (data as INFTDetailData).collection,
-        (data as INFTDetailData).nftId
+        signer,
+        nft.collection,
+        +nft.tokenId
       );
       if (result?.length) {
-        setNftData();
+        refetchNFT();
         response.success = true;
         response.message = "Auction has ended for ";
       } else throw new Error();
@@ -160,6 +160,21 @@ export const AuctionNFTBuyerDescription = ({
       response.message = "Something went wrong";
     } finally {
       SuccessFunc(response.success, response.message);
+    }
+  };
+
+  const endAuctionFunc = () => {
+    const signer = getSigner();
+    if (!signer) {
+      toast.error("Connect your wallet");
+      return;
+    }
+
+    try {
+      modal.dismissModal();
+      modal.createModal(ModalType.endAuctionFuncModal);
+    } catch (err: any) {
+      toast.error("Could not end auction");
     }
   };
 
@@ -191,7 +206,10 @@ export const AuctionNFTBuyerDescription = ({
           }
           subHeading={
             <p className="text-14px font-normal leading-6 text-gray-shade-2">
-              {msg} <span className="word-break text-white">{data?.name} </span>{" "}
+              {msg}{" "}
+              <span className="word-break text-white">
+                {nft.ipfs_metadata.name}{" "}
+              </span>{" "}
               NFT on <b> Centher </b>
               platform.
             </p>
@@ -212,8 +230,8 @@ export const AuctionNFTBuyerDescription = ({
       content: () => (
         <MessageModal
           heading="Click Proceed to collect your NFT!"
-          subHeading={`${formatAddress(data?.owner)} receives
-        ${formatEther2Number(data?.auctionInfo.highestBidPrice)} BNB and you
+          subHeading={`${formatAddress(nft.owner)} receives
+        ${formatEther2Number(nft.auctionInfo.highestBidPrice)} BNB and you
         will receive the NFT`}
           dismissModal={() => {
             modal.dismissModal();
@@ -224,35 +242,15 @@ export const AuctionNFTBuyerDescription = ({
     },
   };
 
-  const endAuctionFunc = () => {
-    try {
-      validateProvider();
-      modal.dismissModal();
-      modal.createModal(ModalType.endAuctionFuncModal);
-    } catch (err: any) {
-      toastError(err);
-    }
-  };
-
   const modal = new ModalManager(setModalModel, modalTemplateCollection);
 
-  function validateProvider(): void {
-    if (!getSigner()) {
-      throw new Error("Connect your wallet");
-    }
-  }
-
-  function toastError(err: any): void {
-    toast.error(err?.message ? err.message : err);
-  }
-
   return (
-    <div className={nftDescriptionContainer}>
+    <div className={`flex w-full flex-col gap-5`}>
       <div className={greyBoxContainer}>
         <h4 className={greyTxt}>Minimum Bid</h4>
         <div className="flex items-center  gap-3">
           <BNBIcon className="[&>*]:fill-[#E35259]" />
-          <h5 className={BnBNum}>
+          <h5 className={`text-base font-bold text-white`}>
             {`${normalizeValue(formatEther2Number(price))} BNB`}
           </h5>
           <h6 className={greyTxt}> =${formatBNB2USD(price, bnbPrice)}</h6>
@@ -260,21 +258,21 @@ export const AuctionNFTBuyerDescription = ({
       </div>
       <div className={greyBoxContainer}>
         <h4 className={desTitle}>Description</h4>
-        <p className={`${greyTxt} word-break leading-6`}>{data?.description}</p>
-        {data && data.auctionInfo.endTime && (
+        <p className={`${greyTxt} word-break leading-6`}>
+          {nft.ipfs_metadata.description}
+        </p>
+        {nft.auctionInfo.endTime && (
           <Countdown
-            date={new Date(data.auctionInfo.endTime * 1000)}
+            date={new Date(+nft.auctionInfo.endTime * 1000)}
             renderer={AuctionCountdownRenderer}
           />
         )}
       </div>
       {!getSigner() ? (
-        <Button
-          title={"Connect Wallet"}
-          variant="primary"
-          onClick={() => {
-            setConnectWalletModal(true);
-          }}
+        <ConnectWalletComp
+          connectWallet={connectWallet}
+          connectedAddress={connectedAddress}
+          disconnectWallet={disconnectWallet}
           className="w-full rounded-[14px]"
         />
       ) : (
@@ -285,13 +283,11 @@ export const AuctionNFTBuyerDescription = ({
               variant={"primary"}
               className="w-full rounded-[14px]"
               onClick={() => {
-                if (!getSigner) {
+                if (!getSigner()) {
                   toast.error("Connect your wallet");
                   return;
                 }
-                if (getSigner()) {
-                  setBidModal(true);
-                }
+                setBidModal(true);
               }}
             />
           )}
@@ -304,7 +300,9 @@ export const AuctionNFTBuyerDescription = ({
             />
           )}
           {nowTime > endTime && !isUserWinner && (
-            <div className={infoBox}>
+            <div
+              className={`flex w-full flex-col items-center gap-2 rounded-10px bg-background-shade-3 p-6`}
+            >
               <p className={desTitle}>
                 This NFT no longer available for bidding
               </p>
@@ -324,7 +322,7 @@ export const AuctionNFTBuyerDescription = ({
         </CustomModal>
       )}
 
-      {BidModal && (
+      {bidModal && (
         <AuctionBidModal
           onSubmit={onSubmit}
           onClose={() => {
@@ -332,25 +330,10 @@ export const AuctionNFTBuyerDescription = ({
           }}
         />
       )}
-
-      {connectWalletModal && (
-        <ConnectWalletModal
-          connectWallet={connectWallet}
-          deactivate={disconnectWallet}
-          loggedInUser={loggedInUser}
-          setConnectWalletModal={setConnectWalletModal}
-        />
-      )}
     </div>
   );
 };
 
-// styling
-const BnBNum = `text-base font-bold text-white`;
 const desTitle = `text-sm font-semibold text-white`;
-const footerBtnContainer = `flex items-center gap-4`;
 const greyTxt = `text-sm font-normal text-gray-shade-7`;
-const nftDescriptionContainer = `w-full flex flex-col gap-5`;
 const greyBoxContainer = `bg-background-shade-3 rounded-10px flex flex-col gap-2 p-6`;
-const modalBodyWrapper1 = `flex flex-col gap-4 w-full fmd:px-4 px-2 fmd:pt-4 pt-2 items-center`;
-const infoBox = `bg-background-shade-3 rounded-10px flex flex-col gap-2 p-6 items-center w-full`;
