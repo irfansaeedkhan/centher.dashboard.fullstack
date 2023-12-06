@@ -29,7 +29,7 @@ export const PromotionCard2: React.FC<Props> = ({ className, ...props }) => {
             title="Let's Go"
             variant="primary"
             borderRounded="10px"
-            className="mt-4 w-full max-w-[149px] text-xs font-medium leading-6"
+            className="mt-4 w-full max-w-[149px]"
           />
         </Link>
       </div>
