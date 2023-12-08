@@ -4,6 +4,7 @@ import {
   PromotionCard2,
   PromotionCard4,
   PromotionCard5,
+  PromotionCard7,
 } from "@/components/feed.components/promotion.cards";
 import { ProfileDetailCard } from "@/components/feed.components";
 import ProfileDetailCardSkeleton from "@/components/loading.skeletons/profile.detail.card";
@@ -29,6 +30,7 @@ export const CardsContainerLeft: React.FC<Props> = ({
         <>
           <ProfileDetailCard user={user} />
           {loggedInUser?.membership.status !== "citizen" && <PromotionCard5 />}
+          <PromotionCard7 />
           <PromotionCard4 />
           <PromotionCard2 className="sticky top-[84px]" />
         </>

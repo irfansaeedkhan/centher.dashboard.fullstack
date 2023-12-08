@@ -1,38 +1,32 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import axios from "axios";
 import clsx from "clsx";
 import { useRouter } from "next/router";
 import { CgSpinner } from "react-icons/cg";
 import { toast } from "react-hot-toast";
-import { formatIPFSUrl } from "@/utils/format.address";
 import { AppRoutes } from "@/constants/app.routes";
 import { HammerIconBG, LockIcon, CentherIcon, LockVector } from "@/assets/svgs";
 import { getUTCNow } from "@/web3/utils/utils";
 import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
 import { BlockchainConfig } from "@/web3/blockchain/config";
 import { useWallet } from "@/web3/hooks/use.wallet";
-import { NFTLockedDetailsProps } from "@/lib/get-user-by-id";
 import { LockedNftModal } from "../modal/locked.nft.modal";
 import Button from "../button";
+import { NFTImageCardData } from "./types";
 
-export interface NFTCardProps {
-  data: NFTLockedDetailsProps;
+export interface NFTImageCardProps {
+  data: NFTImageCardData;
 }
 
-export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
+export const NFTImageCard: React.FC<NFTImageCardProps> = ({ data }) => {
   const router = useRouter();
   const { getSigner, connectedAddress } = useWallet();
-  const locked = Number(data.unlock) * 1000 - getUTCNow() > 0 ? true : false;
-  const auction = Number(data.endTime) * 1000 - getUTCNow() > 0 ? true : false;
+  const locked = Number(data.unlock) * 1000 - getUTCNow() > 0;
+  const auction = Number(data.endTime) * 1000 - getUTCNow() > 0;
   const internal = !data.external;
 
-  const [name, setName] = useState();
-  const [nftType, setNftType] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
-  const [videoThumbnail, setVideoThumbnail] = useState("");
-  const [description, setDescription] = useState();
+  const [imageUrl, setImageUrl] = useState(data.ipfs_metadata.image);
   const [swapedBefore, setSwapedBefore] = useState(false);
   const [swapIsLoading, setSwapIsLoading] = useState("loaded");
   const [showLockedDetails, setShowLockedDetails] = useState(false);
@@ -52,44 +46,22 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
   });
 
   useEffect(() => {
-    const fetchMetadata = async (ipfs: string) => {
-      try {
-        const formattedUrl = formatIPFSUrl(ipfs);
-        const _metadata = await axios.get(formattedUrl);
-        if (_metadata.data.type.includes("video")) {
-          if (!_metadata.data.videoThumbnail) {
-            setImageUrl("/images/placeholder-square.svg");
-            return;
-          }
-          const formattedUrl = formatIPFSUrl(_metadata.data.videoThumbnail);
-          setVideoThumbnail(formattedUrl);
-        }
-        const imgUrl = formatIPFSUrl(_metadata.data.image);
-        setImageUrl(imgUrl);
-        setName(_metadata.data.name);
-        setNftType(_metadata.data.type);
-        setDescription(_metadata.data.description);
-      } catch (error) {
-        setImageUrl("/images/placeholder-square.svg");
+    const setSwapHistory = async () => {
+      if (data && getSigner()) {
+        const isSwaped = await BlockchainRead.isTokenSwaped(
+          getSigner()!,
+          data.collection,
+          +data.tokenId
+        );
+        setSwapedBefore(isSwaped);
       }
     };
 
-    const setSwapHistory = async () => {
-      const isSwaped = await BlockchainRead.isTokenSwaped(
-        getSigner()!,
-        data.collection,
-        data.tokenId
-      );
-      setSwapedBefore(isSwaped);
-    };
-    if (data && data.ipfs && getSigner()) {
-      fetchMetadata(data.ipfs);
-      setSwapHistory();
-    }
+    setSwapHistory();
   }, [data, getSigner]);
 
   useEffect(() => {
-    if (data.endTime === 0) {
+    if (+data.endTime === 0) {
       setAuctionTimer({
         days: 0,
         hours: 0,
@@ -199,7 +171,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
       await BlockchainWrite.swapDexagon(
         getSigner()!,
         data.collection,
-        data.tokenId
+        +data.tokenId
       );
       setShowSwapingDetails(false);
       toast.success("Swapped successfully");
@@ -230,13 +202,14 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
           {imageUrl ? (
             <Image
               src={
-                nftType.includes("audio")
+                data.ipfs_metadata.type.includes("audio")
                   ? "/images/default-music.png"
-                  : nftType.includes("video")
-                  ? videoThumbnail
+                  : data.ipfs_metadata.type.includes("video") &&
+                    data.ipfs_metadata.videoThumbnail
+                  ? data.ipfs_metadata.videoThumbnail
                   : imageUrl
               }
-              alt="nft"
+              alt={data.ipfs_metadata.name}
               height={275}
               width={275}
               className="absolute inset-0 h-full w-full rounded-xl object-cover"
@@ -379,7 +352,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
               />
               <div className="flex w-full flex-col gap-2 fsm:max-w-[280px] fmd:gap-4">
                 <h5 className="word-break text-center text-base font-semibold text-white fsm:text-left f2xl:text-lg">
-                  {name}
+                  {data.ipfs_metadata.name}
                 </h5>
                 <div className="my-2 h-[56px] w-full overflow-hidden rounded-xl border border-gray-shade-3 bg-[url('/images/backcolouredshadow.png')] bg-center bg-no-repeat p-[2px] fmd:mt-0">
                   <div className="bg-[rgba(20, 20, 22, 0.08)] flex  h-full w-full items-center justify-evenly gap-5 overflow-hidden px-4 py-2 text-xs text-white backdrop-blur-[20px] fsm:m-0 fmd:mb-0 fmd:text-left">
@@ -424,7 +397,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
             </div>
             {/* description */}
             <div className="mt-6 flex w-full flex-col items-start gap-6">
-              {data.creator?.display_name && (
+              {data.creator_data?.display_name && (
                 <div className="flex min-w-fit items-center justify-center gap-3">
                   <div className="min-h-[32px] min-w-[32px] rounded-full bg-gradient-to-r from-[#70A2FF] to-[#F76E64]"></div>
                   <div className="flex flex-col gap-1">
@@ -433,12 +406,12 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
                     </h5>
 
                     <h5 className="word-break text-sm font-semibold text-white">
-                      {data.creator.display_name}
+                      {data.creator_data.display_name}
                     </h5>
                   </div>
                 </div>
               )}
-              {data.owner?.display_name && (
+              {data.owner_data?.display_name && (
                 <div className="flex min-w-fit items-center justify-center gap-3">
                   <div className="min-h-[32px] min-w-[32px] rounded-full bg-gradient-to-r from-[#70A2FF] to-[#54F0D1]"></div>
                   <div className="flex flex-col gap-1">
@@ -446,7 +419,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
                       Owner
                     </h5>
                     <h5 className="word-break text-sm font-semibold text-white">
-                      {data.owner.display_name}
+                      {data.owner_data.display_name}
                     </h5>
                   </div>
                 </div>
@@ -458,7 +431,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
                   Description
                 </h5>
                 <h6 className="text-sm font-semibold text-white">
-                  {description}
+                  {data.ipfs_metadata.description}
                 </h6>
               </div>
               <div className="flex flex-col gap-2">
@@ -521,13 +494,13 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
               />
               <div className="flex w-full flex-col gap-2 fsm:max-w-[280px] fmd:gap-4">
                 <h5 className="word-break text-center text-base font-semibold text-white fsm:text-left f2xl:text-lg">
-                  {name}
+                  {data.ipfs_metadata.name}
                 </h5>
               </div>
             </div>
             {/* description */}
             <div className="mt-6 flex w-full flex-col items-start gap-6">
-              {data.creator?.display_name && (
+              {data.creator_data?.display_name && (
                 <div className="flex min-w-fit items-center justify-center gap-3">
                   <div className="min-h-[32px] min-w-[32px] rounded-full bg-gradient-to-r from-[#70A2FF] to-[#F76E64]"></div>
                   <div className="flex flex-col gap-1">
@@ -536,12 +509,12 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
                     </h5>
 
                     <h5 className="word-break text-sm font-semibold text-white">
-                      {data.creator.display_name}
+                      {data.creator_data.display_name}
                     </h5>
                   </div>
                 </div>
               )}
-              {data.owner?.display_name && (
+              {data.owner_data?.display_name && (
                 <div className="flex min-w-fit items-center justify-center gap-3">
                   <div className="min-h-[32px] min-w-[32px] rounded-full bg-gradient-to-r from-[#70A2FF] to-[#54F0D1]"></div>
                   <div className="flex flex-col gap-1">
@@ -549,7 +522,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
                       Owner
                     </h5>
                     <h5 className="word-break text-sm font-semibold text-white">
-                      {data.owner.display_name}
+                      {data.owner_data.display_name}
                     </h5>
                   </div>
                 </div>
@@ -561,7 +534,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
                   Description
                 </h5>
                 <h6 className="text-sm font-semibold text-white">
-                  {description}
+                  {data.ipfs_metadata.description}
                 </h6>
               </div>
               <div className="flex flex-col gap-2">
@@ -590,7 +563,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
               </div>
             </div>
             {connectedAddress?.toLowerCase() ==
-              data.owner?._id?.toLowerCase() &&
+              data.owner_data?._id?.toLowerCase() &&
               swapedBefore == false &&
               (swapIsLoading == "loading" ? (
                 <button className="mt-6 flex h-11 w-full items-center justify-center gap-3 rounded-lg bg-background-shade-2 px-2 py-[10px] text-sm font-semibold text-gray-shade-7">
@@ -625,13 +598,13 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
               />
               <div className="flex w-full flex-col gap-2 fsm:max-w-[280px] fmd:gap-4">
                 <h5 className="word-break text-center text-base font-semibold text-white fsm:text-left f2xl:text-lg">
-                  {name}
+                  {data.ipfs_metadata.name}
                 </h5>
               </div>
             </div>
             {/* description */}
             <div className="mt-6 flex w-full flex-col items-start gap-6">
-              {data.creator?.display_name && (
+              {data.creator_data?.display_name && (
                 <div className="flex min-w-fit items-center justify-center gap-3">
                   <div className="min-h-[32px] min-w-[32px] rounded-full bg-gradient-to-r from-[#70A2FF] to-[#F76E64]"></div>
                   <div className="flex flex-col gap-1">
@@ -640,12 +613,12 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
                     </h5>
 
                     <h5 className="word-break text-sm font-semibold text-white">
-                      {data.creator.display_name}
+                      {data.creator_data.display_name}
                     </h5>
                   </div>
                 </div>
               )}
-              {data.owner?.display_name && (
+              {data.owner_data?.display_name && (
                 <div className="flex min-w-fit items-center justify-center gap-3">
                   <div className="min-h-[32px] min-w-[32px] rounded-full bg-gradient-to-r from-[#70A2FF] to-[#54F0D1]"></div>
                   <div className="flex flex-col gap-1">
@@ -653,7 +626,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
                       Owner
                     </h5>
                     <h5 className="word-break text-sm font-semibold text-white">
-                      {data.owner.display_name}
+                      {data.owner_data.display_name}
                     </h5>
                   </div>
                 </div>
@@ -665,7 +638,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
                   Description
                 </h5>
                 <h6 className="text-sm font-semibold text-white">
-                  {description}
+                  {data.ipfs_metadata.description}
                 </h6>
               </div>
               <div className="flex flex-col gap-2">

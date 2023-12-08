@@ -10,7 +10,7 @@ export const formatAddress = (address: string | undefined) => {
     : "";
 };
 
-export const formatEther2Number = (num: number | undefined) => {
+export const formatEther2Number = (num: number | string | undefined) => {
   return Number(num ? ethers.utils.formatEther(`${num}`) : 0);
 };
 
@@ -18,7 +18,10 @@ export const formatString2Ether = (num: string | undefined) => {
   return Number(num ? ethers.utils.formatEther(`${num}`) : 0);
 };
 
-export const formatBNB2USD = (bnb: number | undefined, bnbPrice: number) => {
+export const formatBNB2USD = (
+  bnb: number | string | undefined,
+  bnbPrice: number
+) => {
   return bnb ? Number((formatEther2Number(bnb) * bnbPrice).toFixed(5)) : 0;
 };
 

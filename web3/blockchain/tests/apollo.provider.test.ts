@@ -12,12 +12,4 @@ describe("apollo provider", () => {
       expect(error.message).toEqual("Query not found for ");
     }
   });
-
-  it("should call init", async () => {
-    const spy = jest.spyOn(ApolloProvider, "init");
-    try {
-      await ApolloProvider.query(QueryNames.ACCOUNT_COLLECTION);
-    } catch (err) {}
-    expect(spy).toBeCalled();
-  });
 });

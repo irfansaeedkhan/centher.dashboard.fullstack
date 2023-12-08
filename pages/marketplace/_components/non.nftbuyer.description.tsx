@@ -5,32 +5,32 @@ import clsx from "clsx";
 import { IModalProps } from "@/components/modal/standard.modal";
 import { AuctionIcon, BNBIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
-import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
 import SuccessMessageModal from "@/utils/modal/success-modal";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
-
 import Button from "@/components/button";
 import { useWallet } from "@/web3/hooks/use.wallet";
 import TrxInProgressModal from "@/utils/modal/trx-modal";
+import { CFSNFTForPage } from "@/lib/get-single-nft-page-data/types";
 
-interface NonNFTBuyerDescriptionProps {
-  data: INFTDetailData | undefined;
-  setNftData: () => void;
-}
 enum ModalType {
   buyNFTStep1FuncModal = "buyNFTStep1FuncModal",
   proceedFuncModal = "proceedFuncModal",
   successFuncModal = "successFuncModal",
 }
 
-export const NonNFTBuyerDescription = ({
-  data,
-  setNftData,
-}: NonNFTBuyerDescriptionProps) => {
+interface Props {
+  nft: CFSNFTForPage;
+  refetchNFT: () => void;
+}
+
+export const NonNFTBuyerDescription: React.FC<Props> = ({
+  nft,
+  refetchNFT,
+}) => {
   const { getSigner } = useWallet();
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
@@ -41,19 +41,16 @@ export const NonNFTBuyerDescription = ({
   const [hours, setHours] = useState<number>(0);
   const [minutes, setMinutes] = useState<number>(0);
   const [seconds, setSeconds] = useState<number>(0);
-  const [nowTime, setNowTime] = useState(new Date());
-  const [endTime, setEndTime] = useState(new Date());
   const [isMigrated, setIsMigrated] = useState(false);
-  const [end, setEnd] = useState(true);
   const bnbPrice = useBNBPrice();
 
   useEffect(() => {
     const CheckStatus = async () => {
-      if (data?.saleState === "List") {
+      if (nft.saleState === "List") {
         const Status = await BlockchainRead.isCurrentMarketplaceOwner(
-          getSigner()!,
-          data.collection,
-          data.nftId
+          getSigner()!, // FIXME: how are sure that getSigner() is not null?
+          nft.collection,
+          +nft.tokenId
         );
         setIsMigrated(Status);
       }
@@ -61,73 +58,74 @@ export const NonNFTBuyerDescription = ({
 
     CheckStatus();
 
-    if (data) {
-      var endtime = new Date(data?.unlock * 1000);
-      var now = new Date();
-      setNowTime(now);
-      setEndTime(endtime);
+    var updateTime = setInterval(() => {
+      var now = new Date().getTime();
 
-      var updateTime = setInterval(() => {
-        var now = new Date().getTime();
+      var difference = +nft.unlock * 1000 - now;
 
-        var difference = data.unlock * 1000 - now;
+      var newDays = Math.floor(difference / (1000 * 60 * 60 * 24));
+      var newHours = Math.floor(
+        (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+      );
+      var newMinutes = Math.floor(
+        (difference % (1000 * 60 * 60)) / (1000 * 60)
+      );
+      var newSeconds = Math.floor((difference % (1000 * 60)) / 1000);
 
-        var newDays = Math.floor(difference / (1000 * 60 * 60 * 24));
-        var newHours = Math.floor(
-          (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-        );
-        var newMinutes = Math.floor(
-          (difference % (1000 * 60 * 60)) / (1000 * 60)
-        );
-        var newSeconds = Math.floor((difference % (1000 * 60)) / 1000);
+      setDays(newDays);
+      setHours(newHours);
+      setMinutes(newMinutes);
+      setSeconds(newSeconds);
 
-        setDays(newDays);
-        setHours(newHours);
-        setMinutes(newMinutes);
-        setSeconds(newSeconds);
-
-        if (difference <= 0) {
-          clearInterval(updateTime);
-          setDays(0);
-          setHours(0);
-          setMinutes(0);
-          setSeconds(0);
-          setEnd(true);
-        } else {
-          setEnd(false);
-        }
-      });
-    }
+      if (difference <= 0) {
+        clearInterval(updateTime);
+        setDays(0);
+        setHours(0);
+        setMinutes(0);
+        setSeconds(0);
+      }
+    });
 
     return () => {
       clearInterval(updateTime);
     };
-  }, [getSigner, data]);
+  }, [getSigner, nft]);
 
   const buyNFTStep1Func = () => {
+    const signer = getSigner();
+    if (!signer) {
+      toast.error("Connect your wallet");
+      return;
+    }
     try {
-      validateProvider();
       modal.dismissModal();
       modal.createModal(ModalType.buyNFTStep1FuncModal);
     } catch (err: any) {
-      toastError("Something went wrong");
+      toast.error("Something went wrong");
     }
   };
+
   const handleBuyNFT = async () => {
+    const signer = getSigner();
+    if (!signer) {
+      toast.error("Connect your wallet");
+      return;
+    }
+
     ProceedFunc();
-    let response = { success: false, message: "" };
+
+    const response = { success: false, message: "" };
+
     try {
-      const signer = getSigner();
-      if (!signer || !data) throw new Error("invalid dependencies");
       const result = await BlockchainWrite.callBuyListedItem(
-        signer!,
-        data.collection,
-        data.nftId,
-        data.listInfo.price
+        signer,
+        nft.collection,
+        +nft.tokenId,
+        +nft.listInfo.price
       );
 
       if (!!result) {
-        setNftData();
+        refetchNFT();
         response.success = true;
         response.message = "Congratulations! You have successfully bought the ";
       } else throw new Error();
@@ -138,27 +136,32 @@ export const NonNFTBuyerDescription = ({
       SuccessFunc(response.success, response.message);
     }
   };
+
   const ProceedFunc = () => {
     modal.dismissModal();
     modal.createModal(ModalType.proceedFuncModal);
   };
+
   const SuccessFunc = (txStatus: boolean, msg: string) => {
     try {
       modal.dismissModal();
       modal.createModal(ModalType.successFuncModal, { txStatus, msg });
     } catch (err: any) {
-      !txStatus && toastError("Something went wrong");
+      !txStatus && toast.error("Something went wrong");
     }
   };
 
   const modalTemplateCollection: TemplateCollection = {
+    // FIXME: Why everything is hardcoded in this modal?
     buyNFTStep1FuncModal: {
       title: "Complete Checkout",
       visibility: true,
       content: () => (
-        <div className={modalBodyWrapper}>
+        <div
+          className={`flex w-full flex-col gap-4 border-t-2 border-gray-shade-3 p-5 text-center`}
+        >
           <Image
-            className={ImgStyling}
+            className={`mx-auto h-[64px] w-[64px] rounded-2xl object-contain`}
             src={"/images/nftAsset.png"}
             alt="image"
             height={64}
@@ -173,7 +176,7 @@ export const NonNFTBuyerDescription = ({
             <BNBIcon />
             89.08 BNB <span className="text-gray-shade-2 "> =$24190.19</span>
           </h6>
-          <div className={footerBtnContainer}>
+          <div className={`mt-3 flex items-center gap-4`}>
             <Button
               title={"Checkout"}
               variant="primary"
@@ -201,7 +204,10 @@ export const NonNFTBuyerDescription = ({
           }
           subHeading={
             <p className="text-sm font-normal leading-6 text-gray-shade-2">
-              {msg} <span className="word-break text-white">{data?.name}</span>{" "}
+              {msg}{" "}
+              <span className="word-break text-white">
+                {nft.ipfs_metadata.name}
+              </span>{" "}
               NFT on <b>Centher</b>
               platform.
             </p>
@@ -217,16 +223,9 @@ export const NonNFTBuyerDescription = ({
       ),
     },
   };
+
   const modal = new ModalManager(setModalModel, modalTemplateCollection);
 
-  function validateProvider(): void {
-    if (!getSigner()) {
-      throw new Error("Connect your wallet");
-    }
-  }
-  function toastError(err: any): void {
-    toast.error(err?.message ? err.message : err);
-  }
   useEffect(() => {
     if (ModalModel.visibility) {
       document.body.classList.add("modal-open");
@@ -239,17 +238,17 @@ export const NonNFTBuyerDescription = ({
   }, [ModalModel.visibility]);
 
   return (
-    <div className={nftDescriptionContainer}>
+    <div className={`flex w-full flex-col gap-5`}>
       <div className={greyBoxContainer}>
         <h4 className={greyTxt}>Current Price</h4>
         <div className="flex items-center  gap-3">
           <BNBIcon />
-          <h5 className={BnBNum}>
-            {`${normalizeValue(formatEther2Number(data?.listInfo.price))} BNB`}
+          <h5 className={`text-base font-bold text-white`}>
+            {`${normalizeValue(formatEther2Number(nft.listInfo.price))} BNB`}
           </h5>
           <h6 className={greyTxt}>
             {" "}
-            =${formatBNB2USD(data?.listInfo.price, bnbPrice)}
+            =${formatBNB2USD(nft.listInfo.price, bnbPrice)}
           </h6>
         </div>
       </div>
@@ -258,16 +257,16 @@ export const NonNFTBuyerDescription = ({
         <p
           className={clsx(greyTxt, `word-break whitespace-pre-wrap leading-6`)}
         >
-          {data?.description}
+          {nft.ipfs_metadata.description}
         </p>
       </div>
 
-      {data!.unlock < +new Date() / 1000 ? (
+      {+nft.unlock < +new Date() / 1000 ? (
         <div className="buttonContainer flex items-center">
           <Button
             title={"Buy Now"}
-            variant={data?.saleState === "NON" ? "primary" : "secondary"}
-            disabled={data?.saleState === "NON" || isMigrated}
+            variant={nft.saleState === "NON" ? "primary" : "secondary"}
+            disabled={nft.saleState === "NON" || isMigrated}
             onClick={buyNFTStep1Func}
             className="w-full"
           />
@@ -275,7 +274,9 @@ export const NonNFTBuyerDescription = ({
       ) : (
         <div className={greyBoxContainer}>
           <h4 className={desTitle}>Description</h4>
-          <p className={`${greyTxt} leading-6`}>{data?.description}</p>
+          <p className={`${greyTxt} leading-6`}>
+            {nft.ipfs_metadata.description}
+          </p>
 
           <div className="auctionTimerBox relative flex flex-row gap-3 overflow-hidden rounded-10px border-2 border-gray-shade-3 [@media(max-width:600px)]:!flex-col">
             <div className="iconBox flex min-w-[170px] flex-col items-center gap-3 bg-background-shade-2 p-6 text-center">
@@ -337,29 +338,7 @@ export const NonNFTBuyerDescription = ({
     </div>
   );
 };
-// styling
-const modalBodyWrapper = `
-  flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 text-center
-`;
-const footerBtnContainer = `
-flex items-center gap-4 mt-3
-`;
-const ImgStyling = `
-w-[64px] h-[64px]  rounded-2xl object-contain mx-auto
-`;
-const nftDescriptionContainer = `
-w-full flex flex-col gap-5
-`;
 
-const greyBoxContainer = `
-bg-background-shade-3 rounded-10px flex flex-col gap-2 p-6
-`;
-const greyTxt = `
-text-sm font-normal text-gray-shade-7
-`;
-const desTitle = `
-text-sm font-semibold text-white
-`;
-const BnBNum = `
-text-base font-bold text-white
-`;
+const greyBoxContainer = `bg-background-shade-3 rounded-10px flex flex-col gap-2 p-6`;
+const greyTxt = `text-sm font-normal text-gray-shade-7`;
+const desTitle = `text-sm font-semibold text-white`;

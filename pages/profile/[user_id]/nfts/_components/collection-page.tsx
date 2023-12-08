@@ -1,39 +1,32 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 import clsx from "clsx";
 import { HotNftEmptyIcon } from "@/assets/svgs";
 import { NFTCollectionImageCard } from "@/components/nft.collection.image.card";
-import { Collection } from "@/models/nft";
 import { useProfileNFTStore } from "@/store/profile.nft.store";
 import { LoadingStatus } from "@/utils/enums/loading.status.enum";
 import useGetUser from "@/hooks/use.get.user";
 import { AppRoutes } from "@/constants/app.routes";
 
+// FIXME: No Pagination on this page?
 const CollectionPage = () => {
   const router = useRouter();
-  const account = useMemo(() => {
+  const userId = useMemo(() => {
     return router.query.user_id as string;
   }, [router.query.user_id]);
-  const { user } = useGetUser(account);
+  const { user } = useGetUser(userId);
   const { collections, fetchCollections, loadingCollections } =
     useProfileNFTStore((state) => ({
       collections: state.collections,
       fetchCollections: state.fetchCollections,
       loadingCollections: state.loadingCollections,
     }));
-  const [displayNFTs, setDisplayNFTs] = useState<Collection[]>([]);
 
   useEffect(() => {
-    if (account) {
-      fetchCollections(account);
+    if (userId) {
+      fetchCollections(userId);
     }
-  }, [account, fetchCollections]);
-
-  useEffect(() => {
-    if (loadingCollections == LoadingStatus.loaded && collections?.length) {
-      setDisplayNFTs([...collections]);
-    }
-  }, [loadingCollections, collections]);
+  }, [userId, fetchCollections]);
 
   useEffect(() => {
     if (user && user?.membership.status !== "citizen") {
@@ -47,9 +40,9 @@ const CollectionPage = () => {
 
   return (
     <>
-      {loadingCollections == LoadingStatus.loaded && displayNFTs?.length ? (
+      {loadingCollections == LoadingStatus.loaded && !!collections.length ? (
         <div className={clsx(`grid grid-cols-[1fr,1fr,1fr] gap-2`)}>
-          {displayNFTs.map((collection) => (
+          {collections.map((collection) => (
             <NFTCollectionImageCard data={collection} key={collection.id} />
           ))}
         </div>
@@ -60,7 +53,7 @@ const CollectionPage = () => {
       )}
       {loadingCollections == LoadingStatus.loaded &&
         collections &&
-        !collections?.length && (
+        !collections.length && (
           <>
             <div className="flex items-center justify-center text-white">
               <HotNftEmptyIcon />

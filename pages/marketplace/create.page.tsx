@@ -265,7 +265,7 @@ const CreateNFT: NextPageWithLayout = () => {
     };
   }, [ModalModel.visibility]);
 
-  return (
+  return user ? (
     <div className="w-full pb-16">
       <h1 className={title}>Create an NFT</h1>
       <div className="flex items-start gap-9 [@media(max-width:1279px)]:flex-col">
@@ -279,6 +279,7 @@ const CreateNFT: NextPageWithLayout = () => {
           setClearForm={setClearForm}
         />
         <CreateNFTForm
+          user={user}
           library={getSigner()!}
           createNFT={createNFT}
           clearForm={clearForm}
@@ -299,7 +300,7 @@ const CreateNFT: NextPageWithLayout = () => {
         </CustomModal>
       )}
     </div>
-  );
+  ) : null;
 };
 
 CreateNFT.getLayout = (page: any) => {
@@ -314,7 +315,6 @@ CreateNFT.getLayout = (page: any) => {
 
 export default CreateNFT;
 
-// styling
 const dashboardContentContainer = `bg-black-shade-3 w-full h-full font-monto [@media(max-width:1279px)]:max-w-[544px] max-w-[1160px] mx-auto relative`;
 const title = `textGradient font-semibold leading-[42px] pb-6 lg:text-[34px] text-2xl`;
 const feedContainer = `flex flex-col lg:flex-row gap-5 lg:items-start`;

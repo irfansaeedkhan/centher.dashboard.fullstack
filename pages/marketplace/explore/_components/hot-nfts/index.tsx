@@ -3,7 +3,6 @@ import clsx from "clsx";
 import { SectionTitle } from "@/pages/marketplace/_components";
 import NFTsSkeleton from "@/components/loading.skeletons/nfts";
 import { NFTCard } from "@/components/nft.card";
-import { AppRoutes } from "@/constants/app.routes";
 import { HotNftEmptyIcon } from "@/assets/svgs";
 import { useHotNFTs } from "./use-hot-nfts";
 
@@ -12,11 +11,7 @@ export const HotNFTs: React.FC = () => {
 
   return (
     <div className={`mx-auto max-w-screen-2xl space-y-4 fsm:space-y-6`}>
-      <SectionTitle
-        title={"Hot NFTs"}
-        showViewAll={true}
-        href={AppRoutes.marketplace.nfts}
-      />
+      <SectionTitle title={"Hot NFTs"} showViewAll={false} />
 
       <div
         className={clsx(

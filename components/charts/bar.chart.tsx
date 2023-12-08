@@ -16,7 +16,6 @@ import {
   getElementAtEvent,
   getElementsAtEvent,
 } from "react-chartjs-2";
-import { IListHistory } from "@/hooks/use.get.nft.data.ts";
 
 ChartJS.register(
   CategoryScale,
@@ -56,9 +55,6 @@ export const data = {
     },
   ],
 };
-interface BarChartPros {
-  history: IListHistory[] | undefined;
-}
 
 // export const BarChart = ({ history }: BarChartPros) => {
 export const BarChart = () => {
