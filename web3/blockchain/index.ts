@@ -1,7 +1,7 @@
 import { QueryNames } from "./enum/query.names.enum";
 import { ApolloProvider } from "./providers/apollo.provider";
 import { BigNumber, ethers } from "ethers";
-import { parseEther } from "ethers/lib/utils";
+import { parseEther, parseUnits } from "ethers/lib/utils";
 import { JsonRpcSigner, Web3Provider } from "@ethersproject/providers";
 import { CitizenShipType } from "@/store/citizen.store";
 import { InsufficientFundError } from "@/staking/errors/params.error";
@@ -9,6 +9,7 @@ import {
   AddAffiliateSettingsInput,
   MappedCreatePoolInput,
 } from "@/staking/types";
+
 import {
   ClaimCentherFrom,
   SignerOrProvider,
@@ -22,6 +23,7 @@ import { getSigner, simpleRpcProvider } from "./helpers/provider.helper";
 import { normalizeValue } from "./helpers/math.helper";
 import { AddressFactory } from "./providers/address.provider";
 import { BlockchainConfig } from "./config";
+import { MappedCreateLaunchpadInput } from "@/launchpad/types.ts";
 
 export class BlockchainRead {
   static async isContractAddress(
@@ -2278,6 +2280,34 @@ export class BlockchainWrite {
       return tx.hash;
     } catch (error: any) {
       logger(error, "adminChangeCoreTeamAddress");
+      throw error;
+    }
+  }
+
+  static async createLaunchpad(
+    signer: JsonRpcSigner,
+    data: MappedCreateLaunchpadInput
+    // preflight: boolean
+  ): Promise<string> {
+    try {
+      const launchpadContract = SmartContractProvider.getContract(
+        SmartContractName.LAUNCHPAD,
+        signer
+      );
+
+      await launchpadContract.callStatic.createPresale(data, {
+        value: parseUnits("0.001", "ether"),
+      });
+
+      let tx = await launchpadContract.functions.createPresale(data, {
+        value: parseUnits("0.001", "ether"),
+      });
+
+      await tx.wait();
+
+      return "Done";
+    } catch (error: any) {
+      logger(error, "createLaunchpad");
       throw error;
     }
   }

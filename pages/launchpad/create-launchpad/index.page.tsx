@@ -15,7 +15,7 @@ import {
 
 const CreateLaunchpad: NextPageWithLayout = () => {
   const [formState, setFormState] = useState<FormState>({
-    current_round: "finish",
+    current_round: "verify_token",
     verify_token: {
       token_address: "",
       sale_rounds: 1,
@@ -109,6 +109,10 @@ const CreateLaunchpad: NextPageWithLayout = () => {
           // }
           className="mx-auto mt-6 w-full max-w-[496px]"
           onClick={() => {
+            // if (formState.current_round === "finish") {
+            //   //calling
+            // }
+
             setFormState((prev) => {
               return {
                 ...prev,
