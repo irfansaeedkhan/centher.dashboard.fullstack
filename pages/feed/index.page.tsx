@@ -195,13 +195,6 @@ const Feed: NextPageWithLayout = () => {
             {(index + 1) / 16 === 1 && (
               <div className="block f2xl:hidden">
                 <AdsWrapper>
-                  <PromotionCard9Mobile />
-                </AdsWrapper>
-              </div>
-            )}
-            {(index + 1) / 18 === 1 && (
-              <div className="block f2xl:hidden">
-                <AdsWrapper>
                   <PromotionCard3Mobile />
                 </AdsWrapper>
               </div>
@@ -261,11 +254,6 @@ const Feed: NextPageWithLayout = () => {
           <div className={`mt-4 flex f2xl:hidden`}>
             <AdsWrapper>
               <PromotionCard6Mobile />
-            </AdsWrapper>
-          </div>
-          <div className={`mt-4 flex f2xl:hidden`}>
-            <AdsWrapper>
-              <PromotionCard9Mobile />
             </AdsWrapper>
           </div>
           <div className={`mt-4 flex f2xl:hidden`}>

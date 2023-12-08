@@ -208,13 +208,6 @@ const Profile: NextPageWithLayout = () => {
             {(index + 1) / 16 === 1 && (
               <div className="block f2xl:hidden">
                 <AdsWrapper>
-                  <PromotionCard9Mobile />
-                </AdsWrapper>
-              </div>
-            )}
-            {(index + 1) / 18 === 1 && (
-              <div className="block f2xl:hidden">
-                <AdsWrapper>
                   <PromotionCard3Mobile />
                 </AdsWrapper>
               </div>
@@ -275,11 +268,6 @@ const Profile: NextPageWithLayout = () => {
           <div className={`mt-4 flex f2xl:hidden`}>
             <AdsWrapper>
               <PromotionCard8Mobile />
-            </AdsWrapper>
-          </div>
-          <div className={`mt-4 flex f2xl:hidden`}>
-            <AdsWrapper>
-              <PromotionCard9Mobile />
             </AdsWrapper>
           </div>
           <div className={`mt-4 flex f2xl:hidden`}>
