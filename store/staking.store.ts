@@ -19,7 +19,10 @@ export const useCentherStaking = create<CentherStakingStore>()(
       sdk: null,
       setSdk: (sdk: CentherStaking) => set({ sdk }),
     }),
-    { name: "CentherStakingStore" }
+    {
+      name: "CentherStakingStore",
+      enabled: process.env.NEXT_PUBLIC_APP_ENV !== "production",
+    }
   )
 );
 

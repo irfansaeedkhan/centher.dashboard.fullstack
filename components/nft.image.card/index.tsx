@@ -11,6 +11,7 @@ import { getUTCNow } from "@/web3/utils/utils";
 import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
 import { BlockchainConfig } from "@/web3/blockchain/config";
 import { useWallet } from "@/web3/hooks/use.wallet";
+import { useNFTImageSrc } from "@/hooks/use-nft-image-src";
 import { LockedNftModal } from "../modal/locked.nft.modal";
 import Button from "../button";
 import { NFTImageCardData } from "./types";
@@ -26,7 +27,8 @@ export const NFTImageCard: React.FC<NFTImageCardProps> = ({ data }) => {
   const auction = Number(data.endTime) * 1000 - getUTCNow() > 0;
   const internal = !data.external;
 
-  const [imageUrl, setImageUrl] = useState(data.ipfs_metadata.image);
+  const { nftImageSrc, setNftImageSrc, DEFAULT_NFT_IMAGE_SRC } =
+    useNFTImageSrc(data);
   const [swapedBefore, setSwapedBefore] = useState(false);
   const [swapIsLoading, setSwapIsLoading] = useState("loaded");
   const [showLockedDetails, setShowLockedDetails] = useState(false);
@@ -199,25 +201,15 @@ export const NFTImageCard: React.FC<NFTImageCardProps> = ({ data }) => {
             locked && "pointer-events-none"
           )}
         >
-          {imageUrl ? (
-            <Image
-              src={
-                data.ipfs_metadata.type.includes("audio")
-                  ? "/images/default-music.png"
-                  : data.ipfs_metadata.type.includes("video") &&
-                    data.ipfs_metadata.videoThumbnail
-                  ? data.ipfs_metadata.videoThumbnail
-                  : imageUrl
-              }
-              alt={data.ipfs_metadata.name}
-              height={275}
-              width={275}
-              className="absolute inset-0 h-full w-full rounded-xl object-cover"
-              onError={() => setImageUrl("/images/placeholder-square.svg")}
-            />
-          ) : (
-            <div className="absolute inset-0 h-full w-full animate-pulse rounded-xl bg-[#3C3F4A] object-cover"></div>
-          )}
+          <Image
+            src={nftImageSrc}
+            alt={data.ipfs_metadata.name}
+            height={275}
+            width={275}
+            className="absolute inset-0 h-full w-full rounded-xl object-cover"
+            onError={() => setNftImageSrc(DEFAULT_NFT_IMAGE_SRC)}
+          />
+
           {internal && (
             <div
               className={`absolute left-3 top-3 hidden h-[28px] w-[86px] items-center justify-center rounded-md bg-black/20 text-[10px] text-white backdrop-blur-[20px] fsm:flex`}
@@ -344,11 +336,12 @@ export const NFTImageCard: React.FC<NFTImageCardProps> = ({ data }) => {
             {/* head */}
             <div className="flex flex-col items-center gap-4 fsm:flex-row">
               <Image
-                src={imageUrl}
+                src={nftImageSrc}
                 alt={"locknft"}
                 height={120}
                 width={120}
                 className="h-[120px] w-[120px] rounded-xl object-cover"
+                onError={() => setNftImageSrc(DEFAULT_NFT_IMAGE_SRC)}
               />
               <div className="flex w-full flex-col gap-2 fsm:max-w-[280px] fmd:gap-4">
                 <h5 className="word-break text-center text-base font-semibold text-white fsm:text-left f2xl:text-lg">
@@ -486,11 +479,12 @@ export const NFTImageCard: React.FC<NFTImageCardProps> = ({ data }) => {
             {/* head */}
             <div className="flex flex-col items-center gap-4 fsm:flex-row">
               <Image
-                src={imageUrl}
+                src={nftImageSrc}
                 alt={"locknft"}
                 height={120}
                 width={120}
                 className="h-[120px] w-[120px] rounded-xl object-cover"
+                onError={() => setNftImageSrc(DEFAULT_NFT_IMAGE_SRC)}
               />
               <div className="flex w-full flex-col gap-2 fsm:max-w-[280px] fmd:gap-4">
                 <h5 className="word-break text-center text-base font-semibold text-white fsm:text-left f2xl:text-lg">
@@ -590,11 +584,12 @@ export const NFTImageCard: React.FC<NFTImageCardProps> = ({ data }) => {
             {/* head */}
             <div className="flex flex-col items-center gap-4 fsm:flex-row">
               <Image
-                src={imageUrl}
+                src={nftImageSrc}
                 alt={"locknft"}
                 height={120}
                 width={120}
                 className="h-[120px] w-[120px] rounded-xl object-cover"
+                onError={() => setNftImageSrc(DEFAULT_NFT_IMAGE_SRC)}
               />
               <div className="flex w-full flex-col gap-2 fsm:max-w-[280px] fmd:gap-4">
                 <h5 className="word-break text-center text-base font-semibold text-white fsm:text-left f2xl:text-lg">

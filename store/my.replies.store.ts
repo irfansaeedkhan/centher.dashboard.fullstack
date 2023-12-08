@@ -163,6 +163,9 @@ export const useMyRepliesStore = create<RepliesStore>()(
         }));
       },
     }),
-    { name: "RepliesStore" }
+    {
+      name: "RepliesStore",
+      enabled: process.env.NEXT_PUBLIC_APP_ENV !== "production",
+    }
   )
 );
