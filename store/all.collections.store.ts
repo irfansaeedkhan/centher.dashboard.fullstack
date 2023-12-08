@@ -64,6 +64,9 @@ export const useAllCollectionsStore = create<AllCollectionsStore>()(
         }
       },
     }),
-    { name: "AllCollectionsStore" }
+    {
+      name: "AllCollectionsStore",
+      enabled: process.env.NEXT_PUBLIC_APP_ENV !== "production",
+    }
   )
 );

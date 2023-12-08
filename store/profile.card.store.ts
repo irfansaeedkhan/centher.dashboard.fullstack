@@ -64,6 +64,9 @@ export const useProfileCardStore = create<ProfileCardStore>()(
           },
         })),
     }),
-    { name: "profileCardStore" }
+    {
+      name: "profileCardStore",
+      enabled: process.env.NEXT_PUBLIC_APP_ENV !== "production",
+    }
   )
 );

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { CFSCollection } from "@/models/nft";
@@ -9,7 +9,16 @@ export interface NFTCardProps {
 }
 
 export const NFTCollectionImageCard: React.FC<NFTCardProps> = ({ data }) => {
-  const [imageUrl, setImageUrl] = useState(data.ipfs_metadata.coverIPFSHash);
+  const DEFAULT_IMAGE_SRC = "/images/placeholder-square.svg";
+  const [imageSrc, setImageSrc] = useState(DEFAULT_IMAGE_SRC);
+
+  useEffect(() => {
+    if (data.ipfs_metadata.profileIPFSHash) {
+      setImageSrc(data.ipfs_metadata.profileIPFSHash);
+    } else {
+      setImageSrc(DEFAULT_IMAGE_SRC);
+    }
+  }, [data.ipfs_metadata.profileIPFSHash]);
 
   return (
     <div
@@ -25,12 +34,12 @@ export const NFTCollectionImageCard: React.FC<NFTCardProps> = ({ data }) => {
         className={`flex h-full w-full justify-center`}
       >
         <Image
-          src={imageUrl}
+          src={imageSrc}
           alt={data.name}
           height={275}
           width={275}
           className="absolute inset-0 h-full w-full rounded-xl object-cover"
-          onError={() => setImageUrl("/images/placeholder-square.svg")}
+          onError={() => setImageSrc(DEFAULT_IMAGE_SRC)}
         />
       </Link>
     </div>

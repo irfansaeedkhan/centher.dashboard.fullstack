@@ -68,6 +68,9 @@ export const useFollowingStore = create<FollowingStore>()(
         });
       },
     }),
-    { name: "FollowingStore" }
+    {
+      name: "FollowingStore",
+      enabled: process.env.NEXT_PUBLIC_APP_ENV !== "production",
+    }
   )
 );

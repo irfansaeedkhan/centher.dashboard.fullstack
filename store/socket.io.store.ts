@@ -13,6 +13,9 @@ export const useSocketIOStore = create<SocketIOStore>()(
       socket: null,
       setSocket: (socket: ReturnType<typeof io>) => set({ socket }),
     }),
-    { name: "SocketIOStore" }
+    {
+      name: "SocketIOStore",
+      enabled: process.env.NEXT_PUBLIC_APP_ENV !== "production",
+    }
   )
 );

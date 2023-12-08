@@ -54,6 +54,9 @@ export const useCountsStore = create<CountsStore>()(
         });
       },
     }),
-    { name: "CountsStore" }
+    {
+      name: "CountsStore",
+      enabled: process.env.NEXT_PUBLIC_APP_ENV !== "production",
+    }
   )
 );

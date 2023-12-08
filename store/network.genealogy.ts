@@ -152,7 +152,10 @@ export const useGenealogyStore = create<GenealogyStore>()(
         }
       },
     }),
-    { name: "GenealogyStore" }
+    {
+      name: "GenealogyStore",
+      enabled: process.env.NEXT_PUBLIC_APP_ENV !== "production",
+    }
   )
 );
 

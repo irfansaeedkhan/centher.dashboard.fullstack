@@ -123,7 +123,10 @@ export const useCitizenStore = create<CitizenStore>()(
         }
       },
     }),
-    { name: "CitizenStore" }
+    {
+      name: "CitizenStore",
+      enabled: process.env.NEXT_PUBLIC_APP_ENV !== "production",
+    }
   )
 );
 
