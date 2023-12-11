@@ -14,8 +14,15 @@ import {
   roundCardData,
 } from "./_components";
 import { ValidJSON, uploadMetadataToIPFS } from "@/lib/ipfs";
+import { BlockchainWrite } from "@/web3/blockchain";
+import { useWallet } from "@/web3/hooks/use.wallet";
 
 const CreateLaunchpad: NextPageWithLayout = () => {
+  const { getSigner, disconnectWallet, connectWallet, connectedAddress } =
+    useWallet();
+
+  const signer = getSigner();
+
   const [formState, setFormState] = useState<FormState>({
     current_round: "verify_token",
     verify_token: {
@@ -57,11 +64,45 @@ const CreateLaunchpad: NextPageWithLayout = () => {
         };
       }
 
-      await uploadMetadataToIPFS(
+      const res = await uploadMetadataToIPFS(
         formState.add_additional_info.memberData.length > 0
           ? metaDataFinal
           : metaData
       );
+
+      console.log("Metadata Uploaded to IPFS", res);
+
+      const launchpadDetails = {
+        owner: connectedAddress,
+        token: formState.verify_token.token_address,
+        minTokensToSell: formState.rounds_settings.round[0].min_contribution,
+        maxTokensToSell: formState.rounds_settings.round[0].max_contribution,
+        roundDeep: 1,
+        coinFeeRate: 1e18,
+        tokenFeeRate: 1e18,
+        releaseMonth: 10,
+        isRefSupport: false,
+        fundType: 0,
+        metadata: res.ipfs_url,
+      };
+
+      let roundInput = [
+        {
+          startTime: formState.rounds_settings.round[0].start_time,
+          endTime: formState.rounds_settings.round[0].end_time,
+          lockMonths: formState.verify_token.liquidity_lockup,
+          minContribution: formState.rounds_settings.round[0].min_contribution,
+          maxContribution: formState.rounds_settings.round[0].max_contribution,
+          tokensToSell: formState.rounds_settings.round[0].total_selling_amount,
+          pricePerToken: 1e18,
+        },
+      ];
+
+      let finalData = [launchpadDetails, roundInput];
+
+      if (signer == null) return;
+
+      // await BlockchainWrite.createLaunchpad(signer, finalData);
     } catch (e) {
       console.log("Error: ", e);
     }
@@ -141,6 +182,10 @@ const CreateLaunchpad: NextPageWithLayout = () => {
             if (formState.verify_token.sale_rounds === 0) {
               toast.error("Please select sale rounds");
               return;
+            }
+
+            if (formState.current_round === "finish") {
+              handleUploadMetadata();
             }
 
             setFormState((prev) => {

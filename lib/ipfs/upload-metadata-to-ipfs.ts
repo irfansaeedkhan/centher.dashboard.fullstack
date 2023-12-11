@@ -7,7 +7,7 @@ export const uploadMetadataToIPFS = async (
 ): Promise<UploadToIPFSResponse> => {
   try {
     const { data } = await axiosCFS.post<UploadToIPFSResponse>(
-      `/ipfs/upload/file`,
+      `/ipfs/upload/metadata`,
       metadata
     );
     return data;
