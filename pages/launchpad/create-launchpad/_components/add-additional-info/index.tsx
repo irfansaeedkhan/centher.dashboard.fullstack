@@ -12,8 +12,8 @@ export const AdditionalInfoForm: React.FC<FormStateProps> = ({
     setFormState((prev) => {
       return {
         ...prev,
-        verify_token: {
-          ...prev.verify_token,
+        add_additional_info: {
+          ...prev.add_additional_info,
           [name]: value,
         },
       };
