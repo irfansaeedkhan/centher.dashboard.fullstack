@@ -49,8 +49,7 @@ const CreateLaunchpad: NextPageWithLayout = () => {
 
       await uploadMetadataToIPFS(memberData);
       const { memberData: _, ...metaData } = formState.add_additional_info;
-      const data: ValidJSON = metaData;
-      await uploadMetadataToIPFS(data);
+      await uploadMetadataToIPFS(metaData);
 
       // await uploadMetadataToIPFS(metaData);
     } catch (e) {
