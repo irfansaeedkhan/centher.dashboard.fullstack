@@ -35,7 +35,7 @@ export const AdditionalInfoForm: React.FC<FormStateProps> = ({
               name="logo_url"
               placeholder="Example: yourlogo.com/"
               className={gradientBorderInput}
-              value={formState.add_additional_info.logo_url}
+              defaultValue={formState.add_additional_info.logo_url}
               onChange={handleChange}
             />
           </div>
@@ -52,7 +52,7 @@ export const AdditionalInfoForm: React.FC<FormStateProps> = ({
               name="website_url"
               placeholder="Example: yourweb.com/"
               className={gradientBorderInput}
-              value={formState.add_additional_info.website_url}
+              defaultValue={formState.add_additional_info.website_url}
               onChange={handleChange}
             />
           </div>
@@ -70,7 +70,7 @@ export const AdditionalInfoForm: React.FC<FormStateProps> = ({
               name="facebook"
               placeholder="Example: facebook.com/"
               className={gradientBorderInput}
-              value={formState.add_additional_info.facebook}
+              defaultValue={formState.add_additional_info.facebook}
               onChange={handleChange}
             />
           </div>
@@ -86,7 +86,7 @@ export const AdditionalInfoForm: React.FC<FormStateProps> = ({
               name="twitter"
               placeholder="Example: twitter.com/"
               className={gradientBorderInput}
-              value={formState.add_additional_info.twitter}
+              defaultValue={formState.add_additional_info.twitter}
               onChange={handleChange}
             />
           </div>
@@ -105,7 +105,7 @@ export const AdditionalInfoForm: React.FC<FormStateProps> = ({
               name="github"
               placeholder="Example: github.com/"
               className={gradientBorderInput}
-              value={formState.add_additional_info.github}
+              defaultValue={formState.add_additional_info.github}
               onChange={handleChange}
             />
           </div>
@@ -121,7 +121,7 @@ export const AdditionalInfoForm: React.FC<FormStateProps> = ({
               name="telegram"
               placeholder="Example: telegram.com/"
               className={gradientBorderInput}
-              value={formState.add_additional_info.telegram}
+              defaultValue={formState.add_additional_info.telegram}
               onChange={handleChange}
             />
           </div>
@@ -139,7 +139,7 @@ export const AdditionalInfoForm: React.FC<FormStateProps> = ({
               name="instagram"
               placeholder="Example: instagram.com/"
               className={gradientBorderInput}
-              value={formState.add_additional_info.instagram}
+              defaultValue={formState.add_additional_info.instagram}
               onChange={handleChange}
             />
           </div>
@@ -155,7 +155,7 @@ export const AdditionalInfoForm: React.FC<FormStateProps> = ({
               name="discord"
               placeholder="Example: discord.com/"
               className={gradientBorderInput}
-              value={formState.add_additional_info.discord}
+              defaultValue={formState.add_additional_info.discord}
               onChange={handleChange}
             />
           </div>
@@ -172,7 +172,7 @@ export const AdditionalInfoForm: React.FC<FormStateProps> = ({
             name="reddit"
             placeholder="Example: reddit.com/"
             className={gradientBorderInput}
-            value={formState.add_additional_info.reddit}
+            defaultValue={formState.add_additional_info.reddit}
             onChange={handleChange}
           />
         </div>
@@ -189,7 +189,7 @@ export const AdditionalInfoForm: React.FC<FormStateProps> = ({
             name="description"
             placeholder="Example: description"
             className={gradientBorderInput}
-            value={formState.add_additional_info.description}
+            defaultValue={formState.add_additional_info.description}
             onChange={(e) =>
               setFormState((prev) => ({
                 ...prev,

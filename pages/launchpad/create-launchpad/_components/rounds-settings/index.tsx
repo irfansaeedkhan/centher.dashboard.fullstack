@@ -150,7 +150,10 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
               name="total_selling_amount"
               placeholder="Example: 100"
               className={gradientBorderInput}
-              value={currentComponent.total_selling_amount}
+              value={
+                formState.rounds_settings.round[currentRound - 1]
+                  .total_selling_amount ?? currentComponent.total_selling_amount
+              }
               onChange={handleChangeEvent}
             />
           </div>
@@ -167,7 +170,10 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
               name="soft_cap_busd"
               placeholder="Example: 0"
               className={gradientBorderInput}
-              value={currentComponent.soft_cap_busd}
+              value={
+                formState.rounds_settings.round[currentRound - 1]
+                  .soft_cap_busd ?? currentComponent.soft_cap_busd
+              }
               onChange={handleChangeEvent}
             />
           </div>
@@ -182,7 +188,10 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
           <DateInputField
             title="Start Time"
             type="datetime"
-            value={currentComponent.start_time}
+            value={
+              formState.rounds_settings.round[currentRound - 1].start_time ??
+              currentComponent.start_time
+            }
             handleChangeEvent={(value: Date | null) =>
               handleDateChangeEvent(value, "start_time")
             }
@@ -190,7 +199,10 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
           <DateInputField
             title="End Time"
             type="datetime"
-            value={currentComponent.end_time}
+            value={
+              formState.rounds_settings.round[currentRound - 1].end_time ??
+              currentComponent.end_time
+            }
             handleChangeEvent={(value: Date | null) =>
               handleDateChangeEvent(value, "end_time")
             }
@@ -209,7 +221,10 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
                 name="min_contribution"
                 placeholder="Example: 0"
                 className={gradientBorderInput}
-                value={currentComponent.min_contribution}
+                value={
+                  formState.rounds_settings.round[currentRound - 1]
+                    .min_contribution ?? currentComponent.min_contribution
+                }
                 onChange={handleChangeEvent}
               />
             </div>
@@ -226,7 +241,10 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
                 name="max_contribution"
                 placeholder="Example: 0"
                 className={gradientBorderInput}
-                value={currentComponent.max_contribution}
+                value={
+                  formState.rounds_settings.round[currentRound - 1]
+                    .max_contribution ?? currentComponent.max_contribution
+                }
                 onChange={handleChangeEvent}
               />
             </div>

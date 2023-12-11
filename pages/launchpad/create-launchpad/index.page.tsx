@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { BsArrowLeftShort } from "react-icons/bs";
+import toast from "react-hot-toast";
 import Button from "@/components/button";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
@@ -18,7 +19,7 @@ const CreateLaunchpad: NextPageWithLayout = () => {
     current_round: "verify_token",
     verify_token: {
       token_address: "",
-      sale_rounds: 1,
+      sale_rounds: 0,
       currency: "MATIC",
       fee_option: "5% MATIC raised only",
       liquidity_lockup: "",
@@ -112,6 +113,10 @@ const CreateLaunchpad: NextPageWithLayout = () => {
             // if (formState.current_round === "finish") {
             //   //calling
             // }
+            if (formState.verify_token.sale_rounds === 0) {
+              toast.error("Please select sale rounds");
+              return;
+            }
 
             setFormState((prev) => {
               return {
