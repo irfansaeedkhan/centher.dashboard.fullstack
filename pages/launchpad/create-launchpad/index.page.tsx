@@ -47,24 +47,9 @@ const CreateLaunchpad: NextPageWithLayout = () => {
     try {
       const memberData: ValidJSON = formState.add_additional_info.memberData;
 
-      const response = await uploadMetadataToIPFS(memberData);
-
-      const data: ValidJSON = [
-        {
-          logo_url: "",
-          website_url: "",
-          facebook: "",
-          twitter: "",
-          github: "",
-          telegram: "",
-          instagram: "",
-          discord: "",
-          reddit: "",
-          description: "",
-          memberDataUrl: response.ipfs_url,
-        },
-      ];
-
+      await uploadMetadataToIPFS(memberData);
+      const { memberData: _, ...metaData } = formState.add_additional_info;
+      const data: ValidJSON = metaData;
       await uploadMetadataToIPFS(data);
 
       // await uploadMetadataToIPFS(metaData);
