@@ -45,13 +45,23 @@ const CreateLaunchpad: NextPageWithLayout = () => {
 
   const handleUploadMetadata = async () => {
     try {
-      const memberData: ValidJSON = formState.add_additional_info.memberData;
-
-      await uploadMetadataToIPFS(memberData);
+      let metaDataFinal = {};
+      let response: any = {};
       const { memberData: _, ...metaData } = formState.add_additional_info;
-      await uploadMetadataToIPFS(metaData);
+      if (formState.add_additional_info.memberData.length > 0) {
+        const memberData: ValidJSON = formState.add_additional_info.memberData;
+        response = await uploadMetadataToIPFS(memberData);
+        metaDataFinal = {
+          ...metaData,
+          memberData: response.ipfs_url ?? "",
+        };
+      }
 
-      // await uploadMetadataToIPFS(metaData);
+      await uploadMetadataToIPFS(
+        formState.add_additional_info.memberData.length > 0
+          ? metaDataFinal
+          : metaData
+      );
     } catch (e) {
       console.log("Error: ", e);
     }
