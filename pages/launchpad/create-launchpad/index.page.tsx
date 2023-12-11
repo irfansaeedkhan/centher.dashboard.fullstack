@@ -44,23 +44,33 @@ const CreateLaunchpad: NextPageWithLayout = () => {
   });
 
   const handleUploadMetadata = async () => {
-    // const data: ValidJSON = [
-    //   {
-    //     logo_url: "",
-    //     website_url: "",
-    //     facebook: "",
-    //     twitter: "",
-    //     github: "",
-    //     telegram: "",
-    //     instagram: "",
-    //     discord: "",
-    //     reddit: "",
-    //     description: "",
-    //     memberData: [],
-    //   },
-    // ];
-    // const metaData: ValidJSON = [formState.add_additional_info];
-    // await uploadMetadataToIPFS(metaData);
+    try {
+      const memberData: ValidJSON = formState.add_additional_info.memberData;
+
+      const response = await uploadMetadataToIPFS(memberData);
+
+      const data: ValidJSON = [
+        {
+          logo_url: "",
+          website_url: "",
+          facebook: "",
+          twitter: "",
+          github: "",
+          telegram: "",
+          instagram: "",
+          discord: "",
+          reddit: "",
+          description: "",
+          memberDataUrl: response.ipfs_url,
+        },
+      ];
+
+      await uploadMetadataToIPFS(data);
+
+      // await uploadMetadataToIPFS(metaData);
+    } catch (e) {
+      console.log("Error: ", e);
+    }
   };
 
   return (
