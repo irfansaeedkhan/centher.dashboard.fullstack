@@ -13,6 +13,7 @@ import {
   VerifyTokenForm,
   roundCardData,
 } from "./_components";
+import { ValidJSON, uploadMetadataToIPFS } from "@/lib/ipfs";
 
 const CreateLaunchpad: NextPageWithLayout = () => {
   const [formState, setFormState] = useState<FormState>({
@@ -41,6 +42,26 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       round: [],
     },
   });
+
+  const handleUploadMetadata = async () => {
+    // const data: ValidJSON = [
+    //   {
+    //     logo_url: "",
+    //     website_url: "",
+    //     facebook: "",
+    //     twitter: "",
+    //     github: "",
+    //     telegram: "",
+    //     instagram: "",
+    //     discord: "",
+    //     reddit: "",
+    //     description: "",
+    //     memberData: [],
+    //   },
+    // ];
+    // const metaData: ValidJSON = [formState.add_additional_info];
+    // await uploadMetadataToIPFS(metaData);
+  };
 
   return (
     <div>
