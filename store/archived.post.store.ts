@@ -75,6 +75,9 @@ export const useArchivedPostsStore = create<ArchivedPostsStore>()(
         }));
       },
     }),
-    { name: "ArchivedPostsStore" }
+    {
+      name: "ArchivedPostsStore",
+      enabled: process.env.NEXT_PUBLIC_APP_ENV !== "production",
+    }
   )
 );

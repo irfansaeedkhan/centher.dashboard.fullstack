@@ -1,30 +1,29 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import clsx from "clsx";
-
 import { BNBIcon } from "@/assets/svgs";
 import { BlockchainConfig } from "@/web3/blockchain/config";
 import Button from "@/components/button";
 import { CustomNumberInput } from "@/components/custom-number-input";
-import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
-
+import { CFSNFTForPage } from "@/lib/get-single-nft-page-data/types";
+import { useNFTImageSrc } from "@/hooks/use-nft-image-src";
 import CustomDropdown from "./custom.dropdown";
 import { daysData } from "./days-data";
 
-interface Props {
-  handleListNFT: any;
-  data: INFTDetailData | undefined;
-  handleAuction: (data: any) => void;
-}
-
-interface auctionFormInterface {
+interface AuctionFormInterface {
   AuctionEndTime: Date;
   StartingNFTPrice: number;
 }
 
+interface Props {
+  handleListNFT: any;
+  nft: CFSNFTForPage;
+  handleAuction: (data: any) => void;
+}
+
 const ChangePriceListModal: React.FC<Props> = ({
   handleListNFT,
-  data,
+  nft,
   handleAuction,
 }) => {
   const [changeNFTPrice, setChangeNFTPrice] = useState<any>(null);
@@ -37,8 +36,10 @@ const ChangePriceListModal: React.FC<Props> = ({
     AuctionEndTime: "1",
   });
   const [selectedOption, setSelectedOption] = useState<any>("1");
+  const { nftImageSrc, setNftImageSrc, DEFAULT_NFT_IMAGE_SRC } =
+    useNFTImageSrc(nft);
 
-  const handleAuctionData = (auction: auctionFormInterface) => {
+  const handleAuctionData = (auction: AuctionFormInterface) => {
     const auctionDays = Number(auction.AuctionEndTime);
     let finalData = {
       StartingNFTPrice: auction.StartingNFTPrice,
@@ -63,26 +64,20 @@ const ChangePriceListModal: React.FC<Props> = ({
           onClick={() => setActiveButton("auction")}
         />
       </div>
-      {data && (
-        <div className="mt-2 flex flex-col items-center justify-center">
-          <Image
-            src={
-              data.type.includes("audio")
-                ? "/images/default-music.png"
-                : data.type.includes("video")
-                ? data.videoThumbnail || "/images/default-music.png"
-                : data.image
-            }
-            width={266}
-            height={190}
-            alt="img"
-            className="w-full max-w-[266px] rounded-xl object-cover"
-          />
-          <h3 className="word-break word-break mt-6 text-lg font-semibold text-white">
-            {data.name}
-          </h3>
-        </div>
-      )}
+      <div className="mt-2 flex flex-col items-center justify-center">
+        <Image
+          src={nftImageSrc}
+          width={266}
+          height={190}
+          alt={nft.ipfs_metadata.name}
+          onError={() => setNftImageSrc(DEFAULT_NFT_IMAGE_SRC)}
+          className="w-full max-w-[266px] rounded-xl object-cover"
+        />
+        <h3 className="word-break word-break mt-6 text-lg font-semibold text-white">
+          {nft.ipfs_metadata.name}
+        </h3>
+      </div>
+
       {activeButton === "auction" && (
         <div className={`flex w-full flex-col gap-2`}>
           <label className={`text-start text-sm font-normal text-white`}>

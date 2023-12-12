@@ -1,11 +1,10 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
-
 import { getCollections } from "@/lib/get-collections";
 import { getCollectionCardData } from "@/lib/get-collection-card-data";
 import { AppError } from "@/utils/app-error";
 import { LoadingState } from "@/models/common";
-import { CollectionCardData } from "@/components/collection.card/collection-card-v2";
+import { CollectionCardData } from "@/components/collection.card";
 
 export interface AllCollectionsStore {
   collections: CollectionCardData[];
@@ -21,7 +20,7 @@ export const useAllCollectionsStore = create<AllCollectionsStore>()(
     (set, get) => ({
       collections: [],
       offset: 0,
-      limit: 10,
+      limit: 50,
       loading: "idle",
       updateOffset: () =>
         set((state) => ({
@@ -37,32 +36,21 @@ export const useAllCollectionsStore = create<AllCollectionsStore>()(
             skip: get().offset,
           });
 
-          const collectionCardDataPromises = _collections.map((col) =>
+          const collectionCardData = _collections.map((col) =>
             getCollectionCardData(col)
           );
 
-          const collectionCardDataResults = (
-            await Promise.allSettled(collectionCardDataPromises)
-          ).filter(
-            (col) => col.status === "fulfilled"
-          ) as PromiseFulfilledResult<CollectionCardData>[];
-
-          // Remove nfts that are already in the store
-          const filteredCollections = collectionCardDataResults.filter(
+          // Remove collections that are already in the store
+          const filteredCollections = collectionCardData.filter(
             (col) =>
               !get().collections.some(
-                (stateCollection) =>
-                  stateCollection.address === col.value.address &&
-                  col.value.creator.membership.status === "citizen"
+                (stateCollection) => stateCollection.address === col.address
               )
           );
 
           set((state) => ({
             ...state,
-            collections: [
-              ...state.collections,
-              ...filteredCollections.map((col) => col.value),
-            ],
+            collections: [...state.collections, ...filteredCollections],
             loading: "loaded",
           }));
         } catch (error: any) {
@@ -76,6 +64,9 @@ export const useAllCollectionsStore = create<AllCollectionsStore>()(
         }
       },
     }),
-    { name: "AllCollectionsStore" }
+    {
+      name: "AllCollectionsStore",
+      enabled: process.env.NEXT_PUBLIC_APP_ENV !== "production",
+    }
   )
 );

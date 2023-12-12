@@ -47,7 +47,9 @@ export const Banner = () => {
           <div
             className="gradient-border-3 relative flex h-10 cursor-pointer flex-col items-center justify-center !rounded-[10px] p-[1px]"
             onClick={() =>
-              handleShowBuyCitizenshipModal(AppRoutes.marketplace.create_nft)
+              handleShowBuyCitizenshipModal(
+                AppRoutes.marketplace.create_collection
+              )
             }
           >
             <span className="glass-card h-10 w-fit rounded-[10px] bg-black/[0.04] px-4 py-2">

@@ -6,9 +6,9 @@ import { joiResolver } from "@hookform/resolvers/joi";
 import clsx from "clsx";
 import Joi from "joi";
 import moment from "moment";
-
 import Button from "@/components/button";
-import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
+import { CFSNFTForPage } from "@/lib/get-single-nft-page-data/types";
+import { useNFTImageSrc } from "@/hooks/use-nft-image-src";
 
 const lockOptions = [
   { label: "0 Day", value: "0" },
@@ -19,19 +19,21 @@ const lockOptions = [
   { label: "360 Days", value: "31104000" }, // This is the time in seconds
 ];
 
-interface SendNFTModalProps {
-  data: INFTDetailData | undefined;
-  handleSend: any;
-  onClose: () => void;
-}
-
 interface sendFormInterface {
   LockEndTime: number;
   ReceiverAddress: string;
 }
 
-const SendNFTModal = ({ handleSend, onClose, data }: SendNFTModalProps) => {
+interface Props {
+  nft: CFSNFTForPage;
+  handleSend: any;
+  onClose: () => void;
+}
+
+const SendNFTModal: React.FC<Props> = ({ handleSend, onClose, nft }) => {
   const [lock, setLock] = useState<string>("0");
+  const { nftImageSrc, setNftImageSrc, DEFAULT_NFT_IMAGE_SRC } =
+    useNFTImageSrc(nft);
 
   const SendModalschema = Joi.object({
     ReceiverAddress: Joi.string().required().label("ReceiverAddress").messages({
@@ -68,54 +70,40 @@ const SendNFTModal = ({ handleSend, onClose, data }: SendNFTModalProps) => {
         </button>
 
         <div>
-          {data && (
-            <Image
-              src={
-                data.type.includes("audio")
-                  ? "/images/default-music.png"
-                  : data.type.includes("video")
-                  ? data.videoThumbnail || "/images/default-video.png"
-                  : data.image
-              }
-              alt={data.name}
-              width={100}
-              height={193}
-              className="h-[193px] !w-full rounded-t-3xl object-cover"
-            />
-          )}
+          <Image
+            src={nftImageSrc}
+            alt={nft.ipfs_metadata.name}
+            width={100}
+            height={193}
+            onError={() => setNftImageSrc(DEFAULT_NFT_IMAGE_SRC)}
+            className="h-[193px] !w-full rounded-t-3xl object-cover"
+          />
         </div>
         <div className="relative w-full">
-          {data && (
-            <div className="absolute -top-14 flex w-full flex-col items-center justify-center">
-              <div className="relative flex h-[116px] w-[112px] rounded-xl">
+          <div className="absolute -top-14 flex w-full flex-col items-center justify-center">
+            <div className="relative flex h-[116px] w-[112px] rounded-xl">
+              <Image
+                src={nftImageSrc}
+                alt={nft.ipfs_metadata.name}
+                width={112}
+                height={112}
+                onError={() => setNftImageSrc(DEFAULT_NFT_IMAGE_SRC)}
+                className="h-[112px] w-full max-w-[112px] rounded-xl border-2 border-popup-0 object-cover"
+              />
+              <span className="absolute inset-0 bottom-[-6.5rem] m-auto flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg border-[1.5px] border-popup-0 bg-black/40">
                 <Image
-                  src={
-                    data.type.includes("audio")
-                      ? "/images/default-music.png"
-                      : data.type.includes("video")
-                      ? data.videoThumbnail || "/images/default-music.png"
-                      : data.image
-                  }
-                  alt={data.name}
-                  width={112}
-                  height={112}
-                  className="h-[112px] w-full max-w-[112px] rounded-xl border-2 border-popup-0 object-cover"
+                  src="/images/gift.png"
+                  alt="Lock"
+                  width={16}
+                  height={16}
+                  className="h-4 w-4 "
                 />
-                <span className="absolute inset-0 bottom-[-6.5rem] m-auto flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg border-[1.5px] border-popup-0 bg-black/40">
-                  <Image
-                    src="/images/gift.png"
-                    alt="Lock"
-                    width={16}
-                    height={16}
-                    className="h-4 w-4 "
-                  />
-                </span>
-              </div>
-              <h4 className="mt-6 text-lg font-semibold text-white">
-                {data.name}
-              </h4>
+              </span>
             </div>
-          )}
+            <h4 className="mt-6 text-lg font-semibold text-white">
+              {nft.ipfs_metadata.name}
+            </h4>
+          </div>
         </div>
 
         <div className="h-full max-h-[729px] overflow-y-auto pt-[100px]">
@@ -190,6 +178,5 @@ const SendNFTModal = ({ handleSend, onClose, data }: SendNFTModalProps) => {
 
 export default SendNFTModal;
 
-// styling
 const fieldWrapper = "flex gap-2 flex-col w-full";
 const fieldTitle = "text-sm text-start font-normal text-white";

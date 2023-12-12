@@ -1,33 +1,24 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import axios from "axios";
-import { Collection } from "@/models/nft";
-import { formatIPFSUrl } from "@/utils/format.address";
+import { CFSCollection } from "@/models/nft";
 import { AppRoutes } from "@/constants/app.routes";
 
 export interface NFTCardProps {
-  data: Collection;
+  data: CFSCollection;
 }
 
 export const NFTCollectionImageCard: React.FC<NFTCardProps> = ({ data }) => {
-  const [imageUrl, setImageUrl] = useState("");
+  const DEFAULT_IMAGE_SRC = "/images/placeholder-square.svg";
+  const [imageSrc, setImageSrc] = useState(DEFAULT_IMAGE_SRC);
 
   useEffect(() => {
-    const fetchMetadata = async (ipfs: string) => {
-      try {
-        const formattedUrl = formatIPFSUrl(ipfs);
-        const { data: metadata } = await axios.get(formattedUrl);
-        const imgUrl = formatIPFSUrl(metadata.coverIPFSHash);
-        setImageUrl(imgUrl);
-      } catch (error) {
-        console.dir(error);
-      }
-    };
-    if (data && data.ipfs) {
-      fetchMetadata(data.ipfs);
+    if (data.ipfs_metadata.profileIPFSHash) {
+      setImageSrc(data.ipfs_metadata.profileIPFSHash);
+    } else {
+      setImageSrc(DEFAULT_IMAGE_SRC);
     }
-  }, [data]);
+  }, [data.ipfs_metadata.profileIPFSHash]);
 
   return (
     <div
@@ -42,20 +33,14 @@ export const NFTCollectionImageCard: React.FC<NFTCardProps> = ({ data }) => {
         }}
         className={`flex h-full w-full justify-center`}
       >
-        {imageUrl ? (
-          <Image
-            src={
-              imageUrl.includes("mp3") ? "/images/default-music.png" : imageUrl
-            }
-            alt="nft"
-            height={275}
-            width={275}
-            className="absolute inset-0 h-full w-full rounded-xl object-cover"
-            onError={() => setImageUrl("/images/placeholder-square.svg")}
-          />
-        ) : (
-          <div className="absolute inset-0 h-full w-full animate-pulse rounded-xl bg-[#3C3F4A] object-cover"></div>
-        )}
+        <Image
+          src={imageSrc}
+          alt={data.name}
+          height={275}
+          width={275}
+          className="absolute inset-0 h-full w-full rounded-xl object-cover"
+          onError={() => setImageSrc(DEFAULT_IMAGE_SRC)}
+        />
       </Link>
     </div>
   );

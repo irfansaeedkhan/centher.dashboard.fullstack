@@ -189,6 +189,9 @@ export const useFeedStore = create<FeedStore>()(
         }));
       },
     }),
-    { name: "FeedStore" }
+    {
+      name: "FeedStore",
+      enabled: process.env.NEXT_PUBLIC_APP_ENV !== "production",
+    }
   )
 );

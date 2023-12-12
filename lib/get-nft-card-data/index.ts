@@ -1,46 +1,46 @@
-import axios from "axios";
-
-import { NFT } from "@/models/nft";
+import { CFSNFT } from "@/models/nft";
 import { NFTCardData } from "@/components/nft.card";
-import { formatIPFSUrl } from "@/utils/format.address";
-import { AppError } from "@/utils/app-error";
-import { ZeroAddress } from "@/web3/constants/common";
+import { NFTImageCardData } from "@/components/nft.image.card/types";
 
-import { getNFTOwnerData } from "../get-nft-owner-data";
+export const getNFTCardData = (nft: CFSNFT): NFTCardData => {
+  return {
+    id: nft.id,
+    collection: nft.ipfs_metadata.collection,
+    tokenId: nft.tokenId,
+    imageUrl: nft.ipfs_metadata.image,
+    videoThumbnail: nft.ipfs_metadata.videoThumbnail,
+    name: nft.ipfs_metadata.name,
+    description: nft.ipfs_metadata.description,
+    price: nft.price,
+    owner: nft.owner,
+    creator: nft.creator,
+    mintHash: nft.mintHash,
+    type: nft.ipfs_metadata.type,
+    unlock: nft.unlock,
+    endTime: nft.saleState === "Auction" ? nft.auctionInfo.endTime : "0",
+    creator_data: nft.creator_data,
+    owner_data: nft.owner_data,
+    ipfs_metadata: nft.ipfs_metadata,
+  };
+};
 
-export const getNFTCardData = async (nft: NFT): Promise<NFTCardData> => {
-  try {
-    const user = nft.owner !== ZeroAddress ? nft.owner : nft.creator;
-    const nftOwnerDataPromise = getNFTOwnerData(user);
-    const nftCreatorDataPromise = getNFTOwnerData(nft.creator);
-    const formattedUrl = formatIPFSUrl(nft.ipfs);
-    const metadataPromise = axios.get(formattedUrl);
-    const [nftOwnerData, nftCreatorData, metadata] = await Promise.all([
-      nftOwnerDataPromise,
-      nftCreatorDataPromise,
-      metadataPromise,
-    ]);
-
-    const imageUrl = formatIPFSUrl(metadata.data.image);
-    const videoThumbnail = formatIPFSUrl(metadata.data.videoThumbnail);
-
-    return {
-      id: nft.id,
-      collection: metadata.data.collection,
-      tokenId: nft.tokenId,
-      imageUrl,
-      videoThumbnail,
-      name: metadata.data.name,
-      description: metadata.data.description,
-      price: nft.price,
-      owner: nftOwnerData,
-      creator: nftCreatorData,
-      mintHash: nft.mintHash,
-      type: metadata.data.type,
-      unlock: nft.unlock,
-      endTime: nft.endTime,
-    };
-  } catch (error: any) {
-    throw new AppError(error, "Can not load NFT Card Data", "getNFTCardData");
-  }
+export const getNFTImageCardData = (nft: CFSNFT): NFTImageCardData => {
+  return {
+    id: nft.id,
+    collection: nft.collection,
+    tokenId: nft.tokenId,
+    creator: nft.creator,
+    createTime: nft.createTime,
+    ipfs: nft.ipfs,
+    saleState: nft.saleState,
+    price: nft.price,
+    owner: nft.owner,
+    endTime: nft.saleState === "Auction" ? nft.auctionInfo.endTime : "0",
+    unlock: nft.unlock,
+    mintHash: nft.mintHash,
+    owner_data: nft.owner_data,
+    creator_data: nft.creator_data,
+    ipfs_metadata: nft.ipfs_metadata,
+    external: false,
+  };
 };

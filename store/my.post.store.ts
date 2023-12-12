@@ -191,6 +191,9 @@ export const useMyPostStore = create<MyPostStore>()(
         }));
       },
     }),
-    { name: "MyPostStore" }
+    {
+      name: "MyPostStore",
+      enabled: process.env.NEXT_PUBLIC_APP_ENV !== "production",
+    }
   )
 );

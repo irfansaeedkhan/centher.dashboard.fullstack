@@ -1,59 +1,66 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
+import { useShallow } from "zustand/react/shallow";
+import { useInView } from "react-intersection-observer";
 import clsx from "clsx";
 import { HotNftEmptyIcon } from "@/assets/svgs";
 import { NFTImageCard } from "@/components/nft.image.card";
-import { NFTLockedDetailsProps } from "@/lib/get-user-by-id";
-import { useProfileNFTStore } from "@/store/profile.nft.store";
-import { LoadingStatus } from "@/utils/enums/loading.status.enum";
-import { GlobalTokenBlackList } from "@/web3/blockchain/helpers/blacklist.helper";
+import { useProfileOwnedNftsStore } from "@/store/profile-owned-nfts.store";
 
 const OwnedPage = () => {
   const router = useRouter();
-  const account = useMemo(() => {
+  const userId = useMemo(() => {
     return router.query.user_id as string;
   }, [router.query.user_id]);
-  const { ownedNfts, fetchOwnedNFTs, loadingOwnedNFTs } = useProfileNFTStore(
-    (state) => ({
+  const { ownedNfts, offset, loading } = useProfileOwnedNftsStore(
+    useShallow((state) => ({
       ownedNfts: state.ownedNfts,
-      fetchOwnedNFTs: state.fetchOwnedNFTs,
-      loadingOwnedNFTs: state.loadingOwnedNFTs,
-    })
+      offset: state.offset,
+      loading: state.loading,
+    }))
   );
+  const { fetchOwnedNFTs, updateOffset, resetOwnedNfts } =
+    useProfileOwnedNftsStore(useShallow((state) => state.actions));
+
+  const [lastNftRef, _lastNftInView, lastNftEntry] = useInView();
 
   useEffect(() => {
-    if (account) {
-      fetchOwnedNFTs(account);
+    if (lastNftEntry?.isIntersecting) {
+      updateOffset();
     }
-  }, [account, fetchOwnedNFTs]);
-
-  const [displayNFTs, setDisplayNFTs] = useState<NFTLockedDetailsProps[]>([]);
+  }, [lastNftRef, lastNftEntry, updateOffset]);
 
   useEffect(() => {
-    if (loadingOwnedNFTs == LoadingStatus.loaded) {
-      setDisplayNFTs([
-        ...ownedNfts.filter(
-          (nft) => !GlobalTokenBlackList.isBlocked(nft.collection, +nft.tokenId)
-        ),
-      ]);
+    if (offset > 0) {
+      fetchOwnedNFTs();
     }
-  }, [loadingOwnedNFTs, ownedNfts]);
+  }, [offset, fetchOwnedNFTs]);
+
+  useEffect(() => {
+    if (userId) {
+      resetOwnedNfts(userId, "loading");
+      fetchOwnedNFTs();
+    }
+    return () => {
+      resetOwnedNfts("", "idle");
+    };
+  }, [userId, resetOwnedNfts, fetchOwnedNFTs]);
 
   return (
     <>
-      {loadingOwnedNFTs == LoadingStatus.loaded && displayNFTs?.length ? (
-        <div className={clsx(`grid grid-cols-[1fr,1fr,1fr] gap-2`)}>
-          {displayNFTs.map((nft) => (
-            <NFTImageCard data={nft} key={nft.id} />
-          ))}
-        </div>
-      ) : (
-        loadingOwnedNFTs == LoadingStatus.loading && (
-          <div className="!h-[104px] !w-full animate-pulse rounded-xl bg-[#3C3F4A] [@media(min-width:768px)]:!h-[275px] [@media(min-width:768px)]:!w-[275px]"></div>
-        )
-      )}
+      <div className={clsx(`grid grid-cols-[1fr,1fr,1fr] gap-2`)}>
+        {ownedNfts.map((nft) => (
+          <NFTImageCard data={nft} key={nft.id} />
+        ))}
 
-      {loadingOwnedNFTs == LoadingStatus.loaded && !ownedNfts?.length && (
+        {(loading === "loading" || loading === "idle") && (
+          <div className="!h-[104px] !w-full animate-pulse rounded-xl bg-[#3C3F4A] [@media(min-width:768px)]:!h-[275px] [@media(min-width:768px)]:!w-[275px]"></div>
+        )}
+
+        <div ref={lastNftRef} />
+      </div>
+
+      {loading === "loaded" && ownedNfts.length === 0 && (
         <>
           <div className="flex items-center justify-center text-white">
             <HotNftEmptyIcon />
