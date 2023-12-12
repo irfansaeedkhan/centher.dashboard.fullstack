@@ -5,17 +5,19 @@ import { TabsWrapper } from "./_components";
 import { LaunchpadCard } from "./_components/launchpad-card";
 import { LaunchpadData } from "./_components/launchpad-card-data";
 
-const LaunchpadList: NextPageWithLayout = () => {
+const LaunchpadListUpcoming: NextPageWithLayout = () => {
   return (
     <div className="grid grid-cols-1 gap-5 fmd:grid-cols-2 flg:grid-cols-3">
-      {LaunchpadData.map((data, index) => (
-        <LaunchpadCard key={index} {...data} />
-      ))}
+      {LaunchpadData.filter((e) => e.status === "upcoming").map(
+        (data, index) => (
+          <LaunchpadCard key={index} {...data} />
+        )
+      )}
     </div>
   );
 };
 
-LaunchpadList.getLayout = (page) => (
+LaunchpadListUpcoming.getLayout = (page) => (
   <AllPagesWrapper pageTitle="Launchpad List">
     <div className="mx-auto min-h-screen w-full max-w-[1112px] bg-black-shade-3 pb-10 font-monto">
       <TabsWrapper>{page}</TabsWrapper>
@@ -23,4 +25,4 @@ LaunchpadList.getLayout = (page) => (
   </AllPagesWrapper>
 );
 
-export default LaunchpadList;
+export default LaunchpadListUpcoming;
