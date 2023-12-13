@@ -29,13 +29,13 @@ export const PromotionCard8Mobile = () => {
         </p>
         <Link
           href={AppRoutes.staking.index}
-          className="flex w-full items-center justify-center"
+          className="flex w-full items-center justify-center px-4"
         >
           <Button
             title="Check it OUT!"
             variant="primary"
             borderRounded="10px"
-            className="w-full max-w-[149px]"
+            className="w-full max-w-full text-sm fsm:text-base"
           />
         </Link>
       </div>

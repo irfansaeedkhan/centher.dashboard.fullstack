@@ -39,12 +39,13 @@ export const PromotionCard3Mobile: React.FC<Props> = ({
           href={{
             pathname: AppRoutes.marketplace.explore,
           }}
+          className="flex w-full items-center justify-center px-4"
         >
           <Button
             title="Check it out"
             variant="primary"
             borderRounded="10px"
-            className="mt-4"
+            className="w-full max-w-full text-sm fsm:text-base"
           />
         </Link>
       </div>
