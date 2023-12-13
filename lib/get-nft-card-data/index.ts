@@ -33,7 +33,6 @@ export const getNFTImageCardData = (nft: CFSNFT): NFTImageCardData => {
     createTime: nft.createTime,
     ipfs: nft.ipfs,
     saleState: nft.saleState,
-    price: nft.price,
     owner: nft.owner,
     endTime: nft.saleState === "Auction" ? nft.auctionInfo.endTime : "0",
     unlock: nft.unlock,
