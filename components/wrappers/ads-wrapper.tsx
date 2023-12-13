@@ -9,13 +9,15 @@ const AdsWrapper: React.FC<Props> = ({ children }) => {
   return (
     <div className={`w-full max-w-[544px] rounded-10px bg-elevation-1 p-4`}>
       <div className="grid grid-cols-[auto_1fr] gap-x-3">
-        <Image
-          alt="centher"
-          src="/images/centher-new-logo.png"
-          width={48}
-          height={48}
-          className="h-12 w-12 flex-shrink-0 rounded-full object-cover"
-        />
+        <div className="flex h-12 w-12">
+          <Image
+            alt="centher"
+            src="/images/centher-new-logo.png"
+            width={48}
+            height={48}
+            className="h-12 w-12 flex-shrink-0 rounded-full object-cover"
+          />
+        </div>
         <div className="mb-2">
           <p className="text-sm font-semibold text-white">
             Centher Advertising
