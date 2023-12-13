@@ -1,30 +1,33 @@
-import { CFSNFT, NFTSaleStateFilter } from "@/models/nft";
 import { axiosCFS } from "@/utils/axios";
 import { AppError } from "@/utils/app-error";
+import { NFTImageCardData } from "@/components/nft.image.card/types";
+
+export interface GetNFTListOfSingleOwnerFromAnyCollectionResponse {
+  nfts: NFTImageCardData[];
+  cursor: string;
+}
 
 export const getNFTListOfSingleOwnerFromAnyCollection = async ({
   owner_address,
-  saleState = "All",
   limit = 50,
-  skip = 0,
+  cursor,
 }: {
   owner_address: string;
-  saleState?: NFTSaleStateFilter;
   limit?: number;
-  skip?: number;
-}): Promise<CFSNFT[]> => {
+  cursor?: string | null;
+}): Promise<GetNFTListOfSingleOwnerFromAnyCollectionResponse> => {
   try {
-    const { data } = await axiosCFS.get<{ nfts: CFSNFT[] }>(
-      `/marketplace/nfts/owner/${owner_address}`,
-      {
-        params: {
-          first: limit,
-          skip,
-          saleState,
-        },
-      }
-    );
-    return data.nfts;
+    const { data } =
+      await axiosCFS.get<GetNFTListOfSingleOwnerFromAnyCollectionResponse>(
+        `/marketplace/nfts/owner/${owner_address}`,
+        {
+          params: {
+            limit,
+            cursor,
+          },
+        }
+      );
+    return data;
   } catch (error: any) {
     throw new AppError(
       error,

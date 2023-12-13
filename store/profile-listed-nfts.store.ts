@@ -3,7 +3,7 @@ import { devtools } from "zustand/middleware";
 import { LoadingState } from "@/models/common";
 import { NFTImageCardData } from "@/components/nft.image.card/types";
 import { customLog } from "@/utils/custom.log";
-import { getNFTListOfSingleOwnerFromAnyCollection } from "@/lib/get-nft-list-of-single-owner-from-any-collection";
+import { getListedNFTListOfSingleOwnerFromAnyCollection } from "@/lib/get-listed-nft-list-of-single-owner-from-any-collection";
 import { getNFTImageCardData } from "@/lib/get-nft-card-data";
 
 export interface ProfileListedNftsStore {
@@ -35,12 +35,12 @@ export const useProfileListedNftsStore = create<ProfileListedNftsStore>()(
             const offset = get().offset;
             const limit = 20;
 
-            const listedNfts = await getNFTListOfSingleOwnerFromAnyCollection({
-              owner_address: ownerId,
-              saleState: "List",
-              limit,
-              skip: offset,
-            });
+            const listedNfts =
+              await getListedNFTListOfSingleOwnerFromAnyCollection({
+                owner_address: ownerId,
+                limit,
+                skip: offset,
+              });
 
             const nftImageCardDataList: NFTImageCardData[] = listedNfts.map(
               (item) => getNFTImageCardData(item)
