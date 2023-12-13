@@ -203,7 +203,7 @@ export const NFTImageCard: React.FC<NFTImageCardProps> = ({ data }) => {
         >
           <Image
             src={nftImageSrc}
-            alt={data.ipfs_metadata.name}
+            alt={data.ipfs_metadata.name ?? data.id}
             height={275}
             width={275}
             className="absolute inset-0 h-full w-full rounded-xl object-cover"
@@ -443,20 +443,22 @@ export const NFTImageCard: React.FC<NFTImageCardProps> = ({ data }) => {
                   </h6>
                 </Link>
               </div>
-              <div className="flex flex-col gap-2">
-                <h5 className="text-sm font-normal text-gray-shade-18">
-                  Mint Transaction
-                </h5>
-                <Link
-                  href={BlockchainConfig.scanner.url + "/tx/" + data.mintHash}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                >
-                  <h6 className="textGradient inline-block break-words text-sm font-semibold">
-                    {data.mintHash}
-                  </h6>
-                </Link>
-              </div>
+              {data.mintHash && (
+                <div className="flex flex-col gap-2">
+                  <h5 className="text-sm font-normal text-gray-shade-18">
+                    Mint Transaction
+                  </h5>
+                  <Link
+                    href={BlockchainConfig.scanner.url + "/tx/" + data.mintHash}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                  >
+                    <h6 className="textGradient inline-block break-words text-sm font-semibold">
+                      {data.mintHash}
+                    </h6>
+                  </Link>
+                </div>
+              )}
               <div className="flex flex-col gap-2">
                 <h5 className="text-sm font-normal text-gray-shade-18">
                   Token ID
@@ -539,14 +541,16 @@ export const NFTImageCard: React.FC<NFTImageCardProps> = ({ data }) => {
                   {data.collection}
                 </h6>
               </div>
-              <div className="flex flex-col gap-2">
-                <h5 className="text-sm font-normal text-gray-shade-18">
-                  Mint Transaction
-                </h5>
-                <h6 className="textGradient inline-block break-words text-sm font-semibold">
-                  {data.mintHash}
-                </h6>
-              </div>
+              {data.mintHash && (
+                <div className="flex flex-col gap-2">
+                  <h5 className="text-sm font-normal text-gray-shade-18">
+                    Mint Transaction
+                  </h5>
+                  <h6 className="textGradient inline-block break-words text-sm font-semibold">
+                    {data.mintHash}
+                  </h6>
+                </div>
+              )}
               <div className="flex flex-col gap-2">
                 <h5 className="text-sm font-normal text-gray-shade-18">
                   Token ID
@@ -644,14 +648,16 @@ export const NFTImageCard: React.FC<NFTImageCardProps> = ({ data }) => {
                   {data.collection}
                 </h6>
               </div>
-              <div className="flex flex-col gap-2">
-                <h5 className="text-sm font-normal text-gray-shade-18">
-                  Mint Transaction
-                </h5>
-                <h6 className="textGradient inline-block break-words text-sm font-semibold">
-                  {data.mintHash}
-                </h6>
-              </div>
+              {data.mintHash && (
+                <div className="flex flex-col gap-2">
+                  <h5 className="text-sm font-normal text-gray-shade-18">
+                    Mint Transaction
+                  </h5>
+                  <h6 className="textGradient inline-block break-words text-sm font-semibold">
+                    {data.mintHash}
+                  </h6>
+                </div>
+              )}
               <div className="flex flex-col gap-2">
                 <h5 className="text-sm font-normal text-gray-shade-18">
                   Token ID

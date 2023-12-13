@@ -12,29 +12,24 @@ const OwnedPage = () => {
   const userId = useMemo(() => {
     return router.query.user_id as string;
   }, [router.query.user_id]);
-  const { ownedNfts, offset, loading } = useProfileOwnedNftsStore(
+  const { ownedNfts, cursor, loading } = useProfileOwnedNftsStore(
     useShallow((state) => ({
       ownedNfts: state.ownedNfts,
-      offset: state.offset,
       loading: state.loading,
+      cursor: state.cursor,
     }))
   );
-  const { fetchOwnedNFTs, updateOffset, resetOwnedNfts } =
-    useProfileOwnedNftsStore(useShallow((state) => state.actions));
+  const { fetchOwnedNFTs, resetOwnedNfts } = useProfileOwnedNftsStore(
+    useShallow((state) => state.actions)
+  );
 
   const [lastNftRef, _lastNftInView, lastNftEntry] = useInView();
 
   useEffect(() => {
-    if (lastNftEntry?.isIntersecting) {
-      updateOffset();
-    }
-  }, [lastNftRef, lastNftEntry, updateOffset]);
-
-  useEffect(() => {
-    if (offset > 0) {
+    if (lastNftEntry?.isIntersecting && !!cursor) {
       fetchOwnedNFTs();
     }
-  }, [offset, fetchOwnedNFTs]);
+  }, [lastNftRef, lastNftEntry, fetchOwnedNFTs, cursor]);
 
   useEffect(() => {
     if (userId) {
