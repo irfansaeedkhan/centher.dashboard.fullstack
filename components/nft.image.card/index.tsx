@@ -395,7 +395,7 @@ export const NFTImageCard: React.FC<NFTImageCardProps> = ({ data }) => {
                   <div className="min-h-[32px] min-w-[32px] rounded-full bg-gradient-to-r from-[#70A2FF] to-[#F76E64]"></div>
                   <div className="flex flex-col gap-1">
                     <h5 className="text-xs font-normal text-gray-shade-18">
-                      Creater
+                      Creator
                     </h5>
 
                     <h5 className="word-break text-sm font-semibold text-white">
@@ -501,7 +501,7 @@ export const NFTImageCard: React.FC<NFTImageCardProps> = ({ data }) => {
                   <div className="min-h-[32px] min-w-[32px] rounded-full bg-gradient-to-r from-[#70A2FF] to-[#F76E64]"></div>
                   <div className="flex flex-col gap-1">
                     <h5 className="text-xs font-normal text-gray-shade-18">
-                      Creater
+                      Creator
                     </h5>
 
                     <h5 className="word-break text-sm font-semibold text-white">
@@ -608,7 +608,7 @@ export const NFTImageCard: React.FC<NFTImageCardProps> = ({ data }) => {
                   <div className="min-h-[32px] min-w-[32px] rounded-full bg-gradient-to-r from-[#70A2FF] to-[#F76E64]"></div>
                   <div className="flex flex-col gap-1">
                     <h5 className="text-xs font-normal text-gray-shade-18">
-                      Creater
+                      Creator
                     </h5>
 
                     <h5 className="word-break text-sm font-semibold text-white">
