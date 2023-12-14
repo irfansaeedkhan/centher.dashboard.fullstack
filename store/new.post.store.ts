@@ -15,7 +15,6 @@ export interface NewPostStore {
   modalType: ModalType;
   postId: string | null; // Used for editing post
   parentPostId: string | null; // Used for replying to a post
-
   editorState: EditorState;
   setEditorState: (editorState: EditorState) => void;
   clearEditorState: () => void;
@@ -33,10 +32,11 @@ export interface NewPostStore {
 
   removeEditPostFile: (fileUuid: string) => void;
 
-  postTextMaxLength: 260;
+  citizenUserPostText: 320;
+  nonCitizenUserPostText: 260;
   setPostText: (text: string) => void;
 
-  createPost: () => Promise<void>;
+  createPost: (user: any) => Promise<void>;
   posts: INewPost[];
   addNewPost: () => void;
   removePost: (postUuid: string) => void;
@@ -55,8 +55,10 @@ export const useNewPostStore = create<NewPostStore>()(
       postId: null,
       parentPostId: null,
       posts: [],
+
       isModalOpen: false,
-      postTextMaxLength: 260,
+      citizenUserPostText: 320,
+      nonCitizenUserPostText: 260,
       editorState: EditorState.createEmpty(),
 
       setEditorState: (editorState) => {
@@ -342,7 +344,7 @@ export const useNewPostStore = create<NewPostStore>()(
         });
       },
 
-      createPost: async () => {
+      createPost: async (user) => {
         try {
           // Exclude the last post if it is empty
           let postArray = cloneDeep(get().posts);
@@ -370,16 +372,20 @@ export const useNewPostStore = create<NewPostStore>()(
             return;
           }
 
-          // Check if the post text is more than 260 characters
+          let maxPostTextLength: number;
+          if (user.membership.status === "citizen") {
+            maxPostTextLength = get().citizenUserPostText;
+          } else {
+            maxPostTextLength = get().nonCitizenUserPostText;
+          }
+
           if (
             postArray.some(
-              (post) => post.post_text.trim().length > get().postTextMaxLength
+              (post) => post.post_text.trim().length > maxPostTextLength
             )
           ) {
             toast.error(
-              `Post text should not be more than ${
-                get().postTextMaxLength
-              } characters`
+              `Post text should not be more than ${maxPostTextLength} characters`
             );
             return;
           }
