@@ -45,6 +45,7 @@ export type FormState = {
     fee_option: string;
     liquidity_lockup: string;
     release_month: string;
+    add_fee?: string;
   };
   add_additional_info: {
     logo_url: string;

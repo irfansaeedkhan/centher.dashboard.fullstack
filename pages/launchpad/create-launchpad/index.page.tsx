@@ -29,9 +29,10 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       token_address: "",
       sale_rounds: 0,
       currency: "BNB",
-      fee_option: "5% MATIC raised only",
+      fee_option: "5% BNB raised only",
       liquidity_lockup: "7 Days",
       release_month: "0 Day",
+      add_fee: "",
     },
     add_additional_info: {
       logo_url: "",

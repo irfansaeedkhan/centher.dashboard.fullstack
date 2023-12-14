@@ -15,7 +15,7 @@ const FeeOptions: React.FC<FormStateProps> = ({ formState, setFormState }) => {
       <div className="flex flex-col gap-4">
         <RadioButtonComponent
           selectedValue={formState.verify_token.fee_option}
-          value={"5% MATIC raised only"}
+          value={"5% BNB raised only"}
           handleClick={(value) =>
             setFormState((prev) => {
               return {

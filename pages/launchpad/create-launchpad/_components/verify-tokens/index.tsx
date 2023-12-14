@@ -1,4 +1,5 @@
 import React from "react";
+import clsx from "clsx";
 import { BNBIcon } from "@/assets/svgs";
 import SaleRounds from "./sale-rounds";
 import Currency from "./currency";
@@ -54,6 +55,27 @@ export const VerifyTokenForm: React.FC<FormStateProps> = ({
       <SaleRounds formState={formState} setFormState={setFormState} />
       <Currency formState={formState} setFormState={setFormState} />
       <FeeOptions formState={formState} setFormState={setFormState} />
+      {formState.verify_token.fee_option === "Other" && (
+        <div className={gradientBorderInputMain}>
+          <label
+            htmlFor="add_fee"
+            className={clsx(label, "text-gray-shade-14")}
+          >
+            Add Fee
+          </label>
+          <div className={gradientBorderInputParent}>
+            <input
+              type="text"
+              id="add_fee"
+              name="add_fee"
+              placeholder="Example: 3%"
+              className={gradientBorderInput}
+              value={formState.verify_token.add_fee}
+              onChange={handleChange}
+            />
+          </div>
+        </div>
+      )}
       <LiquidityLockups formState={formState} setFormState={setFormState} />
       <ReleaseMonth formState={formState} setFormState={setFormState} />
       <NoteDisclamer />
