@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import clsx from "clsx";
 import toast from "react-hot-toast";
+import { BNBIcon } from "@/assets/svgs";
 import { DateInputField } from "@/components/shared";
 import { CurrentComponent, FormStateProps } from "../shared-types";
 import { NoteDisclamer } from "../note-disclamer";
@@ -11,6 +12,7 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
 }) => {
   const [currentRound, setCurrentRound] = useState(1);
   const [currentComponent, setCurrentComponent] = useState<CurrentComponent>({
+    token_price: "",
     total_selling_amount: "",
     soft_cap_busd: "",
     start_time: null,
@@ -110,6 +112,7 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
                       ...prev.rounds_settings.round,
                       {
                         round_no: index + 1,
+                        token_price: currentComponent.token_price,
                         total_selling_amount:
                           currentComponent.total_selling_amount,
                         soft_cap_busd: currentComponent.soft_cap_busd,
@@ -125,6 +128,7 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
               setCurrentRound(index + 1);
               setCurrentComponent({
                 total_selling_amount: "",
+                token_price: "",
                 soft_cap_busd: "",
                 start_time: null,
                 end_time: null,
@@ -138,6 +142,34 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
         ))}
       </div>
       <div className="flex flex-col gap-5">
+        <div className={gradientBorderInputMain}>
+          <label htmlFor="token_price" className={label}>
+            Price/Token
+            <span className={labelSpan}>*</span>
+          </label>
+          <div className={gradientBorderInputParent}>
+            <input
+              type="text"
+              id="token_price"
+              name="token_price"
+              placeholder="Example: 100"
+              className={gradientBorderInput}
+              value={
+                formState.rounds_settings.round[currentRound - 1].token_price ??
+                currentComponent.token_price
+              }
+              onChange={handleChangeEvent}
+            />
+            <p className="text-gradient flex w-fit gap-0.5 pb-2 pt-1 text-xs font-medium">
+              <span className="flex h-3.5 w-3.5 flex-shrink-0">
+                <BNBIcon />
+              </span>
+              <span>00 BNB</span>
+              <span> = </span>
+              <span>00 Token</span>
+            </p>
+          </div>
+        </div>
         <div className={gradientBorderInputMain}>
           <label htmlFor="total_selling_amount" className={label}>
             Total Selling Amount
@@ -180,9 +212,10 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
         </div>
         <p className="textGradient w-fit text-[13px] leading-5">
           Enter the percentage of funds raised that should be allocated to the
-          liquidity pool (Min 51%, Max 100%)Ex: How many tokens will I receive
-          if I spend 1 BNB? The amount is going to be lower to allow a higher
-          listing price.
+          liquidity pool (Min 51%, Max 100%)
+          <br />
+          Ex: How many tokens will I receive if I spend 1 BNB? The amount is
+          going to be lower to allow a higher listing price.
         </p>
         <div className={gridParent}>
           <DateInputField

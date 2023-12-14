@@ -1,5 +1,6 @@
 import React from "react";
 import clsx from "clsx";
+import { BiCalendar } from "react-icons/bi";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { Datepicker } from "@aliakbarazizi/headless-datepicker";
 import cn from "@/utils/cn";
@@ -29,14 +30,15 @@ export const DateInputField: React.FC<Props> = ({
           <Datepicker.Input
             format={
               type === "date"
-                ? "mm/dd/yyyy"
+                ? "MM-dd-yyyy"
                 : type === "time"
                 ? "hh:mm"
-                : "mm/dd/yyyy hh:mm"
+                : "MM-dd-yyyy hh:mm"
             }
             placeholder="Select Date and Time"
-            className={gradientBorderInput}
+            className={clsx(gradientBorderInput, "relative")}
           />
+          <BiCalendar className="absolute right-3 top-3 h-6 w-6 text-white" />
           <Datepicker.Picker
             defaultType="day"
             className={clsx(
