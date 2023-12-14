@@ -353,6 +353,9 @@ export const useSinglePostStore = create<SinglePostStore>()(
         });
       },
     }),
-    { name: "SinglePostStore" }
+    {
+      name: "SinglePostStore",
+      enabled: process.env.NEXT_PUBLIC_APP_ENV !== "production",
+    }
   )
 );

@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import { ethers } from "ethers";
-import { useWeb3React } from "@web3-react/core";
 import {
   JsonRpcSigner,
   TransactionReceipt,
@@ -9,6 +8,7 @@ import {
 import toast from "react-hot-toast";
 import { injectedConnector } from "@/web3/connector";
 import { useWalletService } from "./use.wallet.service";
+import { useMetamask } from "./use.metamask";
 
 export enum WalletEnum {
   METAMASK = "METAMASK",
@@ -16,9 +16,10 @@ export enum WalletEnum {
 }
 
 const CONNECTED_WALLET_KEY = "connected_wallet";
+const IS_WALLET_CONNECTED = "is_wallet_connected";
 
 export const useWallet = () => {
-  const { account, activate, library, deactivate } = useWeb3React();
+  const { account, activate, library, deactivate } = useMetamask();
   const [metamaskSigner, setMetamaskSigner] = useState<
     JsonRpcSigner | undefined
   >();
@@ -27,6 +28,22 @@ export const useWallet = () => {
   const [connectedAddress, setConnectedAddress] = useState<
     string | null | undefined
   >(null);
+
+  useEffect(() => {
+    const wallet_connected = localStorage.getItem(IS_WALLET_CONNECTED);
+    const wallet = getWalletType();
+    const reConnect = () => {
+      if (typeof window.ethereum !== "undefined") {
+        activate(injectedConnector, (error) => {});
+        localStorage.setItem(IS_WALLET_CONNECTED, "true");
+      }
+    };
+    if (wallet_connected == "true") {
+      if (wallet == WalletEnum.METAMASK) {
+        reConnect();
+      }
+    }
+  }, [activate]);
 
   const updateConnectedAccount = useCallback(async () => {
     if (account || address) {
@@ -114,7 +131,7 @@ export const useWallet = () => {
             toast.error(`Please connect to the ${network}!`);
           }
         });
-
+        localStorage.setItem(IS_WALLET_CONNECTED, "true");
         setWalletType(wallet);
       } else {
         toast.error("Please install MetaMask!");
@@ -122,6 +139,7 @@ export const useWallet = () => {
     } else if (wallet == WalletEnum.WALLET_SERVICE) {
       setWalletType(wallet);
       await connect();
+      localStorage.setItem(IS_WALLET_CONNECTED, "true");
     }
   };
 
@@ -157,6 +175,7 @@ export const useWallet = () => {
     } else {
       disconnect();
     }
+    localStorage.setItem(IS_WALLET_CONNECTED, "false");
     setConnectedAddress(undefined);
   };
 

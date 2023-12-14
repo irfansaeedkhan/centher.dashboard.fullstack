@@ -279,6 +279,9 @@ export const useAdminLaunchpadRewards = create<NetworkRewards>()(
         }
       },
     }),
-    { name: "ExploreStore" }
+    {
+      name: "ExploreStore",
+      enabled: process.env.NEXT_PUBLIC_APP_ENV !== "production",
+    }
   )
 );

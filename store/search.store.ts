@@ -86,6 +86,9 @@ export const useSearchStore = create<SearchStore>()(
         });
       },
     }),
-    { name: "SearchStore" }
+    {
+      name: "SearchStore",
+      enabled: process.env.NEXT_PUBLIC_APP_ENV !== "production",
+    }
   )
 );

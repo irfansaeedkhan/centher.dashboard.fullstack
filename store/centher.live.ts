@@ -19,7 +19,10 @@ export const useCentherLiveStore = create<CentherLiveStore>()(
       adapter: null,
       setAdapter: (adapter: CentherLive) => set({ adapter }),
     }),
-    { name: "CentherLiveStore" }
+    {
+      name: "CentherLiveStore",
+      enabled: process.env.NEXT_PUBLIC_APP_ENV !== "production",
+    }
   )
 );
 
@@ -30,6 +33,9 @@ export const useConversationsStore = create<ConversationStore>()(
       setConversations: (conversations: IConversation[]) =>
         set({ conversations }),
     }),
-    { name: "conversationsStore" }
+    {
+      name: "conversationsStore",
+      enabled: process.env.NEXT_PUBLIC_APP_ENV !== "production",
+    }
   )
 );

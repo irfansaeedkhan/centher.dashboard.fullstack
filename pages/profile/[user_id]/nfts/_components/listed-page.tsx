@@ -1,45 +1,66 @@
 import React, { useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
+import { useShallow } from "zustand/react/shallow";
+import { useInView } from "react-intersection-observer";
 import clsx from "clsx";
 import { HotNftEmptyIcon } from "@/assets/svgs";
 import { NFTImageCard } from "@/components/nft.image.card";
-import { useProfileNFTStore } from "@/store/profile.nft.store";
-import { LoadingStatus } from "@/utils/enums/loading.status.enum";
+import { useProfileListedNftsStore } from "@/store/profile-listed-nfts.store";
 
-// FIXME: No Pagination on this page?
 const ListedPage = () => {
   const router = useRouter();
   const userId = useMemo(() => {
     return router.query.user_id as string;
   }, [router.query.user_id]);
-  const { listedNFTs, fetchListedNFTs, loadingListedNFTs } = useProfileNFTStore(
-    (state) => ({
-      listedNFTs: state.listedNfts,
-      fetchListedNFTs: state.fetchListedNFTs,
-      loadingListedNFTs: state.loadingListedNFTs,
-    })
+  const { listedNfts, offset, loading } = useProfileListedNftsStore(
+    useShallow((state) => ({
+      listedNfts: state.listedNfts,
+      offset: state.offset,
+      loading: state.loading,
+    }))
   );
+  const { fetchListedNFTs, updateOffset, resetListedNfts } =
+    useProfileListedNftsStore(useShallow((state) => state.actions));
+
+  const [lastNftRef, _lastNftInView, lastNftEntry] = useInView();
+
+  useEffect(() => {
+    if (lastNftEntry?.isIntersecting) {
+      updateOffset();
+    }
+  }, [lastNftRef, lastNftEntry, updateOffset]);
+
+  useEffect(() => {
+    if (offset > 0) {
+      fetchListedNFTs();
+    }
+  }, [offset, fetchListedNFTs]);
 
   useEffect(() => {
     if (userId) {
-      fetchListedNFTs(userId, 0, 50);
+      resetListedNfts(userId, "loading");
+      fetchListedNFTs();
     }
-  }, [userId, fetchListedNFTs]);
+    return () => {
+      resetListedNfts("", "idle");
+    };
+  }, [userId, resetListedNfts, fetchListedNFTs]);
 
   return (
     <>
-      {loadingListedNFTs == LoadingStatus.loaded && !!listedNFTs.length ? (
-        <div className={clsx(`grid grid-cols-[1fr,1fr,1fr] gap-2`)}>
-          {listedNFTs.map((nft) => (
-            <NFTImageCard data={nft} key={nft.id} />
-          ))}
-        </div>
-      ) : (
-        loadingListedNFTs == LoadingStatus.loading && (
+      <div className={clsx(`grid grid-cols-[1fr,1fr,1fr] gap-2`)}>
+        {listedNfts.map((nft) => (
+          <NFTImageCard data={nft} key={nft.id} />
+        ))}
+
+        {(loading === "loading" || loading === "idle") && (
           <div className="!h-[104px] !w-full animate-pulse rounded-xl bg-[#3C3F4A] [@media(min-width:768px)]:!h-[275px] [@media(min-width:768px)]:!w-[275px]"></div>
-        )
-      )}
-      {loadingListedNFTs == LoadingStatus.loaded && !listedNFTs.length && (
+        )}
+
+        <div ref={lastNftRef} />
+      </div>
+
+      {loading === "loaded" && listedNfts.length === 0 && (
         <>
           <div className="flex items-center justify-center text-white">
             <HotNftEmptyIcon />
