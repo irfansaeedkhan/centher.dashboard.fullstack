@@ -140,18 +140,18 @@ export const PostEditor: React.FC = () => {
 
   const handleBeforeInput = (value: string) => {
     const textLength = editorState.getCurrentContent().getPlainText().length;
-    if (value && user?.membership.status === "citizen") {
-      if (textLength >= citizenUserPostText) {
-        return "handled";
-      } else {
-        return "not-handled";
-      }
-    } else if (value && user?.membership.status !== "citizen") {
-      if (textLength >= nonCitizenUserPostText) {
-        return "handled";
-      } else {
-        return "not-handled";
-      }
+    if (
+      value &&
+      user?.membership.status === "citizen" &&
+      textLength >= citizenUserPostText
+    ) {
+      return "handled";
+    } else if (
+      value &&
+      user?.membership.status !== "citizen" &&
+      textLength >= nonCitizenUserPostText
+    ) {
+      return "handled";
     }
     return "not-handled";
   };
