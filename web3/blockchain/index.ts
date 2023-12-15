@@ -23,7 +23,7 @@ import { getSigner, simpleRpcProvider } from "./helpers/provider.helper";
 import { normalizeValue } from "./helpers/math.helper";
 import { AddressFactory } from "./providers/address.provider";
 import { BlockchainConfig } from "./config";
-import { MappedCreateLaunchpadInput } from "@/launchpad/types.ts";
+// import { MappedCreateLaunchpadInput } from "@/launchpad/types.ts";
 
 export class BlockchainRead {
   static async isContractAddress(
@@ -1866,8 +1866,8 @@ export class BlockchainWrite {
 
   static async createLaunchpad(
     signer: JsonRpcSigner,
-    data: MappedCreateLaunchpadInput
-    // preflight: boolean
+    presaleData: any,
+    roundInfoData: any
   ): Promise<string> {
     try {
       const launchpadContract = SmartContractProvider.getContract(
@@ -1875,13 +1875,23 @@ export class BlockchainWrite {
         signer
       );
 
-      await launchpadContract.callStatic.createPresale(data, {
-        value: parseUnits("0.001", "ether"),
-      });
+      let call = await launchpadContract.callStatic.createPresale(
+        presaleData,
+        roundInfoData,
+        {
+          value: parseUnits("0.001", "ether"),
+        }
+      );
 
-      let tx = await launchpadContract.functions.createPresale(data, {
-        value: parseUnits("0.001", "ether"),
-      });
+      console.log("StaticCallResponse: ", call);
+
+      let tx = await launchpadContract.functions.createPresale(
+        presaleData,
+        roundInfoData,
+        {
+          value: parseUnits("0.001", "ether"),
+        }
+      );
 
       await tx.wait();
 
