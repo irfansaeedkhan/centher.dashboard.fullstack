@@ -31,7 +31,7 @@ const SaleRounds: React.FC<FormStateProps> = ({ formState, setFormState }) => {
     <div className="col-span-1 mb-6 w-full text-sm font-medium text-white md:mb-0">
       <label
         htmlFor="sale_rounds"
-        className="mb-4 block font-normal tracking-wide"
+        className="mb-4 block font-normal tracking-wide text-gray-shade-14"
       >
         Select amount of sale rounds
         <span className="text-gradient ml-[2px]">*</span>

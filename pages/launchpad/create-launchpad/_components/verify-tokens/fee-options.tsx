@@ -7,7 +7,7 @@ const FeeOptions: React.FC<FormStateProps> = ({ formState, setFormState }) => {
     <div className="col-span-1 mb-6 w-full text-sm font-medium text-white md:mb-0">
       <label
         htmlFor="fee_option"
-        className="mb-4 block font-normal tracking-wide"
+        className="mb-4 block font-normal tracking-wide text-gray-shade-14"
       >
         Fee Option
         <span className="text-gradient ml-[2px]">*</span>
@@ -15,7 +15,7 @@ const FeeOptions: React.FC<FormStateProps> = ({ formState, setFormState }) => {
       <div className="flex flex-col gap-4">
         <RadioButtonComponent
           selectedValue={formState.verify_token.fee_option}
-          value={"5% MATIC raised only"}
+          value={"5% BNB raised only"}
           handleClick={(value) =>
             setFormState((prev) => {
               return {

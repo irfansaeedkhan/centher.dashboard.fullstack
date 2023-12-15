@@ -1,7 +1,11 @@
 import React from "react";
+import clsx from "clsx";
+import { BNBIcon } from "@/assets/svgs";
 import SaleRounds from "./sale-rounds";
 import Currency from "./currency";
 import FeeOptions from "./fee-options";
+import ReleaseMonth from "./release_month";
+import LiquidityLockups from "./liquidity-lockups";
 import { FormStateProps } from "../shared-types";
 import { NoteDisclamer } from "../note-disclamer";
 
@@ -40,31 +44,41 @@ export const VerifyTokenForm: React.FC<FormStateProps> = ({
             onChange={handleChange}
           />
         </div>
-        <p className="text-gradient w-fit pb-2 pt-1 text-xs font-medium">
-          Pool creation fee: 100 BNB
+        <p className="text-gradient flex w-fit gap-0.5 pb-2 pt-1 text-xs font-medium">
+          <span>Pool creation fee: </span>
+          <span className="flex h-3.5 w-3.5 flex-shrink-0">
+            <BNBIcon />
+          </span>
+          <span>100 BNB</span>
         </p>
       </div>
       <SaleRounds formState={formState} setFormState={setFormState} />
       <Currency formState={formState} setFormState={setFormState} />
       <FeeOptions formState={formState} setFormState={setFormState} />
-      <NoteDisclamer />
-      <div className={gradientBorderInputMain}>
-        <label htmlFor="liquidity_lockup" className={label}>
-          Liquidity lockup (days)
-          <span className={labelSpan}>*</span>
-        </label>
-        <div className={gradientBorderInputParent}>
-          <input
-            type="text"
-            id="liquidity_lockup"
-            name="liquidity_lockup"
-            placeholder="Example: 0"
-            className={gradientBorderInput}
-            value={formState.verify_token.liquidity_lockup}
-            onChange={handleChange}
-          />
+      {formState.verify_token.fee_option === "Other" && (
+        <div className={gradientBorderInputMain}>
+          <label
+            htmlFor="add_fee"
+            className={clsx(label, "text-gray-shade-14")}
+          >
+            Add Fee
+          </label>
+          <div className={gradientBorderInputParent}>
+            <input
+              type="text"
+              id="add_fee"
+              name="add_fee"
+              placeholder="Example: 3%"
+              className={gradientBorderInput}
+              value={formState.verify_token.add_fee}
+              onChange={handleChange}
+            />
+          </div>
         </div>
-      </div>
+      )}
+      <LiquidityLockups formState={formState} setFormState={setFormState} />
+      <ReleaseMonth formState={formState} setFormState={setFormState} />
+      <NoteDisclamer />
     </div>
   );
 };

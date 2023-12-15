@@ -23,6 +23,7 @@ export type RoundCardData = {
 };
 
 export type CurrentComponent = {
+  token_price: string;
   total_selling_amount: string;
   soft_cap_busd: string;
   start_time: Date | null;
@@ -40,9 +41,11 @@ export type FormState = {
   verify_token: {
     token_address: string;
     sale_rounds: number;
-    currency: string;
+    currency: "BNB" | "USDT";
     fee_option: string;
     liquidity_lockup: string;
+    release_month: string;
+    add_fee?: string;
   };
   add_additional_info: {
     logo_url: string;
@@ -63,6 +66,7 @@ export type FormState = {
   rounds_settings: {
     round: {
       round_no: number;
+      token_price: string;
       total_selling_amount: string;
       soft_cap_busd: string;
       start_time: Date | null;
