@@ -10,7 +10,7 @@ export const PromotionCard9Mobile: React.FC<Props> = ({
   return (
     <div
       className={clsx(
-        `relative flex h-[330px] w-[272px] rounded-10px border border-gray-shade-3`,
+        `relative flex h-[330px] w-full max-w-[272px] rounded-10px border border-gray-shade-3`,
         className
       )}
       {...props}

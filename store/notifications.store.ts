@@ -142,7 +142,10 @@ export const useNotificationsStore = create<NotificationsStore>()(
         }
       },
     }),
-    { name: "NotificationsStore" }
+    {
+      name: "NotificationsStore",
+      enabled: process.env.NEXT_PUBLIC_APP_ENV !== "production",
+    }
   )
 );
 
