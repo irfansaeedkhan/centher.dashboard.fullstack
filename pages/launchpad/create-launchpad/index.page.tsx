@@ -22,8 +22,7 @@ import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.en
 import { BigNumber, ethers } from "ethers";
 
 const CreateLaunchpad: NextPageWithLayout = () => {
-  const { getSigner, disconnectWallet, connectWallet, connectedAddress } =
-    useWallet();
+  const { getSigner, connectedAddress } = useWallet();
 
   const signer = getSigner();
 
@@ -41,8 +40,8 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       sale_rounds: 0,
       currency: "BNB",
       fee_option: "5% BNB raised only",
-      liquidity_lockup: "7 Days",
-      release_month: "0 Day",
+      liquidity_lockup: "30 Days",
+      release_month: "360 Days",
       add_fee: "500",
     },
     add_additional_info: {

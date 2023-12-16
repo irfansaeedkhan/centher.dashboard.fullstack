@@ -26,22 +26,22 @@ const LiquidityLockups: React.FC<FormStateProps> = ({
       <div className="flex items-center gap-4">
         <RadioButtonComponent
           selectedValue={formState.verify_token.liquidity_lockup}
-          value={"7 Days"}
-          handleClick={(value) => handleClick(value as string)}
-        />
-        <RadioButtonComponent
-          selectedValue={formState.verify_token.liquidity_lockup}
-          value={"15 Days"}
-          handleClick={(value) => handleClick(value as string)}
-        />
-        <RadioButtonComponent
-          selectedValue={formState.verify_token.liquidity_lockup}
           value={"30 Days"}
           handleClick={(value) => handleClick(value as string)}
         />
         <RadioButtonComponent
           selectedValue={formState.verify_token.liquidity_lockup}
-          value={"45 Days"}
+          value={"60 Days"}
+          handleClick={(value) => handleClick(value as string)}
+        />
+        <RadioButtonComponent
+          selectedValue={formState.verify_token.liquidity_lockup}
+          value={"90 Days"}
+          handleClick={(value) => handleClick(value as string)}
+        />
+        <RadioButtonComponent
+          selectedValue={formState.verify_token.liquidity_lockup}
+          value={"120 Days"}
           handleClick={(value) => handleClick(value as string)}
         />
       </div>
