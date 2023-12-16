@@ -8,6 +8,7 @@ import ReleaseMonth from "./release_month";
 import LiquidityLockups from "./liquidity-lockups";
 import { FormStateProps } from "../shared-types";
 import { NoteDisclamer } from "../note-disclamer";
+import { CustomNumberInput } from "@/components/custom-number-input";
 
 export const VerifyTokenForm: React.FC<FormStateProps> = ({
   formState,
@@ -64,14 +65,25 @@ export const VerifyTokenForm: React.FC<FormStateProps> = ({
             Add Fee
           </label>
           <div className={gradientBorderInputParent}>
-            <input
-              type="text"
+            <CustomNumberInput
+              min={0}
+              max={100}
               id="add_fee"
               name="add_fee"
               placeholder="Example: 3%"
               className={gradientBorderInput}
               value={formState.verify_token.add_fee}
-              onChange={handleChange}
+              onChange={(value) =>
+                setFormState((prev) => {
+                  return {
+                    ...prev,
+                    verify_token: {
+                      ...prev.verify_token,
+                      add_fee: Number(value),
+                    },
+                  };
+                })
+              }
             />
           </div>
         </div>

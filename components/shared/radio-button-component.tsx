@@ -4,6 +4,7 @@ import clsx from "clsx";
 interface Props {
   selectedValue: number | string;
   value: number | string;
+  additionalValue?: string | number;
   handleClick: (value: number | string) => void;
 }
 
@@ -11,6 +12,7 @@ export const RadioButtonComponent: React.FC<Props> = ({
   selectedValue,
   value,
   handleClick,
+  additionalValue,
 }) => {
   return (
     <div className="flex items-center gap-3">
@@ -27,10 +29,11 @@ export const RadioButtonComponent: React.FC<Props> = ({
           <span className="background-gradient-color h-[10px] w-[10px] flex-shrink-0 rounded-full"></span>
         )}
       </div>
-      <span className="text-sm uppercase text-white">
-        {value}{" "}
-        {value.toString().includes("%") && (
-          <span className="text-gradient w-fit">(Recommended)</span>
+      <span className="flex text-sm uppercase text-white">
+        <span>{value}</span>
+        {additionalValue && <span className="ml-1">{additionalValue}</span>}
+        {additionalValue?.toString().includes("%") && (
+          <span className="text-gradient ml-1 w-fit">(Recommended)</span>
         )}
       </span>
     </div>

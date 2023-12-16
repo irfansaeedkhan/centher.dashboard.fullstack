@@ -42,10 +42,10 @@ export type FormState = {
     token_address: string;
     sale_rounds: number;
     currency: "BNB" | "USDT";
-    fee_option: string;
-    liquidity_lockup: string;
-    release_month: string;
-    add_fee?: string;
+    fee_option: number | string;
+    liquidity_lockup: number;
+    release_month: number;
+    add_fee?: number;
   };
   add_additional_info: {
     logo_url: string;
