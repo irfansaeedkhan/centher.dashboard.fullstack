@@ -32,8 +32,7 @@ export interface NewPostStore {
 
   removeEditPostFile: (fileUuid: string) => void;
 
-  citizenUserPostText: 320;
-  nonCitizenUserPostText: 260;
+  nonCitizenUserPostText: 320;
   setPostText: (text: string) => void;
 
   createPost: (user: any) => Promise<void>;
@@ -57,8 +56,7 @@ export const useNewPostStore = create<NewPostStore>()(
       posts: [],
 
       isModalOpen: false,
-      citizenUserPostText: 320,
-      nonCitizenUserPostText: 260,
+      nonCitizenUserPostText: 320,
       editorState: EditorState.createEmpty(),
 
       setEditorState: (editorState) => {
@@ -373,10 +371,10 @@ export const useNewPostStore = create<NewPostStore>()(
           }
 
           let maxPostTextLength: number;
-          if (user.membership.status === "citizen") {
-            maxPostTextLength = get().citizenUserPostText;
-          } else {
+          if (user.membership.status !== "citizen") {
             maxPostTextLength = get().nonCitizenUserPostText;
+          } else {
+            maxPostTextLength = Infinity;
           }
 
           if (

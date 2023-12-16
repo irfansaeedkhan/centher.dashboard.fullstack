@@ -23,7 +23,6 @@ const PostModalFooter: React.FC<Props> = ({
 }) => {
   const {
     isPostModalLoading,
-    citizenUserPostText,
     nonCitizenUserPostText,
     createPost,
     addNewPost,
@@ -66,9 +65,9 @@ const PostModalFooter: React.FC<Props> = ({
           <PostTextCounter
             currentLength={lastPost.post_text.length}
             maxLength={
-              user?.membership.status === "citizen"
-                ? citizenUserPostText
-                : nonCitizenUserPostText
+              user?.membership.status !== "citizen"
+                ? nonCitizenUserPostText
+                : Infinity
             }
           />
         </div>
