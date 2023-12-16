@@ -13,17 +13,17 @@ export const PromotionCard3Mobile: React.FC<Props> = ({
   return (
     <div
       className={clsx(
-        `relative flex h-[348px] w-[272px] flex-col items-center justify-end overflow-hidden rounded-10px border border-gray-shade-3 bg-[url(/images/market-place-comingsoon.png)] bg-cover bg-no-repeat p-6`,
+        `relative flex h-[348px] w-full max-w-[200px] flex-col items-center justify-end overflow-hidden rounded-10px border border-gray-shade-3 bg-[url(/images/market-place-comingsoon.png)] bg-cover bg-no-repeat p-6 fxm:max-w-[272px]`,
         className
       )}
       {...props}
     >
       <div className="mb-[6px] mt-3 flex flex-col items-center justify-center gap-4 text-center">
         <span>
-          <h2 className="!text-[24px] font-extrabold leading-[26px] text-white">
+          <h2 className="text-xl font-bold text-white fxm:text-2xl fxm:leading-[26px]">
             NFT
           </h2>
-          <h2 className="animationTextHeading !text-[24px] font-extrabold leading-[26px]">
+          <h2 className="animationTextHeading text-xl font-bold fxm:text-2xl fxm:leading-[26px]">
             MARKETPLACE
           </h2>
         </span>
@@ -39,12 +39,13 @@ export const PromotionCard3Mobile: React.FC<Props> = ({
           href={{
             pathname: AppRoutes.marketplace.explore,
           }}
+          className="flex w-full items-center justify-center px-4"
         >
           <Button
             title="Check it out"
             variant="primary"
             borderRounded="10px"
-            className="mt-4"
+            className="w-full max-w-full text-sm fsm:text-base"
           />
         </Link>
       </div>

@@ -9,7 +9,7 @@ export const PromotionCard7Mobile = () => {
   return (
     <div
       className={clsx(
-        `relative flex h-[330px] w-[272px] flex-col items-center justify-end rounded-10px border border-gray-shade-3 bg-[url(/images/apy-ad.png)] bg-cover bg-center bg-no-repeat pb-4`
+        `relative flex h-[330px] w-full max-w-[272px] flex-col items-center justify-end rounded-10px border border-gray-shade-3 bg-[url(/images/apy-ad.png)] bg-cover bg-center bg-no-repeat pb-4`
       )}
     >
       <Image
@@ -20,7 +20,7 @@ export const PromotionCard7Mobile = () => {
         className="h-[181px] w-[175px] object-contain"
       />
       <div className="flex flex-col items-center gap-2.5">
-        <p className="text-center text-xl font-bold text-white">
+        <p className="px-0.5 text-center text-base font-bold text-white fxm:text-xl">
           3.75% Monthly Rewards
         </p>
         <p className="px-1 text-center text-[10px] font-medium uppercase text-white">
@@ -29,13 +29,13 @@ export const PromotionCard7Mobile = () => {
         </p>
         <Link
           href={AppRoutes.staking.index}
-          className="flex w-full items-center justify-center"
+          className="flex w-full items-center justify-center px-4"
         >
           <Button
             title="Check it OUT!"
             variant="primary"
             borderRounded="10px"
-            className="w-full max-w-[149px]"
+            className="w-full max-w-full text-sm fsm:text-base"
           />
         </Link>
       </div>

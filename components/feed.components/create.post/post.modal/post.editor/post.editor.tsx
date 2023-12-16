@@ -39,7 +39,7 @@ export const PostEditor: React.FC = () => {
     posts,
     setPostText,
     removePost,
-    postTextMaxLength,
+    nonCitizenUserPostText,
     editorState,
     setEditorState,
   } = useNewPostStore();
@@ -139,7 +139,11 @@ export const PostEditor: React.FC = () => {
 
   const handleBeforeInput = (value: string) => {
     const textLength = editorState.getCurrentContent().getPlainText().length;
-    if (value && textLength >= postTextMaxLength) {
+    if (
+      value &&
+      user?.membership.status !== "citizen" &&
+      textLength >= nonCitizenUserPostText
+    ) {
       return "handled";
     }
     return "not-handled";

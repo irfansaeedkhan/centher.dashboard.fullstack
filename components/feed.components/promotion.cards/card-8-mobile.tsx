@@ -9,7 +9,7 @@ export const PromotionCard8Mobile = () => {
   return (
     <div
       className={clsx(
-        `relative flex h-[330px] w-[272px] flex-col items-center justify-end rounded-10px border border-gray-shade-3 bg-[url(/images/apy-ad.png)] bg-cover bg-center bg-no-repeat px-4 pb-4`
+        `relative flex h-[330px] w-full max-w-[272px] flex-col items-center justify-end rounded-10px border border-gray-shade-3 bg-[url(/images/apy-ad.png)] bg-cover bg-center bg-no-repeat px-4 pb-4`
       )}
     >
       <Image
@@ -17,10 +17,10 @@ export const PromotionCard8Mobile = () => {
         alt="apex-mobile"
         width={175}
         height={181}
-        className="h-[181px] w-[175px] object-contain"
+        className="h-[170px] w-[170px] object-contain fxm:h-[181px] fxm:w-[175px]"
       />
       <div className="flex flex-col items-center gap-2.5">
-        <p className="text-center text-xl font-bold uppercase text-white">
+        <p className="text-center text-base font-bold uppercase text-white fxm:text-xl">
           45% APY in USDT
         </p>
         <p className="text-center text-[10px] font-medium uppercase text-white">
@@ -29,13 +29,13 @@ export const PromotionCard8Mobile = () => {
         </p>
         <Link
           href={AppRoutes.staking.index}
-          className="flex w-full items-center justify-center"
+          className="flex w-full items-center justify-center px-4"
         >
           <Button
             title="Check it OUT!"
             variant="primary"
             borderRounded="10px"
-            className="w-full max-w-[149px]"
+            className="w-full max-w-full text-sm fsm:text-base"
           />
         </Link>
       </div>

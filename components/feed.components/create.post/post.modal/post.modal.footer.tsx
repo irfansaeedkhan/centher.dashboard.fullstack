@@ -6,6 +6,7 @@ import Button from "@/components/button";
 import { LoaderSpinner } from "@/assets/svgs";
 import { PostTextCounter } from "./post.text.counter";
 import { PostModalActionButtons } from "../shared/ui/post.modal.action.buttons";
+import useUser from "@/hooks/use.user";
 
 interface Props {
   handleScroll: () => void;
@@ -22,7 +23,7 @@ const PostModalFooter: React.FC<Props> = ({
 }) => {
   const {
     isPostModalLoading,
-    postTextMaxLength,
+    nonCitizenUserPostText,
     createPost,
     addNewPost,
     modalType,
@@ -32,8 +33,8 @@ const PostModalFooter: React.FC<Props> = ({
 
   const lastPost = getLastPost();
 
+  const { user } = useUser();
   if (!lastPost) return null;
-
   return (
     <div
       className={clsx(
@@ -63,7 +64,11 @@ const PostModalFooter: React.FC<Props> = ({
         >
           <PostTextCounter
             currentLength={lastPost.post_text.length}
-            maxLength={postTextMaxLength}
+            maxLength={
+              user?.membership.status !== "citizen"
+                ? nonCitizenUserPostText
+                : Infinity
+            }
           />
         </div>
 
@@ -97,7 +102,7 @@ const PostModalFooter: React.FC<Props> = ({
             editPost();
             return;
           } else {
-            createPost();
+            createPost(user);
             return;
           }
         }}
