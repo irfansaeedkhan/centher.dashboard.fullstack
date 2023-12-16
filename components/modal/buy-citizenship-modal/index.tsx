@@ -203,6 +203,9 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
                         Launchpad as a service
                       </li>
                       <li className="list-item-with-image">
+                        Unlimited post length
+                      </li>
+                      <li className="list-item-with-image">
                         Giveaway as a service (Coming Soon)
                       </li>
                       <li className="list-item-with-image">
