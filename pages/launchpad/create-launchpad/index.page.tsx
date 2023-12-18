@@ -13,19 +13,30 @@ import {
   VerifyTokenForm,
   roundCardData,
 } from "./_components";
-import { ValidJSON, uploadMetadataToIPFS } from "@/lib/ipfs";
+import {
+  UploadToIPFSResponse,
+  ValidJSON,
+  uploadMetadataToIPFS,
+} from "@/lib/ipfs";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { useWallet } from "@/web3/hooks/use.wallet";
 import { parseEther, parseUnits } from "ethers/lib/utils";
 import { SmartContractProvider } from "@/web3/blockchain/providers/smart.contract.provider";
 import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.enum";
 import { BigNumber, ethers } from "ethers";
+import { AppError } from "@/utils/app-error";
 
 const CreateLaunchpad: NextPageWithLayout = () => {
   const { getSigner, connectedAddress } = useWallet();
 
   const signer = getSigner();
+  let totalSellingAmount = 0;
 
+  const [ipfsResponse, setIpfsResponse] = useState<UploadToIPFSResponse>({
+    cid: "",
+    gateway_url: "",
+    ipfs_url: "",
+  });
   const [isApproved, setisApproved] = useState(false);
 
   const launchpadContract = SmartContractProvider.getContract(
@@ -39,7 +50,7 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       token_address: "",
       sale_rounds: 0,
       currency: "BNB",
-      fee_option: 5,
+      fee_option: 5, //max: 10000
       liquidity_lockup: 30,
       release_month: 3,
       add_fee: 0,
@@ -84,76 +95,15 @@ const CreateLaunchpad: NextPageWithLayout = () => {
 
       console.log("Metadata Uploaded to IPFS", res);
 
-      const presaleInfoParams = {
-        owner: connectedAddress,
-        token: formState.verify_token.token_address,
-        minTokensToSell: parseEther("1").toString(),
-        maxTokensToSell: parseEther("100000000000000000000").toString(),
-        roundDeep: formState.verify_token.sale_rounds,
-        coinFeeRate: Number(100), //formState.verify_token.add_fee,
-        tokenFeeRate: Number(100), //formState.verify_token.add_fee,
-        releaseMonth: 10,
-        isRefSupport: false,
-        fundType: formState.verify_token.currency === "BNB" ? 0 : 1,
-        metadata: res.ipfs_url,
-      };
+      setIpfsResponse(res);
+    } catch (error: any) {
+      let errorMessage = "Metadata not Uploaded to IPFS";
 
-      // const roundOneStart = Math.floor(Date.now() / 1000) + 600;
-      // const roundOneEnd = Math.floor(Date.now() / 1000) + 28800;
-
-      const roundParams = [
-        {
-          startTime:
-            Number(formState.rounds_settings.round[0].start_time) / 1000,
-          endTime: Number(formState.rounds_settings.round[0].end_time) / 1000,
-          lockMonths: 3, //Number(formState.verify_token.liquidity_lockup),
-          minContribution: parseEther(
-            formState.rounds_settings.round[0].min_contribution + ""
-          ).toString(),
-          maxContribution: parseEther(
-            formState.rounds_settings.round[0].max_contribution + ""
-          ).toString(),
-          tokensToSell: parseEther(
-            formState.rounds_settings.round[0].total_selling_amount + ""
-          ).toString(),
-          pricePerToken: parseEther(
-            formState.rounds_settings.round[0].token_price + ""
-          ).toString(),
-        },
-      ];
-
-      // const roundParams = [];
-      // for (let i = 0; i < formState.verify_token.sale_rounds; i++) {
-      //   let roundData = {
-      //     startTime:
-      //       Number(formState.rounds_settings.round[i].start_time) / 1000,
-      //     endTime: Number(formState.rounds_settings.round[i].end_time) / 1000,
-      //     lockMonths: Number(formState.verify_token.liquidity_lockup),
-      //     minContribution: parseEther(
-      //       formState.rounds_settings.round[i].min_contribution + ""
-      //     ).toString(),
-      //     maxContribution: parseEther(
-      //       formState.rounds_settings.round[i].max_contribution + ""
-      //     ).toString(),
-      //     tokensToSell: parseEther(
-      //       formState.rounds_settings.round[i].total_selling_amount + ""
-      //     ).toString(),
-      //     pricePerToken: parseEther(
-      //       formState.rounds_settings.round[i].token_price + ""
-      //     ).toString(),
-      //   };
-      //   roundParams.push(roundData);
-      // }
-
-      if (signer == null) return;
-
-      await BlockchainWrite.createLaunchpad(
-        signer,
-        presaleInfoParams,
-        roundParams
+      throw new AppError(
+        error,
+        error.response?.data?.message ?? errorMessage,
+        "uploadMetaData"
       );
-    } catch (e) {
-      console.log("Error: ", e);
     }
   };
 
@@ -176,11 +126,16 @@ const CreateLaunchpad: NextPageWithLayout = () => {
 
       if (flag) {
         setisApproved(
-          _allowance.gt(parseEther("100000000000000000000").toString())
+          _allowance.gt(parseEther(totalSellingAmount + "").toString())
         );
       }
     },
-    [signer, formState.verify_token.token_address, launchpadContract.address]
+    [
+      signer,
+      formState.verify_token.token_address,
+      launchpadContract.address,
+      totalSellingAmount,
+    ]
   );
 
   const getApproval = async () => {
@@ -200,17 +155,110 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       await tx.wait();
 
       getAllowance();
-    } catch (e) {
-      console.log("error: ", e);
+    } catch (error: any) {
+      let errorMessage = "Approval tx failed";
+
+      throw new AppError(
+        error,
+        error.response?.data?.message ?? errorMessage,
+        "getApproval"
+      );
+    }
+  };
+
+  const createPresaleOnLaunchpad = async () => {
+    if (!signer) return;
+
+    try {
+      let presaleInfoParams = {
+        owner: connectedAddress,
+        token: formState.verify_token.token_address,
+        minTokensToSell: parseEther("1").toString(),
+        maxTokensToSell: parseEther("1").toString(),
+        roundDeep: formState.verify_token.sale_rounds,
+        coinFeeRate:
+          formState.verify_token.fee_option === "Other"
+            ? formState.verify_token.add_fee
+            : formState.verify_token.fee_option,
+        tokenFeeRate:
+          formState.verify_token.fee_option === "Other"
+            ? formState.verify_token.add_fee
+            : formState.verify_token.fee_option,
+        releaseMonth: 10,
+        isRefSupport: false,
+        fundType: formState.verify_token.currency === "BNB" ? 0 : 1,
+        metadata: ipfsResponse.ipfs_url,
+      };
+
+      const roundParams = [];
+      for (let i = 0; i < formState.verify_token.sale_rounds; i++) {
+        let roundData = {
+          startTime:
+            Number(formState.rounds_settings.round[i].start_time) / 1000,
+          endTime: Number(formState.rounds_settings.round[i].end_time) / 1000,
+          lockMonths: Number(formState.verify_token.liquidity_lockup) / 30,
+          minContribution: parseEther(
+            formState.rounds_settings.round[i].min_contribution + ""
+          ).toString(),
+          maxContribution: parseEther(
+            formState.rounds_settings.round[i].max_contribution + ""
+          ).toString(),
+          tokensToSell: parseEther(
+            formState.rounds_settings.round[i].total_selling_amount + ""
+          ).toString(),
+          pricePerToken: parseEther(
+            formState.rounds_settings.round[i].token_price + ""
+          ).toString(),
+        };
+        roundParams.push(roundData);
+        totalSellingAmount += Number(
+          formState.rounds_settings.round[i].total_selling_amount
+        );
+      }
+
+      presaleInfoParams.maxTokensToSell = parseEther(
+        totalSellingAmount.toString()
+      ).toString();
+
+      if (signer == null) return;
+
+      await BlockchainWrite.createLaunchpad(
+        signer,
+        presaleInfoParams,
+        roundParams
+      );
+    } catch (error: any) {
+      let errorMessage = "createPresale tx failed";
+
+      throw new AppError(
+        error,
+        error.response?.data?.message ?? errorMessage,
+        "createPresaleOnLaunchpad"
+      );
     }
   };
 
   const handleOnSubmit = async () => {
-    await getAllowance(true);
-    if (!isApproved && formState.verify_token.currency !== "BNB") {
-      await getApproval();
+    try {
+      if (signer == null) return;
+
+      await uploadMetaData();
+
+      await getAllowance();
+      if (!isApproved && formState.verify_token.currency !== "BNB") {
+        await getApproval();
+      }
+
+      await createPresaleOnLaunchpad();
+    } catch (error: any) {
+      let errorMessage = "Presale not created";
+
+      throw new AppError(
+        error,
+        error.response?.data?.message ?? errorMessage,
+        "handleOnSubmit"
+      );
     }
-    uploadMetaData();
   };
 
   return (
@@ -266,13 +314,7 @@ const CreateLaunchpad: NextPageWithLayout = () => {
           <VerifyTokenForm formState={formState} setFormState={setFormState} />
         )}
         <Button
-          title={
-            formState.current_round === "finish"
-              ? !isApproved && formState.verify_token.currency !== "BNB"
-                ? "Approval"
-                : "Submit"
-              : "Next"
-          }
+          title={formState.current_round === "finish" ? "Submit" : "Next"}
           // disabled={
           //   (formState.current_round === "verify_token" &&
           //     (formState.verify_token.token_address === "" ||
