@@ -62,7 +62,7 @@ const CreateLaunchpad: NextPageWithLayout = () => {
     },
   });
 
-  const handleUploadMetadata = async () => {
+  const uploadMetaData = async () => {
     try {
       let metaDataFinal = {};
       let response: any = {};
@@ -183,16 +183,6 @@ const CreateLaunchpad: NextPageWithLayout = () => {
     [signer, formState.verify_token.token_address, launchpadContract.address]
   );
 
-  useEffect(() => {
-    let flag = true;
-
-    getAllowance(flag);
-
-    return () => {
-      flag = false;
-    };
-  }, [getAllowance]);
-
   const getApproval = async () => {
     if (!signer) return;
 
@@ -213,6 +203,14 @@ const CreateLaunchpad: NextPageWithLayout = () => {
     } catch (e) {
       console.log("error: ", e);
     }
+  };
+
+  const handleOnSubmit = async () => {
+    await getAllowance(true);
+    if (!isApproved && formState.verify_token.currency !== "BNB") {
+      await getApproval();
+    }
+    uploadMetaData();
   };
 
   return (
@@ -298,12 +296,7 @@ const CreateLaunchpad: NextPageWithLayout = () => {
             }
 
             if (formState.current_round === "finish") {
-              if (!isApproved && formState.verify_token.currency !== "BNB") {
-                getApproval();
-                return;
-              }
-
-              handleUploadMetadata();
+              handleOnSubmit();
             }
 
             setFormState((prev) => {
