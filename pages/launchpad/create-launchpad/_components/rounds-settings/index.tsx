@@ -160,15 +160,15 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
               }
               onChange={handleChangeEvent}
             />
-            <p className="text-gradient flex w-fit gap-0.5 pb-2 pt-1 text-xs font-medium">
-              <span className="flex h-3.5 w-3.5 flex-shrink-0">
-                <BNBIcon />
-              </span>
-              <span>00 BNB</span>
-              <span> = </span>
-              <span>00 Token</span>
-            </p>
           </div>
+          <p className="text-gradient flex w-fit gap-0.5 pb-2 pt-1 text-xs font-medium">
+            <span className="flex h-3.5 w-3.5 flex-shrink-0">
+              <BNBIcon />
+            </span>
+            <span>00 BNB</span>
+            <span> = </span>
+            <span>00 Token</span>
+          </p>
         </div>
         <div className={gradientBorderInputMain}>
           <label htmlFor="total_selling_amount" className={label}>
