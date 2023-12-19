@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { BsArrowLeftShort } from "react-icons/bs";
 import toast from "react-hot-toast";
 import Button from "@/components/button";
@@ -33,7 +33,8 @@ const CreateLaunchpad: NextPageWithLayout = () => {
   const { getSigner, connectedAddress } = useWallet();
   const signer = getSigner();
   const [isApproved, setisApproved] = useState(false);
-  const [totalSellingAmount, setTotalSellingAmount] = useState(0);
+  // const [totalSellingAmount, setTotalSellingAmount] = useState(0);
+
   const [ipfsResponse, setIpfsResponse] = useState<UploadToIPFSResponse>({
     cid: "",
     gateway_url: "",
@@ -45,16 +46,6 @@ const CreateLaunchpad: NextPageWithLayout = () => {
     SmartContractName.LAUNCHPAD,
     signer || undefined
   );
-
-  // const progressCallbackHandler = useCallback(
-  //   (title: CreateLaunchpadStepsEnum, value: number) => {
-  //     setProgressModel({
-  //       title,
-  //       value,
-  //     });
-  //   },
-  //   [setProgressModel]
-  // );
 
   const [formState, setFormState] = useState<FormState>({
     current_round: "verify_token",
@@ -84,6 +75,17 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       round: [],
     },
   });
+  const totalPresaleSellingAmount = useMemo(() => {
+    return formState.rounds_settings.round.reduce((prev, current) => {
+      return prev + Number(current.total_selling_amount);
+    }, 0);
+  }, [formState.rounds_settings.round]);
+  // const totalPresaleSellingAmount = formState.rounds_settings.round.reduce(
+  //   (prev, current) => {
+  //     return prev + Number(current.total_selling_amount);
+  //   },
+  //   0
+  // );
 
   const uploadMetaData = async () => {
     try {
@@ -125,14 +127,6 @@ const CreateLaunchpad: NextPageWithLayout = () => {
   const getAllowance = useCallback(
     async (flag = true) => {
       if (!signer) return;
-
-      // const totalPresaleSellingAmount = formState.rounds_settings.round.reduce((prev, current,)=>{
-      //     return prev + current.total_selling_amount
-      // }, 0)
-
-      setProgressModel(true);
-      setModalTitle(CreateLaunchpadStepsEnum.launchpad_allowance);
-
       if (!formState.verify_token.token_address) {
         return;
       }
@@ -146,18 +140,27 @@ const CreateLaunchpad: NextPageWithLayout = () => {
         launchpadContract.address
       );
 
+      console.log("_allowance: ", _allowance);
+      console.log(
+        "totalPresaleSellingAmount: ",
+        parseEther(totalPresaleSellingAmount.toString())
+      );
+      console.log(
+        "condition status: ",
+        _allowance.gt(parseEther(totalPresaleSellingAmount + ""))
+      );
+
       if (flag) {
         setisApproved(
-          _allowance.gt(parseEther(totalSellingAmount + "").toString())
+          _allowance.gt(parseEther(totalPresaleSellingAmount + ""))
         );
       }
-      setProgressModel(false);
     },
     [
       signer,
       formState.verify_token.token_address,
       launchpadContract.address,
-      totalSellingAmount,
+      totalPresaleSellingAmount,
     ]
   );
 
@@ -242,16 +245,10 @@ const CreateLaunchpad: NextPageWithLayout = () => {
           ).toString(),
         };
         roundParams.push(roundData);
-        setTotalSellingAmount((prev) => {
-          return (
-            prev +
-            Number(formState.rounds_settings.round[i].total_selling_amount + "")
-          );
-        });
       }
 
       presaleInfoParams.maxTokensToSell = parseEther(
-        totalSellingAmount.toString()
+        totalPresaleSellingAmount.toString()
       ).toString();
 
       if (signer == null) return;
@@ -273,13 +270,18 @@ const CreateLaunchpad: NextPageWithLayout = () => {
     }
   };
 
+  useEffect(() => {
+    getAllowance();
+  }, [getAllowance]);
+
   const handleOnSubmit = async () => {
     try {
       if (signer == null) return;
 
       await uploadMetaData();
 
-      await getAllowance();
+      // await getAllowance();
+
       if (!isApproved && formState.verify_token.currency !== "BNB") {
         await getApproval();
       }
