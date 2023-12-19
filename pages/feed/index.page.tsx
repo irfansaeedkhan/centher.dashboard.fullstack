@@ -28,7 +28,6 @@ import useUser from "@/hooks/use.user";
 import { customLog } from "@/utils/custom.log";
 import { AppRoutes } from "@/constants/app.routes";
 import { NoPost } from "@/assets/svgs";
-import { PromotionCard9Mobile } from "@/components/feed.components/promotion.cards/card-9-mobile";
 
 const Feed: NextPageWithLayout = () => {
   const { user } = useUser();
