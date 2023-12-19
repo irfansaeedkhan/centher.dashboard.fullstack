@@ -95,15 +95,15 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       console.log("Metadata Uploaded to IPFS", res);
 
       setIpfsResponse(res);
-      // setProgressModel(false);
+      setProgressModel(false);
     } catch (error: any) {
       let errorMessage = "Metadata not Uploaded to IPFS";
+      setProgressModel(false);
+      if (error.message?.toLowerCase().includes("user rejected")) {
+        errorMessage = "User rejected the transaction";
+      }
 
-      throw new AppError(
-        error,
-        error.response?.data?.message ?? errorMessage,
-        "uploadMetaData"
-      );
+      setErrorModal(error?.message ?? errorMessage);
     }
   };
 
@@ -158,12 +158,13 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       setProgressModel(false);
     } catch (error: any) {
       let errorMessage = "Approval tx failed";
-      console.log("error: ", error);
-      throw new AppError(
-        error,
-        error.response?.data?.message ?? errorMessage,
-        "getApproval"
-      );
+
+      setProgressModel(false);
+      if (error.message?.toLowerCase().includes("user rejected")) {
+        errorMessage = "User rejected the transaction";
+      }
+
+      setErrorModal(error?.message ?? errorMessage);
     }
   };
 
@@ -221,6 +222,8 @@ const CreateLaunchpad: NextPageWithLayout = () => {
         totalPresaleSellingAmount.toString()
       ).toString();
 
+      console.log("formState: ", formState);
+
       if (signer == null) return;
 
       await BlockchainWrite.createLaunchpad(
@@ -232,11 +235,12 @@ const CreateLaunchpad: NextPageWithLayout = () => {
     } catch (error: any) {
       let errorMessage = "createPresale tx failed";
 
-      throw new AppError(
-        error,
-        error.response?.data?.message ?? errorMessage,
-        "createPresaleOnLaunchpad"
-      );
+      setProgressModel(false);
+      if (error.message?.toLowerCase().includes("user rejected")) {
+        errorMessage = "User rejected the transaction";
+      }
+
+      setErrorModal(error?.message ?? errorMessage);
     }
   };
 
@@ -256,7 +260,10 @@ const CreateLaunchpad: NextPageWithLayout = () => {
     } catch (error: any) {
       let errorMessage = "Presale not created";
       setProgressModel(false);
-      console.log("error: ", error);
+
+      if (error.message?.toLowerCase().includes("user rejected")) {
+        errorMessage = "User rejected the transaction";
+      }
       setErrorModal(error?.message ?? errorMessage);
     }
   };
