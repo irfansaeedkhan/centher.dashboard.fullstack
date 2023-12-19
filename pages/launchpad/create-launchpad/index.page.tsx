@@ -4,7 +4,11 @@ import toast from "react-hot-toast";
 import Button from "@/components/button";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import { FormState } from "./_components/shared-types";
+import {
+  FormState,
+  ProgressCallback,
+  ProgressModal,
+} from "./_components/shared-types";
 import {
   AdditionalInfoForm,
   Preview,
@@ -25,6 +29,8 @@ import { SmartContractProvider } from "@/web3/blockchain/providers/smart.contrac
 import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.enum";
 import { BigNumber, ethers } from "ethers";
 import { AppError } from "@/utils/app-error";
+import { CreateLaunchpadStepsEnum } from "./_components/shared-enum";
+import { ModalPortal } from "@/components/modal/modal.portal";
 
 const CreateLaunchpad: NextPageWithLayout = () => {
   const { getSigner, connectedAddress } = useWallet();
@@ -37,11 +43,26 @@ const CreateLaunchpad: NextPageWithLayout = () => {
     gateway_url: "",
     ipfs_url: "",
   });
+
+  const [progressModel, setProgressModel] = useState<ProgressModal | null>(
+    null
+  );
+
   const [isApproved, setisApproved] = useState(false);
 
   const launchpadContract = SmartContractProvider.getContract(
     SmartContractName.LAUNCHPAD,
     signer || undefined
+  );
+
+  const progressCallbackHandler = useCallback(
+    (title: CreateLaunchpadStepsEnum, value: number) => {
+      setProgressModel({
+        title,
+        value,
+      });
+    },
+    [setProgressModel]
   );
 
   const [formState, setFormState] = useState<FormState>({

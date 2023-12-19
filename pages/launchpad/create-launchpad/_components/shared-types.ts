@@ -1,3 +1,5 @@
+import { CreateLaunchpadStepsEnum } from "./shared-enum";
+
 export interface FormStateProps {
   formState: FormState;
   setFormState: React.Dispatch<React.SetStateAction<FormState>>;
@@ -76,3 +78,13 @@ export type FormState = {
     }[];
   };
 };
+
+export type ProgressCallback = (
+  processName: CreateLaunchpadStepsEnum,
+  progress: number
+) => void;
+
+export interface ProgressModal {
+  title: CreateLaunchpadStepsEnum;
+  value: number;
+}
