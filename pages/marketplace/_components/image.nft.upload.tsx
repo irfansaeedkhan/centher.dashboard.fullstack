@@ -2,26 +2,27 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import { CrossIcon } from "@/assets/svgs";
+import { AllowedMediaExtensions } from "./allowed-media-extensions";
 import { UploadNFTProps } from "./upload.nft";
 
-const ImageNFTUpload = ({ asset, setAsset, clearForm }: UploadNFTProps) => {
-  const [showSecPreview, setShowSecPreivew] = useState<boolean | null>(false);
+interface Props {
+  asset: UploadNFTProps["asset"];
+  clearForm: UploadNFTProps["clearForm"];
+  setAsset: UploadNFTProps["setAsset"];
+}
 
-  // upload image to preview
-  const uploadFile = (e: any) => {
-    const previewUrl = e.target.files[0];
-    var allowedExtensions = [
-      "image/png",
-      "image/jpeg",
-      "image/webp",
-      "image/svg",
-    ];
-    if (allowedExtensions.indexOf(previewUrl?.type?.toLowerCase()) == -1) {
-      toast.error("Invalid file type");
+const ImageNFTUpload: React.FC<Props> = ({ asset, clearForm, setAsset }) => {
+  const [showSecPreview, setShowSecPreivew] = useState<boolean>(false);
+
+  const uploadFile: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    if (!e.target.files || !e.target.files[0]) return;
+
+    const file = e.target.files[0];
+    if (AllowedMediaExtensions.image.indexOf(file.type.toLowerCase()) === -1) {
+      toast.error("Invalid NFT Image");
       return;
     }
-
-    setAsset(previewUrl);
+    setAsset(file);
     setShowSecPreivew(true);
   };
 
@@ -54,7 +55,7 @@ const ImageNFTUpload = ({ asset, setAsset, clearForm }: UploadNFTProps) => {
       ) : (
         <div className={uploadBox}>
           <div className={uploadBoxContent}>
-            <span className={formatName}>PNG, JPG, WEBP, SVG</span>
+            <span className={formatName}>PNG, JPG, WEBP</span>
             <div className={uploadBtnContainer}>
               <label htmlFor="image-nft" className={chooseFileBtn}>
                 Choose File
@@ -64,7 +65,7 @@ const ImageNFTUpload = ({ asset, setAsset, clearForm }: UploadNFTProps) => {
                 id="image-nft"
                 className={chooseFileBtn2}
                 onChange={uploadFile}
-                accept="image/png, image/jpeg, image/webp, image/svg"
+                accept={AllowedMediaExtensions.image.join(", ")}
               />
             </div>
           </div>

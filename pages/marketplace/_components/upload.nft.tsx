@@ -7,35 +7,30 @@ import {
   VideosIcon,
   AudioIcon,
 } from "@/assets/svgs";
+import { CreateNftUploadFormType } from "../create.page";
 import ImageNFTUpload from "./image.nft.upload";
 import GifNFTUpload from "./gif.nft.upload";
-import { CreateNftUploadFormType } from "../create.page";
 import VideoNFTUpload from "./video.nft.upload";
 import AudioNFTUpload from "./audio.nft.upload";
 
 export interface UploadNFTProps {
   asset: Blob | undefined;
-  setAsset: any;
-  clearForm: boolean;
-}
-export interface UploadNFTProps1 {
-  asset: Blob | undefined;
-  setAsset: (asset: Blob | undefined) => void;
-  setVideoThumbnail: (asset: Blob | undefined) => void;
   assetTab: string;
-  setAssetTab: (assetTab: string) => void;
   clearForm: boolean;
-  setClearForm: (clearForm: boolean) => void;
+  setAsset: React.Dispatch<React.SetStateAction<Blob | undefined>>;
+  setAssetTab: React.Dispatch<React.SetStateAction<CreateNftUploadFormType>>;
+  setClearForm: React.Dispatch<React.SetStateAction<boolean>>;
+  setVideoThumbnail: React.Dispatch<React.SetStateAction<Blob | undefined>>;
 }
-export const UploadNFT = ({
+export const UploadNFT: React.FC<UploadNFTProps> = ({
   asset,
-  setAsset,
   assetTab,
-  setAssetTab,
   clearForm,
+  setAsset,
+  setAssetTab,
   setClearForm,
   setVideoThumbnail,
-}: UploadNFTProps1) => {
+}) => {
   return (
     <div className="flex w-full max-w-[544px] flex-col gap-6">
       <div className="flex w-full border-b border-gray-shade-3 [@media(max-width:600px)]:flex-wrap [@media(max-width:600px)]:justify-between [@media(max-width:600px)]:!gap-0">
@@ -122,8 +117,8 @@ export const UploadNFT = ({
       {assetTab === CreateNftUploadFormType.Image && (
         <ImageNFTUpload
           asset={asset}
-          setAsset={setAsset}
           clearForm={clearForm}
+          setAsset={setAsset}
         />
       )}
       {assetTab === CreateNftUploadFormType.Gif && (
@@ -132,16 +127,16 @@ export const UploadNFT = ({
       {assetTab === CreateNftUploadFormType.Video && (
         <VideoNFTUpload
           asset={asset}
-          setAsset={setAsset}
           clearForm={clearForm}
+          setAsset={setAsset}
           setVideoThumbnail={setVideoThumbnail}
         />
       )}
       {assetTab === CreateNftUploadFormType.Audio && (
         <AudioNFTUpload
           asset={asset}
-          setAsset={setAsset}
           clearForm={clearForm}
+          setAsset={setAsset}
         />
       )}
     </div>

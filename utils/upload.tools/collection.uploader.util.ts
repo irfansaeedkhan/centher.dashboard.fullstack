@@ -1,61 +1,47 @@
+import {
+  UploadToIPFSResponse,
+  uploadFileToIPFS,
+  uploadMetadataToIPFS,
+} from "@/lib/ipfs";
 import { ICollectionData } from "@/pages/marketplace/_components/create.collection.form";
-import { INFTDetails } from "./interfaces/nft.details.interface";
-import { IUploader } from "./interfaces/file.uploader.interface";
-import { MoralisUploader } from "./uploaders/moralis.upload.util";
 import { ICollectionMetaData } from "./interfaces/collection.metadata.interface";
 
 export class CollectionUploader {
-  _uploader: IUploader;
-  private _imagesBasePath: string;
+  async uploadFiles(
+    profile: Blob,
+    cover: Blob
+  ): Promise<{
+    profile: UploadToIPFSResponse;
+    cover: UploadToIPFSResponse;
+  }> {
+    const [profileUploadRes, coverUploadRes] = await Promise.all([
+      uploadFileToIPFS(profile),
+      uploadFileToIPFS(cover),
+    ]);
 
-  constructor(imagesBasePath: string, uploader?: IUploader) {
-    this._imagesBasePath = imagesBasePath;
-    if (uploader) {
-      this._uploader = uploader;
-    } else {
-      this._uploader = new MoralisUploader();
-    }
+    return {
+      profile: profileUploadRes,
+      cover: coverUploadRes,
+    };
   }
 
-  async uploadCollection(
-    file: any,
+  async uploadMetadata(
     collectionData: ICollectionData,
-    profileImgPath: string
-  ): Promise<INFTDetails> {
-    if (!file) {
-      throw new Error("invalid file.");
-    }
-
-    const uploadCoverDto = {
-      path: this._uploader.makePath(),
-      content: file,
-    };
-
-    const coverImagePath = await this._uploader.upload(uploadCoverDto);
+    uploadedFiles: Awaited<ReturnType<typeof this.uploadFiles>>
+  ): Promise<UploadToIPFSResponse> {
     const metadata = this.createMetaData(
       collectionData,
-      coverImagePath,
-      profileImgPath
+      uploadedFiles.profile.ipfs_url,
+      uploadedFiles.cover.ipfs_url
     );
-    const metaDataBuffered = this.toBuffer(JSON.stringify(metadata));
 
-    const uploadMetaDataDto = {
-      path: this._uploader.makePath("json"),
-      content: metaDataBuffered,
-    };
-
-    const metaDataPath = await this._uploader.upload(uploadMetaDataDto);
-    return metaDataPath;
-  }
-
-  private toBuffer(input: any): Buffer {
-    return Buffer.from(input);
+    return uploadMetadataToIPFS(metadata);
   }
 
   private createMetaData(
     collectionData: ICollectionData,
-    coverPath: string,
-    profilePath: string
+    profileIpfsUrl: string,
+    coverIpfsUrl: string
   ): ICollectionMetaData {
     return {
       name: collectionData.name,
@@ -67,8 +53,8 @@ export class CollectionUploader {
       yoursite: collectionData.yoursite,
       facebook: collectionData.facebook,
       twitter: collectionData.twitter,
-      profileIPFSHash: this._imagesBasePath + profilePath,
-      coverIPFSHash: this._imagesBasePath + coverPath,
+      profileIPFSHash: profileIpfsUrl,
+      coverIPFSHash: coverIpfsUrl,
     };
   }
 }
