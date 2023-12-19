@@ -1,18 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { BsArrowLeftShort } from "react-icons/bs";
-import toast from "react-hot-toast";
-import Button from "@/components/button";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import { FormState, ProgressModal } from "./_components/shared-types";
-import {
-  AdditionalInfoForm,
-  Preview,
-  RoundCard,
-  RoundsSettingsForm,
-  VerifyTokenForm,
-  roundCardData,
-} from "./_components";
+import { FormState } from "./_components/shared-types";
 import {
   UploadToIPFSResponse,
   ValidJSON,
@@ -28,13 +17,12 @@ import { AppError } from "@/utils/app-error";
 import { CreateLaunchpadStepsEnum } from "./_components/shared-enum";
 import { MainComp } from "./_components/main-comp";
 import { ProgressModalShared } from "@/components/shared/progress-modal";
+import { StandardModal } from "@/components/modal/standard.modal";
 
 const CreateLaunchpad: NextPageWithLayout = () => {
   const { getSigner, connectedAddress } = useWallet();
   const signer = getSigner();
   const [isApproved, setisApproved] = useState(false);
-  // const [totalSellingAmount, setTotalSellingAmount] = useState(0);
-
   const [ipfsResponse, setIpfsResponse] = useState<UploadToIPFSResponse>({
     cid: "",
     gateway_url: "",
@@ -42,6 +30,7 @@ const CreateLaunchpad: NextPageWithLayout = () => {
   });
   const [modalTitle, setModalTitle] = useState("");
   const [progressModel, setProgressModel] = useState(false);
+  const [errorModal, setErrorModal] = useState<false | string>(false);
   const launchpadContract = SmartContractProvider.getContract(
     SmartContractName.LAUNCHPAD,
     signer || undefined
@@ -80,12 +69,6 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       return prev + Number(current.total_selling_amount);
     }, 0);
   }, [formState.rounds_settings.round]);
-  // const totalPresaleSellingAmount = formState.rounds_settings.round.reduce(
-  //   (prev, current) => {
-  //     return prev + Number(current.total_selling_amount);
-  //   },
-  //   0
-  // );
 
   const uploadMetaData = async () => {
     try {
@@ -130,26 +113,13 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       if (!formState.verify_token.token_address) {
         return;
       }
-
       const tokenContract = SmartContractProvider.getErc20Contract(
         formState.verify_token.token_address
       );
-
       const _allowance: BigNumber = await tokenContract.allowance(
         signer.getAddress(),
         launchpadContract.address
       );
-
-      console.log("_allowance: ", _allowance);
-      console.log(
-        "totalPresaleSellingAmount: ",
-        parseEther(totalPresaleSellingAmount.toString())
-      );
-      console.log(
-        "condition status: ",
-        _allowance.gt(parseEther(totalPresaleSellingAmount + ""))
-      );
-
       if (flag) {
         setisApproved(
           _allowance.gt(parseEther(totalPresaleSellingAmount + ""))
@@ -188,7 +158,7 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       setProgressModel(false);
     } catch (error: any) {
       let errorMessage = "Approval tx failed";
-
+      console.log("error: ", error);
       throw new AppError(
         error,
         error.response?.data?.message ?? errorMessage,
@@ -279,22 +249,15 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       if (signer == null) return;
 
       await uploadMetaData();
-
-      // await getAllowance();
-
       if (!isApproved && formState.verify_token.currency !== "BNB") {
         await getApproval();
       }
-
       await createPresaleOnLaunchpad();
     } catch (error: any) {
       let errorMessage = "Presale not created";
-
-      throw new AppError(
-        error,
-        error.response?.data?.message ?? errorMessage,
-        "handleOnSubmit"
-      );
+      setProgressModel(false);
+      console.log("error: ", error);
+      setErrorModal(error?.message ?? errorMessage);
     }
   };
 
@@ -306,6 +269,18 @@ const CreateLaunchpad: NextPageWithLayout = () => {
         setFormState={setFormState}
       />
       {progressModel && <ProgressModalShared title={modalTitle} />}
+      {errorModal && (
+        <StandardModal
+          confirmButtonText="OK"
+          isOpen={errorModal ? true : false}
+          title="Transaction Failed"
+          subtitle="Transaction Failed"
+          bodyText={errorModal ? errorModal : ""}
+          status="error"
+          onClickClose={() => setErrorModal(false)}
+          onClickConfirm={() => setErrorModal(false)}
+        />
+      )}
     </>
   );
 };
