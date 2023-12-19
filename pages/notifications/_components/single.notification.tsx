@@ -154,6 +154,8 @@ const getNotificationMessage = (
       return <>{NotificationByName} joined your network.</>;
     case "mention_in_post":
       return <>{NotificationByName} mentioned you in a post.</>;
+    case "invitation_received":
+      return <>{NotificationByName} invited you to join team.</>;
     case "centher_purchase_ntr":
       return (
         <>
@@ -209,6 +211,10 @@ const getNotificationUrl = (
   notification: Notification
 ): LinkProps["href"] | null => {
   switch (notification.type) {
+    case "invitation_received":
+      return {
+        pathname: AppRoutes.settings.team,
+      };
     case "post_like":
     case "post_reply":
     case "reply_like":
@@ -249,6 +255,11 @@ const getNotificationImageUrl = (
   notification: Notification
 ): LinkProps["href"] | null => {
   switch (notification.type) {
+    case "invitation_received":
+      return {
+        pathname: AppRoutes.profile.user_id,
+        query: { user_id: notification.by._id },
+      };
     case "post_like":
     case "post_reply":
     case "reply_like":

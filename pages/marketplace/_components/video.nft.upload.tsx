@@ -1,25 +1,26 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import toast from "react-hot-toast";
 import { CrossIcon } from "@/assets/svgs";
+import { AllowedMediaExtensions } from "./allowed-media-extensions";
+import { UploadNFTProps } from "./upload.nft";
 
 interface Props {
-  asset: Blob | undefined;
-  setAsset: any;
-  clearForm: boolean;
-  setVideoThumbnail: (asset: Blob | undefined) => void;
+  asset: UploadNFTProps["asset"];
+  clearForm: UploadNFTProps["clearForm"];
+  setAsset: UploadNFTProps["setAsset"];
+  setVideoThumbnail: UploadNFTProps["setVideoThumbnail"];
 }
 
 const VideoNFTUpload: React.FC<Props> = ({
   asset,
-  setAsset,
   clearForm,
+  setAsset,
   setVideoThumbnail,
 }) => {
-  const [showSecPreview, setShowSecPreivew] = useState<boolean | null>(false);
+  const [showSecPreview, setShowSecPreivew] = useState<boolean>(false);
   const [previewImage, setPreviewImage] = useState<string | undefined>("");
-  const [showPreviewImage, setShowPreviewImage] = useState<boolean | null>(
-    false
-  );
+  const [showPreviewImage, setShowPreviewImage] = useState<boolean>(false);
 
   useEffect(() => {
     setShowSecPreivew(false);
@@ -27,16 +28,32 @@ const VideoNFTUpload: React.FC<Props> = ({
     setShowPreviewImage(false);
   }, [clearForm, setAsset]);
 
-  // upload image to preview
-  const uploadFile = (e: any) => {
-    const previewUrl = e.target.files[0];
-    setAsset(previewUrl);
+  const uploadFile: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    if (!e.target.files || !e.target.files[0]) return;
+
+    const file = e.target.files[0];
+    if (AllowedMediaExtensions.video.indexOf(file.type.toLowerCase()) === -1) {
+      toast.error("Invalid NFT Video");
+      return;
+    }
+    setAsset(file);
     setShowSecPreivew(true);
   };
 
-  const uploadPreviewImageFile = (e: any) => {
-    setVideoThumbnail(e.target.files[0]);
-    const previewUrl = URL.createObjectURL(e.target.files[0]);
+  const uploadPreviewImageFile: React.ChangeEventHandler<HTMLInputElement> = (
+    e
+  ) => {
+    if (!e.target.files || !e.target.files[0]) return;
+
+    const file = e.target.files[0];
+    if (
+      AllowedMediaExtensions.imageAndGif.indexOf(file.type.toLowerCase()) === -1
+    ) {
+      toast.error("Invalid Thumbnail Image");
+      return;
+    }
+    setVideoThumbnail(file);
+    const previewUrl = URL.createObjectURL(file);
     setPreviewImage(previewUrl);
     setShowPreviewImage(true);
   };
@@ -47,10 +64,7 @@ const VideoNFTUpload: React.FC<Props> = ({
         {showSecPreview ? (
           <div>
             <video controls={true} className={videoStyling}>
-              <source
-                src={asset ? URL.createObjectURL(asset) : ""}
-                type="video/mp4"
-              />
+              <source src={asset ? URL.createObjectURL(asset) : ""} />
             </video>
             <button
               className={imageDelBtn}
@@ -75,7 +89,7 @@ const VideoNFTUpload: React.FC<Props> = ({
                   id="video-nft"
                   className={chooseFileBtn2}
                   onChange={uploadFile}
-                  accept="video/mp4, video/x-matroska, video/quicktime, video/x-msvideo"
+                  accept={AllowedMediaExtensions.video.join(", ")}
                 />
               </div>
             </div>
@@ -122,7 +136,7 @@ const VideoNFTUpload: React.FC<Props> = ({
                     id="preview-img"
                     className={chooseFileBtn2}
                     onChange={uploadPreviewImageFile}
-                    accept="image/png, image/jpeg, image/webp, image/gif"
+                    accept={AllowedMediaExtensions.imageAndGif.join(", ")}
                   />
                 </div>
               </div>

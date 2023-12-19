@@ -9,20 +9,9 @@ import {
   CreatePoolUploadMetadataError,
 } from "@/staking/errors/params.error";
 import { CreatePoolStepsEnum } from "@/staking/enum/create-pool-steps.enum";
-import { IUploader } from "./interfaces/file.uploader.interface";
-import { MoralisUploader } from "./uploaders/moralis.upload.util";
+import { uploadFileToIPFS, uploadMetadataToIPFS } from "@/lib/ipfs";
 
 export class StakingUploader {
-  _uploader: IUploader;
-
-  constructor(uploader?: IUploader) {
-    if (uploader) {
-      this._uploader = uploader;
-    } else {
-      this._uploader = new MoralisUploader();
-    }
-  }
-
   async uploadMetadata(
     info: CreatePoolMetadata,
     banner: OptionalType<Blob>,
@@ -35,13 +24,9 @@ export class StakingUploader {
 
     try {
       statusController(CreatePoolStepsEnum.banner, 0);
-      const uploadBannerDto = {
-        path: this._uploader.makePath(),
-        content: banner,
-      };
-
       statusController(CreatePoolStepsEnum.banner, 20);
-      info.banner = await this._uploader.upload(uploadBannerDto);
+      const { ipfs_url: bannerIpfsUrl } = await uploadFileToIPFS(banner);
+      info.banner = bannerIpfsUrl;
       statusController(CreatePoolStepsEnum.banner, 100);
     } catch (error: any) {
       throw new CreatePoolUploadBannerError(
@@ -51,12 +36,9 @@ export class StakingUploader {
 
     try {
       statusController(CreatePoolStepsEnum.logo, 0);
-      const uploadIconDto = {
-        path: this._uploader.makePath(),
-        content: icon,
-      };
       statusController(CreatePoolStepsEnum.logo, 20);
-      info.icon = await this._uploader.upload(uploadIconDto);
+      const { ipfs_url: iconIpfsUrl } = await uploadFileToIPFS(icon);
+      info.icon = iconIpfsUrl;
       statusController(CreatePoolStepsEnum.logo, 100);
     } catch (error: any) {
       throw new CreatePoolUploadLogoError(
@@ -66,25 +48,14 @@ export class StakingUploader {
 
     try {
       statusController(CreatePoolStepsEnum.metadata, 0);
-      const metaDataBuffered = this.toBuffer(JSON.stringify(info));
-      statusController(CreatePoolStepsEnum.metadata, 5);
-      const uploadMetaDataDto = {
-        path: this._uploader.makePath("json"),
-        content: metaDataBuffered,
-      };
-
       statusController(CreatePoolStepsEnum.metadata, 20);
-      const metaDataPath = await this._uploader.upload(uploadMetaDataDto);
+      const { ipfs_url: metadataIpfsUrl } = await uploadMetadataToIPFS(info);
       statusController(CreatePoolStepsEnum.metadata, 100);
-      return `ipfs:${metaDataPath}`;
+      return metadataIpfsUrl;
     } catch (error: any) {
       throw new CreatePoolUploadMetadataError(
         error instanceof Error ? error.message : error
       );
     }
-  }
-
-  private toBuffer(input: any): Buffer {
-    return Buffer.from(input);
   }
 }

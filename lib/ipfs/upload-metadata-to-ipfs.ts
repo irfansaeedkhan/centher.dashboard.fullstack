@@ -1,10 +1,17 @@
 import { axiosCFS } from "@/utils/axios";
 import { AppError } from "@/utils/app-error";
-import { UploadToIPFSResponse, ValidJSON } from "./types";
+import { UploadToIPFSResponse } from "./types";
 
 export const uploadMetadataToIPFS = async (
-  metadata: ValidJSON
+  metadata: any
 ): Promise<UploadToIPFSResponse> => {
+  // throw error if the metadata is not valid JSON
+  try {
+    JSON.stringify(metadata);
+  } catch {
+    throw new Error("Invalid Metadata for IPFS");
+  }
+
   try {
     const { data } = await axiosCFS.post<UploadToIPFSResponse>(
       `/ipfs/upload/metadata`,

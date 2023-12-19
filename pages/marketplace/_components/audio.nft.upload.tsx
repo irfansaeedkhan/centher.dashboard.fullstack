@@ -1,21 +1,33 @@
-// React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { CrossIcon } from "@/assets/svgs";
+import { AllowedMediaExtensions } from "./allowed-media-extensions";
 import { UploadNFTProps } from "./upload.nft";
 import AudioPlayer from "./audio.player";
 
-const AudioNFTUpload = ({ asset, setAsset, clearForm }: UploadNFTProps) => {
-  const [showSecPreview, setShowSecPreivew] = useState<boolean | null>(false);
+interface Props {
+  asset: UploadNFTProps["asset"];
+  clearForm: UploadNFTProps["clearForm"];
+  setAsset: UploadNFTProps["setAsset"];
+}
+
+const AudioNFTUpload: React.FC<Props> = ({ asset, clearForm, setAsset }) => {
+  const [showSecPreview, setShowSecPreivew] = useState<boolean>(false);
 
   useEffect(() => {
     setShowSecPreivew(false);
     setAsset(undefined);
   }, [clearForm, setAsset]);
 
-  // upload image to preview
-  const uploadFile = (e: any) => {
-    const previewUrl = e.target.files[0];
-    setAsset(previewUrl);
+  const uploadFile: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    if (!e.target.files || !e.target.files[0]) return;
+
+    const file = e.target.files[0];
+    if (AllowedMediaExtensions.audio.indexOf(file.type.toLowerCase()) === -1) {
+      toast.error("Invalid NFT Audio");
+      return;
+    }
+    setAsset(file);
     setShowSecPreivew(true);
   };
 
@@ -49,7 +61,7 @@ const AudioNFTUpload = ({ asset, setAsset, clearForm }: UploadNFTProps) => {
                 id="audio-nft"
                 className={chooseFileBtn2}
                 onChange={uploadFile}
-                accept="audio/mpeg, audio/wav, audio/m4a"
+                accept={AllowedMediaExtensions.audio.join(", ")}
               />
             </div>
           </div>
