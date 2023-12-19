@@ -19,10 +19,13 @@ interface ProfilePictureProps {
 
 const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
   const [isLoading, setIsLoading] = useState("idle");
+  const [profileImageLoading, setProfileImageLoading] =
+    useState<boolean>(false);
   const [cropModal, setCropModal] = useState(false);
   const [profileImage, setProfileImage] = useState(user.profile_image);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [uploadFile, setUploadFile] = useState<File>();
+  const [isUploading, setIsUploading] = useState(false);
   const [profileImageData, setProfileImageData] = useState<UserImage>({
     path: "",
     object_name: "",
@@ -83,6 +86,8 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
     if (!uploadFile) return;
     setIsLoading("loading");
     setIsMenuOpen(false);
+    setProfileImageLoading(true);
+    setIsUploading(true);
 
     try {
       // Get pre-signed URL from API
@@ -123,9 +128,13 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
       });
       setIsLoading("loaded");
       setUploadFile(undefined);
+      setIsUploading(false);
+      setProfileImageLoading(false);
     } catch (error: any) {
       process.env.NODE_ENV !== "production" && console.dir(error);
       setIsLoading("loaded");
+      setIsUploading(false);
+      setProfileImageLoading(false);
       let errorMsg = "Error uploading image";
       if (
         typeof error.response?.data === "string" &&
@@ -166,6 +175,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
               title="Discard"
               variant="secondary"
               className="w-[100px] rounded-[14px]"
+              disabled={isUploading}
               onClick={() => {
                 setProfileImageData({
                   path: "",
@@ -180,9 +190,11 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
               variant="primary"
               className="w-[100px] rounded-[14px]"
               onClick={handleUploadCustomImage}
-              Icon={
-                isLoading === "loading" && (
-                  <CgSpinner className="animate-spin text-white" />
+              loaderIcon={
+                profileImageLoading && (
+                  <CgSpinner
+                    className={`mx-auto h-4 w-4 animate-spin text-center text-white`}
+                  />
                 )
               }
             />
