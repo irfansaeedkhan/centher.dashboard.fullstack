@@ -2,14 +2,10 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { FormState } from "./_components/shared-types";
-import {
-  UploadToIPFSResponse,
-  ValidJSON,
-  uploadMetadataToIPFS,
-} from "@/lib/ipfs";
+import { UploadToIPFSResponse, uploadMetadataToIPFS } from "@/lib/ipfs";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { useWallet } from "@/web3/hooks/use.wallet";
-import { parseEther } from "ethers/lib/utils";
+import { isAddress, parseEther } from "ethers/lib/utils";
 import { SmartContractProvider } from "@/web3/blockchain/providers/smart.contract.provider";
 import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.enum";
 import { BigNumber, ethers } from "ethers";
@@ -18,6 +14,7 @@ import { CreateLaunchpadStepsEnum } from "./_components/shared-enum";
 import { MainComp } from "./_components/main-comp";
 import { ProgressModalShared } from "@/components/shared/progress-modal";
 import { StandardModal } from "@/components/modal/standard.modal";
+import toast from "react-hot-toast";
 
 const CreateLaunchpad: NextPageWithLayout = () => {
   const { getSigner, connectedAddress } = useWallet();
@@ -74,43 +71,23 @@ const CreateLaunchpad: NextPageWithLayout = () => {
     try {
       setProgressModel(true);
       setModalTitle(CreateLaunchpadStepsEnum.metadata);
-      let metaDataFinal = {};
-
-      const { memberData: _, ...metaData } = formState.add_additional_info;
-      if (formState.add_additional_info.memberData.length > 0) {
-        const memberData: ValidJSON = formState.add_additional_info.memberData;
-        const response = await uploadMetadataToIPFS(memberData);
-        metaDataFinal = {
-          ...metaData,
-          memberData: response.ipfs_url,
-        };
-      }
-
-      const res = await uploadMetadataToIPFS(
-        formState.add_additional_info.memberData.length > 0
-          ? metaDataFinal
-          : metaData
-      );
-
-      console.log("Metadata Uploaded to IPFS", res);
-
+      const res = await uploadMetadataToIPFS(formState.add_additional_info);
       setIpfsResponse(res);
       setProgressModel(false);
     } catch (error: any) {
       let errorMessage = "Metadata not Uploaded to IPFS";
       setProgressModel(false);
-      if (error.message?.toLowerCase().includes("user rejected")) {
-        errorMessage = "User rejected the transaction";
-      }
-
-      setErrorModal(error?.message ?? errorMessage);
+      throw new Error(errorMessage);
     }
   };
 
   const getAllowance = useCallback(
     async (flag = true) => {
       if (!signer) return;
-      if (!formState.verify_token.token_address) {
+      if (
+        !formState.verify_token.token_address ||
+        !isAddress(formState.verify_token.token_address)
+      ) {
         return;
       }
       const tokenContract = SmartContractProvider.getErc20Contract(
@@ -152,19 +129,17 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       );
 
       await tx.wait();
-
-      getAllowance();
-
+      await getAllowance();
       setProgressModel(false);
     } catch (error: any) {
-      let errorMessage = "Approval tx failed";
-
       setProgressModel(false);
-      if (error.message?.toLowerCase().includes("user rejected")) {
+      let errorMessage = "Approval tx failed";
+      if (error.reason?.toLowerCase().includes("user rejected")) {
         errorMessage = "User rejected the transaction";
+      } else {
+        errorMessage = error?.message ?? errorMessage;
       }
-
-      setErrorModal(error?.message ?? errorMessage);
+      throw new Error(errorMessage);
     }
   };
 
@@ -233,14 +208,14 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       );
       setProgressModel(false);
     } catch (error: any) {
-      let errorMessage = "createPresale tx failed";
-
       setProgressModel(false);
-      if (error.message?.toLowerCase().includes("user rejected")) {
+      let errorMessage = "Presale creation failed";
+      if (error.reason?.toLowerCase().includes("user rejected")) {
         errorMessage = "User rejected the transaction";
+      } else {
+        errorMessage = error?.message ?? errorMessage;
       }
-
-      setErrorModal(error?.message ?? errorMessage);
+      throw new Error(errorMessage);
     }
   };
 
@@ -258,13 +233,7 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       }
       await createPresaleOnLaunchpad();
     } catch (error: any) {
-      let errorMessage = "Presale not created";
-      setProgressModel(false);
-
-      if (error.message?.toLowerCase().includes("user rejected")) {
-        errorMessage = "User rejected the transaction";
-      }
-      setErrorModal(error?.message ?? errorMessage);
+      setErrorModal(error?.message ?? "Something went wrong!");
     }
   };
 

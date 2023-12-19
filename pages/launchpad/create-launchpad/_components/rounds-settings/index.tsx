@@ -5,6 +5,7 @@ import { BNBIcon } from "@/assets/svgs";
 import { DateInputField } from "@/components/shared";
 import { CurrentComponent, FormStateProps } from "../shared-types";
 import { NoteDisclamer } from "../note-disclamer";
+import { CustomNumberInput } from "@/components/custom-number-input";
 
 export const RoundsSettingsForm: React.FC<FormStateProps> = ({
   formState,
@@ -148,8 +149,7 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
             <span className={labelSpan}>*</span>
           </label>
           <div className={gradientBorderInputParent}>
-            <input
-              type="text"
+            <CustomNumberInput
               id="token_price"
               name="token_price"
               placeholder="Example: 100"
@@ -176,8 +176,7 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
             <span className={labelSpan}>*</span>
           </label>
           <div className={gradientBorderInputParent}>
-            <input
-              type="text"
+            <CustomNumberInput
               id="total_selling_amount"
               name="total_selling_amount"
               placeholder="Example: 100"
@@ -196,8 +195,7 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
             <span className={labelSpan}>*</span>
           </label>
           <div className={gradientBorderInputParent}>
-            <input
-              type="text"
+            <CustomNumberInput
               id="soft_cap_busd"
               name="soft_cap_busd"
               placeholder="Example: 0"
