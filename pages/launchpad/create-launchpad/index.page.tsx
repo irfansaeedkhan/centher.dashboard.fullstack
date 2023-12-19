@@ -136,6 +136,8 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       let errorMessage = "Approval tx failed";
       if (error.reason?.toLowerCase().includes("user rejected")) {
         errorMessage = "User rejected the transaction";
+      } else if (error.reason) {
+        errorMessage = error.reason;
       } else {
         errorMessage = error?.message ?? errorMessage;
       }
@@ -212,8 +214,10 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       let errorMessage = "Presale creation failed";
       if (error.reason?.toLowerCase().includes("user rejected")) {
         errorMessage = "User rejected the transaction";
+      } else if (error.reason) {
+        errorMessage = error.reason;
       } else {
-        errorMessage = error?.message ?? errorMessage;
+        errorMessage = error.message ?? errorMessage;
       }
       throw new Error(errorMessage);
     }
