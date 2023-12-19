@@ -1875,15 +1875,13 @@ export class BlockchainWrite {
         signer
       );
 
-      let call = await launchpadContract.callStatic.createPresale(
+      await launchpadContract.callStatic.createPresale(
         presaleData,
         roundInfoData,
         {
           value: parseUnits("0.001", "ether"),
         }
       );
-
-      console.log("StaticCallResponse: ", call);
 
       let tx = await launchpadContract.functions.createPresale(
         presaleData,

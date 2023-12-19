@@ -9,12 +9,10 @@ import { isAddress, parseEther } from "ethers/lib/utils";
 import { SmartContractProvider } from "@/web3/blockchain/providers/smart.contract.provider";
 import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.enum";
 import { BigNumber, ethers } from "ethers";
-import { AppError } from "@/utils/app-error";
 import { CreateLaunchpadStepsEnum } from "./_components/shared-enum";
 import { MainComp } from "./_components/main-comp";
 import { ProgressModalShared } from "@/components/shared/progress-modal";
 import { StandardModal } from "@/components/modal/standard.modal";
-import toast from "react-hot-toast";
 
 const CreateLaunchpad: NextPageWithLayout = () => {
   const { getSigner, connectedAddress } = useWallet();
@@ -73,6 +71,7 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       setModalTitle(CreateLaunchpadStepsEnum.metadata);
       const res = await uploadMetadataToIPFS(formState.add_additional_info);
       setIpfsResponse(res);
+      console.log("response: ", res);
       setProgressModel(false);
     } catch (error: any) {
       let errorMessage = "Metadata not Uploaded to IPFS";
@@ -198,8 +197,6 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       presaleInfoParams.maxTokensToSell = parseEther(
         totalPresaleSellingAmount.toString()
       ).toString();
-
-      console.log("formState: ", formState);
 
       if (signer == null) return;
 
