@@ -1,31 +1,36 @@
-// React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import toast from "react-hot-toast";
-
-// App imports
 import { CrossIcon } from "@/assets/svgs";
+import { AllowedMediaExtensions } from "./allowed-media-extensions";
 import { UploadNFTProps } from "./upload.nft";
 
-const GifNFTUpload = ({ asset, setAsset, clearForm }: UploadNFTProps) => {
-  const [showSecPreview, setShowSecPreivew] = useState<boolean | null>(false);
+interface Props {
+  asset: UploadNFTProps["asset"];
+  clearForm: UploadNFTProps["clearForm"];
+  setAsset: UploadNFTProps["setAsset"];
+}
 
-  // upload image to preview
-  const uploadFile = (e: any) => {
-    const previewUrl = e.target.files[0];
-    var allowedExtensions = ["image/gif"];
-    if (allowedExtensions.indexOf(previewUrl?.type?.toLowerCase()) == -1) {
-      toast.error("Invalid file type");
+const GifNFTUpload: React.FC<Props> = ({ asset, setAsset, clearForm }) => {
+  const [showSecPreview, setShowSecPreivew] = useState<boolean>(false);
+
+  const uploadFile: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    if (!e.target.files || !e.target.files[0]) return;
+
+    const file = e.target.files[0];
+    if (AllowedMediaExtensions.gif.indexOf(file.type.toLowerCase()) === -1) {
+      toast.error("Invalid NFT Gif");
       return;
     }
-
-    setAsset(previewUrl);
+    setAsset(file);
     setShowSecPreivew(true);
   };
+
   useEffect(() => {
     setShowSecPreivew(false);
     setAsset(undefined);
   }, [clearForm, setAsset]);
+
   return (
     <div className={previewContainer}>
       {showSecPreview ? (
@@ -60,7 +65,7 @@ const GifNFTUpload = ({ asset, setAsset, clearForm }: UploadNFTProps) => {
                 id="gif-nft"
                 className={chooseFileBtn2}
                 onChange={uploadFile}
-                accept="image/gif"
+                accept={AllowedMediaExtensions.gif.join(", ")}
               />
             </div>
           </div>

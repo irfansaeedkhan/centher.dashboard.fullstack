@@ -12,7 +12,6 @@ import useUser from "@/hooks/use.user";
 import TrxInProgressModal from "@/utils/modal/trx-modal";
 import { NFTUploader } from "@/utils/upload.tools/nft.upload.util";
 import { customLog } from "@/utils/custom.log";
-import { safeNameType } from "@/utils/upload.tools/interfaces/safe.file.wrapper.interface";
 import SuccessMessageModal from "@/utils/modal/success-modal";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
@@ -21,8 +20,6 @@ import { BlockchainConfig } from "@/web3/blockchain/config";
 import { useWallet } from "@/web3/hooks/use.wallet";
 import { INFTData } from "./_components/create.nft.form";
 import { UploadNFT, CreateNFTForm } from "./_components";
-
-const nftRemoteBasePath = "ipfs:/";
 
 enum ModalType {
   buyNFTStep1FuncModal = "buyNFTStep1FuncModal",
@@ -42,12 +39,12 @@ const CreateNFT: NextPageWithLayout = () => {
   const { user } = useUser();
   const bnbPrice = useBNBPrice();
   const { connectedAddress, getSigner } = useWallet();
-  const [clearForm, setClearForm] = useState(false);
   const [asset, setAsset] = useState<Blob | undefined>(undefined);
+  const [assetTab, setAssetTab] = useState(CreateNftUploadFormType.Image);
+  const [clearForm, setClearForm] = useState(false);
   const [videoThumbnail, setVideoThumbnail] = useState<Blob | undefined>(
     undefined
   );
-  const [assetTab, setAssetTab] = useState(CreateNftUploadFormType.Image);
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
     title: "",
@@ -55,16 +52,16 @@ const CreateNFT: NextPageWithLayout = () => {
   });
 
   // creating modals
-  const buyNFTStep1Func = (nftData: INFTData) => {
+  const createNFTStep1Func = (nftData: INFTData) => {
     try {
       modal.dismissModal();
       modal.createModal(ModalType.buyNFTStep1FuncModal, nftData);
     } catch (err: any) {
-      toastError("something went wrong");
+      toast.error("something went wrong");
     }
   };
 
-  const buyNFTSuccessFunc = (txStatus: boolean, nftData: any) => {
+  const createNFTSuccessFunc = (txStatus: boolean, nftData: any) => {
     try {
       setClearForm(false);
       modal.dismissModal();
@@ -73,44 +70,47 @@ const CreateNFT: NextPageWithLayout = () => {
         nftData,
       });
     } catch (err: any) {
-      toastError("something went wrong");
+      toast.error("something went wrong");
     }
   };
 
-  const handleCreateNFT = async (nftData: any) => {
+  const handleCreateNFT = async (nftData: INFTData | undefined) => {
+    if (!asset || !nftData) return;
+
     ProceedFunc();
+
     let NFTCreated = false;
+
     try {
-      const nftUploader = new NFTUploader(nftRemoteBasePath);
-      const castedNftData = nftData as INFTData;
-      const nftMetadataPath = await nftUploader.uploadNFT(
+      const nftUploader = new NFTUploader();
+
+      const { ipfs_url: nftMetadataPath } = await nftUploader.uploadMetadata(
+        nftData,
         asset,
-        castedNftData,
-        asset as any as safeNameType,
         videoThumbnail
       );
 
       const result = await BlockchainWrite.callCreateNFT(
         getSigner()!,
-        castedNftData.collection,
-        "ipfs:/" + nftMetadataPath,
-        castedNftData.supply,
-        castedNftData.isAuction,
-        castedNftData.price,
-        castedNftData.period,
+        nftData.collection,
+        nftMetadataPath,
+        nftData.supply,
+        nftData.isAuction,
+        nftData.price,
+        nftData.period,
         (BlockchainConfig.fee.createItemFeeForCreator +
           BlockchainConfig.fee.createItemFeeForMarketplace) *
-          castedNftData.supply
+          nftData.supply
       );
       NFTCreated = !!result;
     } catch (error: any) {
       customLog(["development", "staging"], error);
       !NFTCreated &&
-        toastError(
+        toast.error(
           `Something went wrong during the process, please check your data again and make sure you have enough gas fee for the transaction and try again in a few moments.`
         );
     } finally {
-      buyNFTSuccessFunc(
+      createNFTSuccessFunc(
         NFTCreated,
         `${NFTCreated ? nftData : "Something went wrong during the process"}`
       );
@@ -118,31 +118,31 @@ const CreateNFT: NextPageWithLayout = () => {
   };
 
   const createNFT = (values: INFTData) => {
-    if (!connectedAddress || !getSigner()) {
-      toastError("Please connect your wallet for creating NFT!");
+    try {
+      if (!connectedAddress || !getSigner()) {
+        throw new Error("Please connect your wallet for creating NFT!");
+      }
+      if (!user) {
+        throw new Error("Please login for creating NFT!");
+      }
+      if (user._id.toLowerCase() !== connectedAddress.toLowerCase()) {
+        throw new Error("Please connect your wallet to correct account!");
+      }
+      if (asset === undefined) {
+        throw new Error("Choose file.");
+      }
+      if (
+        assetTab === CreateNftUploadFormType.Video &&
+        videoThumbnail === undefined
+      ) {
+        throw new Error("Choose video thumbnail");
+      }
+    } catch (err: any) {
+      toast.error(err.message);
       return;
     }
-    if (!user) {
-      toastError("Please login for creating NFT!");
-      return;
-    }
-    if (user._id.toLowerCase() !== connectedAddress.toLowerCase()) {
-      toastError("Please connect your wallet to correct account!");
-      return;
-    }
-    if (asset === undefined) {
-      toastError("Choose file.");
-      return;
-    }
-    if (
-      assetTab === CreateNftUploadFormType.Video &&
-      videoThumbnail === undefined
-    ) {
-      toastError("Choose video thumbnail");
-      return;
-    }
-    validateProvider();
-    buyNFTStep1Func(values);
+
+    createNFTStep1Func(values);
   };
 
   const ProceedFunc = () => {
@@ -244,16 +244,6 @@ const CreateNFT: NextPageWithLayout = () => {
 
   const modal = new ModalManager(setModalModel, modalTemplateCollection);
 
-  function validateProvider(): void {
-    if (!getSigner()) {
-      throw new Error("Connect your wallet");
-    }
-  }
-
-  function toastError(err: any): void {
-    toast.error(err?.message ? err.message : err);
-  }
-
   useEffect(() => {
     if (ModalModel.visibility) {
       document.body.classList.add("modal-open");
@@ -270,13 +260,13 @@ const CreateNFT: NextPageWithLayout = () => {
       <h1 className={title}>Create an NFT</h1>
       <div className="flex items-start gap-9 [@media(max-width:1279px)]:flex-col">
         <UploadNFT
-          setVideoThumbnail={setVideoThumbnail}
           asset={asset}
-          setAsset={setAsset}
           assetTab={assetTab}
-          setAssetTab={setAssetTab as Dispatch<SetStateAction<string>>}
           clearForm={clearForm}
+          setAsset={setAsset}
+          setAssetTab={setAssetTab}
           setClearForm={setClearForm}
+          setVideoThumbnail={setVideoThumbnail}
         />
         <CreateNFTForm
           user={user}

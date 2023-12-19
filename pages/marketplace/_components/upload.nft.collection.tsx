@@ -1,64 +1,27 @@
-// React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import clsx from "clsx";
-
-// App imports
 import { CrossIcon } from "@/assets/svgs";
+import { AllowedMediaExtensions } from "./allowed-media-extensions";
 
-interface UploadNFTCollectionProps {
+interface Props {
   profile: Blob | undefined;
-  setProfile: any;
   cover: Blob | undefined;
-  setCover: any;
   clearForm: boolean;
+  setProfile: React.Dispatch<React.SetStateAction<Blob | undefined>>;
+  setCover: React.Dispatch<React.SetStateAction<Blob | undefined>>;
 }
 
-export const UploadNFTCollection = ({
+export const UploadNFTCollection: React.FC<Props> = ({
   profile,
-  setProfile,
   cover,
-  setCover,
   clearForm,
-}: UploadNFTCollectionProps) => {
-  const [showCoverImage, setShowCoverImage] = useState<boolean | null>(false);
-  const [showProfileImage, setShowProfileImage] = useState<boolean | null>(
-    false
-  );
-
-  const uploadCoverFile = (e: any) => {
-    const previewUrl = e.target.files[0];
-    var allowedExtensions = [
-      "image/png",
-      "image/jpeg",
-      "image/webp",
-      "image/svg",
-      "image/gif",
-    ];
-    if (allowedExtensions.indexOf(previewUrl?.type?.toLowerCase()) == -1) {
-      toast.error("Invalid file type");
-      return;
-    }
-    setCover(previewUrl);
-    setShowCoverImage(true);
-  };
-  const uploadProfileFile = (e: any) => {
-    const previewUrl = e.target.files[0];
-    var allowedExtensions = [
-      "image/png",
-      "image/jpeg",
-      "image/webp",
-      "image/svg",
-      "image/gif",
-    ];
-    if (allowedExtensions.indexOf(previewUrl?.type?.toLowerCase()) == -1) {
-      toast.error("Invalid file type");
-      return;
-    }
-    setProfile(previewUrl);
-    setShowProfileImage(true);
-  };
+  setProfile,
+  setCover,
+}) => {
+  const [showCoverImage, setShowCoverImage] = useState<boolean>(false);
+  const [showProfileImage, setShowProfileImage] = useState<boolean>(false);
 
   useEffect(() => {
     if (clearForm) {
@@ -68,6 +31,39 @@ export const UploadNFTCollection = ({
       setCover(undefined);
     }
   }, [clearForm, setCover, setProfile]);
+
+  const validateImageFile = (file: File) => {
+    if (
+      AllowedMediaExtensions.imageAndGif.indexOf(file.type.toLowerCase()) === -1
+    ) {
+      throw new Error("File type is not allowed");
+    }
+  };
+
+  const uploadCoverFile: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    if (!e.target.files || !e.target.files[0]) return;
+    try {
+      const file = e.target.files[0];
+      validateImageFile(file);
+      setCover(file);
+      setShowCoverImage(true);
+    } catch (err: any) {
+      toast.error(err.message);
+    }
+  };
+
+  const uploadProfileFile: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    if (!e.target.files || !e.target.files[0]) return;
+    try {
+      const file = e.target.files[0];
+      validateImageFile(file);
+      setProfile(file);
+      setShowProfileImage(true);
+    } catch (err: any) {
+      toast.error(err.message);
+    }
+  };
+
   return (
     <div className={nftBoxContainer}>
       <div>
@@ -191,7 +187,7 @@ export const UploadNFTCollection = ({
                     id="collection-banner-image"
                     className={chooseFileBtn2}
                     onChange={uploadCoverFile}
-                    accept="image/png, image/jpeg, image/webp, image/gif"
+                    accept={AllowedMediaExtensions.imageAndGif.join(", ")}
                   />
                 </div>
               </div>
@@ -202,7 +198,7 @@ export const UploadNFTCollection = ({
     </div>
   );
 };
-// styling
+
 const title = `text-sm font-semibold text-white pb-2`;
 const description = `text-sm font-normal text-[#B7BBCC] leading-6`;
 const nftBoxContainer = `w-full max-w-[544px] flex flex-col gap-6`;

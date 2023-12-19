@@ -3,8 +3,10 @@ import { AppError } from "@/utils/app-error";
 import { UploadToIPFSResponse } from "./types";
 
 export const uploadFileToIPFS = async (
-  formData: FormData
+  file: Blob
 ): Promise<UploadToIPFSResponse> => {
+  const formData = new FormData();
+  formData.append("file", file);
   try {
     const { data } = await axiosCFS.post<UploadToIPFSResponse>(
       `/ipfs/upload/file`,

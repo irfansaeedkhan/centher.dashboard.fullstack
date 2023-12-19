@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { toast } from "react-hot-toast";
-import { useWeb3React } from "@web3-react/core";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { CustomModal } from "@/components/modal/custom.modal";
@@ -22,7 +21,6 @@ import { UploadNFTCollection, CreateNFTCollectionForm } from "./_components";
 import { useWallet } from "@/web3/hooks/use.wallet";
 // import GoogleReCaptchaWrapper from "./google-re-captcha-wrapper";
 
-const collectionsRemoteBasePath = "ipfs:/";
 enum ModalType {
   buyNFTStep1FuncModal = "buyNFTStep1FuncModal",
   buyNFTSuccessFuncModal = "buyNFTSuccessFuncModal",
@@ -39,22 +37,24 @@ const CreateNFTCollection: NextPageWithLayout = () => {
   const [profile, setProfile] = useState<Blob | undefined>(undefined);
   const [cover, setCover] = useState<Blob | undefined>(undefined);
   const [clearForm, setClearForm] = useState(false);
-
   const router = useRouter();
-
   const { connectedAddress, getSigner } = useWallet();
-
   const { user } = useUser();
+
   // creating modals
-  const buyNFTStep1Func = (collectionData: any) => {
+  const createCollectionStep1Func = (collectionData: any) => {
     try {
       modal.dismissModal();
       modal.createModal(ModalType.buyNFTStep1FuncModal, collectionData);
     } catch (err: any) {
-      toastError("something went wrong");
+      toast.error("something went wrong");
     }
   };
-  const buyNFTSuccessFunc = (txStatus: boolean, collectionData: any) => {
+
+  const createCollectionSuccessFunc = (
+    txStatus: boolean,
+    collectionData: any
+  ) => {
     try {
       setClearForm(false);
       modal.dismissModal();
@@ -63,34 +63,40 @@ const CreateNFTCollection: NextPageWithLayout = () => {
         collectionData,
       });
     } catch (err: any) {
-      !txStatus && toastError("something went wrong");
+      !txStatus && toast.error("something went wrong");
     }
   };
-  const handleCreateCollection = async (collectionData: any) => {
+
+  const handleCreateCollection = async (
+    collectionData: ICollectionData | undefined
+  ) => {
+    if (!profile || !cover || !collectionData) return;
+
     // const success = await submitRecaptcha();
     // if (!success) {
-    //   toastError("Please verify you are a human!");
+    //   toast.error("Please verify you are a human!");
     //   return;
     // }
-    ProceedFunc();
-    let collectionCreated = false;
+
     try {
-      collectionData = collectionData as ICollectionData;
-      const collectionUploader = new CollectionUploader(
-        collectionsRemoteBasePath
+      ProceedFunc();
+    } catch (err: any) {
+      toast.error(err.message);
+      return;
+    }
+
+    let collectionCreated = false;
+
+    try {
+      const collectionUploader = new CollectionUploader();
+
+      const uploadedFiles = await collectionUploader.uploadFiles(
+        profile,
+        cover
       );
 
-      const uploadDto = {
-        path: collectionUploader._uploader.makePath(),
-        content: profile,
-      };
-
-      const profilePath = await collectionUploader._uploader.upload(uploadDto);
-      const collectionMetaDataPath = await collectionUploader.uploadCollection(
-        cover,
-        collectionData,
-        profilePath
-      );
+      const { ipfs_url: collectionMetadataIpfsUrl } =
+        await collectionUploader.uploadMetadata(collectionData, uploadedFiles);
 
       const { name, symbol, category, totalsupply } = collectionData;
 
@@ -99,18 +105,18 @@ const CreateNFTCollection: NextPageWithLayout = () => {
         name,
         symbol,
         category,
-        collectionsRemoteBasePath + collectionMetaDataPath,
+        collectionMetadataIpfsUrl,
         totalsupply,
         BlockchainConfig.fee.createCollectionFee
       );
       collectionCreated = true;
     } catch (error) {
       !collectionCreated &&
-        toastError(
+        toast.error(
           `Something went wrong during the process, please check your data again and make sure you have enough gas fee for the transaction and try again in a few moments.`
         );
     } finally {
-      buyNFTSuccessFunc(
+      createCollectionSuccessFunc(
         collectionCreated,
         `${
           collectionCreated
@@ -120,41 +126,43 @@ const CreateNFTCollection: NextPageWithLayout = () => {
       );
     }
   };
-  const createCollection = (values: ICollectionData) => {
-    if (!connectedAddress || !getSigner()) {
-      toastError("Please connect your wallet for creating collection!");
-      return;
-    }
-    if (!user) {
-      toastError("Please login for creating collection!");
-      return;
-    }
-    if (user._id.toLowerCase() !== connectedAddress.toLowerCase()) {
-      toastError("Please connect your wallet to correct account!");
-      return;
-    }
-    if (profile === undefined) {
-      toastError("Choose profile image.");
-      return;
-    }
-    if (cover === undefined) {
-      toastError("Choose banner image.");
-      return;
-    }
 
-    if (!getSigner()) {
-      toastError("Connect your wallet");
+  const createCollection = (values: ICollectionData) => {
+    try {
+      if (!connectedAddress || !getSigner()) {
+        throw new Error("Please connect your wallet for creating collection!");
+      }
+      if (!user) {
+        throw new Error("Please login for creating collection!");
+      }
+      if (user._id.toLowerCase() !== connectedAddress.toLowerCase()) {
+        throw new Error("Please connect your wallet to correct account!");
+      }
+      if (profile === undefined) {
+        throw new Error("Choose profile image.");
+      }
+      if (cover === undefined) {
+        throw new Error("Choose banner image.");
+      }
+      if (!getSigner()) {
+        throw new Error("Connect your wallet");
+      }
+    } catch (err: any) {
+      toast.error(err.message);
       return;
     }
     // setCollectionData(values)
-    buyNFTStep1Func(values);
+    createCollectionStep1Func(values);
   };
 
   const ProceedFunc = () => {
-    validateProvider();
+    if (!getSigner()) {
+      throw new Error("Connect your wallet");
+    }
     modal.dismissModal();
     modal.createModal(ModalType.proceedFuncModal);
   };
+
   const modalTemplateCollection: TemplateCollection = {
     buyNFTStep1FuncModal: {
       title: "Complete Checkout",
@@ -232,15 +240,6 @@ const CreateNFTCollection: NextPageWithLayout = () => {
 
   const modal = new ModalManager(setModalModel, modalTemplateCollection);
 
-  function validateProvider(): void {
-    if (!getSigner()) {
-      throw new Error("Connect your wallet");
-    }
-  }
-  function toastError(err: any): void {
-    toast.error(err?.message ? err.message : err);
-  }
-
   useEffect(() => {
     if (ModalModel.visibility) {
       document.body.classList.add("modal-open");
@@ -251,6 +250,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
       document.body.classList.remove("modal-open");
     };
   }, [ModalModel.visibility]);
+
   return (
     <div className="w-full pb-16">
       <h1 className={title}>Create New Collection</h1>

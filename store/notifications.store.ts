@@ -256,6 +256,11 @@ interface PostMentionNotification extends BaseNotification {
   post: NotificationPost;
 }
 
+interface InvitationReceivedNotification extends BaseNotification {
+  type: "invitation_received";
+  by: NotificationBy;
+}
+
 export type Notification =
   | PostLikeNotification
   | PostReplyNotification
@@ -267,4 +272,5 @@ export type Notification =
   | BUSDNetworkRewardsNotification
   | PresaleBookingNotification
   | PresaleBookingReferralNotification
-  | PostMentionNotification;
+  | PostMentionNotification
+  | InvitationReceivedNotification;
