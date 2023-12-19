@@ -121,8 +121,9 @@ const Collection: NextPageWithLayout = () => {
 
   useEffect(() => {
     if (collection) {
-      fetchCollectionInfo(collection.toString());
-      updateCollectionAdditionalInfo();
+      fetchCollectionInfo(collection.toString()).then(() => {
+        updateCollectionAdditionalInfo();
+      });
     }
   }, [collection, fetchCollectionInfo, updateCollectionAdditionalInfo]);
 
