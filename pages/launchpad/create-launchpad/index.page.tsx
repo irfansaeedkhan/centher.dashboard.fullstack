@@ -39,6 +39,7 @@ const CreateLaunchpad: NextPageWithLayout = () => {
     gateway_url: "",
     ipfs_url: "",
   });
+  const [modalTitle, setModalTitle] = useState("");
   const [progressModel, setProgressModel] = useState(false);
   const launchpadContract = SmartContractProvider.getContract(
     SmartContractName.LAUNCHPAD,
@@ -87,6 +88,7 @@ const CreateLaunchpad: NextPageWithLayout = () => {
   const uploadMetaData = async () => {
     try {
       setProgressModel(true);
+      setModalTitle(CreateLaunchpadStepsEnum.metadata);
       let metaDataFinal = {};
 
       const { memberData: _, ...metaData } = formState.add_additional_info;
@@ -108,7 +110,7 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       console.log("Metadata Uploaded to IPFS", res);
 
       setIpfsResponse(res);
-      setProgressModel(false);
+      // setProgressModel(false);
     } catch (error: any) {
       let errorMessage = "Metadata not Uploaded to IPFS";
 
@@ -123,6 +125,13 @@ const CreateLaunchpad: NextPageWithLayout = () => {
   const getAllowance = useCallback(
     async (flag = true) => {
       if (!signer) return;
+
+      // const totalPresaleSellingAmount = formState.rounds_settings.round.reduce((prev, current,)=>{
+      //     return prev + current.total_selling_amount
+      // }, 0)
+
+      setProgressModel(true);
+      setModalTitle(CreateLaunchpadStepsEnum.launchpad_allowance);
 
       if (!formState.verify_token.token_address) {
         return;
@@ -142,6 +151,7 @@ const CreateLaunchpad: NextPageWithLayout = () => {
           _allowance.gt(parseEther(totalSellingAmount + "").toString())
         );
       }
+      setProgressModel(false);
     },
     [
       signer,
@@ -153,6 +163,9 @@ const CreateLaunchpad: NextPageWithLayout = () => {
 
   const getApproval = async () => {
     if (!signer) return;
+
+    setProgressModel(true);
+    setModalTitle(CreateLaunchpadStepsEnum.launchpad_approval);
 
     try {
       const tokenContract = SmartContractProvider.getErc20Contract(
@@ -168,6 +181,8 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       await tx.wait();
 
       getAllowance();
+
+      setProgressModel(false);
     } catch (error: any) {
       let errorMessage = "Approval tx failed";
 
@@ -181,6 +196,9 @@ const CreateLaunchpad: NextPageWithLayout = () => {
 
   const createPresaleOnLaunchpad = async () => {
     if (!signer) return;
+
+    setProgressModel(true);
+    setModalTitle(CreateLaunchpadStepsEnum.contract);
 
     try {
       let presaleInfoParams = {
@@ -243,6 +261,7 @@ const CreateLaunchpad: NextPageWithLayout = () => {
         presaleInfoParams,
         roundParams
       );
+      setProgressModel(false);
     } catch (error: any) {
       let errorMessage = "createPresale tx failed";
 
@@ -284,7 +303,7 @@ const CreateLaunchpad: NextPageWithLayout = () => {
         formState={formState}
         setFormState={setFormState}
       />
-      {progressModel && <ProgressModalShared title="Setting things for you" />}
+      {progressModel && <ProgressModalShared title={modalTitle} />}
     </>
   );
 };
