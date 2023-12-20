@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import { FormState } from "./_components/shared-types";
+import { FormState, TokenDetail } from "./_components/shared-types";
 import { UploadToIPFSResponse, uploadMetadataToIPFS } from "@/lib/ipfs";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { useWallet } from "@/web3/hooks/use.wallet";
@@ -13,6 +13,7 @@ import { CreateLaunchpadStepsEnum } from "./_components/shared-enum";
 import { MainComp } from "./_components/main-comp";
 import { ProgressModalShared } from "@/components/shared/progress-modal";
 import { StandardModal } from "@/components/modal/standard.modal";
+import { customLog } from "@/utils/custom.log";
 
 const CreateLaunchpad: NextPageWithLayout = () => {
   const { getSigner, connectedAddress } = useWallet();
@@ -30,6 +31,8 @@ const CreateLaunchpad: NextPageWithLayout = () => {
     SmartContractName.LAUNCHPAD,
     signer || undefined
   );
+
+  const [tokenDetails, setTokenDetails] = useState<TokenDetail | null>(null);
 
   const [formState, setFormState] = useState<FormState>({
     current_round: "verify_token",
@@ -79,6 +82,38 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       throw new Error(errorMessage);
     }
   };
+
+  useEffect(() => {
+    if (
+      !formState.verify_token.token_address ||
+      !isAddress(formState.verify_token.token_address)
+    ) {
+      return;
+    }
+
+    (async () => {
+      try {
+        const tokenContract = SmartContractProvider.getErc20Contract(
+          formState.verify_token.token_address
+        );
+
+        const [token_name, token_symbol, token_decimal] = await Promise.all([
+          tokenContract.name(),
+          tokenContract.symbol(),
+          tokenContract.decimals(),
+        ]);
+
+        setTokenDetails({
+          token_name,
+          token_symbol,
+          token_decimal,
+          total_selling: totalPresaleSellingAmount,
+        });
+      } catch (e) {
+        customLog(["development", "staging"], e);
+      }
+    })();
+  }, [formState.verify_token.token_address, totalPresaleSellingAmount]);
 
   const getAllowance = useCallback(
     async (flag = true) => {
@@ -244,6 +279,7 @@ const CreateLaunchpad: NextPageWithLayout = () => {
         handleOnSubmit={handleOnSubmit}
         formState={formState}
         setFormState={setFormState}
+        tokenDetails={tokenDetails}
       />
       {progressModel && <ProgressModalShared title={modalTitle} />}
       {errorModal && (

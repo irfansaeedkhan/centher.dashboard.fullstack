@@ -1,7 +1,11 @@
 import React from "react";
-import { FormStateProps } from "../shared-types";
+import { FormStateProps, TokenDetail } from "../shared-types";
 
-export const Preview: React.FC<FormStateProps> = ({ formState }) => {
+interface Props extends FormStateProps {
+  tokenDetails: TokenDetail | null;
+}
+
+export const Preview: React.FC<Props> = ({ formState, tokenDetails }) => {
   return (
     <div className="flex flex-col gap-6">
       <div className="mt-2 flex flex-col gap-2">
@@ -16,21 +20,23 @@ export const Preview: React.FC<FormStateProps> = ({ formState }) => {
       <div className={boxMianDiv}>
         <div className={bigBox}>
           <h6 className={h6Text}>Total</h6>
-          <span className={spanText}>100000 TTP</span>
+          <span className={spanText}>
+            {tokenDetails?.total_selling ?? 0} {tokenDetails?.token_symbol}{" "}
+          </span>
         </div>
         <div className={smallBox}>
           <h6 className={h6Text}>Symbol</h6>
-          <span className={spanText}>TTP</span>
+          <span className={spanText}>{tokenDetails?.token_symbol ?? "-"}</span>
         </div>
       </div>
       <div className={boxMianDiv}>
         <div className={bigBox}>
           <h6 className={h6Text}>Name</h6>
-          <span className={spanText}>Test token pip</span>
+          <span className={spanText}>{tokenDetails?.token_name ?? "-"}</span>
         </div>
         <div className={smallBox}>
           <h6 className={h6Text}>Decimals</h6>
-          <span className={spanText}>18</span>
+          <span className={spanText}>{tokenDetails?.token_decimal ?? "-"}</span>
         </div>
       </div>
       <div className={roundMainDiv}>

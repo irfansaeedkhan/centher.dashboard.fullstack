@@ -10,16 +10,18 @@ import {
   RoundsSettingsForm,
   AdditionalInfoForm,
 } from "./";
-import { FormStateProps } from "./shared-types";
+import { FormStateProps, TokenDetail } from "./shared-types";
 
 interface Props extends FormStateProps {
   handleOnSubmit: () => void;
+  tokenDetails: TokenDetail | null;
 }
 
 export const MainComp: React.FC<Props> = ({
   formState,
   setFormState,
   handleOnSubmit,
+  tokenDetails,
 }) => {
   return (
     <div>
@@ -69,7 +71,11 @@ export const MainComp: React.FC<Props> = ({
             setFormState={setFormState}
           />
         ) : formState.current_round === "finish" ? (
-          <Preview formState={formState} setFormState={setFormState} />
+          <Preview
+            formState={formState}
+            setFormState={setFormState}
+            tokenDetails={tokenDetails}
+          />
         ) : (
           <VerifyTokenForm formState={formState} setFormState={setFormState} />
         )}

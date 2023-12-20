@@ -79,6 +79,13 @@ export type FormState = {
   };
 };
 
+export type TokenDetail = {
+  token_name: string;
+  token_symbol: string;
+  token_decimal: string | number;
+  total_selling: string | number;
+};
+
 export type ProgressCallback = (
   processName: CreateLaunchpadStepsEnum,
   progress: number
