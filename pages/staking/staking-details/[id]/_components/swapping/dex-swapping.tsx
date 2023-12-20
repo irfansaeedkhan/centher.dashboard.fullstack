@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Button from "@/components/button";
 import { SwapToken } from "@/models/swap";
 import DropdownSwapForm, {
@@ -38,8 +38,6 @@ export const DexSwapping = () => {
     quote: DropdownOption[];
   }>({ base: [], quote: [] });
 
-  const [swapFrom, setSwapFrom] = useState<ERC20Token | undefined>(undefined);
-  const [swapTo, setSwapTo] = useState<ERC20Token | undefined>(undefined);
   const [trade, setTrade] = useState<SmartRouterTrade<TradeType> | null>(null);
 
   const [fromAmount, setFromAmount] = useState<string>("0");
@@ -55,9 +53,161 @@ export const DexSwapping = () => {
   const signer = getSigner();
   const chain_id = dexSwappingConfig.chainId;
 
-  const quoteProvider = SmartRouter.createQuoteProvider({
-    onChainProvider: viemProviders,
-  });
+  const quoteProvider = useMemo(
+    () =>
+      SmartRouter.createQuoteProvider({
+        onChainProvider: viemProviders,
+      }),
+    []
+  );
+
+  const swapCallParams = useMemo(() => {
+    if (!trade) {
+      return null;
+    }
+    if (connectedAddress) {
+      const { value, calldata } = SwapRouter.swapCallParameters(trade, {
+        recipient: connectedAddress as `0x${string}`,
+        slippageTolerance: new Percent(1),
+      });
+
+      return {
+        address: SMART_ROUTER_ADDRESSES[chain_id],
+        calldata,
+        value,
+      };
+    }
+  }, [trade, connectedAddress, chain_id]);
+
+  const updateBalances = useCallback(async () => {
+    if (connectedAddress && signer && baseToken) {
+      let base_balance = "0";
+      let quote_balance = "0";
+
+      if (baseToken) {
+        if (baseToken.is_native) {
+          base_balance = await BlockchainRead.getWalletBalance(signer);
+        } else {
+          base_balance = await BlockchainRead.getERC20Balance(
+            connectedAddress,
+            baseToken.address,
+            signer
+          );
+        }
+      }
+      if (quoteToken) {
+        if (quoteToken.is_native) {
+          quote_balance = await BlockchainRead.getWalletBalance(signer);
+        } else {
+          quote_balance = await BlockchainRead.getERC20Balance(
+            connectedAddress,
+            quoteToken.address,
+            signer
+          );
+        }
+      }
+
+      setBalances({ base: base_balance, quote: quote_balance });
+    }
+  }, [baseToken, connectedAddress, quoteToken, signer]);
+
+  const getBestRoute = useCallback(
+    async (fromAmount: number) => {
+      try {
+        setBtnText("Swap");
+        setBtnDisabled(false);
+
+        if (baseToken && quoteToken && fromAmount > 0) {
+          const swapFrom = new ERC20Token(
+            baseToken.ChainId,
+            baseToken.address as `0x${string}`,
+            baseToken.decimal,
+            baseToken.symbol,
+            baseToken.name,
+            baseToken.projectLink
+          );
+          const swapTo = new ERC20Token(
+            quoteToken.ChainId,
+            quoteToken.address as `0x${string}`,
+            quoteToken.decimal,
+            quoteToken.symbol,
+            quoteToken.name,
+            quoteToken.projectLink
+          );
+
+          const amount = ethers.utils.parseEther(fromAmount.toString());
+          const amountInCurrency = CurrencyAmount.fromRawAmount(
+            swapFrom,
+            amount.toBigInt()
+          );
+          const pairs = SmartRouter.getPairCombinations(swapFrom, swapTo);
+
+          const [v2PoolsPromise, v3PoolsPromise, stablePoolsPromise] =
+            await Promise.allSettled([
+              SmartRouter.getV3PoolSubgraph({
+                provider: v3SubgraphProvider,
+                pairs,
+              }).then((res) =>
+                SmartRouter.v3PoolSubgraphSelection(swapFrom, swapTo, res)
+              ),
+              SmartRouter.getV2PoolsOnChain(pairs, viemProviders),
+              SmartRouter.getStablePoolsOnChain(pairs, viemProviders),
+            ]);
+
+          let pools: any[] = [];
+
+          if (v2PoolsPromise.status == "fulfilled") {
+            pools = v2PoolsPromise.value;
+          }
+          if (v3PoolsPromise.status == "fulfilled") {
+            pools = pools.concat(v3PoolsPromise.value);
+          }
+          if (stablePoolsPromise.status == "fulfilled") {
+            pools = pools.concat(stablePoolsPromise.value);
+          }
+          try {
+            const trade = await SmartRouter.getBestTrade(
+              amountInCurrency,
+              swapTo,
+              TradeType.EXACT_INPUT,
+              {
+                gasPriceWei: () =>
+                  viemProviders({
+                    chainId: dexSwappingConfig.chainId,
+                  }).getGasPrice(),
+                maxHops: 2,
+                maxSplits: 2,
+                poolProvider: SmartRouter.createStaticPoolProvider(pools),
+                quoteProvider,
+                quoterOptimization: true,
+              }
+            );
+            if (trade) {
+              const quote = trade.outputAmount;
+              const a = CurrencyAmount.fromFractionalAmount(
+                quote.currency,
+                quote.numerator,
+                quote.denominator
+              );
+              setToAmount(a.toFixed(6));
+              setTrade(trade);
+            }
+          } catch (error) {
+            console.log(error);
+            setBtnText("Insufficient liquidity for this trade.");
+            setToAmount("0");
+            setBtnDisabled(true);
+          }
+        }
+        if (fromAmount == 0) {
+          setToAmount("0");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [baseToken, quoteToken, quoteProvider]
+  );
 
   useEffect(() => {
     let tokens = dexSwappingConfig.bscTokens;
@@ -71,24 +221,6 @@ export const DexSwapping = () => {
 
     setBaseToken(base);
     setQuoteToken(quote);
-    const erc20TokenBase = new ERC20Token(
-      base.ChainId,
-      base.address as `0x${string}`,
-      base.decimal,
-      base.symbol,
-      base.name,
-      base.projectLink
-    );
-    setSwapFrom(erc20TokenBase);
-    const erc20TokenQuote = new ERC20Token(
-      quote.ChainId,
-      quote.address as `0x${string}`,
-      quote.decimal,
-      quote.symbol,
-      quote.name,
-      quote.projectLink
-    );
-    setSwapTo(erc20TokenQuote);
     setTokens(tokens);
   }, []);
 
@@ -107,26 +239,16 @@ export const DexSwapping = () => {
         .map((token) => ({ title: token.symbol, value: token }));
 
       setDropdownTokens({ quote: dropDownQuote, base: dropDownBases });
-      updateBalances();
     }
   }, [tokens]);
 
   useEffect(() => {
     updateBalances();
     getBestRoute(Number(fromAmount));
-  }, [swapFrom, swapTo]);
+  }, [fromAmount, getBestRoute, updateBalances]);
 
   const handleSwapFrom = (value: SwapToken) => {
     setBaseToken(value);
-    const erc20Token = new ERC20Token(
-      value.ChainId,
-      value.address as `0x${string}`,
-      value.decimal,
-      value.symbol,
-      value.name,
-      value.projectLink
-    );
-    setSwapFrom(erc20Token);
     if (baseToken) {
       const filteredTokens = tokens.filter(
         (token) => token.address !== value.address
@@ -138,112 +260,7 @@ export const DexSwapping = () => {
 
       const quote = dropDownQuote[0].value;
       setDropdownTokens({ ...dropDownTokens, quote: dropDownQuote });
-      const erc20TokenQuote = new ERC20Token(
-        quote.ChainId,
-        quote.address as `0x${string}`,
-        quote.decimal,
-        quote.symbol,
-        quote.name,
-        quote.projectLink
-      );
-      setSwapTo(erc20TokenQuote);
       setQuoteToken(quote);
-    }
-  };
-
-  const swapCallParams = useMemo(() => {
-    if (!trade) {
-      return null;
-    }
-    if (connectedAddress) {
-      const { value, calldata } = SwapRouter.swapCallParameters(trade, {
-        recipient: connectedAddress as `0x${string}`,
-        slippageTolerance: new Percent(1),
-      });
-
-      return {
-        address: SMART_ROUTER_ADDRESSES[chain_id],
-        calldata,
-        value,
-      };
-    }
-  }, [trade, connectedAddress]);
-
-  const getBestRoute = async (fromAmount: number) => {
-    try {
-      setBtnText("Swap");
-      setBtnDisabled(false);
-
-      if (swapFrom && swapTo && fromAmount > 0) {
-        const amount = ethers.utils.parseEther(fromAmount.toString());
-        const amountInCurrency = CurrencyAmount.fromRawAmount(
-          swapFrom,
-          amount.toBigInt()
-        );
-        const pairs = SmartRouter.getPairCombinations(swapFrom, swapTo);
-
-        const [v2PoolsPromise, v3PoolsPromise, stablePoolsPromise] =
-          await Promise.allSettled([
-            SmartRouter.getV3PoolSubgraph({
-              provider: v3SubgraphProvider,
-              pairs,
-            }).then((res) =>
-              SmartRouter.v3PoolSubgraphSelection(swapFrom, swapTo, res)
-            ),
-            SmartRouter.getV2PoolsOnChain(pairs, viemProviders),
-            SmartRouter.getStablePoolsOnChain(pairs, viemProviders),
-          ]);
-
-        let pools: any[] = [];
-
-        if (v2PoolsPromise.status == "fulfilled") {
-          pools = v2PoolsPromise.value;
-        }
-        if (v3PoolsPromise.status == "fulfilled") {
-          pools = pools.concat(v3PoolsPromise.value);
-        }
-        if (stablePoolsPromise.status == "fulfilled") {
-          pools = pools.concat(stablePoolsPromise.value);
-        }
-        try {
-          const trade = await SmartRouter.getBestTrade(
-            amountInCurrency,
-            swapTo,
-            TradeType.EXACT_INPUT,
-            {
-              gasPriceWei: () =>
-                viemProviders({
-                  chainId: dexSwappingConfig.chainId,
-                }).getGasPrice(),
-              maxHops: 2,
-              maxSplits: 2,
-              poolProvider: SmartRouter.createStaticPoolProvider(pools),
-              quoteProvider,
-              quoterOptimization: true,
-            }
-          );
-          if (trade) {
-            const quote = trade.outputAmount;
-            const a = CurrencyAmount.fromFractionalAmount(
-              quote.currency,
-              quote.numerator,
-              quote.denominator
-            );
-            setToAmount(a.toFixed(6));
-            setTrade(trade);
-          }
-        } catch (error) {
-          console.log(error);
-          setBtnText("Insufficient liquidity for this trade.");
-          setToAmount("0");
-          setBtnDisabled(true);
-        }
-      }
-      if (fromAmount == 0) {
-        setToAmount("0");
-      }
-    } catch (error) {
-      console.log(error);
     }
   };
 
@@ -255,47 +272,6 @@ export const DexSwapping = () => {
 
   const handleSwapTo = (value: SwapToken) => {
     setQuoteToken(value);
-    const erc20Token = new ERC20Token(
-      value.ChainId,
-      value.address as `0x${string}`,
-      value.decimal,
-      value.symbol,
-      value.name,
-      value.projectLink
-    );
-    setSwapTo(erc20Token);
-  };
-
-  const updateBalances = async () => {
-    if (connectedAddress && signer && swapFrom) {
-      let base_balance = "0";
-      let quote_balance = "0";
-
-      if (swapFrom) {
-        if (swapFrom.isNative) {
-          base_balance = await BlockchainRead.getWalletBalance(signer);
-        } else {
-          base_balance = await BlockchainRead.getERC20Balance(
-            connectedAddress,
-            swapFrom.address,
-            signer
-          );
-        }
-      }
-      if (swapTo) {
-        if (swapTo.isNative) {
-          quote_balance = await BlockchainRead.getWalletBalance(signer);
-        } else {
-          quote_balance = await BlockchainRead.getERC20Balance(
-            connectedAddress,
-            swapTo.address,
-            signer
-          );
-        }
-      }
-
-      setBalances({ base: base_balance, quote: quote_balance });
-    }
   };
 
   const doSwap = async () => {
@@ -399,9 +375,9 @@ export const DexSwapping = () => {
                 <input
                   type="number"
                   value={toAmount}
+                  readOnly
                   placeholder="Enter amout"
                   className="block w-full rounded-lg border-0 bg-transparent px-5 py-3 text-2xl placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
-                  onChange={(v) => console.log(v.target.value)}
                 />
               </div>
             </div>
