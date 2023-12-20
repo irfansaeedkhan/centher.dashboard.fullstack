@@ -40,7 +40,7 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       token_address: "",
       sale_rounds: 0,
       currency: "BNB",
-      fee_option: 5, //max: 10000
+      fee_option: 5,
       liquidity_lockup: 30,
       release_month: 3,
       add_fee: 0,
@@ -82,38 +82,6 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       throw new Error(errorMessage);
     }
   };
-
-  useEffect(() => {
-    if (
-      !formState.verify_token.token_address ||
-      !isAddress(formState.verify_token.token_address)
-    ) {
-      return;
-    }
-
-    (async () => {
-      try {
-        const tokenContract = SmartContractProvider.getErc20Contract(
-          formState.verify_token.token_address
-        );
-
-        const [token_name, token_symbol, token_decimal] = await Promise.all([
-          tokenContract.name(),
-          tokenContract.symbol(),
-          tokenContract.decimals(),
-        ]);
-
-        setTokenDetails({
-          token_name,
-          token_symbol,
-          token_decimal,
-          total_selling: totalPresaleSellingAmount,
-        });
-      } catch (e) {
-        customLog(["development", "staging"], e);
-      }
-    })();
-  }, [formState.verify_token.token_address, totalPresaleSellingAmount]);
 
   const getAllowance = useCallback(
     async (flag = true) => {
@@ -206,6 +174,12 @@ const CreateLaunchpad: NextPageWithLayout = () => {
         metadata: ipfsResponse.ipfs_url,
       };
 
+      presaleInfoParams.coinFeeRate =
+        Number(presaleInfoParams.coinFeeRate) * 100;
+
+      presaleInfoParams.tokenFeeRate =
+        Number(presaleInfoParams.tokenFeeRate) * 100;
+
       const roundParams = [];
       for (let i = 0; i < formState.verify_token.sale_rounds; i++) {
         let roundData = {
@@ -256,15 +230,48 @@ const CreateLaunchpad: NextPageWithLayout = () => {
   };
 
   useEffect(() => {
+    // if(formState.verify_token.currency !== "USDT") return;
     getAllowance();
   }, [getAllowance]);
+
+  useEffect(() => {
+    if (
+      !formState.verify_token.token_address ||
+      !isAddress(formState.verify_token.token_address)
+    ) {
+      return;
+    }
+
+    (async () => {
+      try {
+        const tokenContract = SmartContractProvider.getErc20Contract(
+          formState.verify_token.token_address
+        );
+
+        const [token_name, token_symbol, token_decimal] = await Promise.all([
+          tokenContract.name(),
+          tokenContract.symbol(),
+          tokenContract.decimals(),
+        ]);
+
+        setTokenDetails({
+          token_name,
+          token_symbol,
+          token_decimal,
+          total_selling: totalPresaleSellingAmount,
+        });
+      } catch (e) {
+        customLog(["development", "staging"], e);
+      }
+    })();
+  }, [formState.verify_token.token_address, totalPresaleSellingAmount]);
 
   const handleOnSubmit = async () => {
     try {
       if (signer == null) return;
 
       await uploadMetaData();
-      if (!isApproved && formState.verify_token.currency !== "BNB") {
+      if (!isApproved) {
         await getApproval();
       }
       await createPresaleOnLaunchpad();
