@@ -1,5 +1,6 @@
 import React from "react";
 import clsx from "clsx";
+import { CustomNumberInput } from "@/components/custom-number-input";
 import { BNBIcon } from "@/assets/svgs";
 import SaleRounds from "./sale-rounds";
 import Currency from "./currency";
@@ -8,7 +9,6 @@ import ReleaseMonth from "./release_month";
 import LiquidityLockups from "./liquidity-lockups";
 import { FormStateProps } from "../shared-types";
 import { NoteDisclamer } from "../note-disclamer";
-import { CustomNumberInput } from "@/components/custom-number-input";
 
 export const VerifyTokenForm: React.FC<FormStateProps> = ({
   formState,
@@ -72,14 +72,18 @@ export const VerifyTokenForm: React.FC<FormStateProps> = ({
               name="add_fee"
               placeholder="Example: 3%"
               className={gradientBorderInput}
-              defaultValue={formState.verify_token.add_fee}
-              onChange={(value) =>
+              value={
+                formState.verify_token.add_fee === 0
+                  ? ""
+                  : formState.verify_token.add_fee
+              }
+              onChange={(e) =>
                 setFormState((prev) => {
                   return {
                     ...prev,
                     verify_token: {
                       ...prev.verify_token,
-                      add_fee: Number(value),
+                      add_fee: Number(e.target.value),
                     },
                   };
                 })
