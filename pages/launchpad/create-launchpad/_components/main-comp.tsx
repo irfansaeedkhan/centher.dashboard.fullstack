@@ -16,6 +16,7 @@ interface Props extends FormStateProps {
   handleOnSubmit: () => void;
   tokenDetails: TokenDetail | null;
   totalPresaleSellingAmount: number;
+  presaleCreationFees: string | number | null;
 }
 
 export const MainComp: React.FC<Props> = ({
@@ -24,6 +25,7 @@ export const MainComp: React.FC<Props> = ({
   handleOnSubmit,
   tokenDetails,
   totalPresaleSellingAmount,
+  presaleCreationFees,
 }) => {
   return (
     <div>
@@ -80,7 +82,11 @@ export const MainComp: React.FC<Props> = ({
             tokenDetails={tokenDetails}
           />
         ) : (
-          <VerifyTokenForm formState={formState} setFormState={setFormState} />
+          <VerifyTokenForm
+            formState={formState}
+            setFormState={setFormState}
+            presaleCreationFees={presaleCreationFees}
+          />
         )}
         <Button
           title={formState.current_round === "finish" ? "Submit" : "Next"}

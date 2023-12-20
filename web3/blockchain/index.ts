@@ -514,6 +514,22 @@ export class BlockchainRead {
     }
     return "0";
   }
+
+  static async launchpadCreateFee(signer: JsonRpcSigner): Promise<string> {
+    try {
+      const launchpadContract = SmartContractProvider.getContract(
+        SmartContractName.LAUNCHPAD,
+        signer
+      );
+
+      const createFee = await launchpadContract.createFee();
+
+      return createFee.toString();
+    } catch (error: any) {
+      logger(error, "launchpadCreateFee");
+    }
+    return "0";
+  }
 }
 export class BlockchainWrite {
   static async transferERC20(

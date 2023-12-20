@@ -3,7 +3,7 @@ import { BigNumber, ethers } from "ethers";
 import { isAddress, parseEther } from "ethers/lib/utils";
 import { UploadToIPFSResponse, uploadMetadataToIPFS } from "@/lib/ipfs";
 import { NextPageWithLayout } from "@/pages/_app.page";
-import { BlockchainWrite } from "@/web3/blockchain";
+import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
 import { useWallet } from "@/web3/hooks/use.wallet";
 import { SmartContractProvider } from "@/web3/blockchain/providers/smart.contract.provider";
 import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.enum";
@@ -33,6 +33,9 @@ const CreateLaunchpad: NextPageWithLayout = () => {
   );
 
   const [tokenDetails, setTokenDetails] = useState<TokenDetail | null>(null);
+  const [presaleCreationFees, setPresaleCreationFees] = useState<
+    number | string | null
+  >(null);
 
   const [formState, setFormState] = useState<FormState>({
     current_round: "verify_token",
@@ -230,7 +233,18 @@ const CreateLaunchpad: NextPageWithLayout = () => {
   };
 
   useEffect(() => {
-    // if(formState.verify_token.currency !== "USDT") return;
+    (async () => {
+      try {
+        if (!signer) return;
+        const createFees = await BlockchainRead.launchpadCreateFee(signer);
+        setPresaleCreationFees(createFees);
+      } catch (e) {
+        customLog(["development", "staging"], e);
+      }
+    })();
+  }, [signer]);
+
+  useEffect(() => {
     getAllowance();
   }, [getAllowance]);
 
@@ -288,6 +302,7 @@ const CreateLaunchpad: NextPageWithLayout = () => {
         setFormState={setFormState}
         tokenDetails={tokenDetails}
         totalPresaleSellingAmount={totalPresaleSellingAmount}
+        presaleCreationFees={presaleCreationFees}
       />
       {progressModel && <ProgressModalShared title={modalTitle} />}
       {errorModal && (
