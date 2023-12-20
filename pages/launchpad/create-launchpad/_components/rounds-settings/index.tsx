@@ -94,12 +94,15 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
             )}
             onClick={() => {
               if (
-                currentComponent.total_selling_amount === "" ||
-                currentComponent.soft_cap_busd === "" ||
-                currentComponent.start_time === null ||
-                currentComponent.end_time === null ||
-                currentComponent.min_contribution === "" ||
-                currentComponent.max_contribution === ""
+                formState.rounds_settings.round[index].token_price === "" ||
+                formState.rounds_settings.round[index].total_selling_amount ===
+                  "" ||
+                formState.rounds_settings.round[index].soft_cap_busd === "" ||
+                formState.rounds_settings.round[index].start_time === null ||
+                formState.rounds_settings.round[index].end_time === null ||
+                formState.rounds_settings.round[index].min_contribution ===
+                  "" ||
+                formState.rounds_settings.round[index].max_contribution === ""
               ) {
                 toast.error("Please fill all the fields");
                 return;

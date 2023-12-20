@@ -287,6 +287,7 @@ const CreateLaunchpad: NextPageWithLayout = () => {
         formState={formState}
         setFormState={setFormState}
         tokenDetails={tokenDetails}
+        totalPresaleSellingAmount={totalPresaleSellingAmount}
       />
       {progressModel && <ProgressModalShared title={modalTitle} />}
       {errorModal && (

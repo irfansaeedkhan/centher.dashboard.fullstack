@@ -15,6 +15,7 @@ import { FormStateProps, TokenDetail } from "./shared-types";
 interface Props extends FormStateProps {
   handleOnSubmit: () => void;
   tokenDetails: TokenDetail | null;
+  totalPresaleSellingAmount: number;
 }
 
 export const MainComp: React.FC<Props> = ({
@@ -22,6 +23,7 @@ export const MainComp: React.FC<Props> = ({
   setFormState,
   handleOnSubmit,
   tokenDetails,
+  totalPresaleSellingAmount,
 }) => {
   return (
     <div>
@@ -72,6 +74,7 @@ export const MainComp: React.FC<Props> = ({
           />
         ) : formState.current_round === "finish" ? (
           <Preview
+            totalPresaleSellingAmount={totalPresaleSellingAmount}
             formState={formState}
             setFormState={setFormState}
             tokenDetails={tokenDetails}

@@ -3,9 +3,14 @@ import { FormStateProps, TokenDetail } from "../shared-types";
 
 interface Props extends FormStateProps {
   tokenDetails: TokenDetail | null;
+  totalPresaleSellingAmount: number;
 }
 
-export const Preview: React.FC<Props> = ({ formState, tokenDetails }) => {
+export const Preview: React.FC<Props> = ({
+  formState,
+  tokenDetails,
+  totalPresaleSellingAmount,
+}) => {
   return (
     <div className="flex flex-col gap-6">
       <div className="mt-2 flex flex-col gap-2">
@@ -21,7 +26,7 @@ export const Preview: React.FC<Props> = ({ formState, tokenDetails }) => {
         <div className={bigBox}>
           <h6 className={h6Text}>Total</h6>
           <span className={spanText}>
-            {tokenDetails?.total_selling ?? 0} {tokenDetails?.token_symbol}{" "}
+            {totalPresaleSellingAmount} {tokenDetails?.token_symbol}{" "}
           </span>
         </div>
         <div className={smallBox}>
