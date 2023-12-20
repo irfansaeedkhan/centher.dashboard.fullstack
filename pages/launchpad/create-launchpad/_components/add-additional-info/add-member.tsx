@@ -3,6 +3,7 @@ import { IoClose } from "react-icons/io5";
 import { TeamMemberIcon } from "@/assets/svgs";
 import Button from "@/components/button";
 import { FormStateProps } from "../shared-types";
+import { isAddress } from "ethers/lib/utils";
 
 const AddMember: React.FC<FormStateProps> = ({ formState, setFormState }) => {
   const [members, setMembers] = useState({
@@ -90,7 +91,11 @@ const AddMember: React.FC<FormStateProps> = ({ formState, setFormState }) => {
                 id="wallet_address"
                 placeholder="Example: 0x018rhf63hjj7763kuxx098nbvxx90cc23BBK99KXX028"
                 className={gradientBorderInput}
-                value={members.wallet_address}
+                value={
+                  isAddress(members.wallet_address)
+                    ? members.wallet_address
+                    : ""
+                }
                 onChange={handleMemberInputChange}
               />
             </div>

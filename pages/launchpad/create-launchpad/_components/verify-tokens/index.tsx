@@ -72,7 +72,7 @@ export const VerifyTokenForm: React.FC<FormStateProps> = ({
               name="add_fee"
               placeholder="Example: 3%"
               className={gradientBorderInput}
-              value={formState.verify_token.add_fee}
+              defaultValue={formState.verify_token.add_fee}
               onChange={(value) =>
                 setFormState((prev) => {
                   return {
