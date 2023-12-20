@@ -5,6 +5,9 @@ export interface SwapToken {
   name: string;
   symbol: string;
   is_native: boolean;
+  decimal: number;
+  projectLink: string;
+  ChainId: number;
 }
 
 export interface SwapRates {

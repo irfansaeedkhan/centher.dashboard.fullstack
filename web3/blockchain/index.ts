@@ -24,6 +24,25 @@ import { AddressFactory } from "./providers/address.provider";
 import { BlockchainConfig } from "./config";
 
 export class BlockchainRead {
+  static async getERC20Allowance(
+    signer: JsonRpcSigner,
+    tokenAddress: string,
+    owner: string,
+    spender: string
+  ): Promise<BigNumber> {
+    try {
+      const tokenContract = SmartContractProvider.getErc20Contract(
+        tokenAddress,
+        signer
+      );
+      const tx = await tokenContract.functions.allowance(owner, spender);
+      return BigNumber.from(tx.toString());
+    } catch (error: any) {
+      logger(error, "SetApprovalForWallet");
+      throw error;
+    }
+  }
+
   static async isContractAddress(
     library: JsonRpcSigner,
     address: string
