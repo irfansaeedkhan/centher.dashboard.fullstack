@@ -25,13 +25,13 @@ export type RoundCardData = {
 };
 
 export type CurrentComponent = {
-  token_price: string;
-  total_selling_amount: string;
-  soft_cap_busd: string;
+  token_price: number | string;
+  total_selling_amount: number | string;
+  soft_cap_busd: number | string;
   start_time: Date | null;
   end_time: Date | null;
-  min_contribution: string;
-  max_contribution: string;
+  min_contribution: number | string;
+  max_contribution: number | string;
 };
 
 export type FormState = {
@@ -68,13 +68,13 @@ export type FormState = {
   rounds_settings: {
     round: {
       round_no: number;
-      token_price: string;
-      total_selling_amount: string;
-      soft_cap_busd: string;
+      token_price: number | string;
+      total_selling_amount: number | string;
+      soft_cap_busd: number | string;
       start_time: Date | null;
       end_time: Date | null;
-      min_contribution: string;
-      max_contribution: string;
+      min_contribution: number | string;
+      max_contribution: number | string;
     }[];
   };
 };

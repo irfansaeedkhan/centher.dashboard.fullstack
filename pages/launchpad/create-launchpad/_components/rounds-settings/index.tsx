@@ -93,16 +93,32 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
                 : "cursor-pointer text-gray-shade-1"
             )}
             onClick={() => {
+              console.log(formState.rounds_settings.round[currentRound - 1]);
               if (
-                formState.rounds_settings.round[index].token_price === "" ||
-                formState.rounds_settings.round[index].total_selling_amount ===
-                  "" ||
-                formState.rounds_settings.round[index].soft_cap_busd === "" ||
-                formState.rounds_settings.round[index].start_time === null ||
-                formState.rounds_settings.round[index].end_time === null ||
-                formState.rounds_settings.round[index].min_contribution ===
-                  "" ||
-                formState.rounds_settings.round[index].max_contribution === ""
+                formState.rounds_settings.round[currentRound - 1]
+                  .token_price === 0 ||
+                formState.rounds_settings.round[currentRound - 1]
+                  .token_price === "" ||
+                formState.rounds_settings.round[currentRound - 1]
+                  .total_selling_amount === 0 ||
+                formState.rounds_settings.round[currentRound - 1]
+                  .total_selling_amount === "" ||
+                formState.rounds_settings.round[currentRound - 1]
+                  .soft_cap_busd === 0 ||
+                formState.rounds_settings.round[currentRound - 1]
+                  .soft_cap_busd === "" ||
+                formState.rounds_settings.round[currentRound - 1].start_time ===
+                  null ||
+                formState.rounds_settings.round[currentRound - 1].end_time ===
+                  null ||
+                formState.rounds_settings.round[currentRound - 1]
+                  .min_contribution === 0 ||
+                formState.rounds_settings.round[currentRound - 1]
+                  .min_contribution === "" ||
+                formState.rounds_settings.round[currentRound - 1]
+                  .max_contribution === 0 ||
+                formState.rounds_settings.round[currentRound - 1]
+                  .max_contribution === ""
               ) {
                 toast.error("Please fill all the fields");
                 return;
@@ -131,13 +147,13 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
               });
               setCurrentRound(index + 1);
               setCurrentComponent({
-                total_selling_amount: "",
-                token_price: "",
-                soft_cap_busd: "",
+                total_selling_amount: 0,
+                token_price: 0,
+                soft_cap_busd: 0,
                 start_time: null,
                 end_time: null,
-                min_contribution: "",
-                max_contribution: "",
+                min_contribution: 0,
+                max_contribution: 0,
               });
             }}
           >

@@ -84,18 +84,45 @@ export const MainComp: React.FC<Props> = ({
         )}
         <Button
           title={formState.current_round === "finish" ? "Submit" : "Next"}
-          // disabled={
-          //   (formState.current_round === "verify_token" &&
-          //     (formState.verify_token.token_address === "" ||
-          //       formState.verify_token.liquidity_lockup === "")) ||
-          //   (formState.current_round === "add_additional_info" &&
-          //     (formState.add_additional_info.description === "" ||
-          //       formState.add_additional_info.github === "" ||
-          //       formState.add_additional_info.website_url === "" ||
-          //       formState.add_additional_info.logo_url === "")) ||
-          //   (formState.current_round === "rounds_settings" &&
-          //     formState.rounds_settings.round.length === 0)
-          // }
+          disabled={
+            (formState.current_round === "verify_token" &&
+              (formState.verify_token.token_address === "" ||
+                formState.verify_token.sale_rounds === 0)) ||
+            (formState.current_round === "add_additional_info" &&
+              (formState.add_additional_info.description === "" ||
+                formState.add_additional_info.github === "" ||
+                formState.add_additional_info.website_url === "" ||
+                formState.add_additional_info.logo_url === "")) ||
+            (formState.current_round === "rounds_settings" &&
+              Array.from(
+                { length: formState.verify_token.sale_rounds },
+                (_, i) => i + 1
+              ).some((item) => {
+                return (
+                  formState.rounds_settings.round[item - 1]
+                    .total_selling_amount === 0 ||
+                  formState.rounds_settings.round[item - 1]
+                    .total_selling_amount === "" ||
+                  formState.rounds_settings.round[item - 1].soft_cap_busd ===
+                    0 ||
+                  formState.rounds_settings.round[item - 1].soft_cap_busd ===
+                    "" ||
+                  formState.rounds_settings.round[item - 1].token_price === 0 ||
+                  formState.rounds_settings.round[item - 1].token_price ===
+                    "" ||
+                  formState.rounds_settings.round[item - 1].min_contribution ===
+                    0 ||
+                  formState.rounds_settings.round[item - 1].min_contribution ===
+                    "" ||
+                  formState.rounds_settings.round[item - 1].max_contribution ===
+                    0 ||
+                  formState.rounds_settings.round[item - 1].max_contribution ===
+                    "" ||
+                  formState.rounds_settings.round[item - 1].end_time === null ||
+                  formState.rounds_settings.round[item - 1].start_time === null
+                );
+              }))
+          }
           className="mx-auto mt-6 w-full max-w-[496px]"
           onClick={() => {
             // if (formState.current_round === "finish") {
