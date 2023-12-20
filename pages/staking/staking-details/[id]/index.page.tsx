@@ -20,8 +20,8 @@ import { useWallet } from "@/web3/hooks/use.wallet";
 import { ListCardDataOBj } from "../../_components/list-card-data";
 import StakingDetailsTop from "./_components/staking-details-top";
 import StakingMainWrapper from "../../_components/staking-main-wrapper";
-import { SwapTokens } from "./_components/swap";
 import ConnectWalletModal from "@/components/modal/connect-wallet-modal";
+import { DexSwapping } from "./_components/swapping/dex-swapping";
 
 const StakingDetails: NextPageWithLayout = () => {
   const { user } = useUser();
@@ -125,7 +125,7 @@ const StakingDetails: NextPageWithLayout = () => {
   ) : (
     <>
       <StakingDetailsTop />
-      {hasSwapping && <SwapTokens />}
+      {hasSwapping && <DexSwapping />}
       <div className="w-full rounded-xl border border-gray-shade-3 bg-black-shade-9 p-4 fxm:p-6">
         <div className="text-[min(10vw, 20px)] font-semibold text-white">
           My Staking overview
