@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { BigNumber, ethers } from "ethers";
+import toast from "react-hot-toast";
 import { isAddress, parseEther } from "ethers/lib/utils";
 import { UploadToIPFSResponse, uploadMetadataToIPFS } from "@/lib/ipfs";
 import { NextPageWithLayout } from "@/pages/_app.page";
@@ -11,13 +12,21 @@ import { customLog } from "@/utils/custom.log";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { ProgressModalShared } from "@/components/shared/progress-modal";
 import { StandardModal } from "@/components/modal/standard.modal";
-import { FormState, TokenDetail } from "./_components/shared-types";
+import {
+  FormState,
+  TokenDetail,
+  initialFormState,
+} from "./_components/shared-types";
 import { CreateLaunchpadStepsEnum } from "./_components/shared-enum";
 import { MainComp } from "./_components/main-comp";
 
 const CreateLaunchpad: NextPageWithLayout = () => {
   const { getSigner, connectedAddress } = useWallet();
   const signer = getSigner();
+  const launchpadContract = SmartContractProvider.getContract(
+    SmartContractName.LAUNCHPAD,
+    signer || undefined
+  );
   const [isApproved, setisApproved] = useState(false);
   const [ipfsResponse, setIpfsResponse] = useState<UploadToIPFSResponse>({
     cid: "",
@@ -27,64 +36,19 @@ const CreateLaunchpad: NextPageWithLayout = () => {
   const [modalTitle, setModalTitle] = useState("");
   const [progressModel, setProgressModel] = useState(false);
   const [errorModal, setErrorModal] = useState<false | string>(false);
-  const launchpadContract = SmartContractProvider.getContract(
-    SmartContractName.LAUNCHPAD,
-    signer || undefined
-  );
-
+  const [successModal, setSuccessModal] = useState<false | string>(false);
+  const [validTokenAddress, setValidTokenAddress] = useState(false);
   const [tokenDetails, setTokenDetails] = useState<TokenDetail | null>(null);
   const [presaleCreationFees, setPresaleCreationFees] = useState<
     number | string | null
   >(null);
+  const [formState, setFormState] = useState<FormState>(initialFormState);
 
-  const [formState, setFormState] = useState<FormState>({
-    current_round: "verify_token",
-    verify_token: {
-      token_address: "",
-      sale_rounds: 0,
-      currency: "BNB",
-      fee_option: 5,
-      liquidity_lockup: 30,
-      release_month: 3,
-      add_fee: 0,
-    },
-    add_additional_info: {
-      logo_url: "",
-      website_url: "",
-      facebook: "",
-      twitter: "",
-      github: "",
-      telegram: "",
-      instagram: "",
-      discord: "",
-      reddit: "",
-      description: "",
-      memberData: [],
-    },
-    rounds_settings: {
-      round: [],
-    },
-  });
   const totalPresaleSellingAmount = useMemo(() => {
     return formState.rounds_settings.round.reduce((prev, current) => {
       return prev + Number(current.total_selling_amount);
     }, 0);
   }, [formState.rounds_settings.round]);
-
-  const uploadMetaData = async () => {
-    try {
-      setProgressModel(true);
-      setModalTitle(CreateLaunchpadStepsEnum.metadata);
-      const res = await uploadMetadataToIPFS(formState.add_additional_info);
-      setIpfsResponse(res);
-      console.log("response: ", res);
-      setProgressModel(false);
-    } catch (error: any) {
-      let errorMessage = "Metadata not Uploaded to IPFS";
-      setProgressModel(false);
-      throw new Error(errorMessage);
-    }
-  };
 
   const getAllowance = useCallback(
     async (flag = true) => {
@@ -124,6 +88,82 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       totalPresaleSellingAmount,
     ]
   );
+
+  useEffect(() => {
+    (async () => {
+      try {
+        if (!signer) return;
+        const createFees = await BlockchainRead.launchpadCreateFee(signer);
+        setPresaleCreationFees(createFees);
+      } catch (e) {
+        customLog(["development", "staging"], e);
+      }
+    })();
+  }, [signer]);
+
+  useEffect(() => {
+    getAllowance();
+  }, [getAllowance]);
+
+  useEffect(() => {
+    if (
+      !formState.verify_token.token_address ||
+      !isAddress(formState.verify_token.token_address)
+    ) {
+      return;
+    }
+
+    if (!signer) return;
+
+    (async () => {
+      try {
+        setValidTokenAddress(false);
+        const isValidContract = await BlockchainRead.checkAddress(
+          formState.verify_token.token_address,
+          signer
+        );
+
+        if (!isValidContract) {
+          setValidTokenAddress(true);
+          toast.error("Invalid token address");
+          return;
+        }
+
+        const tokenContract = SmartContractProvider.getErc20Contract(
+          formState.verify_token.token_address
+        );
+
+        const [token_name, token_symbol, token_decimal] = await Promise.all([
+          tokenContract.name(),
+          tokenContract.symbol(),
+          tokenContract.decimals(),
+        ]);
+
+        setTokenDetails({
+          token_name,
+          token_symbol,
+          token_decimal,
+          total_selling: totalPresaleSellingAmount,
+        });
+      } catch (e) {
+        customLog(["development", "staging"], e);
+      }
+    })();
+  }, [formState.verify_token.token_address, signer, totalPresaleSellingAmount]);
+
+  const uploadMetaData = async () => {
+    try {
+      setProgressModel(true);
+      setModalTitle(CreateLaunchpadStepsEnum.metadata);
+      const res = await uploadMetadataToIPFS(formState.add_additional_info);
+      setIpfsResponse(res);
+      setProgressModel(false);
+    } catch (error: any) {
+      let errorMessage = "Metadata not Uploaded to IPFS";
+      setProgressModel(false);
+      throw new Error(errorMessage);
+    }
+  };
 
   const getApproval = async () => {
     if (!signer) return;
@@ -227,6 +267,8 @@ const CreateLaunchpad: NextPageWithLayout = () => {
         roundParams
       );
       setProgressModel(false);
+      setSuccessModal("Token Presale created successfully");
+      setFormState(initialFormState);
     } catch (error: any) {
       setProgressModel(false);
       let errorMessage = "Presale creation failed";
@@ -240,63 +282,6 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       throw new Error(errorMessage);
     }
   };
-
-  useEffect(() => {
-    (async () => {
-      try {
-        if (!signer) return;
-        const createFees = await BlockchainRead.launchpadCreateFee(signer);
-        setPresaleCreationFees(createFees);
-      } catch (e) {
-        customLog(["development", "staging"], e);
-      }
-    })();
-  }, [signer]);
-
-  useEffect(() => {
-    getAllowance();
-  }, [getAllowance]);
-
-  useEffect(() => {
-    if (
-      !formState.verify_token.token_address ||
-      !isAddress(formState.verify_token.token_address)
-    ) {
-      return;
-    }
-
-    if (!signer) return;
-
-    (async () => {
-      try {
-        const isValidContract = await BlockchainRead.checkAddress(
-          formState.verify_token.token_address,
-          signer
-        );
-
-        if (!isValidContract) return;
-
-        const tokenContract = SmartContractProvider.getErc20Contract(
-          formState.verify_token.token_address
-        );
-
-        const [token_name, token_symbol, token_decimal] = await Promise.all([
-          tokenContract.name(),
-          tokenContract.symbol(),
-          tokenContract.decimals(),
-        ]);
-
-        setTokenDetails({
-          token_name,
-          token_symbol,
-          token_decimal,
-          total_selling: totalPresaleSellingAmount,
-        });
-      } catch (e) {
-        customLog(["development", "staging"], e);
-      }
-    })();
-  }, [formState.verify_token.token_address, signer, totalPresaleSellingAmount]);
 
   const handleOnSubmit = async () => {
     try {
@@ -321,6 +306,7 @@ const CreateLaunchpad: NextPageWithLayout = () => {
         tokenDetails={tokenDetails}
         totalPresaleSellingAmount={totalPresaleSellingAmount}
         presaleCreationFees={presaleCreationFees}
+        validTokenAddress={validTokenAddress}
       />
       {progressModel && <ProgressModalShared title={modalTitle} />}
       {errorModal && (
@@ -333,6 +319,18 @@ const CreateLaunchpad: NextPageWithLayout = () => {
           status="error"
           onClickClose={() => setErrorModal(false)}
           onClickConfirm={() => setErrorModal(false)}
+        />
+      )}
+      {successModal && (
+        <StandardModal
+          confirmButtonText="OK"
+          isOpen={successModal ? true : false}
+          title="Transaction Successful"
+          subtitle="Transaction Successful"
+          bodyText={successModal ? successModal : ""}
+          status="success"
+          onClickClose={() => setSuccessModal(false)}
+          onClickConfirm={() => setSuccessModal(false)}
         />
       )}
     </>

@@ -95,3 +95,32 @@ export interface ProgressModal {
   title: CreateLaunchpadStepsEnum;
   value: number;
 }
+
+export const initialFormState: FormState = {
+  current_round: "verify_token",
+  verify_token: {
+    token_address: "",
+    sale_rounds: 0,
+    currency: "BNB",
+    fee_option: 5,
+    liquidity_lockup: 30,
+    release_month: 3,
+    add_fee: 0,
+  },
+  add_additional_info: {
+    logo_url: "",
+    website_url: "",
+    facebook: "",
+    twitter: "",
+    github: "",
+    telegram: "",
+    instagram: "",
+    discord: "",
+    reddit: "",
+    description: "",
+    memberData: [],
+  },
+  rounds_settings: {
+    round: [],
+  },
+};

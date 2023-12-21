@@ -18,6 +18,7 @@ interface Props extends FormStateProps {
   tokenDetails: TokenDetail | null;
   totalPresaleSellingAmount: number;
   presaleCreationFees: string | number | null;
+  validTokenAddress: boolean;
 }
 
 export const MainComp: React.FC<Props> = ({
@@ -27,6 +28,7 @@ export const MainComp: React.FC<Props> = ({
   tokenDetails,
   totalPresaleSellingAmount,
   presaleCreationFees,
+  validTokenAddress,
 }) => {
   return (
     <div>
@@ -94,7 +96,8 @@ export const MainComp: React.FC<Props> = ({
           disabled={
             (formState.current_round === "verify_token" &&
               (formState.verify_token.token_address === "" ||
-                formState.verify_token.sale_rounds === 0)) ||
+                formState.verify_token.sale_rounds === 0 ||
+                validTokenAddress)) ||
             (formState.current_round === "add_additional_info" &&
               (formState.add_additional_info.description === "" ||
                 formState.add_additional_info.github === "" ||
