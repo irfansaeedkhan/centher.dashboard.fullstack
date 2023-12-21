@@ -11,6 +11,7 @@ export const Preview: React.FC<Props> = ({
   tokenDetails,
   totalPresaleSellingAmount,
 }) => {
+  console.log(formState);
   return (
     <div className="flex flex-col gap-6">
       <div className="mt-2 flex flex-col gap-2">

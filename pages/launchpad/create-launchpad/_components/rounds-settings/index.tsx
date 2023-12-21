@@ -3,9 +3,9 @@ import clsx from "clsx";
 import toast from "react-hot-toast";
 import { BNBIcon } from "@/assets/svgs";
 import { DateInputField } from "@/components/shared";
+import { CustomNumberInput } from "@/components/custom-number-input";
 import { CurrentComponent, FormStateProps } from "../shared-types";
 import { NoteDisclamer } from "../note-disclamer";
-import { CustomNumberInput } from "@/components/custom-number-input";
 
 export const RoundsSettingsForm: React.FC<FormStateProps> = ({
   formState,
@@ -169,6 +169,7 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
           </label>
           <div className={gradientBorderInputParent}>
             <CustomNumberInput
+              min={0}
               id="token_price"
               name="token_price"
               placeholder="Example: 100"
@@ -196,6 +197,7 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
           </label>
           <div className={gradientBorderInputParent}>
             <CustomNumberInput
+              min={0}
               id="total_selling_amount"
               name="total_selling_amount"
               placeholder="Example: 100"
@@ -215,6 +217,7 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
           </label>
           <div className={gradientBorderInputParent}>
             <CustomNumberInput
+              min={0}
               id="soft_cap_busd"
               name="soft_cap_busd"
               placeholder="Example: 0"
@@ -265,8 +268,8 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
               <span className={labelSpan}>*</span>
             </label>
             <div className={gradientBorderInputParent}>
-              <input
-                type="text"
+              <CustomNumberInput
+                min={0}
                 id="min_contribution"
                 name="min_contribution"
                 placeholder="Example: 0"
@@ -285,8 +288,8 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
               <span className={labelSpan}>*</span>
             </label>
             <div className={gradientBorderInputParent}>
-              <input
-                type="text"
+              <CustomNumberInput
+                min={0}
                 id="max_contribution"
                 name="max_contribution"
                 placeholder="Example: 0"

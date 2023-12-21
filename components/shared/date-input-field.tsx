@@ -157,7 +157,7 @@ export const DateInputField: React.FC<Props> = ({
                   <div className="flex max-h-full overflow-y-auto">
                     <Datepicker.Items
                       type="hour"
-                      className="overflow-y-auto scroll-smooth px-2 flg:px-4"
+                      className="no-scrollbar overflow-y-auto scroll-smooth px-2 flg:px-4"
                       disableAutoScroll
                     >
                       {({ items }) =>
@@ -185,7 +185,7 @@ export const DateInputField: React.FC<Props> = ({
                     </Datepicker.Items>
                     <Datepicker.Items
                       type="minute"
-                      className="overflow-y-auto scroll-smooth px-2 flg:px-4"
+                      className="no-scrollbar overflow-y-auto scroll-smooth px-2 flg:px-4"
                       disableAutoScroll
                     >
                       {({ items }) =>

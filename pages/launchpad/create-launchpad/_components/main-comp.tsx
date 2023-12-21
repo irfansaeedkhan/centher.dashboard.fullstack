@@ -11,6 +11,7 @@ import {
   AdditionalInfoForm,
 } from "./";
 import { FormStateProps, TokenDetail } from "./shared-types";
+import { isAddress } from "ethers/lib/utils";
 
 interface Props extends FormStateProps {
   handleOnSubmit: () => void;
@@ -131,12 +132,11 @@ export const MainComp: React.FC<Props> = ({
           }
           className="mx-auto mt-6 w-full max-w-[496px]"
           onClick={() => {
-            // if (formState.current_round === "finish") {
-            //   //calling
-            // }
-            if (formState.verify_token.sale_rounds === 0) {
-              toast.error("Please select sale rounds");
-              return;
+            if (formState.current_round === "verify_token") {
+              if (!isAddress(formState.verify_token.token_address)) {
+                toast.error("token address is not valid");
+                return;
+              }
             }
 
             if (formState.current_round === "finish") {
