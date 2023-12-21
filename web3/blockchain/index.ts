@@ -530,7 +530,21 @@ export class BlockchainRead {
     }
     return "0";
   }
+
+  static async checkAddress(
+    address: string,
+    signer?: JsonRpcSigner
+  ): Promise<boolean> {
+    const bytecode = await signer?.provider.getCode(address);
+
+    if (bytecode === "0x") {
+      return false;
+    } else {
+      return true;
+    }
+  }
 }
+
 export class BlockchainWrite {
   static async transferERC20(
     account: string,

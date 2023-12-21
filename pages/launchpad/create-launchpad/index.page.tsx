@@ -95,9 +95,18 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       ) {
         return;
       }
+
+      const isValidContract = await BlockchainRead.checkAddress(
+        formState.verify_token.token_address,
+        signer
+      );
+
+      if (!isValidContract) return;
+
       const tokenContract = SmartContractProvider.getErc20Contract(
         formState.verify_token.token_address
       );
+
       const _allowance: BigNumber = await tokenContract.allowance(
         signer.getAddress(),
         launchpadContract.address
@@ -256,8 +265,17 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       return;
     }
 
+    if (!signer) return;
+
     (async () => {
       try {
+        const isValidContract = await BlockchainRead.checkAddress(
+          formState.verify_token.token_address,
+          signer
+        );
+
+        if (!isValidContract) return;
+
         const tokenContract = SmartContractProvider.getErc20Contract(
           formState.verify_token.token_address
         );
@@ -278,7 +296,7 @@ const CreateLaunchpad: NextPageWithLayout = () => {
         customLog(["development", "staging"], e);
       }
     })();
-  }, [formState.verify_token.token_address, totalPresaleSellingAmount]);
+  }, [formState.verify_token.token_address, signer, totalPresaleSellingAmount]);
 
   const handleOnSubmit = async () => {
     try {
