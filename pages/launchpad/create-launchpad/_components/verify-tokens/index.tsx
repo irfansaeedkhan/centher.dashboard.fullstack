@@ -1,15 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import clsx from "clsx";
+import { formatUnits } from "ethers/lib/utils";
+import { CustomNumberInput } from "@/components/custom-number-input";
+import CustomDropdownAll from "@/components/shared/custom-dropdown";
 import { BNBIcon } from "@/assets/svgs";
 import SaleRounds from "./sale-rounds";
 import Currency from "./currency";
 import FeeOptions from "./fee-options";
 import ReleaseMonth from "./release_month";
+import MultilevelRewardSystem from "./multilevel-reward-system";
 import LiquidityLockups from "./liquidity-lockups";
 import { FormStateProps } from "../shared-types";
 import { NoteDisclamer } from "../note-disclamer";
-import { CustomNumberInput } from "@/components/custom-number-input";
-import { formatUnits } from "ethers/lib/utils";
 
 interface Props extends FormStateProps {
   presaleCreationFees: string | number | null;
@@ -20,6 +22,9 @@ export const VerifyTokenForm: React.FC<Props> = ({
   setFormState,
   presaleCreationFees,
 }) => {
+  const [selectedOption, setSelectedOption] = useState<string>(
+    formState.verify_token.multilevel_reward
+  );
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormState((prev) => {
@@ -31,6 +36,19 @@ export const VerifyTokenForm: React.FC<Props> = ({
         },
       };
     });
+  };
+
+  const handleOptionSelect = (value: string) => {
+    setFormState((prev) => {
+      return {
+        ...prev,
+        verify_token: {
+          ...prev.verify_token,
+          multilevel_reward: value,
+        },
+      };
+    });
+    setSelectedOption(value);
   };
 
   return (
@@ -61,6 +79,31 @@ export const VerifyTokenForm: React.FC<Props> = ({
           )}
         </p>
       </div>
+      <div className={gradientBorderInputMain}>
+        <label htmlFor="token_address" className={label}>
+          Multilevel Rewards System
+          <span className={labelSpan}>*</span>
+        </label>
+        <div className={gradientBorderInputParent}>
+          <CustomDropdownAll
+            selectedValue={selectedOption}
+            onSelect={handleOptionSelect}
+            options={[
+              { value: "no_referrals", label: "No referrals" },
+              {
+                value: "recurring_return",
+                label: "Recurring Return (0 to 6 levels)",
+              },
+            ]}
+          />
+        </div>
+      </div>
+      {formState.verify_token.multilevel_reward === "recurring_return" && (
+        <MultilevelRewardSystem
+          formState={formState}
+          setFormState={setFormState}
+        />
+      )}
       <SaleRounds formState={formState} setFormState={setFormState} />
       <Currency formState={formState} setFormState={setFormState} />
       <FeeOptions formState={formState} setFormState={setFormState} />

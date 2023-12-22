@@ -48,6 +48,11 @@ export type FormState = {
     liquidity_lockup: number;
     release_month: number;
     add_fee?: number;
+    multilevel_reward: string;
+    multilevel_reward_system: {
+      level: string;
+      reward: number;
+    }[];
   };
   add_additional_info: {
     logo_url: string;
@@ -106,6 +111,33 @@ export const initialFormState: FormState = {
     liquidity_lockup: 30,
     release_month: 3,
     add_fee: 0,
+    multilevel_reward: "no_referrals",
+    multilevel_reward_system: [
+      {
+        level: "1",
+        reward: 0,
+      },
+      {
+        level: "2",
+        reward: 0,
+      },
+      {
+        level: "3",
+        reward: 0,
+      },
+      {
+        level: "4",
+        reward: 0,
+      },
+      {
+        level: "5",
+        reward: 0,
+      },
+      {
+        level: "6",
+        reward: 0,
+      },
+    ],
   },
   add_additional_info: {
     logo_url: "",
