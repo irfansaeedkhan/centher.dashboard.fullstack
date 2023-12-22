@@ -1,5 +1,5 @@
 import React from "react";
-import { FormStateProps } from "../shared-types";
+import { FormState, FormStateProps } from "../shared-types";
 import { CustomNumberInput } from "@/components/custom-number-input";
 
 const MultilevelRewardSystem: React.FC<FormStateProps> = ({
@@ -16,24 +16,31 @@ const MultilevelRewardSystem: React.FC<FormStateProps> = ({
             </label>
             <div className={gradientBorderInputParent}>
               <CustomNumberInput
+                min={0}
+                max={100}
                 id="level"
                 name="level"
                 placeholder="%Monthly"
                 className={gradientBorderInput}
                 value={item.reward === 0 ? "" : item.reward}
                 onChange={(e) => {
-                  setFormState((prev) => {
+                  setFormState((prev: FormState) => {
                     return {
                       ...prev,
                       verify_token: {
                         ...prev.verify_token,
-                        multilevel_reward_system: [
-                          ...prev.verify_token.multilevel_reward_system,
-                          {
-                            level: item.level,
-                            reward: Number(e.target.value),
-                          },
-                        ],
+                        multilevel_reward_system:
+                          prev.verify_token.multilevel_reward_system.map(
+                            (item, index) => {
+                              if (index === i) {
+                                return {
+                                  ...item,
+                                  reward: Number(e.target.value),
+                                };
+                              }
+                              return item;
+                            }
+                          ),
                       },
                     };
                   });

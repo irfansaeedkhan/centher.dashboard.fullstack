@@ -286,7 +286,6 @@ const CreateLaunchpad: NextPageWithLayout = () => {
   const handleOnSubmit = async () => {
     try {
       if (signer == null) return;
-
       await uploadMetaData();
       if (!isApproved) {
         await getApproval();
