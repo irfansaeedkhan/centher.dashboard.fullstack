@@ -82,7 +82,7 @@ const DropdownSwapForm: React.FC<DropdownProps> = ({
         <div className="absolute z-10 mt-2 w-full rounded-2xl border border-gray-shade-3 bg-black-shade-12 text-white shadow-lg">
           {options.map((option) => (
             <div
-              key={option.value.id}
+              key={option.value.address}
               className={`word-break cursor-pointer border-b border-gray-shade-3 px-4 py-2 first:rounded-t-2xl last:rounded-b-2xl last:border-none hover:bg-black-shade-9 ${
                 option.value === selectedValue
                   ? "bg-black-shade-6 font-semibold"
