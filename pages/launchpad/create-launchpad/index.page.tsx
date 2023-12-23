@@ -19,6 +19,7 @@ import {
 } from "./_components/shared-types";
 import { CreateLaunchpadStepsEnum } from "./_components/shared-enum";
 import { MainComp } from "./_components/main-comp";
+import { useLaunchpad } from "@/hooks/launchpad";
 
 const CreateLaunchpad: NextPageWithLayout = () => {
   const { getSigner, connectedAddress } = useWallet();
@@ -43,6 +44,10 @@ const CreateLaunchpad: NextPageWithLayout = () => {
     number | string | null
   >(null);
   const [formState, setFormState] = useState<FormState>(initialFormState);
+
+  const [presaleDetails, setPresaleDetails] = useState<any>([]);
+
+  const { sdk } = useLaunchpad();
 
   const totalPresaleSellingAmount = useMemo(() => {
     return formState.rounds_settings.round.reduce((prev, current) => {
@@ -151,6 +156,23 @@ const CreateLaunchpad: NextPageWithLayout = () => {
     })();
   }, [formState.verify_token.token_address, signer, totalPresaleSellingAmount]);
 
+  useEffect(() => {
+    if (formState.verify_token.token_address == "") return;
+    (async () => {
+      try {
+        if (sdk) {
+          let result = await sdk.getPresale(
+            formState.verify_token.token_address
+          );
+
+          setPresaleDetails(result);
+        }
+      } catch (e) {
+        customLog(["development", "staging"], e);
+      }
+    })();
+  }, [formState.verify_token.token_address, sdk]);
+
   const uploadMetaData = async () => {
     try {
       setProgressModel(true);
@@ -221,7 +243,10 @@ const CreateLaunchpad: NextPageWithLayout = () => {
             ? formState.verify_token.add_fee
             : formState.verify_token.fee_option,
         releaseMonth: 10,
-        isRefSupport: false,
+        isRefSupport:
+          formState.verify_token.multilevel_reward === "recurring_return"
+            ? true
+            : false,
         fundType: formState.verify_token.currency === "BNB" ? 0 : 1,
         metadata: ipfsResponse.ipfs_url,
       };
@@ -266,6 +291,7 @@ const CreateLaunchpad: NextPageWithLayout = () => {
         presaleInfoParams,
         roundParams
       );
+
       setProgressModel(false);
       setSuccessModal("Token Presale created successfully");
       setFormState(initialFormState);
@@ -283,14 +309,69 @@ const CreateLaunchpad: NextPageWithLayout = () => {
     }
   };
 
+  const setRefSettings = async () => {
+    setProgressModel(true);
+    setModalTitle(CreateLaunchpadStepsEnum.affiliate);
+    try {
+      if (!signer) return;
+
+      const percents = [];
+
+      for (
+        let i = 0;
+        i < formState.verify_token.multilevel_reward_system.length;
+        i++
+      ) {
+        percents.push(
+          Number(formState.verify_token.multilevel_reward_system[i].reward) *
+            100
+        );
+      }
+      await BlockchainWrite.setAffiliateSetting(
+        signer,
+        formState.verify_token.token_address,
+        percents
+      );
+      setProgressModel(false);
+      setSuccessModal("Presale referrer settings updated successfully");
+      setFormState(initialFormState);
+    } catch (error: any) {
+      setProgressModel(false);
+      let errorMessage = "Presale referrer settings failed";
+      if (error.reason?.toLowerCase().includes("user rejected")) {
+        errorMessage = "User rejected the transaction";
+      } else if (error.reason) {
+        errorMessage = error.reason;
+      } else {
+        errorMessage = error.message ?? errorMessage;
+      }
+      throw new Error(errorMessage);
+    }
+  };
+
   const handleOnSubmit = async () => {
     try {
       if (signer == null) return;
+      if (!sdk) return;
       await uploadMetaData();
       if (!isApproved) {
         await getApproval();
       }
-      await createPresaleOnLaunchpad();
+
+      const isAlreadyExist = await BlockchainRead.presaleAlreadyCreated(
+        formState.verify_token.token_address
+      );
+
+      if (!isAlreadyExist) {
+        await createPresaleOnLaunchpad();
+      }
+
+      if (
+        formState.verify_token.multilevel_reward === "recurring_return" ||
+        (presaleDetails.isRefSupport && !presaleDetails.isActive)
+      ) {
+        await setRefSettings();
+      }
     } catch (error: any) {
       setErrorModal(error?.message ?? "Something went wrong!");
     }
