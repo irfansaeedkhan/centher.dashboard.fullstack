@@ -550,6 +550,25 @@ export class BlockchainRead {
     return "0";
   }
 
+  static async presaleAlreadyCreated(
+    token: string,
+    signer?: JsonRpcSigner
+  ): Promise<boolean> {
+    try {
+      const launchpadContract = SmartContractProvider.getContract(
+        SmartContractName.LAUNCHPAD,
+        signer
+      );
+
+      const createdPresale = await launchpadContract.createdPresale(token);
+
+      return createdPresale;
+    } catch (error: any) {
+      logger(error, "presaleAlreadyCreated");
+    }
+    return false;
+  }
+
   static async checkAddress(
     address: string,
     signer?: JsonRpcSigner
@@ -1945,6 +1964,36 @@ export class BlockchainWrite {
       return "Done";
     } catch (error: any) {
       logger(error, "createLaunchpad");
+      throw error;
+    }
+  }
+
+  static async setAffiliateSetting(
+    signer: JsonRpcSigner,
+    tokenAddress: string,
+    levels: any
+  ): Promise<string> {
+    try {
+      const launchpadContract = SmartContractProvider.getContract(
+        SmartContractName.LAUNCHPAD,
+        signer
+      );
+
+      await launchpadContract.callStatic.setAffiliateSetting(
+        tokenAddress,
+        levels
+      );
+
+      let tx = await launchpadContract.functions.setAffiliateSetting(
+        tokenAddress,
+        levels
+      );
+
+      await tx.wait();
+
+      return "Done";
+    } catch (error: any) {
+      logger(error, "setAffiliateSetting");
       throw error;
     }
   }
