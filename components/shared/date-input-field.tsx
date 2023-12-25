@@ -28,7 +28,6 @@ export const DateInputField: React.FC<Props> = ({
       <div className={gradientBorderInputParent}>
         <Datepicker onChange={handleChangeEvent} value={value}>
           <Datepicker.Input
-            max={new Date().toDateString()}
             format={
               type === "date"
                 ? "dd-MMM-yyyy"
