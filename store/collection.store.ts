@@ -16,147 +16,180 @@ import { BlockchainRead } from "@/web3/blockchain";
 import { customLog } from "@/utils/custom.log";
 
 export interface CollectionStore {
-  info: CFSCollection | undefined;
-  fetchCollectionInfo: (collection: string) => Promise<void>;
+  collectionAddress: string;
+  collection: CFSCollection | null;
+  collectionAdditionalInfo: CollectionAdditionalInfo | null;
   nfts: NFTCardData[];
-  fetchNFTs: (
-    collection: string,
-    saleState: NFTSaleStateFilter,
-    orderDir: OrderDirection,
-    offset?: number,
-    limit?: number
-  ) => Promise<void>;
+  loadingCollection: LoadingState;
+  loadingNfts: LoadingState;
   offset: number;
-  updateOffset: () => void;
   filter: NFTSaleStateFilter;
-  updateFilter: (filter: NFTSaleStateFilter) => void;
-  limit: number;
-  loadingCollectionInfo: LoadingState;
-  loadingNFTs: LoadingState;
-  collectionAdditionalDetails: CollectionAdditionalInfo | undefined;
-  updateCollectionAdditionalInfo: () => Promise<void>;
+  orderDir: OrderDirection;
+  actions: {
+    fetchCollection: () => Promise<void>;
+    fetchCollectionAdditionalInfo: () => Promise<void>;
+    fetchNFTs: () => Promise<void>;
+    updateOffset: () => void;
+    updateFilter: (filter: NFTSaleStateFilter) => void;
+    updateOrderDir: (orderDir: OrderDirection) => void;
+    resetStore: (
+      collectionAddress: string,
+      loadinCollection?: LoadingState,
+      loadingNfts?: LoadingState,
+      filter?: NFTSaleStateFilter,
+      orderDir?: OrderDirection
+    ) => void;
+  };
 }
 
 export const useCollectionStore = create<CollectionStore>()(
   devtools(
     (set, get) => ({
-      info: undefined,
+      collectionAddress: "",
+      collection: null,
+      collectionAdditionalInfo: null,
       nfts: [],
+      loadingCollection: "idle",
+      loadingNfts: "idle",
       offset: 0,
       filter: "All",
-      limit: 50,
-      loadingCollectionInfo: "idle",
-      loadingNFTs: "idle",
-      collectionAdditionalDetails: undefined,
-      updateOffset: () =>
-        set((state) => ({
-          offset: state.nfts.length,
-        })),
-
-      updateFilter: (filter) =>
-        set(() => ({
-          filter: filter,
-          offset: 0,
-          nfts: [],
-        })),
-
-      fetchCollectionInfo: async (collection) => {
-        try {
-          set({ loadingCollectionInfo: "loading" });
-          let _collection: CFSCollection = await getSingleCollection(
-            collection
-          );
-
-          set(() => {
-            return {
-              info: _collection,
-              loadingCollectionInfo: "loaded",
-            };
-          });
-        } catch (error) {
-          set({ loadingCollectionInfo: "failed" });
-          process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
-            console.error(error);
-        }
-      },
-
-      fetchNFTs: async (
-        collection,
-        saleState,
-        orderDir,
-        offset = 0,
-        limit = 50
-      ) => {
-        try {
-          set({ loadingNFTs: "loading" });
-          let _nfts: CFSNFT[] = await getNFTListOfSingleCollection({
-            collection_address: collection,
+      orderDir: "desc",
+      actions: {
+        fetchCollection: async () => {
+          try {
+            set({ loadingCollection: "loading" });
+            const collectionAddress = get().collectionAddress;
+            const _collection: CFSCollection = await getSingleCollection(
+              collectionAddress
+            );
+            set(() => {
+              return {
+                collection: _collection,
+                loadingCollection: "loaded",
+              };
+            });
+          } catch (error) {
+            set({ loadingCollection: "failed" });
+            customLog(["development", "staging"], error);
+          }
+        },
+        updateOffset: () =>
+          set((state) => ({
+            offset: state.nfts.length,
+          })),
+        updateFilter: (filter) => {
+          set(() => ({
+            filter: filter,
+            offset: 0,
+            nfts: [],
+          }));
+          get().actions.fetchNFTs();
+        },
+        updateOrderDir: (orderDir) => {
+          set(() => ({
             orderDir: orderDir,
-            saleState: saleState,
-            limit: limit,
-            skip: offset,
-          });
+            offset: 0,
+            nfts: [],
+          }));
+          get().actions.fetchNFTs();
+        },
+        fetchNFTs: async () => {
+          try {
+            set({ loadingNfts: "loading" });
 
-          const nftCardData = _nfts.map((nft) => getNFTCardData(nft));
+            const collectionAddress = get().collectionAddress;
+            const saleState = get().filter;
+            const orderDir = get().orderDir;
+            const offset = get().offset;
 
-          // Remove nfts that are already in the store
-          const filteredNFTs = nftCardData.filter(
-            (nft) => !get().nfts.some((stateNFT) => stateNFT.id === nft.id)
+            const _nfts: CFSNFT[] = await getNFTListOfSingleCollection({
+              collection_address: collectionAddress,
+              orderDir: orderDir,
+              saleState: saleState,
+              limit: 20,
+              skip: offset,
+            });
+
+            const nftCardData = _nfts.map((nft) => getNFTCardData(nft));
+
+            // Remove nfts that are already in the store
+            const filteredNFTs = nftCardData.filter(
+              (nft) => !get().nfts.some((stateNFT) => stateNFT.id === nft.id)
+            );
+
+            set((state) => ({
+              ...state,
+              nfts: [...state.nfts, ...filteredNFTs],
+              loadingNfts: "loaded",
+            }));
+          } catch (error) {
+            set({ loadingNfts: "failed" });
+            customLog(["development", "staging"], error);
+          }
+        },
+        fetchCollectionAdditionalInfo: async () => {
+          const collection = get().collection;
+          if (!collection) return;
+
+          const { nfts: result, history } =
+            await BlockchainRead.getCollectionAdditionalInfo(
+              collection.collection,
+              collection.creator
+            );
+
+          const listedItems = result.filter(
+            (e: any) =>
+              e.saleState.toLowerCase() == "auction" ||
+              e.saleState.toLowerCase() == "list"
+          );
+          const listedItemCount = listedItems.length;
+          const minPrice =
+            listedItemCount > 0
+              ? Math.min(...listedItems.map((e: any) => e.price))
+              : 0;
+          const totalNftCount = result.length;
+          const listedPercent = (
+            (listedItemCount / totalNftCount) *
+            100
+          ).toFixed(2);
+
+          const ownerIncome = history.reduce(
+            (a: number, b: any) => a + +b.price,
+            0
           );
 
           set((state) => ({
             ...state,
-            nfts: [...state.nfts, ...filteredNFTs],
-            loadingNFTs: "loaded",
+            collectionAdditionalInfo: {
+              minPrice: +minPrice,
+              listedPercent: +listedPercent,
+              ownerIncome: +ownerIncome,
+            },
           }));
-        } catch (error) {
-          set({ loadingNFTs: "failed" });
-          customLog(["development", "staging"], error);
-        }
-      },
-      // TODO: Move it to CFS
-      updateCollectionAdditionalInfo: async () => {
-        const info = get().info;
-        if (!info) return;
-
-        const { nfts: result, history } =
-          await BlockchainRead.getCollectionAdditionalInfo(
-            info.collection,
-            info.creator
-          );
-
-        const listedItems = result.filter(
-          (e: any) =>
-            e.saleState.toLowerCase() == "auction" ||
-            e.saleState.toLowerCase() == "list"
-        );
-        const listedItemCount = listedItems.length;
-        const minPrice =
-          listedItemCount > 0
-            ? Math.min(...listedItems.map((e: any) => e.price))
-            : 0;
-        const totalNftCount = result.length;
-        const listedPercent = ((listedItemCount / totalNftCount) * 100).toFixed(
-          2
-        );
-
-        const ownerIncome = history.reduce(
-          (a: number, b: any) => a + +b.price,
-          0
-        );
-
-        set((state) => ({
-          ...state,
-          collectionAdditionalDetails: {
-            minPrice: +minPrice,
-            listedPercent: +listedPercent,
-            ownerIncome: +ownerIncome,
-          },
-        }));
+        },
+        resetStore: (
+          collectionAddress,
+          loadingCollection = "idle",
+          loadingNfts = "idle",
+          filter = "All",
+          orderDir = "desc"
+        ) => {
+          set({
+            collectionAddress: collectionAddress.toLowerCase(),
+            collection: null,
+            collectionAdditionalInfo: null,
+            nfts: [],
+            loadingCollection,
+            loadingNfts,
+            filter,
+            orderDir,
+            offset: 0,
+          });
+        },
       },
     }),
     {
-      name: "ExploreStore",
+      name: "CollectionStore",
       enabled: process.env.NEXT_PUBLIC_APP_ENV !== "production",
     }
   )
