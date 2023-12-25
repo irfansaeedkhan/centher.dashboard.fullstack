@@ -1,10 +1,14 @@
 import { useState } from "react";
+import { FiEdit } from "react-icons/fi";
+import toast from "react-hot-toast";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { OrgMember } from "@/lib/org-team-members";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
+import { updateTitle } from "@/lib/org-team-members";
 import { AppRoutes } from "@/constants/app.routes";
 import { OrgTeamConfirmationModal } from "../../_components";
+import { EditOrgMemberTitleModal } from "../../_components/edit-org-member-itle-modal";
 
 export const SingleOrgMember: React.FC<{
   member: OrgMember;
@@ -15,6 +19,36 @@ export const SingleOrgMember: React.FC<{
     user: member,
   });
   const [isRemoveMemberModalOpen, setRemoveMemberModalOpen] = useState(false);
+  const [isTitleEditModalOpen, setTitleEditModalOpen] = useState(false);
+  const [newTitle, setNewTitle] = useState("");
+  const [currentTitle, setCurrentTitle] = useState(member.title);
+
+  const handleSaveTitle = async () => {
+    if (newTitle.length > 100) {
+      toast.error("Title cannot be more than 100 characters");
+      return;
+    }
+
+    if (newTitle === currentTitle) {
+      toast.error("New Title cannot be same as current title");
+      return;
+    }
+
+    if (newTitle === "") {
+      toast.error("Title cannot be empty");
+      return;
+    }
+
+    try {
+      await updateTitle(newTitle, member.user_id);
+      setCurrentTitle(newTitle);
+      setTitleEditModalOpen(false);
+      setNewTitle("");
+      toast.success("Title updated");
+    } catch (err: any) {
+      toast.error(err.message);
+    }
+  };
 
   return (
     <>
@@ -65,11 +99,26 @@ export const SingleOrgMember: React.FC<{
               Remove
             </button>
           </div>
-          <h5 className="word-break mt-1 text-xs font-normal text-gray-shade-18">
-            {member.title}
-          </h5>
+          <div className="mt-1 flex items-center gap-2">
+            <h5 className="word-break mt-1 text-xs font-normal text-gray-shade-18">
+              {currentTitle}
+            </h5>
+            <FiEdit onClick={() => setTitleEditModalOpen(true)} />
+          </div>
         </div>
       </div>
+
+      <EditOrgMemberTitleModal
+        isOpen={isTitleEditModalOpen}
+        onClose={() => setTitleEditModalOpen(false)}
+        onClickConfirm={handleSaveTitle}
+        modalTitle="Edit Title"
+        modalId="edit-title-modal"
+        currentTitle={currentTitle}
+        newTitle={newTitle}
+        isTitleEditModalOpen={isTitleEditModalOpen}
+        setNewTitle={setNewTitle}
+      />
 
       {member && (
         <OrgTeamConfirmationModal
