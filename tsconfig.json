@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2020",
     "experimentalDecorators": true,
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
@@ -21,6 +21,12 @@
     },
     "typeRoots": ["./node_modules/@types", "./@types"]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "web3/utils/utils.js"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "web3/utils/utils.js",
+    "launchpad/types"
+  ],
   "exclude": ["node_modules"]
 }

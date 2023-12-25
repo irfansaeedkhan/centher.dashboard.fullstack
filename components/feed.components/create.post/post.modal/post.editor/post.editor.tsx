@@ -23,6 +23,7 @@ import "draft-js/dist/Draft.css";
 import useUser from "@/hooks/use.user";
 import { useNewPostStore } from "@/store/new.post.store";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
+import { BuyCitizenshipModal } from "@/components/modal/buy-citizenship-modal";
 import { axiosApiCenther } from "@/utils/axios";
 import { customLog } from "@/utils/custom.log";
 import cn from "@/utils/cn";
@@ -39,12 +40,13 @@ export const PostEditor: React.FC = () => {
     posts,
     setPostText,
     removePost,
-    postTextMaxLength,
+    nonCitizenUserPostText,
     editorState,
     setEditorState,
   } = useNewPostStore();
 
   const [mentions, setMentions] = useState<MentionData[]>([]);
+  const [showBuyCitizenshipModal, setShowBuyCitizenshipModal] = useState(false);
   const ref = useRef<Editor>(null);
 
   const [open, setOpen] = useState(false);
@@ -107,6 +109,10 @@ export const PostEditor: React.FC = () => {
     setOpen(_open);
   }, []);
 
+  const openBuyCitizenshipModal = () => {
+    setShowBuyCitizenshipModal(true);
+  };
+
   const onSearchChange = useCallback(({ value }: { value: string }) => {
     handleSearchQueryInput(value);
   }, []);
@@ -136,14 +142,6 @@ export const PostEditor: React.FC = () => {
       }, 500);
     }
   }, [hasMedia]);
-
-  const handleBeforeInput = (value: string) => {
-    const textLength = editorState.getCurrentContent().getPlainText().length;
-    if (value && textLength >= postTextMaxLength) {
-      return "handled";
-    }
-    return "not-handled";
-  };
 
   useEffect(() => {
     const editorElement = editorRef.current?.editor?.editor;
@@ -217,8 +215,28 @@ export const PostEditor: React.FC = () => {
                 editorState={editorState}
                 placeholder="Type here"
                 spellCheck={true}
-                handleBeforeInput={handleBeforeInput}
               />
+              {user?.membership.status !== "citizen" &&
+                lastPost.post_text.length > nonCitizenUserPostText && (
+                  <div className="gradient-border-3 mt-6 h-36 w-full rounded-md bg-[#1A1B21] p-[1px] sm:h-[90px] sm:w-[560px] md:h-[120px]">
+                    <div className="p-2 text-sm font-semibold text-white">
+                      {" "}
+                      Become a Citizen
+                    </div>
+                    <div className="block p-2 text-xs font-medium leading-tight text-[#A0A4BB]">
+                      {" "}
+                      Purchase your Citizen Passport and take advantage of our
+                      premium features like write{" "}
+                      <span>endless posts and much more.</span>
+                    </div>
+                    <span
+                      onClick={openBuyCitizenshipModal}
+                      className="textGradient cursor-pointer p-2 text-sm"
+                    >
+                      Purchase Citizen Passport
+                    </span>
+                  </div>
+                )}
 
               <MentionSuggestions
                 open={open}
@@ -256,6 +274,12 @@ export const PostEditor: React.FC = () => {
           </div>
         )}
       </div>
+      {showBuyCitizenshipModal && (
+        <BuyCitizenshipModal
+          isOpen={showBuyCitizenshipModal}
+          onClickClose={() => setShowBuyCitizenshipModal(false)}
+        />
+      )}
     </div>
   );
 };

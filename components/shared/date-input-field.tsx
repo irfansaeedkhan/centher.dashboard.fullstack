@@ -1,5 +1,6 @@
 import React from "react";
 import clsx from "clsx";
+import { BiCalendar } from "react-icons/bi";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { Datepicker } from "@aliakbarazizi/headless-datepicker";
 import cn from "@/utils/cn";
@@ -27,16 +28,18 @@ export const DateInputField: React.FC<Props> = ({
       <div className={gradientBorderInputParent}>
         <Datepicker onChange={handleChangeEvent} value={value}>
           <Datepicker.Input
+            max={new Date().toDateString()}
             format={
               type === "date"
-                ? "mm/dd/yyyy"
+                ? "dd-MMM-yyyy"
                 : type === "time"
                 ? "hh:mm"
-                : "mm/dd/yyyy hh:mm"
+                : "dd-MMM-yyyy hh:mm"
             }
             placeholder="Select Date and Time"
-            className={gradientBorderInput}
+            className={clsx(gradientBorderInput, "relative")}
           />
+          <BiCalendar className="absolute right-3 top-3 h-6 w-6 text-white" />
           <Datepicker.Picker
             defaultType="day"
             className={clsx(
@@ -155,7 +158,7 @@ export const DateInputField: React.FC<Props> = ({
                   <div className="flex max-h-full overflow-y-auto">
                     <Datepicker.Items
                       type="hour"
-                      className="overflow-y-auto scroll-smooth px-2 flg:px-4"
+                      className="no-scrollbar overflow-y-auto scroll-smooth px-2 flg:px-4"
                       disableAutoScroll
                     >
                       {({ items }) =>
@@ -183,7 +186,7 @@ export const DateInputField: React.FC<Props> = ({
                     </Datepicker.Items>
                     <Datepicker.Items
                       type="minute"
-                      className="overflow-y-auto scroll-smooth px-2 flg:px-4"
+                      className="no-scrollbar overflow-y-auto scroll-smooth px-2 flg:px-4"
                       disableAutoScroll
                     >
                       {({ items }) =>

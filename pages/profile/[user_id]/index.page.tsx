@@ -32,7 +32,6 @@ import { PromotionCard3Mobile } from "@/components/feed.components/promotion.car
 import { PromotionCard8Mobile } from "@/components/feed.components/promotion.cards/card-8-mobile";
 import { PromotionCard7Mobile } from "@/components/feed.components/promotion.cards/card-7-mobile";
 import { ProfilePageWrapper } from "./_components";
-import { PromotionCard9Mobile } from "@/components/feed.components/promotion.cards/card-9-mobile";
 
 const Profile: NextPageWithLayout = () => {
   // Create User Profile View

@@ -4,11 +4,12 @@ import {
   FixedCropperRef,
   ImageRestriction,
 } from "react-advanced-cropper";
+import toast from "react-hot-toast";
 import "react-advanced-cropper/dist/style.css";
 import { ModalWrapper } from "@/components/modal";
 import { LoggedInUser, UserImage } from "@/models/user";
-import { CropFunctions } from "./crop-functions";
 import Button from "@/components/button";
+import { CropFunctions } from "./crop-functions";
 
 interface CropperProps {
   isOpen: boolean;
@@ -37,6 +38,12 @@ const CropProfilePicture: React.FC<CropperProps> = ({
     if (!base64) return;
 
     const file: File = await dataUrlToFile(base64 || "", "cropped-image.png");
+
+    if (file.size > 5000000) {
+      toast.error("Cropped image size exceeds 5MB limit");
+      return;
+    }
+
     setUploadFile(file);
     setProfileImage(base64);
     setProfileImageData((prev) => ({
@@ -69,12 +76,23 @@ const CropProfilePicture: React.FC<CropperProps> = ({
               lines: false,
               movable: false,
               resizable: false,
+              autoZoom: false,
             }}
             stencilSize={{
               width: 400,
               height: 400,
             }}
             imageRestriction={ImageRestriction.stencil}
+            onChange={() => {
+              const coordinates = cropperRef.current?.getCoordinates();
+              if (coordinates) {
+                cropperRef.current?.setCoordinates({
+                  ...coordinates,
+                  width: 900,
+                  height: 900,
+                });
+              }
+            }}
           />
         </div>
         <div className="relative mt-5 flex w-full flex-col items-center justify-center">

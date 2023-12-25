@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import clsx from "clsx";
 import toast from "react-hot-toast";
+import { BNBIcon } from "@/assets/svgs";
 import { DateInputField } from "@/components/shared";
+import { CustomNumberInput } from "@/components/custom-number-input";
 import { CurrentComponent, FormStateProps } from "../shared-types";
 import { NoteDisclamer } from "../note-disclamer";
 
@@ -11,6 +13,7 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
 }) => {
   const [currentRound, setCurrentRound] = useState(1);
   const [currentComponent, setCurrentComponent] = useState<CurrentComponent>({
+    token_price: "",
     total_selling_amount: "",
     soft_cap_busd: "",
     start_time: null,
@@ -91,45 +94,43 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
             )}
             onClick={() => {
               if (
-                currentComponent.total_selling_amount === "" ||
-                currentComponent.soft_cap_busd === "" ||
-                currentComponent.start_time === null ||
-                currentComponent.end_time === null ||
-                currentComponent.min_contribution === "" ||
-                currentComponent.max_contribution === ""
+                formState.rounds_settings.round[currentRound - 1]
+                  .token_price === 0 ||
+                formState.rounds_settings.round[currentRound - 1]
+                  .token_price === "" ||
+                formState.rounds_settings.round[currentRound - 1]
+                  .total_selling_amount === 0 ||
+                formState.rounds_settings.round[currentRound - 1]
+                  .total_selling_amount === "" ||
+                formState.rounds_settings.round[currentRound - 1]
+                  .soft_cap_busd === 0 ||
+                formState.rounds_settings.round[currentRound - 1]
+                  .soft_cap_busd === "" ||
+                formState.rounds_settings.round[currentRound - 1].start_time ===
+                  null ||
+                formState.rounds_settings.round[currentRound - 1].end_time ===
+                  null ||
+                formState.rounds_settings.round[currentRound - 1]
+                  .min_contribution === 0 ||
+                formState.rounds_settings.round[currentRound - 1]
+                  .min_contribution === "" ||
+                formState.rounds_settings.round[currentRound - 1]
+                  .max_contribution === 0 ||
+                formState.rounds_settings.round[currentRound - 1]
+                  .max_contribution === ""
               ) {
                 toast.error("Please fill all the fields");
                 return;
               }
-              setFormState((prev) => {
-                return {
-                  ...prev,
-                  rounds_settings: {
-                    ...prev.rounds_settings,
-                    round: [
-                      ...prev.rounds_settings.round,
-                      {
-                        round_no: index + 1,
-                        total_selling_amount:
-                          currentComponent.total_selling_amount,
-                        soft_cap_busd: currentComponent.soft_cap_busd,
-                        start_time: currentComponent.start_time,
-                        end_time: currentComponent.end_time,
-                        min_contribution: currentComponent.min_contribution,
-                        max_contribution: currentComponent.max_contribution,
-                      },
-                    ],
-                  },
-                };
-              });
               setCurrentRound(index + 1);
               setCurrentComponent({
-                total_selling_amount: "",
-                soft_cap_busd: "",
+                total_selling_amount: 0,
+                token_price: 0,
+                soft_cap_busd: 0,
                 start_time: null,
                 end_time: null,
-                min_contribution: "",
-                max_contribution: "",
+                min_contribution: 0,
+                max_contribution: 0,
               });
             }}
           >
@@ -139,18 +140,49 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
       </div>
       <div className="flex flex-col gap-5">
         <div className={gradientBorderInputMain}>
+          <label htmlFor="token_price" className={label}>
+            Price/Token
+            <span className={labelSpan}>*</span>
+          </label>
+          <div className={gradientBorderInputParent}>
+            <CustomNumberInput
+              min={0}
+              id="token_price"
+              name="token_price"
+              placeholder="Example: 100"
+              className={gradientBorderInput}
+              value={
+                formState.rounds_settings.round[currentRound - 1].token_price ??
+                currentComponent.token_price
+              }
+              onChange={handleChangeEvent}
+            />
+          </div>
+          <p className="text-gradient flex w-fit gap-0.5 pb-2 pt-1 text-xs font-medium">
+            <span className="flex h-3.5 w-3.5 flex-shrink-0">
+              <BNBIcon />
+            </span>
+            <span>00 BNB</span>
+            <span> = </span>
+            <span>00 Token</span>
+          </p>
+        </div>
+        <div className={gradientBorderInputMain}>
           <label htmlFor="total_selling_amount" className={label}>
             Total Selling Amount
             <span className={labelSpan}>*</span>
           </label>
           <div className={gradientBorderInputParent}>
-            <input
-              type="text"
+            <CustomNumberInput
+              min={0}
               id="total_selling_amount"
               name="total_selling_amount"
               placeholder="Example: 100"
               className={gradientBorderInput}
-              value={currentComponent.total_selling_amount}
+              value={
+                formState.rounds_settings.round[currentRound - 1]
+                  .total_selling_amount ?? currentComponent.total_selling_amount
+              }
               onChange={handleChangeEvent}
             />
           </div>
@@ -161,28 +193,35 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
             <span className={labelSpan}>*</span>
           </label>
           <div className={gradientBorderInputParent}>
-            <input
-              type="text"
+            <CustomNumberInput
+              min={0}
               id="soft_cap_busd"
               name="soft_cap_busd"
               placeholder="Example: 0"
               className={gradientBorderInput}
-              value={currentComponent.soft_cap_busd}
+              value={
+                formState.rounds_settings.round[currentRound - 1]
+                  .soft_cap_busd ?? currentComponent.soft_cap_busd
+              }
               onChange={handleChangeEvent}
             />
           </div>
         </div>
         <p className="textGradient w-fit text-[13px] leading-5">
           Enter the percentage of funds raised that should be allocated to the
-          liquidity pool (Min 51%, Max 100%)Ex: How many tokens will I receive
-          if I spend 1 BNB? The amount is going to be lower to allow a higher
-          listing price.
+          liquidity pool (Min 51%, Max 100%)
+          <br />
+          Ex: How many tokens will I receive if I spend 1 BNB? The amount is
+          going to be lower to allow a higher listing price.
         </p>
         <div className={gridParent}>
           <DateInputField
             title="Start Time"
             type="datetime"
-            value={currentComponent.start_time}
+            value={
+              formState.rounds_settings.round[currentRound - 1].start_time ??
+              currentComponent.start_time
+            }
             handleChangeEvent={(value: Date | null) =>
               handleDateChangeEvent(value, "start_time")
             }
@@ -190,7 +229,10 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
           <DateInputField
             title="End Time"
             type="datetime"
-            value={currentComponent.end_time}
+            value={
+              formState.rounds_settings.round[currentRound - 1].end_time ??
+              currentComponent.end_time
+            }
             handleChangeEvent={(value: Date | null) =>
               handleDateChangeEvent(value, "end_time")
             }
@@ -203,13 +245,16 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
               <span className={labelSpan}>*</span>
             </label>
             <div className={gradientBorderInputParent}>
-              <input
-                type="text"
+              <CustomNumberInput
+                min={0}
                 id="min_contribution"
                 name="min_contribution"
                 placeholder="Example: 0"
                 className={gradientBorderInput}
-                value={currentComponent.min_contribution}
+                value={
+                  formState.rounds_settings.round[currentRound - 1]
+                    .min_contribution ?? currentComponent.min_contribution
+                }
                 onChange={handleChangeEvent}
               />
             </div>
@@ -220,13 +265,16 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
               <span className={labelSpan}>*</span>
             </label>
             <div className={gradientBorderInputParent}>
-              <input
-                type="text"
+              <CustomNumberInput
+                min={0}
                 id="max_contribution"
                 name="max_contribution"
                 placeholder="Example: 0"
                 className={gradientBorderInput}
-                value={currentComponent.max_contribution}
+                value={
+                  formState.rounds_settings.round[currentRound - 1]
+                    .max_contribution ?? currentComponent.max_contribution
+                }
                 onChange={handleChangeEvent}
               />
             </div>

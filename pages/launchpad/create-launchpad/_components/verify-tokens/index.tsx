@@ -1,14 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
+import clsx from "clsx";
+import { formatUnits } from "ethers/lib/utils";
+import { CustomNumberInput } from "@/components/custom-number-input";
+import CustomDropdownAll from "@/components/shared/custom-dropdown";
+import { BNBIcon } from "@/assets/svgs";
 import SaleRounds from "./sale-rounds";
 import Currency from "./currency";
 import FeeOptions from "./fee-options";
+import ReleaseMonth from "./release_month";
+import MultilevelRewardSystem from "./multilevel-reward-system";
+import LiquidityLockups from "./liquidity-lockups";
 import { FormStateProps } from "../shared-types";
 import { NoteDisclamer } from "../note-disclamer";
 
-export const VerifyTokenForm: React.FC<FormStateProps> = ({
+interface Props extends FormStateProps {
+  presaleCreationFees: string | number | null;
+}
+
+export const VerifyTokenForm: React.FC<Props> = ({
   formState,
   setFormState,
+  presaleCreationFees,
 }) => {
+  const [selectedOption, setSelectedOption] = useState<string>(
+    formState.verify_token.multilevel_reward
+  );
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormState((prev) => {
@@ -20,6 +36,19 @@ export const VerifyTokenForm: React.FC<FormStateProps> = ({
         },
       };
     });
+  };
+
+  const handleOptionSelect = (value: string) => {
+    setFormState((prev) => {
+      return {
+        ...prev,
+        verify_token: {
+          ...prev.verify_token,
+          multilevel_reward: value,
+        },
+      };
+    });
+    setSelectedOption(value);
   };
 
   return (
@@ -40,31 +69,83 @@ export const VerifyTokenForm: React.FC<FormStateProps> = ({
             onChange={handleChange}
           />
         </div>
-        <p className="text-gradient w-fit pb-2 pt-1 text-xs font-medium">
-          Pool creation fee: 100 BNB
+        <p className="text-gradient flex w-fit gap-0.5 pb-2 pt-1 text-xs font-medium">
+          <span>Pool creation fee: </span>
+          <span className="flex h-3.5 w-3.5 flex-shrink-0">
+            <BNBIcon />
+          </span>
+          {presaleCreationFees && (
+            <span>{formatUnits(presaleCreationFees.toString())} BNB</span>
+          )}
         </p>
       </div>
-      <SaleRounds formState={formState} setFormState={setFormState} />
-      <Currency formState={formState} setFormState={setFormState} />
-      <FeeOptions formState={formState} setFormState={setFormState} />
-      <NoteDisclamer />
       <div className={gradientBorderInputMain}>
-        <label htmlFor="liquidity_lockup" className={label}>
-          Liquidity lockup (days)
+        <label htmlFor="token_address" className={label}>
+          Multilevel Rewards System
           <span className={labelSpan}>*</span>
         </label>
         <div className={gradientBorderInputParent}>
-          <input
-            type="text"
-            id="liquidity_lockup"
-            name="liquidity_lockup"
-            placeholder="Example: 0"
-            className={gradientBorderInput}
-            value={formState.verify_token.liquidity_lockup}
-            onChange={handleChange}
+          <CustomDropdownAll
+            selectedValue={selectedOption}
+            onSelect={handleOptionSelect}
+            options={[
+              { value: "no_referrals", label: "No referrals" },
+              {
+                value: "recurring_return",
+                label: "Recurring Return (0 to 6 levels)",
+              },
+            ]}
           />
         </div>
       </div>
+      {formState.verify_token.multilevel_reward === "recurring_return" && (
+        <MultilevelRewardSystem
+          formState={formState}
+          setFormState={setFormState}
+        />
+      )}
+      <SaleRounds formState={formState} setFormState={setFormState} />
+      <Currency formState={formState} setFormState={setFormState} />
+      <FeeOptions formState={formState} setFormState={setFormState} />
+      {formState.verify_token.fee_option === "Other" && (
+        <div className={gradientBorderInputMain}>
+          <label
+            htmlFor="add_fee"
+            className={clsx(label, "text-gray-shade-14")}
+          >
+            Add Fee
+          </label>
+          <div className={gradientBorderInputParent}>
+            <CustomNumberInput
+              min={0}
+              max={100}
+              id="add_fee"
+              name="add_fee"
+              placeholder="Example: 3%"
+              className={gradientBorderInput}
+              value={
+                formState.verify_token.add_fee === 0
+                  ? ""
+                  : formState.verify_token.add_fee
+              }
+              onChange={(e) =>
+                setFormState((prev) => {
+                  return {
+                    ...prev,
+                    verify_token: {
+                      ...prev.verify_token,
+                      add_fee: Number(e.target.value),
+                    },
+                  };
+                })
+              }
+            />
+          </div>
+        </div>
+      )}
+      <LiquidityLockups formState={formState} setFormState={setFormState} />
+      <ReleaseMonth formState={formState} setFormState={setFormState} />
+      <NoteDisclamer />
     </div>
   );
 };

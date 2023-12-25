@@ -91,6 +91,7 @@ const ProfileHeader: React.FC<Props> = ({
 
   const [follow, setFollow] = useState<boolean>(false);
   const [loadingState, setLoadingState] = useState<boolean>(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const verificationTick = useVerificationTick({ user, shouldAnimate: true });
 
@@ -178,6 +179,7 @@ const ProfileHeader: React.FC<Props> = ({
   const handleUploadCoverImage = async (
     e: React.MouseEvent<HTMLButtonElement>
   ) => {
+    setIsUploading(true);
     setCoverImageLoading(true);
     if (!coverImage.blob) {
       setCoverImageLoading(false);
@@ -232,9 +234,11 @@ const ProfileHeader: React.FC<Props> = ({
       }));
 
       button.disabled = false;
+      setIsUploading(false);
       setCoverImageLoading(false);
     } catch (error: any) {
       button.disabled = false;
+      setIsUploading(false);
       setCoverImageLoading(false);
       process.env.NODE_ENV !== "production" && console.dir(error);
       let errorMsg = "Error uploading image";
@@ -344,6 +348,7 @@ const ProfileHeader: React.FC<Props> = ({
                       variant="secondary"
                       className="hidden w-max bg-[#18191d] fmd:flex"
                       borderRounded="14px"
+                      disabled={isUploading}
                     />
                   </CoverUploadButton>
                   <CoverUploadButton
@@ -442,7 +447,6 @@ const ProfileHeader: React.FC<Props> = ({
               </div>
             </div>
           )}
-
         <Profile3DotsMenu
           isOwnProfile={isOwnProfile}
           loggedInUser={loggedInUser}
@@ -609,7 +613,6 @@ const ProfileHeader: React.FC<Props> = ({
             </p>
           )}
         </div>
-
         {(user.social_media.tiktok_username ||
           user.social_media.facebook_username ||
           user.social_media.instagram_username ||
@@ -706,14 +709,12 @@ const ProfileHeader: React.FC<Props> = ({
             )}
           </div>
         )}
-
         {!!loggedInUser &&
           loggedInUser?._id.toLowerCase() !== user._id.toLowerCase() &&
           mutualFollowersData?.users &&
           !!mutualFollowersData.users.length && (
             <FollowedComponent mutualFollowersData={mutualFollowersData} />
           )}
-
         <ProfileTabsSocial user={user} loggedInUser={loggedInUser} />
       </div>
 
