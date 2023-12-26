@@ -3,6 +3,7 @@ import clsx from "clsx";
 import Countdown, { CountdownRendererFn } from "react-countdown";
 import Button from "@/components/button";
 import { LaunchpadDataType } from "./launchpad-card-data";
+import { parseEther } from "ethers/lib/utils";
 
 export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
   start_date,
@@ -19,7 +20,7 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
         <div className="flex items-center justify-between gap-2">
           <div className="flex flex-col">
             <h3 className="break-words text-base font-semibold text-white fxm:text-lg fsm:text-xl">
-              {launchpad_title}
+              {/* {launchpad_title} */} XYZ Presale
             </h3>
             <p className="text-xs text-gray-shade-14 fxm:text-sm">
               Fair Launch
@@ -83,7 +84,9 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
           </div>
           <div className="flex w-full items-center justify-between gap-3">
             <p className="text-sm text-gray-shade-14">Lockup Time %:</p>
-            <p className="text-sm font-medium text-white">{lockup_time} days</p>
+            <p className="text-sm font-medium text-white">
+              {Number(lockup_time) * 30} days
+            </p>
           </div>
         </div>
       </div>
@@ -96,7 +99,7 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
               ? "Sale starts in:"
               : "Sale already ended:"}
           </p>
-          {status === "ended" ? (
+          {/* {status === "ended" ? (
             <p className={textActive}>--</p>
           ) : (
             <Countdown
@@ -106,7 +109,7 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
               }
               renderer={countdownRenderer}
             />
-          )}
+          )} */}
         </div>
         <Button title="View" className="w-full rounded-3xl" variant="primary" />
       </div>
