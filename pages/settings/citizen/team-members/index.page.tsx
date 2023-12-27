@@ -31,11 +31,11 @@ const TeamMembersSettings: NextPageWithLayout = () => {
   return (
     <div className="w-full max-w-[640px] px-3 fsm:px-5 fmd:px-0">
       <h6 className="mb-10 text-xl font-semibold leading-7 text-white">
-        Set up your Team Members
+        Team Members
       </h6>
 
       <div className="mb-4 flex items-center">
-        <div className="flex-grow space-x-3 text-sm font-semibold text-white">
+        <div className="flex-grow space-x-3 text-xs font-semibold text-white fsm:text-sm">
           <button
             className={cn(tab === "joined" && "textGradient")}
             onClick={() => {
@@ -45,7 +45,7 @@ const TeamMembersSettings: NextPageWithLayout = () => {
               });
             }}
           >
-            Joined
+            Members
           </button>
           <button
             className={cn(tab === "sent_invitations" && "textGradient")}
@@ -61,13 +61,13 @@ const TeamMembersSettings: NextPageWithLayout = () => {
         </div>
         <div>
           <Button
-            title={"Invite Member"}
+            title={"Invite"}
             onClick={() => {
               setInviteModalOpen(true);
             }}
             variant="primary"
-            className="text-sm"
-            borderRounded="12px"
+            className="text-xs fsm:text-sm"
+            borderRounded="10px"
           />
         </div>
       </div>
