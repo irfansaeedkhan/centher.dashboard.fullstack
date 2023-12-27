@@ -13,6 +13,9 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
   liquidity,
   lockup_time,
   soft_cap,
+  currentPurchasesValue,
+  fundType,
+  progress,
 }) => {
   return (
     <div className="col-span-1 h-auto w-full rounded-3xl border border-gray-shade-3">
@@ -20,7 +23,7 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
         <div className="flex items-center justify-between gap-2">
           <div className="flex flex-col">
             <h3 className="break-words text-base font-semibold text-white fxm:text-lg fsm:text-xl">
-              {/* {launchpad_title} */} XYZ Presale
+              {launchpad_title.slice(32)}
             </h3>
             <p className="text-xs text-gray-shade-14 fxm:text-sm">
               Fair Launch
@@ -46,10 +49,10 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
           <div className="mb-2 flex flex-col">
             <p className="text-sm leading-6 text-gray-shade-14">Soft</p>
             <p className="textGradient text-base font-semibold leading-8">
-              {soft_cap} BNB
+              {Number(soft_cap) / 1e18} {fundType}
             </p>
             <p className="text-sm leading-6 text-gray-shade-14">
-              Progress (106.20%)
+              Progress {`${progress} %`}
             </p>
           </div>
           <div
@@ -61,7 +64,7 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
             )}
           >
             <div
-              style={{ width: `${soft_cap}%` }}
+              style={{ width: `${Number(soft_cap) / 1e18}%` }}
               className={clsx(
                 status === "live" && `bg-green-shade-1`,
                 status === "upcoming" && `bg-brand-primary`,
@@ -72,16 +75,20 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
           </div>
           <div className="mt-1">
             <div className="flex items-center justify-between gap-3 text-sm leading-6 text-gray-shade-14">
-              <p>0.1331 BNB</p>
-              <p>{soft_cap} BNB</p>
+              <p>
+                {Number(currentPurchasesValue) / 1e18} {fundType}
+              </p>
+              <p>
+                {Number(soft_cap) / 1e18} {fundType}
+              </p>
             </div>
           </div>
         </div>
         <div className="flex flex-col gap-1">
-          <div className="flex w-full items-center justify-between gap-3">
+          {/* <div className="flex w-full items-center justify-between gap-3">
             <p className="text-sm text-gray-shade-14">Liquidity %:</p>
             <p className="text-sm font-medium text-white">{liquidity}%</p>
-          </div>
+          </div> */}
           <div className="flex w-full items-center justify-between gap-3">
             <p className="text-sm text-gray-shade-14">Lockup Time %:</p>
             <p className="text-sm font-medium text-white">
@@ -99,7 +106,7 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
               ? "Sale starts in:"
               : "Sale already ended:"}
           </p>
-          {/* {status === "ended" ? (
+          {status === "ended" ? (
             <p className={textActive}>--</p>
           ) : (
             <Countdown
@@ -109,7 +116,7 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
               }
               renderer={countdownRenderer}
             />
-          )} */}
+          )}
         </div>
         <Button title="View" className="w-full rounded-3xl" variant="primary" />
       </div>

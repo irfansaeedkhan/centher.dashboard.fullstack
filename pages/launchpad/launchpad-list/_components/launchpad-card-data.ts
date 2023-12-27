@@ -133,6 +133,9 @@ export type LaunchpadDataType = {
   liquidity: string;
   lockup_time: string;
   soft_cap: string;
+  currentPurchasesValue: string;
+  fundType: string;
+  progress: string;
 };
 
 export type PresaleDataType = {
