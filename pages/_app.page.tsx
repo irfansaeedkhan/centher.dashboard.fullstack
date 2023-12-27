@@ -10,6 +10,7 @@ import { getLibrary } from "@/web3";
 // import { useCreateSocketIOConnection } from "@/socket.io";
 import ScriptTags from "@/components/script.tags";
 import { CookiesConstentModal } from "@/components/modal/cookies-consent.modal";
+import { GlobalModal } from "@/components/modal/global-modal/global-modal";
 import "@/styles/globals.css";
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
@@ -37,26 +38,28 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
         }}
       />
       <RefreshContextProvider>
-        <Web3ReactProvider getLibrary={getLibrary}>
-          <Toaster
-            position="top-center"
-            reverseOrder={false}
-            toastOptions={{
-              // Define default options
-              duration: 5000,
-              style: {
-                background: "#363636",
-                color: "#fff",
-              },
+        <GlobalModal>
+          <Web3ReactProvider getLibrary={getLibrary}>
+            <Toaster
+              position="top-center"
+              reverseOrder={false}
+              toastOptions={{
+                // Define default options
+                duration: 5000,
+                style: {
+                  background: "#363636",
+                  color: "#fff",
+                },
 
-              // Default options for specific types
-              success: {
-                duration: 3000,
-              },
-            }}
-          />
-          {getLayout(<Component {...pageProps} />)}
-        </Web3ReactProvider>
+                // Default options for specific types
+                success: {
+                  duration: 3000,
+                },
+              }}
+            />
+            {getLayout(<Component {...pageProps} />)}
+          </Web3ReactProvider>
+        </GlobalModal>
       </RefreshContextProvider>
     </>
   );
