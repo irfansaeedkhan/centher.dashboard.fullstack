@@ -1,7 +1,7 @@
+import Image from "next/image";
 import useUser from "@/hooks/use.user";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import ProfileSettingSkeleton from "@/components/loading.skeletons/profile.setting.skeleton";
 import { SettingsPagesWrapper, ProfileForm } from "./_components";
 
 const Profile: NextPageWithLayout = () => {
@@ -13,7 +13,19 @@ const Profile: NextPageWithLayout = () => {
         Profile Settings
       </h6>
 
-      {user ? <ProfileForm user={user} /> : <ProfileSettingSkeleton />}
+      {user ? (
+        <ProfileForm user={user} />
+      ) : (
+        <div className="flex h-[calc(100vh-40px)] w-full justify-center">
+          <Image
+            src="/images/preloader.png"
+            alt="preloader"
+            width={64}
+            height={64}
+            className="h-16 w-16 flex-shrink-0 object-cover"
+          />
+        </div>
+      )}
     </div>
   );
 };

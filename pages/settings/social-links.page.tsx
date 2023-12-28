@@ -1,7 +1,7 @@
+import Image from "next/image";
 import useUser from "@/hooks/use.user";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import ProfileSettingSocialLinksSkeleton from "@/components/loading.skeletons/profile.setting.social.links";
 import { SettingsPagesWrapper, SocialLinksForm } from "./_components";
 
 const SocialLinks: NextPageWithLayout = () => {
@@ -16,7 +16,15 @@ const SocialLinks: NextPageWithLayout = () => {
       {user ? (
         <SocialLinksForm user={user} />
       ) : (
-        <ProfileSettingSocialLinksSkeleton />
+        <div className="flex h-[calc(100vh-40px)] w-full justify-center">
+          <Image
+            src="/images/preloader.png"
+            alt="preloader"
+            width={64}
+            height={64}
+            className="h-16 w-16 flex-shrink-0 object-cover"
+          />
+        </div>
       )}
     </div>
   );

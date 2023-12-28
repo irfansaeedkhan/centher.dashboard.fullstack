@@ -7,4 +7,5 @@ export * from "./delete-sent-invite";
 export * from "./accept-received-invite";
 export * from "./reject-received-invite";
 export * from "./leave-org";
+export * from "./update-title";
 export * from "./types";

@@ -1,7 +1,6 @@
 export interface SwapToken {
   address: string;
   icon: string;
-  id: string;
   name: string;
   symbol: string;
   is_native: boolean;

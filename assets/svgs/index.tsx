@@ -182,6 +182,7 @@ export { default as GradientArrowOutline } from "./gradient-outline.svg";
 export { default as IconSearch } from "./icon-search.svg";
 export { default as GradientCopy } from "./gradient-copy.svg";
 export { default as ArrowDiagonal } from "./arrow-diagonal.svg";
+export { default as TitleEditedIcon } from "./title.edited.svg";
 
 export const CentherIcon: React.FC<IconProps> = (props) => {
   return (

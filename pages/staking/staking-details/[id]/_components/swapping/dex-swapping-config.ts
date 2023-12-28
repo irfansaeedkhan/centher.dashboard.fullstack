@@ -7,6 +7,7 @@ import {
   OnChainProvider,
   SubgraphProvider,
 } from "@pancakeswap/smart-router/dist/evm/v3-router/types";
+import { BlockchainConfig } from "@/web3/blockchain/config";
 
 interface IDexConfig {
   rpc: string;
@@ -15,21 +16,27 @@ interface IDexConfig {
   bscTokens: SwapToken[];
 }
 export const dexSwappingConfig: IDexConfig = {
-  rpc:
-    process.env.NEXT_PUBLIC_APP_ENV === "production"
-      ? "https://bsc-dataseed1.binance.org"
-      : "https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
+  rpc: BlockchainConfig.rpcProvider,
   chainId:
     process.env.NEXT_PUBLIC_APP_ENV === "production"
       ? ChainId.BSC
       : ChainId.GOERLI,
   goerliTokens: [
     {
+      address: "0x0000000000000000000000000000000000000000",
+      icon: "bnb-icon.svg",
+      is_native: true,
+      name: "Goerli",
+      symbol: "ETH",
+      decimal: 18,
+      projectLink: "https://goerli.etherscan.io/",
+      ChainId: ChainId.GOERLI,
+    },
+    {
       address: "0xabf0295bEaa3e69bf09b3e20634463E2439A2B3A",
       icon: "dexa-icon.png",
-      id: "dvd",
       is_native: false,
-      name: "DeXa Coin" || "",
+      name: "DeXa Coin",
       symbol: "DXC",
       decimal: 18,
       projectLink: "https://dexagon.io/",
@@ -38,22 +45,30 @@ export const dexSwappingConfig: IDexConfig = {
     {
       address: "0x49cF1C5111Ab8eE2D3d3C044Bd04673234bbf714",
       icon: "busd-icon.svg",
-      id: "sss",
       is_native: false,
-      name: "USDT" || "",
+      name: "USDT",
       symbol: "USDT",
       decimal: 18,
-      projectLink: "https://dexagon.io/",
+      projectLink: "https://tether.to/",
       ChainId: ChainId.GOERLI,
     },
   ],
   bscTokens: [
     {
+      address: "0x0000000000000000000000000000000000000000",
+      icon: "bnb-icon.svg",
+      is_native: true,
+      name: "BNB",
+      symbol: "BNB",
+      decimal: 18,
+      projectLink: "https://bnbchain.org",
+      ChainId: ChainId.BSC,
+    },
+    {
       address: "0xEcb4c542DE0d7AF3aA294c5c4Ae0BefE8E93bD9c",
       icon: "dexa-icon.png",
-      id: "dvd",
       is_native: false,
-      name: "DeXa Coin" || "",
+      name: "DeXa Coin",
       symbol: "DXC",
       decimal: 18,
       projectLink: "https://dexagon.io/",
@@ -62,12 +77,11 @@ export const dexSwappingConfig: IDexConfig = {
     {
       address: "0x55d398326f99059fF775485246999027B3197955",
       icon: "busd-icon.svg",
-      id: "sss",
       is_native: false,
-      name: "USDT" || "",
+      name: "USDT",
       symbol: "USDT",
       decimal: 18,
-      projectLink: "https://dexagon.io/",
+      projectLink: "https://binance.com",
       ChainId: ChainId.BSC,
     },
   ],
