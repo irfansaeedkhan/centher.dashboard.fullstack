@@ -55,6 +55,8 @@ export type FormState = {
     }[];
   };
   add_additional_info: {
+    token_name: string;
+    token_symbol: string;
     logo_url: string;
     website_url: string;
     facebook: string;
@@ -140,6 +142,8 @@ export const initialFormState: FormState = {
     ],
   },
   add_additional_info: {
+    token_name: "",
+    token_symbol: "",
     logo_url: "",
     website_url: "",
     facebook: "",

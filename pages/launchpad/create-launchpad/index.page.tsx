@@ -150,6 +150,17 @@ const CreateLaunchpad: NextPageWithLayout = () => {
           token_decimal,
           total_selling: totalPresaleSellingAmount,
         });
+
+        setFormState((prev) => {
+          return {
+            ...prev,
+            add_additional_info: {
+              ...prev.add_additional_info,
+              token_name: token_name as string,
+              token_symbol: token_symbol as string,
+            },
+          };
+        });
       } catch (e) {
         customLog(["development", "staging"], e);
       }
