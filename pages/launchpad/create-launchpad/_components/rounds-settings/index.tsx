@@ -53,7 +53,7 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
 
   const handleStartDateChangeEvent = (value: Date | null) => {
     if (formState.verify_token.sale_rounds === 1 && value !== null) {
-      if (new Date(value) > new Date()) {
+      if (new Date(value) < new Date()) {
         toast.error("Start time must be greater than todays date");
         setCurrentComponent((prev) => {
           return {
