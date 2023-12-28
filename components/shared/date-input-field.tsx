@@ -9,7 +9,7 @@ import Button from "@/components/button";
 interface Props {
   type: "date" | "time" | "datetime";
   title: string;
-  value: Date | null;
+  value: Date | null | undefined;
   handleChangeEvent: (e: Date | null) => void;
 }
 

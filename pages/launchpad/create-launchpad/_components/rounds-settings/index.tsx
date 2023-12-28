@@ -24,6 +24,7 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
 
   const handleChangeEvent = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+
     setCurrentComponent((prev) => {
       return {
         ...prev,
@@ -51,6 +52,36 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
   };
 
   const handleStartDateChangeEvent = (value: Date | null) => {
+    if (formState.verify_token.sale_rounds === 1 && value !== null) {
+      if (new Date(value) > new Date()) {
+        toast.error("Start time must be greater than todays date");
+        setCurrentComponent((prev) => {
+          return {
+            ...prev,
+            start_time: null,
+          };
+        });
+        setFormState((prev) => {
+          return {
+            ...prev,
+            rounds_settings: {
+              ...prev.rounds_settings,
+              round: prev.rounds_settings.round.map((round) => {
+                if (round.round_no === currentRound) {
+                  return {
+                    ...round,
+                    start_time: null,
+                  };
+                } else {
+                  return round;
+                }
+              }),
+            },
+          };
+        });
+        return;
+      }
+    }
     if (formState.verify_token.sale_rounds === 2) {
       if (
         formState.rounds_settings.round[0].end_time !== null &&
@@ -160,7 +191,35 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
   };
 
   const handleEndDateChangeEvent = (value: Date | null) => {
-    // handle end_time must be greater than start_time
+    if (currentComponent.start_time === null) {
+      toast.error("Please select start time first");
+      setCurrentComponent((prev) => {
+        return {
+          ...prev,
+          end_time: null,
+        };
+      });
+      setFormState((prev) => {
+        return {
+          ...prev,
+          rounds_settings: {
+            ...prev.rounds_settings,
+            round: prev.rounds_settings.round.map((round) => {
+              if (round.round_no === currentRound) {
+                return {
+                  ...round,
+                  end_time: null,
+                };
+              } else {
+                return round;
+              }
+            }),
+          },
+        };
+      });
+      return;
+    }
+
     if (
       formState.rounds_settings.round[currentRound - 1].start_time !== null &&
       value !== null
@@ -377,8 +436,11 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
             title="End Time"
             type="datetime"
             value={
-              formState.rounds_settings.round[currentRound - 1].end_time ??
-              currentComponent.end_time
+              formState.rounds_settings.round[currentRound - 1].end_time
+                ? formState.rounds_settings.round[currentRound - 1].end_time
+                : currentComponent.end_time === null
+                ? undefined
+                : currentComponent.end_time
             }
             handleChangeEvent={(value: Date | null) =>
               handleEndDateChangeEvent(value)
