@@ -177,8 +177,9 @@ const CreateLaunchpad: NextPageWithLayout = () => {
     try {
       setProgressModel(true);
       setModalTitle(CreateLaunchpadStepsEnum.metadata);
-      const res = await uploadMetadataToIPFS(formState.add_additional_info);
-      setIpfsResponse(res);
+      await uploadMetadataToIPFS(formState.add_additional_info).then((res) => {
+        setIpfsResponse(res);
+      });
       setProgressModel(false);
     } catch (error: any) {
       let errorMessage = "Metadata not Uploaded to IPFS";
