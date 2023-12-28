@@ -9,11 +9,58 @@ import {
   PresaleDataType,
 } from "./_components/launchpad-card-data";
 import { useLaunchpad } from "@/hooks/launchpad";
+import { formatEther } from "ethers/lib/utils";
 
 const LaunchpadList: NextPageWithLayout = () => {
   const { sdk } = useLaunchpad();
 
   const [projects, setProjects] = useState<LaunchpadDataType[]>([]);
+
+  // useEffect(() => {
+  //   if (
+  //     !formState.verify_token.token_address ||
+  //     !isAddress(formState.verify_token.token_address)
+  //   ) {
+  //     return;
+  //   }
+
+  //   if (!signer) return;
+
+  //   (async () => {
+  //     try {
+  //       setValidTokenAddress(false);
+  //       const isValidContract = await BlockchainRead.checkAddress(
+  //         formState.verify_token.token_address,
+  //         signer
+  //       );
+
+  //       if (!isValidContract) {
+  //         setValidTokenAddress(true);
+  //         toast.error("Invalid token address");
+  //         return;
+  //       }
+
+  //       const tokenContract = SmartContractProvider.getErc20Contract(
+  //         formState.verify_token.token_address
+  //       );
+
+  //       const [token_name, token_symbol, token_decimal] = await Promise.all([
+  //         tokenContract.name(),
+  //         tokenContract.symbol(),
+  //         tokenContract.decimals(),
+  //       ]);
+
+  //       setTokenDetails({
+  //         token_name,
+  //         token_symbol,
+  //         token_decimal,
+  //         total_selling: totalPresaleSellingAmount,
+  //       });
+  //     } catch (e) {
+  //       customLog(["development", "staging"], e);
+  //     }
+  //   })();
+  // }, [formState.verify_token.token_address, signer, totalPresaleSellingAmount]);
 
   useEffect(() => {
     (async () => {
@@ -40,16 +87,23 @@ const LaunchpadList: NextPageWithLayout = () => {
           saleStatus = "ended";
         }
 
-        console.log("tokens: ", item.id);
+        let softcapInQuoteToken = 0;
+
+        for (let i = 0; i < Number(item.roundDeep); i++) {
+          softcapInQuoteToken +=
+            (Number(item.roundInfos[i].tokensToSell) *
+              Number(item.roundInfos[i].pricePerToken)) /
+            1e18;
+        }
 
         const progress =
           (Number(item.totalPurchasesInBuyingToken) /
-            Number(item.roundInfos[0].lockMonths)) *
+            Number(softcapInQuoteToken)) *
           100;
 
         return {
           id: item.id,
-          soft_cap: item.minTokensToSell,
+          soft_cap: softcapInQuoteToken,
           lockup_time: item.roundInfos[0].lockMonths,
           liquidity: item.maxTokensToSell,
           launchpad_title: item.id,
@@ -60,7 +114,7 @@ const LaunchpadList: NextPageWithLayout = () => {
           ),
           currentPurchasesValue: item.totalPurchasesInBuyingToken,
           fundType: item.fundType === 0 ? "BNB" : "BUSD",
-          progress: progress < 100 ? progress.toString() : "100",
+          progress: progress !== 0 ? progress.toFixed(4).toString() : "0",
         };
       });
 

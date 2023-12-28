@@ -38,7 +38,7 @@ const queries: Queries = {
       isActive
       totalPurchasesInBuyingToken
       roundDeep
-      roundInfos {token, startTime, endTime, lockMonths}
+      roundInfos {token, startTime, endTime, lockMonths, minContribution, maxContribution, tokensToSell, pricePerToken}
       tokenPurchaseWithBNB {token,beneficiary, bnbAmount}
       tokenPurchaseWithBUSD {token, beneficiary, busdAmount}
       tokenClaim {token, beneficiary, tokenAmount}
@@ -70,7 +70,7 @@ const queries: Queries = {
       isActive
       totalPurchasesInBuyingToken
       roundDeep
-      roundInfos {token, startTime, endTime, lockMonths}
+      roundInfos {token, startTime, endTime, lockMonths, minContribution, maxContribution, tokensToSell, pricePerToken}
       tokenPurchaseWithBNB {token,beneficiary, bnbAmount}
       tokenPurchaseWithBUSD {token, beneficiary, busdAmount}
       tokenClaim {token, beneficiary, tokenAmount}

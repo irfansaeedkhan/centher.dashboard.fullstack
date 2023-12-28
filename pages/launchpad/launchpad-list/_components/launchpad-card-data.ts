@@ -132,7 +132,7 @@ export type LaunchpadDataType = {
   launchpad_title: string;
   liquidity: string;
   lockup_time: string;
-  soft_cap: string;
+  soft_cap: number;
   currentPurchasesValue: string;
   fundType: string;
   progress: string;
@@ -167,6 +167,10 @@ export type PresaleDataType = {
       startTime: string;
       endTime: string;
       lockMonths: string;
+      minContribution: string;
+      maxContribution: string;
+      tokensToSell: string;
+      pricePerToken: string;
     }
   ];
   tokenPurchaseWithBNB: [
