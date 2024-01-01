@@ -1,9 +1,12 @@
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import dayjs from "dayjs";
 import { PendingInvite } from "@/lib/org-team-members";
+import useUser from "@/hooks/use.user";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import { AppRoutes } from "@/constants/app.routes";
+import { OrgTeamConfirmationModal } from "../../_components";
 
 export const SingleReceivedInvite: React.FC<{
   invite: PendingInvite;
@@ -13,6 +16,8 @@ export const SingleReceivedInvite: React.FC<{
   const verificationTick = useVerificationTick({
     user: invite.org,
   });
+  const { user } = useUser();
+  const [isAcceptInviteModalOpen, setAcceptInviteModalOpen] = useState(false);
 
   return (
     <div
@@ -68,7 +73,11 @@ export const SingleReceivedInvite: React.FC<{
         <div className="mt-2">
           <button
             className="rounded-md bg-brand-primary/20 px-3 py-1 text-xs font-medium text-brand-primary"
-            onClick={() => handleAcceptInvite(invite._id)}
+            onClick={() => {
+              user?.organization === null
+                ? handleAcceptInvite(invite._id)
+                : setAcceptInviteModalOpen(true);
+            }}
           >
             Accept
           </button>
@@ -80,6 +89,22 @@ export const SingleReceivedInvite: React.FC<{
           </button>
         </div>
       </div>
+      {invite && (
+        <OrgTeamConfirmationModal
+          isOpen={isAcceptInviteModalOpen}
+          onClose={() => setAcceptInviteModalOpen(false)}
+          modalId="accept-team-member-invitation"
+          modalTitle="Accept Invitation"
+          contentHeading="Are you sure you want to accept the invitation?"
+          contentText={
+            <p>
+              If you accept the invitation, you will leave the previous team.
+            </p>
+          }
+          onClickConfirm={() => handleAcceptInvite(invite._id)}
+          images={[invite.user.profile_image, invite.org.profile_image]}
+        />
+      )}
     </div>
   );
 };

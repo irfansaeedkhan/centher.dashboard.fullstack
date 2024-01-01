@@ -150,6 +150,17 @@ const CreateLaunchpad: NextPageWithLayout = () => {
           token_decimal,
           total_selling: totalPresaleSellingAmount,
         });
+
+        setFormState((prev) => {
+          return {
+            ...prev,
+            add_additional_info: {
+              ...prev.add_additional_info,
+              token_name: token_name as string,
+              token_symbol: token_symbol as string,
+            },
+          };
+        });
       } catch (e) {
         customLog(["development", "staging"], e);
       }
@@ -177,8 +188,9 @@ const CreateLaunchpad: NextPageWithLayout = () => {
     try {
       setProgressModel(true);
       setModalTitle(CreateLaunchpadStepsEnum.metadata);
-      const res = await uploadMetadataToIPFS(formState.add_additional_info);
-      setIpfsResponse(res);
+      await uploadMetadataToIPFS(formState.add_additional_info).then((res) => {
+        setIpfsResponse(res);
+      });
       setProgressModel(false);
     } catch (error: any) {
       let errorMessage = "Metadata not Uploaded to IPFS";

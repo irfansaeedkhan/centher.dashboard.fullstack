@@ -36,7 +36,7 @@ export const SingleSentInvite: React.FC<{
           }}
         />
         <div className="flex-grow">
-          <div className="flex items-start gap-x-2">
+          <div className="fsm:flex">
             <div className="flex-grow">
               <h3
                 className="word-break cursor-pointer text-sm font-medium text-white"
@@ -48,6 +48,9 @@ export const SingleSentInvite: React.FC<{
                 }}
               >
                 <span>{invite.user.display_name}</span>
+                <h5 className="word-break mt-1 text-xs font-normal text-gray-shade-18">
+                  {invite.title}
+                </h5>
                 {verificationTick && (
                   <Image
                     src={verificationTick}
@@ -60,21 +63,18 @@ export const SingleSentInvite: React.FC<{
               </h3>
             </div>
 
-            <div className="flex shrink-0 gap-x-3">
-              <div className="rounded-md bg-brand-primary/20 px-3 py-1 text-xs font-semibold text-brand-primary">
+            <div className="flex shrink-0 justify-end gap-x-3">
+              <div className="h-6 rounded-md bg-brand-primary/20 px-3 py-1 text-xs font-semibold text-brand-primary">
                 Pending
               </div>
               <button
-                className="text-sm font-medium text-white"
+                className="h-6 text-sm font-medium text-white"
                 onClick={() => setCancelInviteModalOpen(true)}
               >
                 Cancel
               </button>
             </div>
           </div>
-          <h5 className="word-break mt-1 text-xs font-normal text-gray-shade-18">
-            {invite.title}
-          </h5>
         </div>
       </div>
 

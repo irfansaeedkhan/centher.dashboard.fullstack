@@ -11,6 +11,8 @@ import {
   TradeType,
   ERC20Token,
   Percent,
+  Native,
+  Currency,
 } from "@pancakeswap/sdk";
 import {
   SmartRouter,
@@ -118,22 +120,29 @@ export const DexSwapping = () => {
         setBtnDisabled(false);
 
         if (baseToken && quoteToken && fromAmount > 0) {
-          const swapFrom = new ERC20Token(
-            baseToken.ChainId,
-            baseToken.address as `0x${string}`,
-            baseToken.decimal,
-            baseToken.symbol,
-            baseToken.name,
-            baseToken.projectLink
-          );
-          const swapTo = new ERC20Token(
-            quoteToken.ChainId,
-            quoteToken.address as `0x${string}`,
-            quoteToken.decimal,
-            quoteToken.symbol,
-            quoteToken.name,
-            quoteToken.projectLink
-          );
+          let swapFrom: Currency = Native.onChain(dexSwappingConfig.chainId);
+          if (!baseToken.is_native) {
+            swapFrom = new ERC20Token(
+              baseToken.ChainId,
+              baseToken.address as `0x${string}`,
+              baseToken.decimal,
+              baseToken.symbol,
+              baseToken.name,
+              baseToken.projectLink
+            );
+          }
+
+          let swapTo: Currency = Native.onChain(dexSwappingConfig.chainId);
+          if (!quoteToken.is_native) {
+            swapTo = new ERC20Token(
+              quoteToken.ChainId,
+              quoteToken.address as `0x${string}`,
+              quoteToken.decimal,
+              quoteToken.symbol,
+              quoteToken.name,
+              quoteToken.projectLink
+            );
+          }
 
           const amount = ethers.utils.parseEther(fromAmount.toString());
           const amountInCurrency = CurrencyAmount.fromRawAmount(
@@ -182,6 +191,7 @@ export const DexSwapping = () => {
                 quoterOptimization: true,
               }
             );
+
             if (trade) {
               const quote = trade.outputAmount;
               const a = CurrencyAmount.fromFractionalAmount(

@@ -1,10 +1,14 @@
 import { useState } from "react";
+import { FiEdit } from "react-icons/fi";
+import toast from "react-hot-toast";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { OrgMember } from "@/lib/org-team-members";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
+import { updateTitle } from "@/lib/org-team-members";
 import { AppRoutes } from "@/constants/app.routes";
 import { OrgTeamConfirmationModal } from "../../_components";
+import { EditOrgMemberTitleModal } from "../../_components/edit-org-member-itle-modal";
 
 export const SingleOrgMember: React.FC<{
   member: OrgMember;
@@ -15,6 +19,36 @@ export const SingleOrgMember: React.FC<{
     user: member,
   });
   const [isRemoveMemberModalOpen, setRemoveMemberModalOpen] = useState(false);
+  const [isTitleEditModalOpen, setTitleEditModalOpen] = useState(false);
+  const [newTitle, setNewTitle] = useState("");
+  const [currentTitle, setCurrentTitle] = useState(member.title);
+
+  const handleSaveTitle = async () => {
+    if (newTitle.length > 100) {
+      toast.error("Title cannot be more than 100 characters");
+      return;
+    }
+
+    if (newTitle === currentTitle) {
+      toast.error("New Title cannot be same as current title");
+      return;
+    }
+
+    if (newTitle === "") {
+      toast.error("Title cannot be empty");
+      return;
+    }
+
+    try {
+      await updateTitle(newTitle, member.user_id);
+      setCurrentTitle(newTitle);
+      setTitleEditModalOpen(false);
+      setNewTitle("");
+      toast.success("Title updated");
+    } catch (err: any) {
+      toast.error(err.message);
+    }
+  };
 
   return (
     <>
@@ -37,39 +71,58 @@ export const SingleOrgMember: React.FC<{
         />
 
         <div className="flex-grow">
-          <div className="flex items-start gap-x-2">
-            <h3
-              className="word-break flex-grow cursor-pointer text-sm font-semibold text-white"
-              onClick={() => {
-                router.push({
-                  pathname: AppRoutes.profile.user_id,
-                  query: { user_id: member.user_id },
-                });
-              }}
-            >
-              <span>{member.display_name}</span>
-              {verificationTick && (
-                <Image
-                  src={verificationTick}
-                  alt={"Membership"}
-                  width={16}
-                  height={16}
-                  className="-mt-0.5 ml-0.5 inline-block"
-                />
-              )}
-            </h3>
-            <button
-              className="shrink-0 text-sm font-medium text-white"
-              onClick={() => setRemoveMemberModalOpen(true)}
-            >
-              Remove
-            </button>
+          <div className="fsm:flex">
+            <div className="flex-grow">
+              <h3
+                className="word-break flex-grow cursor-pointer text-sm font-semibold text-white"
+                onClick={() => {
+                  router.push({
+                    pathname: AppRoutes.profile.user_id,
+                    query: { user_id: member.user_id },
+                  });
+                }}
+              >
+                <span>{member.display_name}</span>
+                {verificationTick && (
+                  <Image
+                    src={verificationTick}
+                    alt={"Membership"}
+                    width={16}
+                    height={16}
+                    className="-mt-0.5 ml-0.5 inline-block"
+                  />
+                )}
+              </h3>
+              <div className="mt-1 flex items-center gap-2">
+                <h5 className="word-break mt-1 text-xs font-normal text-gray-shade-18">
+                  {currentTitle}
+                </h5>
+                <FiEdit onClick={() => setTitleEditModalOpen(true)} />
+              </div>
+            </div>
+            <div className="mr-4 flex shrink-0 justify-end">
+              <button
+                className="shrink-0 text-sm font-medium text-[#E34048]"
+                onClick={() => setRemoveMemberModalOpen(true)}
+              >
+                Remove
+              </button>
+            </div>
           </div>
-          <h5 className="word-break mt-1 text-xs font-normal text-gray-shade-18">
-            {member.title}
-          </h5>
         </div>
       </div>
+
+      <EditOrgMemberTitleModal
+        isOpen={isTitleEditModalOpen}
+        onClose={() => setTitleEditModalOpen(false)}
+        onClickConfirm={handleSaveTitle}
+        modalTitle="Edit Title"
+        modalId="edit-title-modal"
+        currentTitle={currentTitle}
+        newTitle={newTitle}
+        isTitleEditModalOpen={isTitleEditModalOpen}
+        setNewTitle={setNewTitle}
+      />
 
       {member && (
         <OrgTeamConfirmationModal
