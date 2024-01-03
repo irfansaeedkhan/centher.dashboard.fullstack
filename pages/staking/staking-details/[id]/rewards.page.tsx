@@ -20,7 +20,6 @@ import {
 } from "@/staking/types/rewards.interface";
 import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
 import { eqAddress } from "@/live/utils/address.utils";
-import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { useWallet } from "@/web3/hooks/use.wallet";
 import { CustomNewModal } from "@/components/modal/custom.new.modal";
 import { MetamaskIcon2 } from "@/assets/svgs";

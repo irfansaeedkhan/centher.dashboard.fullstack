@@ -1,17 +1,14 @@
 import { NextPage } from "next";
 import type { AppProps } from "next/app";
 import NextNProgress from "nextjs-progressbar";
-import { Web3ReactProvider } from "@web3-react/core";
 import { Toaster } from "react-hot-toast";
 
 // App Imports
 import { RefreshContextProvider } from "@/web3/context/refresh.context";
-import { getLibrary } from "@/web3";
-// import { useCreateSocketIOConnection } from "@/socket.io";
 import ScriptTags from "@/components/script.tags";
 import { CookiesConstentModal } from "@/components/modal/cookies-consent.modal";
-import { GlobalModal } from "@/components/modal/global-modal/global-modal";
 import "@/styles/globals.css";
+import { Web3ModalProvider } from "@/web3/context/web3-modal";
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: React.ReactElement) => React.ReactNode;
@@ -38,28 +35,26 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
         }}
       />
       <RefreshContextProvider>
-        <GlobalModal>
-          <Web3ReactProvider getLibrary={getLibrary}>
-            <Toaster
-              position="top-center"
-              reverseOrder={false}
-              toastOptions={{
-                // Define default options
-                duration: 5000,
-                style: {
-                  background: "#363636",
-                  color: "#fff",
-                },
+        <Web3ModalProvider>
+          <Toaster
+            position="top-center"
+            reverseOrder={false}
+            toastOptions={{
+              // Define default options
+              duration: 5000,
+              style: {
+                background: "#363636",
+                color: "#fff",
+              },
 
-                // Default options for specific types
-                success: {
-                  duration: 3000,
-                },
-              }}
-            />
-            {getLayout(<Component {...pageProps} />)}
-          </Web3ReactProvider>
-        </GlobalModal>
+              // Default options for specific types
+              success: {
+                duration: 3000,
+              },
+            }}
+          />
+          {getLayout(<Component {...pageProps} />)}
+        </Web3ModalProvider>
       </RefreshContextProvider>
     </>
   );

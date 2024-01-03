@@ -3,8 +3,8 @@ import toast from "react-hot-toast";
 import { LoggedInUser } from "@/models/user";
 import {
   GradientArrowOutline,
-  MetamaskIcon2,
   CentherIcon,
+  WalletconnectIcon,
 } from "@/assets/svgs";
 import { CustomNewModal } from "@/components/modal/custom.new.modal";
 import { WalletEnum, useWallet } from "@/web3/hooks/use.wallet";
@@ -33,7 +33,7 @@ const ConnectWalletModal: React.FC<Props> = ({
         disconnectWallet();
       }
     }
-  }, [loggedInUser, connectedAddress]);
+  }, [loggedInUser, connectedAddress, notloginCheck, disconnectWallet]);
 
   const connectionWallet = async (wallet: WalletEnum) => {
     if (notloginCheck) {
@@ -67,14 +67,14 @@ const ConnectWalletModal: React.FC<Props> = ({
         <div className="gradient-border-3 w-full max-w-[400px] !rounded-xl p-[1px]">
           <div
             onClick={async () => {
-              connectionWallet(WalletEnum.METAMASK);
+              connectionWallet(WalletEnum.WALLET_CONNECT);
             }}
             className="flex w-full cursor-pointer items-center justify-between gap-10 !rounded-xl px-5 py-3"
           >
-            <div className="flex items-center gap-3 fsm:gap-6">
-              <MetamaskIcon2 />
-              <h3 className="text-sm font-semibold text-white fmd:text-base">
-                Metamask
+            <div className="flex items-center" style={{ margin: -10 }}>
+              <WalletconnectIcon className=" h-16 w-16" />
+              <h3 className="ml-3 text-sm font-semibold text-white fmd:text-base">
+                Wallet Connect
               </h3>
             </div>
             <span>

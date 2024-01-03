@@ -3,7 +3,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { useWindowSize } from "usehooks-ts";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
-import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import useUser from "@/hooks/use.user";
 import { AppRoutes } from "@/constants/app.routes";
 import { MenuClose } from "@/assets/svgs";
@@ -12,13 +11,13 @@ import { SidebarMobile } from "../sidebar/sidebar.mobile";
 import Button from "../button";
 import HeaderProfile from "./header.profile";
 import SearchBar from "./search";
+import { useWallet } from "@/web3/hooks/use.wallet";
 
 const Header = () => {
   const { width } = useWindowSize();
   const [showBuyCitizenshipModal, setShowBuyCitizenshipModal] = useState(false);
   const { user, isLoading: isUserLoading } = useUser();
-  const { connectWallet, disconnectWallet, getConnectedAccount } =
-    useConnectWallet();
+  const { connectWallet, connectedAddress } = useWallet();
   const [openModal, setOpenModal] = useState(false);
   const modalOpenerRef = React.useRef<HTMLDivElement>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -36,15 +35,14 @@ const Header = () => {
       return;
     }
     // Get connected account
-    const connectedAccount = getConnectedAccount();
-    connectedAccount
-      .then((_acc) => {
-        if (_acc && _acc.toLowerCase() === user._id.toLowerCase()) {
-          connectWallet(false);
-        }
-      })
-      .catch(() => {});
-  }, [user, connectWallet, disconnectWallet, getConnectedAccount]);
+
+    if (
+      connectedAddress &&
+      connectedAddress.toLowerCase() === user._id.toLowerCase()
+    ) {
+      connectWallet();
+    }
+  }, [user, connectWallet, connectedAddress]);
 
   const openBuyCitizenshipModal = () => {
     setShowBuyCitizenshipModal(true);
