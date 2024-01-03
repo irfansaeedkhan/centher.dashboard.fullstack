@@ -71,39 +71,43 @@ export const SingleOrgMember: React.FC<{
         />
 
         <div className="flex-grow">
-          <div className="flex items-start gap-x-2">
-            <h3
-              className="word-break flex-grow cursor-pointer text-sm font-semibold text-white"
-              onClick={() => {
-                router.push({
-                  pathname: AppRoutes.profile.user_id,
-                  query: { user_id: member.user_id },
-                });
-              }}
-            >
-              <span>{member.display_name}</span>
-              {verificationTick && (
-                <Image
-                  src={verificationTick}
-                  alt={"Membership"}
-                  width={16}
-                  height={16}
-                  className="-mt-0.5 ml-0.5 inline-block"
-                />
-              )}
-            </h3>
-            <button
-              className="shrink-0 text-sm font-medium text-white"
-              onClick={() => setRemoveMemberModalOpen(true)}
-            >
-              Remove
-            </button>
-          </div>
-          <div className="mt-1 flex items-center gap-2">
-            <h5 className="word-break mt-1 text-xs font-normal text-gray-shade-18">
-              {currentTitle}
-            </h5>
-            <FiEdit onClick={() => setTitleEditModalOpen(true)} />
+          <div className="fsm:flex">
+            <div className="flex-grow">
+              <h3
+                className="word-break flex-grow cursor-pointer text-sm font-semibold text-white"
+                onClick={() => {
+                  router.push({
+                    pathname: AppRoutes.profile.user_id,
+                    query: { user_id: member.user_id },
+                  });
+                }}
+              >
+                <span>{member.display_name}</span>
+                {verificationTick && (
+                  <Image
+                    src={verificationTick}
+                    alt={"Membership"}
+                    width={16}
+                    height={16}
+                    className="-mt-0.5 ml-0.5 inline-block"
+                  />
+                )}
+              </h3>
+              <div className="mt-1 flex items-center gap-2">
+                <h5 className="word-break mt-1 text-xs font-normal text-gray-shade-18">
+                  {currentTitle}
+                </h5>
+                <FiEdit onClick={() => setTitleEditModalOpen(true)} />
+              </div>
+            </div>
+            <div className="mr-4 flex shrink-0 justify-end">
+              <button
+                className="shrink-0 text-sm font-medium text-[#E34048]"
+                onClick={() => setRemoveMemberModalOpen(true)}
+              >
+                Remove
+              </button>
+            </div>
           </div>
         </div>
       </div>

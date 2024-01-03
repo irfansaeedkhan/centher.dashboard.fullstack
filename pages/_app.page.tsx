@@ -1,16 +1,14 @@
 import { NextPage } from "next";
 import type { AppProps } from "next/app";
 import NextNProgress from "nextjs-progressbar";
-import { Web3ReactProvider } from "@web3-react/core";
 import { Toaster } from "react-hot-toast";
 
 // App Imports
 import { RefreshContextProvider } from "@/web3/context/refresh.context";
-import { getLibrary } from "@/web3";
-// import { useCreateSocketIOConnection } from "@/socket.io";
 import ScriptTags from "@/components/script.tags";
 import { CookiesConstentModal } from "@/components/modal/cookies-consent.modal";
 import "@/styles/globals.css";
+import { Web3ModalProvider } from "@/web3/context/web3-modal";
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: React.ReactElement) => React.ReactNode;
@@ -37,7 +35,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
         }}
       />
       <RefreshContextProvider>
-        <Web3ReactProvider getLibrary={getLibrary}>
+        <Web3ModalProvider>
           <Toaster
             position="top-center"
             reverseOrder={false}
@@ -56,7 +54,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
             }}
           />
           {getLayout(<Component {...pageProps} />)}
-        </Web3ReactProvider>
+        </Web3ModalProvider>
       </RefreshContextProvider>
     </>
   );

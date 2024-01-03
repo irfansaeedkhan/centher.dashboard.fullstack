@@ -1,7 +1,7 @@
+import Image from "next/image";
 import useUser from "@/hooks/use.user";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import ProfileSettingPrivacySkeleton from "@/components/loading.skeletons/profile.setting.privacy.skeleton";
 import { PrivacyForm, SettingsPagesWrapper } from "./_components";
 
 const Privacy: NextPageWithLayout = () => {
@@ -16,10 +16,14 @@ const Privacy: NextPageWithLayout = () => {
       {user ? (
         <PrivacyForm />
       ) : (
-        <div className="space-y-12">
-          {Array.from({ length: 2 }).map((_, i) => {
-            return <ProfileSettingPrivacySkeleton key={i} />;
-          })}
+        <div className="flex h-[calc(100vh-40px)] w-full justify-center">
+          <Image
+            src="/images/preloader.png"
+            alt="preloader"
+            width={64}
+            height={64}
+            className="h-16 w-16 flex-shrink-0 object-cover"
+          />
         </div>
       )}
     </div>

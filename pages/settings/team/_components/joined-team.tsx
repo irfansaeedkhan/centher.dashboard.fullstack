@@ -17,11 +17,11 @@ export const JoinedTeam: React.FC<{
   return (
     <div className="rounded-10px border border-gray-shade-3 px-6 py-4">
       <div className="flex items-center">
-        <h3 className="flex-grow font-semibold text-white">
+        <h3 className="flex-grow text-sm font-semibold text-white fsm:text-base">
           You are member of
         </h3>
         <Button
-          title="Leave Team"
+          title="Leave"
           variant="secondary"
           className="text-sm"
           borderRounded="12px"
