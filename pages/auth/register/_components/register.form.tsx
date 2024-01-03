@@ -164,7 +164,7 @@ export const RegisterForm: React.FC = () => {
               className="flex h-11 w-full items-center justify-center text-[14px]"
               borderRounded="14px"
             />
-            {wallet_type == WalletEnum.WALLET_SERVICE ? (
+            {wallet_type == WalletEnum.WALLET_CONNECT ? (
               <Button
                 type="button"
                 title="Open Wallet"
