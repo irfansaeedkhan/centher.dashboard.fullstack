@@ -264,7 +264,9 @@ export const DexSwapping = () => {
         (token) => token.address !== value.address
       );
       if (value.symbol.toUpperCase() != "DXC") {
-        filteredTokens = tokens.filter((token) => token.symbol == "DXC");
+        filteredTokens = tokens.filter(
+          (token) => token.symbol.toUpperCase() == "DXC"
+        );
       }
       const dropDownQuote = filteredTokens.map((token) => ({
         title: token.symbol,
