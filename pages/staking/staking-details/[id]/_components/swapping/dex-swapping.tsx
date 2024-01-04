@@ -260,14 +260,16 @@ export const DexSwapping = () => {
   const handleSwapFrom = (value: SwapToken) => {
     setBaseToken(value);
     if (baseToken) {
-      const filteredTokens = tokens.filter(
+      let filteredTokens = tokens.filter(
         (token) => token.address !== value.address
       );
+      if (value.symbol.toUpperCase() != "DXC") {
+        filteredTokens = tokens.filter((token) => token.symbol == "DXC");
+      }
       const dropDownQuote = filteredTokens.map((token) => ({
         title: token.symbol,
         value: token,
       }));
-
       const quote = dropDownQuote[0].value;
       setDropdownTokens({ ...dropDownTokens, quote: dropDownQuote });
       setQuoteToken(quote);
