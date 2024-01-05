@@ -1,9 +1,9 @@
 import React from "react";
 import clsx from "clsx";
 import Countdown, { CountdownRendererFn } from "react-countdown";
-import Button from "@/components/button";
 import { LaunchpadDataType } from "./launchpad-card-data";
 import { parseEther } from "ethers/lib/utils";
+import { BNBIcon, USDTIcon } from "@/assets/svgs";
 
 export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
   start_date,
@@ -17,6 +17,7 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
   fundType,
   progress,
 }) => {
+  console.log("start_date", soft_cap, fundType);
   return (
     <div className="col-span-1 h-auto w-full rounded-3xl border border-gray-shade-3">
       <div className="flex h-[calc(100%-138px)] flex-col gap-4 bg-transparent p-5">
@@ -48,8 +49,13 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
         <div>
           <div className="mb-2 flex flex-col">
             <p className="text-sm leading-6 text-gray-shade-14">Soft</p>
-            <p className="textGradient text-base font-semibold leading-8">
-              {Number(soft_cap) / 1e18} {fundType}
+            <p className="flex items-center gap-1 text-base font-semibold leading-8 text-white">
+              <span className="size-4 flex-shrink-0">
+                {fundType === "BNB" ? <BNBIcon /> : <USDTIcon />}
+              </span>
+              <span>
+                {Number(soft_cap) / 1e18} {fundType}
+              </span>
             </p>
             <p className="text-sm leading-6 text-gray-shade-14">
               Progress {`${progress} %`}
@@ -95,6 +101,20 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
               {Number(lockup_time) * 30} days
             </p>
           </div>
+          <div className="flex w-full items-center justify-between gap-3">
+            <p className="text-sm text-gray-shade-14">Rounds:</p>
+            <p className="flex items-center gap-1 text-sm font-medium text-white">
+              <div className="gradient-borders-2 relative flex h-[22px] w-8 cursor-pointer items-center justify-center rounded-3xl p-px">
+                <span className="text-gradient-1 py-1 font-medium">1</span>
+              </div>
+              <div className="relative flex h-[22px] w-8 cursor-pointer items-center justify-center rounded-3xl border border-gray-shade-14 p-px">
+                <span className="py-1 font-medium text-gray-shade-14">2</span>
+              </div>
+              <div className="relative flex h-[22px] w-8 cursor-pointer items-center justify-center rounded-3xl border border-gray-shade-14 p-px">
+                <span className="py-1 font-medium text-gray-shade-14">3</span>
+              </div>
+            </p>
+          </div>
         </div>
       </div>
       <div className="flex h-[138px] flex-col items-center gap-4 rounded-b-3xl bg-gray-shade-24 p-5">
@@ -118,7 +138,9 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
             />
           )}
         </div>
-        <Button title="View" className="w-full rounded-3xl" variant="primary" />
+        <div className="gradient-borders-2 relative flex h-10 w-full cursor-pointer items-center justify-center rounded-3xl p-px">
+          <span className="text-gradient-1 py-2 font-medium">View</span>
+        </div>
       </div>
     </div>
   );
