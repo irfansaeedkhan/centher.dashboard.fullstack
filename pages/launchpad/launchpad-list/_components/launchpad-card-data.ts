@@ -126,6 +126,8 @@
 
 export type LaunchpadDataType = {
   id: string;
+  token_name: string;
+  token_symbol: string;
   start_date?: Date;
   end_date?: Date;
   status: string;

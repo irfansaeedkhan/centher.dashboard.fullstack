@@ -10,63 +10,75 @@ import {
 } from "./_components/launchpad-card-data";
 import { useLaunchpad } from "@/hooks/launchpad";
 import { formatEther } from "ethers/lib/utils";
+import { SmartContractProvider } from "@/web3/blockchain/providers/smart.contract.provider";
+import { customLog } from "@/utils/custom.log";
+import axios from "axios";
+import { formatIPFSUrl } from "@/utils/format.address";
 
 const LaunchpadList: NextPageWithLayout = () => {
   const { sdk } = useLaunchpad();
 
   const [projects, setProjects] = useState<LaunchpadDataType[]>([]);
+  // const [tokenDetails, setTokenDetails] = useState<{name: "", symbol:""}>([]);
 
   // useEffect(() => {
-  //   if (
-  //     !formState.verify_token.token_address ||
-  //     !isAddress(formState.verify_token.token_address)
-  //   ) {
-  //     return;
-  //   }
-
-  //   if (!signer) return;
-
   //   (async () => {
   //     try {
-  //       setValidTokenAddress(false);
-  //       const isValidContract = await BlockchainRead.checkAddress(
-  //         formState.verify_token.token_address,
-  //         signer
+  //       // const tokenContract = SmartContractProvider.getErc20Contract(
+  //       //   ""
+  //       // );
+
+  //       // const [token_name, token_symbol, token_decimal] = await Promise.all([
+  //       //   tokenContract.name(),
+  //       //   tokenContract.symbol(),
+  //       //   tokenContract.decimals(),
+  //       // ]);
+
+  //       // setTokenDetails({
+  //       //   token_name,
+  //       //   token_symbol,
+  //       //   token_decimal,
+  //       // });
+
+  //       let t = await axios.get(
+  //         formatIPFSUrl("ipfs://QmQHKGAuF5j1R7V6Aj5TPSbf6NsCF1GCmPoY9VA8arwQTo")
   //       );
-
-  //       if (!isValidContract) {
-  //         setValidTokenAddress(true);
-  //         toast.error("Invalid token address");
-  //         return;
-  //       }
-
-  //       const tokenContract = SmartContractProvider.getErc20Contract(
-  //         formState.verify_token.token_address
-  //       );
-
-  //       const [token_name, token_symbol, token_decimal] = await Promise.all([
-  //         tokenContract.name(),
-  //         tokenContract.symbol(),
-  //         tokenContract.decimals(),
-  //       ]);
 
   //       setTokenDetails({
-  //         token_name,
-  //         token_symbol,
-  //         token_decimal,
-  //         total_selling: totalPresaleSellingAmount,
-  //       });
+  //         name: t.data.name,
+  //         symbol: t.data.symbol
+  //       })
+
+  //       console.log("token details: ", tokenDetails)
+
+  //       console.log(t);
   //     } catch (e) {
   //       customLog(["development", "staging"], e);
   //     }
   //   })();
-  // }, [formState.verify_token.token_address, signer, totalPresaleSellingAmount]);
+  // }, []);
 
   useEffect(() => {
     (async () => {
       if (!sdk) return;
 
       const result: PresaleDataType[] = await sdk.getPresales();
+
+      // let tokenDetails = [];
+
+      // for (let i = 0; i < result.length; i++) {
+      //   const t = await axios.get(formatIPFSUrl(result[i].metadata));
+      //   console.log(t.data);
+
+      //   tokenDetails.push(t.data);
+      // }
+
+      // console.log("tokenDetails:", tokenDetails);
+
+      // const metaData = await axios.get(formatIPFSUrl(item.metadata));
+
+      // const { token_name, token_symbol } = metaData.data;
+      // console.log("metadata: ", token_name, token_symbol);
 
       let roundLength = 0;
 
@@ -103,6 +115,8 @@ const LaunchpadList: NextPageWithLayout = () => {
 
         return {
           id: item.id,
+          token_name: "", // t.data.token_name,
+          token_symbol: "", // t.data.token_symbol,
           soft_cap: softcapInQuoteToken,
           lockup_time: item.roundInfos[0].lockMonths,
           liquidity: item.maxTokensToSell,

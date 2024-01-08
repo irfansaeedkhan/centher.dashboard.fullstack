@@ -2,10 +2,12 @@ import React from "react";
 import clsx from "clsx";
 import Countdown, { CountdownRendererFn } from "react-countdown";
 import { LaunchpadDataType } from "./launchpad-card-data";
-import { parseEther } from "ethers/lib/utils";
+
 import { BNBIcon, USDTIcon } from "@/assets/svgs";
 
 export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
+  token_name,
+  token_symbol,
   start_date,
   end_date,
   status,
@@ -17,14 +19,13 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
   fundType,
   progress,
 }) => {
-  console.log("start_date", soft_cap, fundType);
   return (
     <div className="col-span-1 h-auto w-full rounded-3xl border border-gray-shade-3">
       <div className="flex h-[calc(100%-138px)] flex-col gap-4 bg-transparent p-5">
         <div className="flex items-center justify-between gap-2">
           <div className="flex flex-col">
             <h3 className="break-words text-base font-semibold text-white fxm:text-lg fsm:text-xl">
-              {launchpad_title.slice(32)}
+              {`${token_name} - ${token_symbol}`}
             </h3>
             <p className="text-xs text-gray-shade-14 fxm:text-sm">
               Fair Launch
