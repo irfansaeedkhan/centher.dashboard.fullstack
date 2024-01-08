@@ -105,8 +105,18 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
           <div className="flex w-full items-center justify-between gap-3">
             <p className="text-sm text-gray-shade-14">Rounds:</p>
             <p className="flex items-center gap-1 text-sm font-medium text-white">
-              <div className="gradient-borders-2 relative flex h-[22px] w-8 cursor-pointer items-center justify-center rounded-3xl p-px">
-                <span className="text-gradient-1 py-1 font-medium">1</span>
+              <div
+                className={clsx(
+                  status === "live" ? gradientRoundMain : simpleRoundMain
+                )}
+              >
+                <span
+                  className={clsx(
+                    status === "live" ? gradientRoundInner : simpleRoundInner
+                  )}
+                >
+                  1
+                </span>
               </div>
               <div className="relative flex h-[22px] w-8 cursor-pointer items-center justify-center rounded-3xl border border-gray-shade-14 p-px">
                 <span className="py-1 font-medium text-gray-shade-14">2</span>
@@ -132,8 +142,11 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
           ) : (
             <Countdown
               date={
-                (status === "live" && end_date ? end_date : new Date()) ||
-                (status === "upcoming" && start_date ? start_date : new Date())
+                status === "upcoming" && start_date
+                  ? start_date
+                  : status === "live" && end_date
+                  ? end_date
+                  : new Date()
               }
               renderer={countdownRenderer}
             />
@@ -164,3 +177,10 @@ const countdownRenderer: CountdownRendererFn = ({
 };
 
 const textActive = "text-sm font-semibold text-white";
+
+const gradientRoundMain =
+  "gradient-borders-2 relative flex h-[22px] w-8 cursor-pointer items-center justify-center rounded-3xl p-px";
+const gradientRoundInner = "text-gradient-1 py-1 font-medium";
+const simpleRoundMain =
+  "relative flex h-[22px] w-8 cursor-pointer items-center justify-center rounded-3xl border border-gray-shade-14 p-px";
+const simpleRoundInner = "py-1 font-medium text-gray-shade-14";
