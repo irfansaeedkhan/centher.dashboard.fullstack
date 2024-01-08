@@ -1,21 +1,20 @@
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import axios from "axios";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { NextPageWithLayout } from "@/pages/_app.page";
+import { useLaunchpad } from "@/hooks/launchpad";
+import { formatIPFSUrl } from "@/utils/format.address";
 import { TabsWrapper } from "./_components";
-import { LaunchpadCard } from "./_components/launchpad-card";
 import {
-  // LaunchpadData,
   LaunchpadDataType,
   PresaleDataType,
 } from "./_components/launchpad-card-data";
-import { useLaunchpad } from "@/hooks/launchpad";
-import { formatEther } from "ethers/lib/utils";
-import { SmartContractProvider } from "@/web3/blockchain/providers/smart.contract.provider";
-import { customLog } from "@/utils/custom.log";
-import axios from "axios";
-import { formatIPFSUrl } from "@/utils/format.address";
+import { LaunchpadCard } from "./_components/launchpad-card";
 
 const LaunchpadList: NextPageWithLayout = () => {
+  const router = useRouter();
+  const { list_type } = router.query;
   const { sdk } = useLaunchpad();
 
   const [projects, setProjects] = useState<LaunchpadDataType[]>([]);
@@ -25,7 +24,6 @@ const LaunchpadList: NextPageWithLayout = () => {
       if (!sdk) return;
 
       const result: PresaleDataType[] = await sdk.getPresales();
-
       let tokenDetails: {
         token_name: string;
         token_symbol: string;
@@ -90,18 +88,28 @@ const LaunchpadList: NextPageWithLayout = () => {
         };
       });
 
-      setProjects(filtered);
+      if (list_type === "all") {
+        setProjects(filtered);
+      }
+
+      if (list_type === "live") {
+        const liveFilter = filtered.filter((item) => item.status === "live");
+        setProjects(liveFilter);
+      }
+
+      if (list_type === "upcoming") {
+        const upcomingFilter = filtered.filter(
+          (item) => item.status === "upcoming"
+        );
+        setProjects(upcomingFilter);
+      }
     })();
-  }, [sdk]);
+  }, [sdk, list_type]);
 
   if (!projects) return;
 
   return (
     <div className="grid grid-cols-1 gap-5 fmd:grid-cols-2 flg:grid-cols-3">
-      {/* {LaunchpadData.map((data, index) => (
-        <LaunchpadCard key={index} {...data} />
-      ))} */}
-
       {projects.map((data) => (
         <LaunchpadCard key={data.id} {...data} />
       ))}
