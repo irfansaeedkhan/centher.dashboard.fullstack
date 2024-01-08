@@ -19,44 +19,6 @@ const LaunchpadList: NextPageWithLayout = () => {
   const { sdk } = useLaunchpad();
 
   const [projects, setProjects] = useState<LaunchpadDataType[]>([]);
-  // const [tokenDetails, setTokenDetails] = useState<{name: "", symbol:""}>([]);
-
-  // useEffect(() => {
-  //   (async () => {
-  //     try {
-  //       // const tokenContract = SmartContractProvider.getErc20Contract(
-  //       //   ""
-  //       // );
-
-  //       // const [token_name, token_symbol, token_decimal] = await Promise.all([
-  //       //   tokenContract.name(),
-  //       //   tokenContract.symbol(),
-  //       //   tokenContract.decimals(),
-  //       // ]);
-
-  //       // setTokenDetails({
-  //       //   token_name,
-  //       //   token_symbol,
-  //       //   token_decimal,
-  //       // });
-
-  //       let t = await axios.get(
-  //         formatIPFSUrl("ipfs://QmQHKGAuF5j1R7V6Aj5TPSbf6NsCF1GCmPoY9VA8arwQTo")
-  //       );
-
-  //       setTokenDetails({
-  //         name: t.data.name,
-  //         symbol: t.data.symbol
-  //       })
-
-  //       console.log("token details: ", tokenDetails)
-
-  //       console.log(t);
-  //     } catch (e) {
-  //       customLog(["development", "staging"], e);
-  //     }
-  //   })();
-  // }, []);
 
   useEffect(() => {
     (async () => {
@@ -64,25 +26,21 @@ const LaunchpadList: NextPageWithLayout = () => {
 
       const result: PresaleDataType[] = await sdk.getPresales();
 
-      // let tokenDetails = [];
+      let tokenDetails: {
+        token_name: string;
+        token_symbol: string;
+      }[] = [];
 
-      // for (let i = 0; i < result.length; i++) {
-      //   const t = await axios.get(formatIPFSUrl(result[i].metadata));
-      //   console.log(t.data);
+      for (let i = 0; i < result.length; i++) {
+        const metaData = await axios.get(formatIPFSUrl(result[i].metadata));
+        const { token_name, token_symbol } = metaData.data;
 
-      //   tokenDetails.push(t.data);
-      // }
-
-      // console.log("tokenDetails:", tokenDetails);
-
-      // const metaData = await axios.get(formatIPFSUrl(item.metadata));
-
-      // const { token_name, token_symbol } = metaData.data;
-      // console.log("metadata: ", token_name, token_symbol);
+        tokenDetails.push({ token_name, token_symbol });
+      }
 
       let roundLength = 0;
 
-      const filtered: LaunchpadDataType[] = result.map((item) => {
+      const filtered: LaunchpadDataType[] = result.map((item, i) => {
         roundLength = Number(item.roundDeep) - 1;
 
         const startSale = Number(item.roundInfos[0].startTime);
@@ -115,8 +73,8 @@ const LaunchpadList: NextPageWithLayout = () => {
 
         return {
           id: item.id,
-          token_name: "", // t.data.token_name,
-          token_symbol: "", // t.data.token_symbol,
+          token_name: tokenDetails[i].token_name,
+          token_symbol: tokenDetails[i].token_symbol,
           soft_cap: softcapInQuoteToken,
           lockup_time: item.roundInfos[0].lockMonths,
           liquidity: item.maxTokensToSell,
