@@ -18,6 +18,7 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
   currentPurchasesValue,
   fundType,
   progress,
+  currentRound,
 }) => {
   return (
     <div className="col-span-1 h-auto w-full rounded-3xl border border-gray-shade-3">
@@ -107,22 +108,42 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
             <p className="flex items-center gap-1 text-sm font-medium text-white">
               <div
                 className={clsx(
-                  status === "live" ? gradientRoundMain : simpleRoundMain
+                  currentRound === 1 ? gradientRoundMain : simpleRoundMain
                 )}
               >
                 <span
                   className={clsx(
-                    status === "live" ? gradientRoundInner : simpleRoundInner
+                    currentRound === 1 ? gradientRoundInner : simpleRoundInner
                   )}
                 >
                   1
                 </span>
               </div>
-              <div className="relative flex h-[22px] w-8 cursor-pointer items-center justify-center rounded-3xl border border-gray-shade-14 p-px">
-                <span className="py-1 font-medium text-gray-shade-14">2</span>
+              <div
+                className={clsx(
+                  currentRound === 2 ? gradientRoundMain : simpleRoundMain
+                )}
+              >
+                <span
+                  className={clsx(
+                    currentRound === 2 ? gradientRoundInner : simpleRoundInner
+                  )}
+                >
+                  2
+                </span>
               </div>
-              <div className="relative flex h-[22px] w-8 cursor-pointer items-center justify-center rounded-3xl border border-gray-shade-14 p-px">
-                <span className="py-1 font-medium text-gray-shade-14">3</span>
+              <div
+                className={clsx(
+                  currentRound === 3 ? gradientRoundMain : simpleRoundMain
+                )}
+              >
+                <span
+                  className={clsx(
+                    currentRound === 3 ? gradientRoundInner : simpleRoundInner
+                  )}
+                >
+                  3
+                </span>
               </div>
             </p>
           </div>

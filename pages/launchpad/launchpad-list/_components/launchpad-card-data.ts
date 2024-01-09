@@ -138,6 +138,7 @@ export type LaunchpadDataType = {
   currentPurchasesValue: string;
   fundType: string;
   progress: string;
+  currentRound: number;
 };
 
 export type PresaleDataType = {

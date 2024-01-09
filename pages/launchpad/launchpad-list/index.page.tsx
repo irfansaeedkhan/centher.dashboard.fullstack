@@ -47,6 +47,17 @@ const LaunchpadList: NextPageWithLayout = () => {
         let saleStatus: string;
         let currentTimeInSecs = Number(new Date()) / 1000;
 
+        // check active round
+        let currentRound = -1;
+        for (let i = 0; i < roundLength; i++) {
+          if (
+            Number(item.roundInfos[i].startTime) < currentTimeInSecs &&
+            Number(item.roundInfos[i].endTime) > currentTimeInSecs
+          ) {
+            currentRound = i + 1;
+          }
+        }
+
         if (currentTimeInSecs < startSale) {
           saleStatus = "upcoming";
         } else if (currentTimeInSecs < endSale) {
@@ -85,6 +96,7 @@ const LaunchpadList: NextPageWithLayout = () => {
           currentPurchasesValue: item.totalPurchasesInBuyingToken,
           fundType: item.fundType === 0 ? "BNB" : "BUSD",
           progress: progress !== 0 ? progress.toFixed(4).toString() : "0",
+          currentRound: currentRound,
         };
       });
 
