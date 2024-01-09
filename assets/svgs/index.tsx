@@ -14,7 +14,6 @@ export interface IconProps {
 }
 
 export { default as MetamaskIcon } from "./metamask.icon.svg";
-export { default as WalletconnectIcon } from "./walletconnect.svg";
 export { default as WebsiteIcon } from "./website.link.icon.svg";
 export { default as TwitterSvg } from "./twitter.svg";
 export { default as LiquidityPoolSvg } from "./liquidity.icon.svg";
@@ -184,6 +183,7 @@ export { default as IconSearch } from "./icon-search.svg";
 export { default as GradientCopy } from "./gradient-copy.svg";
 export { default as ArrowDiagonal } from "./arrow-diagonal.svg";
 export { default as TitleEditedIcon } from "./title.edited.svg";
+export { default as NewWalletIcon } from "./new-wallet-icon.svg";
 
 export const CentherIcon: React.FC<IconProps> = (props) => {
   return (
