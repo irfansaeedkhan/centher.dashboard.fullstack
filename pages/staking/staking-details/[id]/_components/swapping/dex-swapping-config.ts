@@ -44,7 +44,7 @@ export const dexSwappingConfig: IDexConfig = {
     },
     {
       address: "0x49cF1C5111Ab8eE2D3d3C044Bd04673234bbf714",
-      icon: "busd-icon.svg",
+      icon: "usdt-icon.svg",
       is_native: false,
       name: "USDT",
       symbol: "USDT",
@@ -76,7 +76,7 @@ export const dexSwappingConfig: IDexConfig = {
     },
     {
       address: "0x55d398326f99059fF775485246999027B3197955",
-      icon: "busd-icon.svg",
+      icon: "usdt-icon.svg",
       is_native: false,
       name: "USDT",
       symbol: "USDT",
