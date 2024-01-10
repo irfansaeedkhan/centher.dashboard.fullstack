@@ -1,4 +1,3 @@
-import { SwapToken } from "@/models/swap";
 import { ChainId, V3_SUBGRAPHS } from "@pancakeswap/chains";
 import { GraphQLClient } from "graphql-request";
 import { bsc, goerli } from "viem/chains";
@@ -8,6 +7,7 @@ import {
   SubgraphProvider,
 } from "@pancakeswap/smart-router/dist/evm/v3-router/types";
 import { BlockchainConfig } from "@/web3/blockchain/config";
+import { SwapToken } from "@/models/swap";
 
 interface IDexConfig {
   rpc: string;

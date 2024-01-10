@@ -7,9 +7,9 @@ import { Toaster } from "react-hot-toast";
 import { RefreshContextProvider } from "@/web3/context/refresh.context";
 import ScriptTags from "@/components/script.tags";
 import { CookiesConstentModal } from "@/components/modal/cookies-consent.modal";
-import "@/styles/globals.css";
 import { Web3ModalProvider } from "@/web3/context/web3-modal";
 import { GlobalModal } from "@/components/modal/global-modal/global-modal";
+import "@/styles/globals.css";
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: React.ReactElement) => React.ReactNode;
