@@ -63,15 +63,12 @@ export const useFeedStore = create<FeedStore>()(
           const { data } = await axiosApiCenther.get(url);
 
           set((state) => {
-            const filteredPosts = state.posts.filter(
-              (statePost) =>
-                !data.posts.some(
-                  (post: CompletedPost) => statePost._id === post._id
-                )
+            const filteredPosts = data.posts.filter(
+              (post: CompletedPost) =>
+                !state.posts.some((statePost) => statePost._id === post._id)
             );
-
             return {
-              posts: [...filteredPosts, ...data.posts] as CompletedPost[],
+              posts: [...state.posts, ...filteredPosts] as CompletedPost[],
               loading: "loaded",
             };
           });

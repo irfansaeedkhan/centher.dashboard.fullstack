@@ -54,5 +54,5 @@ export default Register;
 const signupLeftData = {
   title: "Register to Centher",
   content:
-    "Register your account with Centher to sell and buy NFTs on some easy steps.",
+    "Create an account to take advantage of the whole Centher SocialFi world",
 };
