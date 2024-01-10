@@ -92,7 +92,7 @@ const ConnectWalletModal: React.FC<Props> = ({
             <div className="flex items-center gap-3 fsm:gap-6">
               <CentherIcon />
               <h3 className="text-sm font-semibold text-white fmd:text-base">
-                Wallet Service
+                Wallet for dummies
               </h3>
             </div>
             <span>
