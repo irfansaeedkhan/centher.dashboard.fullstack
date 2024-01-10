@@ -9,6 +9,7 @@ import ScriptTags from "@/components/script.tags";
 import { CookiesConstentModal } from "@/components/modal/cookies-consent.modal";
 import "@/styles/globals.css";
 import { Web3ModalProvider } from "@/web3/context/web3-modal";
+import { GlobalModal } from "@/components/modal/global-modal/global-modal";
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: React.ReactElement) => React.ReactNode;
@@ -35,26 +36,28 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
         }}
       />
       <RefreshContextProvider>
-        <Web3ModalProvider>
-          <Toaster
-            position="top-center"
-            reverseOrder={false}
-            toastOptions={{
-              // Define default options
-              duration: 5000,
-              style: {
-                background: "#363636",
-                color: "#fff",
-              },
+        <GlobalModal>
+          <Web3ModalProvider>
+            <Toaster
+              position="top-center"
+              reverseOrder={false}
+              toastOptions={{
+                // Define default options
+                duration: 5000,
+                style: {
+                  background: "#363636",
+                  color: "#fff",
+                },
 
-              // Default options for specific types
-              success: {
-                duration: 3000,
-              },
-            }}
-          />
-          {getLayout(<Component {...pageProps} />)}
-        </Web3ModalProvider>
+                // Default options for specific types
+                success: {
+                  duration: 3000,
+                },
+              }}
+            />
+            {getLayout(<Component {...pageProps} />)}
+          </Web3ModalProvider>
+        </GlobalModal>
       </RefreshContextProvider>
     </>
   );
