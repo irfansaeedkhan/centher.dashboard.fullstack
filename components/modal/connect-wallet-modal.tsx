@@ -4,10 +4,10 @@ import { LoggedInUser } from "@/models/user";
 import {
   GradientArrowOutline,
   CentherIcon,
-  WalletconnectIcon,
+  NewWalletIcon,
 } from "@/assets/svgs";
 import { CustomNewModal } from "@/components/modal/custom.new.modal";
-import { WalletEnum, useWallet } from "@/web3/hooks/use.wallet";
+import { WalletEnum } from "@/web3/hooks/use.wallet";
 
 interface Props {
   setConnectWalletModal: (value: boolean) => void;
@@ -71,9 +71,9 @@ const ConnectWalletModal: React.FC<Props> = ({
             }}
             className="flex w-full cursor-pointer items-center justify-between gap-10 !rounded-xl px-5 py-3"
           >
-            <div className="flex items-center" style={{ margin: -10 }}>
-              <WalletconnectIcon className=" h-16 w-16" />
-              <h3 className="ml-3 text-sm font-semibold text-white fmd:text-base">
+            <div className="flex items-center gap-3 fsm:gap-6">
+              <NewWalletIcon />
+              <h3 className="text-sm font-semibold text-white fmd:text-base">
                 Wallet Connect
               </h3>
             </div>
@@ -92,7 +92,7 @@ const ConnectWalletModal: React.FC<Props> = ({
             <div className="flex items-center gap-3 fsm:gap-6">
               <CentherIcon />
               <h3 className="text-sm font-semibold text-white fmd:text-base">
-                Wallet Service
+                Wallet for dummies
               </h3>
             </div>
             <span>

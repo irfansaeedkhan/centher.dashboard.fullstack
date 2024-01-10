@@ -184,6 +184,7 @@ export { default as IconSearch } from "./icon-search.svg";
 export { default as GradientCopy } from "./gradient-copy.svg";
 export { default as ArrowDiagonal } from "./arrow-diagonal.svg";
 export { default as TitleEditedIcon } from "./title.edited.svg";
+export { default as NewWalletIcon } from "./new-wallet-icon.svg";
 
 export const CentherIcon: React.FC<IconProps> = (props) => {
   return (

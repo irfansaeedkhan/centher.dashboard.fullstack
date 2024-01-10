@@ -2,12 +2,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { ethers } from "ethers";
 import { JsonRpcSigner, TransactionReceipt } from "@ethersproject/providers";
 import { useWalletService } from "./use.wallet.service";
-import {
-  useDisconnect,
-  useWeb3Modal,
-  useWeb3ModalAccount,
-  useWeb3ModalProvider,
-} from "@web3modal/ethers5/react";
+
+import { useWalletConnectService } from "./use.walletconnect";
 
 export enum WalletEnum {
   METAMASK = "METAMASK",
@@ -19,10 +15,8 @@ const CONNECTED_WALLET_KEY = "connected_wallet";
 const IS_WALLET_CONNECTED = "is_wallet_connected";
 
 export const useWallet = () => {
-  const { open } = useWeb3Modal();
-  const walletAccount = useWeb3ModalAccount();
-  const { walletProvider } = useWeb3ModalProvider();
-  const disconnectFromWalletConnect = useDisconnect();
+  const { open, walletProvider, disconnectFromWalletConnect, walletAccount } =
+    useWalletConnectService();
 
   const { address, connect, disconnect, sign, signer, send, showWallet } =
     useWalletService();
