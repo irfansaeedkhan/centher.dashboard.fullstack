@@ -28,9 +28,11 @@ import {
   viemProviders,
 } from "./dex-swapping-config";
 import toast from "react-hot-toast";
+import { Loader } from "./loader";
 
 export const DexSwapping = () => {
   const [tokens, setTokens] = useState<SwapToken[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
   const [baseToken, setBaseToken] = useState<SwapToken | undefined>(undefined);
   const [quoteToken, setQuoteToken] = useState<SwapToken | undefined>(
     undefined
@@ -290,7 +292,7 @@ export const DexSwapping = () => {
 
   const doSwap = async () => {
     try {
-      setBtnText("Swapping ...");
+      setLoading(true);
       setBtnDisabled(true);
       if (signer && baseToken) {
         if (!swapCallParams || !connectedAddress) {
@@ -312,8 +314,7 @@ export const DexSwapping = () => {
         );
 
         if (allowenceAmount.lt(fromAmountInWei)) {
-          setBtnText("Approving ...");
-
+          setLoading(true);
           await BlockchainWrite.SetApprovalForWallet(
             signer,
             baseToken?.address,
@@ -321,7 +322,7 @@ export const DexSwapping = () => {
             routerAddress
           );
         }
-        setBtnText("Swapping ...");
+        setLoading(true);
         const tx = {
           from: connectedAddress,
           to: SMART_ROUTER_ADDRESSES[chain_id],
@@ -339,86 +340,99 @@ export const DexSwapping = () => {
     } catch (error) {
       console.log(error);
     }
-    setBtnText("Swap");
+    setLoading(false);
     setBtnDisabled(false);
   };
 
   return (
     <div className="w-full rounded-xl border border-gray-shade-3 bg-black-shade-9 p-6">
-      <div className="text-[min(10vw, 20px)] font-semibold text-white">
-        Swap your token
-      </div>
-      <div className="mt-5 flex flex-col justify-center gap-5 flg:flex-row">
-        <div className="flex w-full flex-shrink-0 flex-col rounded-xl bg-elevation-1 px-5 py-6 fmd:col-span-1 flg:max-w-[512px]">
-          <p className="font-small ml-1 text-sm text-gray-shade-14">Pay</p>
+      <div>
+        <div className="text-[min(10vw, 20px)] font-semibold text-white">
+          Swap your token
+        </div>
+        <div className="mt-5 flex flex-col justify-center gap-5 flg:flex-row">
+          {loading ? (
+            <div className="flex w-full flex-shrink-0 flex-col items-center justify-center rounded-xl bg-elevation-1 px-16 py-32 fmd:col-span-1 flg:max-w-[512px]">
+              <p className="font-small my-10 ml-1 text-sm text-gray-shade-14">
+                Swapping ...
+              </p>
+              <Loader />
+            </div>
+          ) : (
+            <div className="flex w-full flex-shrink-0 flex-col rounded-xl bg-elevation-1 px-5 py-6 fmd:col-span-1 flg:max-w-[512px]">
+              <p className="font-small ml-1 text-sm text-gray-shade-14">Pay</p>
 
-          <div className="flex w-full flex-row gap-2">
-            <div className="col-span-2 w-full text-sm font-medium text-white md:col-span-2">
-              <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
-                <input
-                  type="number"
-                  value={fromAmount}
-                  placeholder="Enter amout"
-                  onChange={(v) => handleFromAmount(v.target.value)}
-                  className="block w-full rounded-lg border-0 bg-transparent px-5 py-3 text-2xl placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
-                />
+              <div className="flex w-full flex-row gap-2">
+                <div className="col-span-2 w-full text-sm font-medium text-white md:col-span-2">
+                  <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
+                    <input
+                      type="number"
+                      value={fromAmount}
+                      placeholder="Enter amout"
+                      onChange={(v) => handleFromAmount(v.target.value)}
+                      className="block w-full rounded-lg border-0 bg-transparent px-5 py-3 text-2xl placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
+                    />
+                  </div>
+                </div>
+                <div className="mx-1 mt-2 block w-2/6 appearance-none rounded-lg border-0 text-sm">
+                  {dropDownTokens?.base ? (
+                    <DropdownSwapForm
+                      placeholder="Token"
+                      options={dropDownTokens?.base ?? []}
+                      selectedValue={baseToken ? baseToken : tokens[0]}
+                      onSelect={(value) => {
+                        handleSwapFrom(value);
+                      }}
+                    />
+                  ) : null}
+                </div>
               </div>
-            </div>
-            <div className="mx-1 mt-2 block w-2/6 appearance-none rounded-lg border-0 text-sm">
-              {dropDownTokens?.base ? (
-                <DropdownSwapForm
-                  placeholder="Token"
-                  options={dropDownTokens?.base ?? []}
-                  selectedValue={baseToken ? baseToken : tokens[0]}
-                  onSelect={(value) => {
-                    handleSwapFrom(value);
-                  }}
-                />
-              ) : null}
-            </div>
-          </div>
-          <p className="my-4 ml-1 text-sm font-medium text-gray-shade-14">
-            Balance {balances ? balances.base : ""}
-          </p>
-          <div className="my-1 border-b-2 border-gray-shade-3"></div>
-          <p className="font-small ml-1 text-sm text-gray-shade-14">Receive</p>
+              <p className="my-4 ml-1 text-sm font-medium text-gray-shade-14">
+                Balance {balances ? balances.base : ""}
+              </p>
+              <div className="my-1 border-b-2 border-gray-shade-3"></div>
+              <p className="font-small ml-1 text-sm text-gray-shade-14">
+                Receive
+              </p>
 
-          <div className="flex w-full flex-row gap-2">
-            <div className="col-span-2 w-full text-sm font-medium text-white md:col-span-2">
-              <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
-                <input
-                  type="number"
-                  value={toAmount}
-                  readOnly
-                  placeholder="Enter amout"
-                  className="block w-full rounded-lg border-0 bg-transparent px-5 py-3 text-2xl placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
-                />
+              <div className="flex w-full flex-row gap-2">
+                <div className="col-span-2 w-full text-sm font-medium text-white md:col-span-2">
+                  <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
+                    <input
+                      type="number"
+                      value={toAmount}
+                      readOnly
+                      placeholder="Enter amout"
+                      className="block w-full rounded-lg border-0 bg-transparent px-5 py-3 text-2xl placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
+                    />
+                  </div>
+                </div>
+                <div className="mx-1 mt-2 block w-2/6 appearance-none rounded-lg border-0 text-sm">
+                  {dropDownTokens?.quote ? (
+                    <DropdownSwapForm
+                      placeholder="Token"
+                      options={dropDownTokens?.quote ?? []}
+                      selectedValue={quoteToken ? quoteToken : tokens[1]}
+                      onSelect={function (value: SwapToken): void {
+                        handleSwapTo(value);
+                      }}
+                    />
+                  ) : null}
+                </div>
               </div>
-            </div>
-            <div className="mx-1 mt-2 block w-2/6 appearance-none rounded-lg border-0 text-sm">
-              {dropDownTokens?.quote ? (
-                <DropdownSwapForm
-                  placeholder="Token"
-                  options={dropDownTokens?.quote ?? []}
-                  selectedValue={quoteToken ? quoteToken : tokens[1]}
-                  onSelect={function (value: SwapToken): void {
-                    handleSwapTo(value);
-                  }}
-                />
-              ) : null}
-            </div>
-          </div>
-          <p className="font-small my-4 ml-1 text-sm text-gray-shade-14">
-            Balance {balances ? balances.quote : ""}
-          </p>
+              <p className="font-small my-4 ml-1 text-sm text-gray-shade-14">
+                Balance {balances ? balances.quote : ""}
+              </p>
 
-          <Button
-            title={btnText}
-            onClick={() => doSwap()}
-            disabled={btnDisable}
-            variant="primary"
-            className="mt-4 w-full flex-shrink-0 rounded-[10px] text-sm fsm:text-base"
-          />
+              <Button
+                title={btnText}
+                onClick={() => doSwap()}
+                disabled={btnDisable}
+                variant="primary"
+                className="mt-4 w-full flex-shrink-0 rounded-[10px] text-sm fsm:text-base"
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>
