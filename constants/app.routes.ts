@@ -68,7 +68,10 @@ export const AppRoutes = {
   launchpad: {
     index: "/launchpad/[token_address]/[round]",
     create_launchpad: "/launchpad/create-launchpad",
-    launchpad_list: "/launchpad/launchpad-list",
+    launchpad_list: {
+      index: "/launchpad/launchpad-list",
+      launchpad_list_details: "/launchpad/launchpad-list/[id]",
+    },
   },
 
   staking: {

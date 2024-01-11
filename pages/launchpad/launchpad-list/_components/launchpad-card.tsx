@@ -1,11 +1,12 @@
 import React from "react";
+import { useRouter } from "next/router";
 import clsx from "clsx";
 import Countdown, { CountdownRendererFn } from "react-countdown";
-import { LaunchpadDataType } from "./launchpad-card-data";
-
 import { BNBIcon, USDTIcon } from "@/assets/svgs";
-
+import { LaunchpadDataType } from "./launchpad-card-data";
+import { AppRoutes } from "@/constants/app.routes";
 export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
+  id,
   token_name,
   token_symbol,
   start_date,
@@ -20,6 +21,7 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
   progress,
   currentRound,
 }) => {
+  const router = useRouter();
   return (
     <div className="col-span-1 h-auto w-full rounded-3xl border border-gray-shade-3">
       <div className="flex h-[calc(100%-138px)] flex-col gap-4 bg-transparent p-5">
@@ -173,7 +175,18 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
             />
           )}
         </div>
-        <div className="gradient-borders-2 relative flex h-10 w-full cursor-pointer items-center justify-center rounded-3xl p-px">
+        <div
+          onClick={() => {
+            router.push({
+              pathname:
+                AppRoutes.launchpad.launchpad_list.launchpad_list_details,
+              query: {
+                id: id,
+              },
+            });
+          }}
+          className="gradient-borders-2 relative flex h-10 w-full cursor-pointer items-center justify-center rounded-3xl p-px"
+        >
           <span className="text-gradient-1 py-2 font-medium">View</span>
         </div>
       </div>
