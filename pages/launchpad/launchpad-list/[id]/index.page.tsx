@@ -1,12 +1,27 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { useRouter } from "next/router";
+import { useLaunchpad } from "@/hooks/launchpad";
+import { PresaleDataType } from "../_components/launchpad-card-data";
 
 const LaunchpadListDetails: NextPageWithLayout = () => {
   const router = useRouter();
   const { id } = router.query;
   console.log(id);
+
+  const { sdk } = useLaunchpad();
+
+  useEffect(() => {
+    (async () => {
+      if (!sdk) return;
+      if (!id) return;
+
+      const result: PresaleDataType[] = await sdk.getPresale(id.toString());
+      console.log(result);
+    })();
+  }, [sdk, id]);
+
   return (
     <div className="flex flex-col gap-6 flg:flex-row">
       <div className="flex flex-grow flex-col gap-4">
