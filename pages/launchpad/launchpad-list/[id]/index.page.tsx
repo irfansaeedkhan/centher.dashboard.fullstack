@@ -17,7 +17,7 @@ const LaunchpadListDetails: NextPageWithLayout = () => {
       if (!sdk) return;
       if (!id) return;
 
-      const result: PresaleDataType[] = await sdk.getPresale(id.toString());
+      const result: PresaleDataType = await sdk.getPresale(id.toString());
       console.log(result);
     })();
   }, [sdk, id]);
