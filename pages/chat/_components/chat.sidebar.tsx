@@ -14,6 +14,7 @@ import { customLog } from "@/utils/custom.log";
 import { User } from "@/models/user";
 import { AppRoutes } from "@/constants/app.routes";
 import { EyeIcon, NewMessageIcon, SearchIcon } from "@/assets/svgs";
+import { BackButton } from "@/components/button/back-button";
 import SingleChatSidebar from "./single-chat-sidebar";
 import { ChatModal } from "./chat-modal";
 import NewConversationModal from "./new-conversation-modal";
@@ -248,10 +249,12 @@ const ChatSidebar = () => {
   return (
     <div
       className={clsx(
-        "relative min-h-[calc(100vh-60px)] w-full flex-shrink-0 border-r border-gray-shade-3 pt-8 lg:w-[384px]",
+        "relative min-h-[calc(100vh-60px)] w-full flex-shrink-0 border-r border-gray-shade-3 pt-2 lg:w-[384px]",
         router.pathname === AppRoutes.chat.single_chat && "hidden flg:block"
       )}
     >
+      <BackButton className="flg:hidden" />
+
       <div className="mb-6 flex items-center justify-between px-4 text-xl font-semibold text-white md:px-6">
         <h6>Chats</h6>
         <button

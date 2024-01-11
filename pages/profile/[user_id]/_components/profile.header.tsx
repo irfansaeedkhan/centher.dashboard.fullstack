@@ -5,6 +5,7 @@ import React, {
   useRef,
   useMemo,
 } from "react";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import axios from "axios";
@@ -38,6 +39,7 @@ import { customLog } from "@/utils/custom.log";
 import { copyText } from "@/utils/copy.text";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 import cn from "@/utils/cn";
+import { BackButton } from "@/components/button/back-button";
 import { useCentherLive } from "@/hooks/chat";
 import { AppRoutes } from "@/constants/app.routes";
 import { XLogo, ChatProfile, EyeOffFollow } from "@/assets/svgs";
@@ -295,433 +297,437 @@ const ProfileHeader: React.FC<Props> = ({
   };
 
   return (
-    <div className={`rounded-xl bg-background-shade-3`}>
-      <div
-        className={clsx(
-          `relative h-[180px] w-full rounded-t-xl bg-cover bg-no-repeat`,
-          {
-            "cursor-move": coverImage.newImage,
-          }
-        )}
-        style={{
-          backgroundImage: `url(${coverImage.path})`,
-          backgroundPosition: `center center`,
-        }}
-      >
-        {isOwnProfile && (
-          <>
-            <div className="absolute bottom-2 right-2 flex items-center gap-x-3 fsm:bottom-3 fsm:right-4">
-              <input
-                type="file"
-                ref={coverImageInputRef}
-                accept="image/jpeg,image/png,image/jpg"
-                style={{ display: "none" }}
-                onChange={handleSelectCoverImage}
-              />
-              {!coverImage.newImage && (
-                <CoverUploadButton
-                  onClick={() => {
-                    coverImageInputRef.current?.click();
-                  }}
-                  variant="edit-cover"
-                >
-                  <FiCamera className="h-4 w-4" />
-                  <span className="hidden fmd:inline-block">Edit Cover</span>
-                </CoverUploadButton>
-              )}
-              {coverImage.newImage && (
-                <div className="flex flex-col items-end gap-2 fsm:flex-row fsm:gap-0">
-                  <CoverUploadButton
-                    variant="cancel"
-                    onClick={setInitialCoverImage}
-                  >
-                    <Button
-                      loaderIcon={<MdClose className="h-4 w-4" />}
-                      title=""
-                      variant="secondary"
-                      className="inline-block fmd:hidden"
-                      borderRounded="14px"
-                    />
-                    <Button
-                      Icon={<MdClose className="h-4 w-4" />}
-                      title="Cancel"
-                      variant="secondary"
-                      className="hidden w-max bg-[#18191d] fmd:flex"
-                      borderRounded="14px"
-                      disabled={isUploading}
-                    />
-                  </CoverUploadButton>
-                  <CoverUploadButton
-                    onClick={handleUploadCoverImage}
-                    className={`group`}
-                    variant="upload-cover"
-                  >
-                    <Button
-                      title="Save"
-                      variant="primary"
-                      className="group flex fmd:hidden"
-                      borderRounded="14px"
-                    />
+    <>
+      <BackButton className="flg:hidden" />
 
-                    <Button
-                      title="Upload Cover"
-                      variant="primary"
-                      className="hidden w-max fmd:inline-block"
-                      borderRounded="14px"
-                      loaderIcon={
-                        coverImageLoading && (
-                          <CgSpinner
-                            className={`mx-auto h-4 w-4 animate-spin text-center text-white`}
-                          />
-                        )
-                      }
-                    />
-                  </CoverUploadButton>
-                </div>
-              )}
-            </div>
-
-            <CropperImage
-              coverImage={coverImage}
-              setCoverImage={setCoverImage}
-            />
-          </>
-        )}
-
+      <div className={`rounded-xl bg-background-shade-3`}>
         <div
-          className={`absolute -bottom-12 left-[50%] h-[112px] !w-[112px] translate-x-[-50%] cursor-pointer`}
+          className={clsx(
+            `relative h-[180px] w-full rounded-t-xl bg-cover bg-no-repeat`,
+            {
+              "cursor-move": coverImage.newImage,
+            }
+          )}
+          style={{
+            backgroundImage: `url(${coverImage.path})`,
+            backgroundPosition: `center center`,
+          }}
         >
-          <div
-            className="relative h-[112px] !w-[112px]"
-            onClick={handleImageClick}
-          >
-            <Image
-              src={user.profile_image}
-              alt={user.display_name}
-              width={112}
-              height={112}
-              className="absolute left-[50%] top-[50%] !m-0 !h-[112px] !w-[112px] translate-x-[-50%] translate-y-[-50%] rounded-full border-2 border-background-shade-3 bg-black-shade-7 object-cover"
-              sizes={"256px"}
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className={`relative object-contain px-2 fsm:px-4`}>
-        {!!loggedInUser &&
-          loggedInUser?._id.toLowerCase() !== user._id.toLowerCase() && (
-            <div
-              className={clsx(
-                "absolute -top-[45px] right-4 hidden w-full gap-2 fmd:flex",
-                follow ? "max-w-[114px]" : "max-w-[54px]"
-              )}
-            >
-              {follow && (
-                <div
-                  className="flex h-10 w-[52px] flex-shrink-0 cursor-pointer items-center justify-center rounded-[14px] border border-gray-shade-3"
-                  onClick={chatHandler}
-                >
-                  <ChatProfile />
-                </div>
-              )}
-              <div
-                title={follow ? "Unfollow" : "Follow"}
-                className={clsx(
-                  "flex h-10 w-[54px] flex-shrink-0 cursor-pointer items-center justify-center rounded-[14px] border",
-                  follow ? " border-gray-shade-3" : " gradient-border-3 p-[1px]"
+          {isOwnProfile && (
+            <>
+              <div className="absolute bottom-2 right-2 flex items-center gap-x-3 fsm:bottom-3 fsm:right-4">
+                <input
+                  type="file"
+                  ref={coverImageInputRef}
+                  accept="image/jpeg,image/png,image/jpg"
+                  style={{ display: "none" }}
+                  onChange={handleSelectCoverImage}
+                />
+                {!coverImage.newImage && (
+                  <CoverUploadButton
+                    onClick={() => {
+                      coverImageInputRef.current?.click();
+                    }}
+                    variant="edit-cover"
+                  >
+                    <FiCamera className="h-4 w-4" />
+                    <span className="hidden fmd:inline-block">Edit Cover</span>
+                  </CoverUploadButton>
                 )}
-                onClick={() => followUser(user._id)}
-              >
-                {loadingState ? (
-                  <CgSpinner className="animate-spin text-xl text-white" />
-                ) : follow ? (
-                  <EyeOffFollow />
-                ) : (
-                  <Image
-                    src={"/images/gradient-eye.svg"}
-                    alt={"Follow"}
-                    width={24}
-                    height={24}
-                  />
+                {coverImage.newImage && (
+                  <div className="flex flex-col items-end gap-2 fsm:flex-row fsm:gap-0">
+                    <CoverUploadButton
+                      variant="cancel"
+                      onClick={setInitialCoverImage}
+                    >
+                      <Button
+                        loaderIcon={<MdClose className="h-4 w-4" />}
+                        title=""
+                        variant="secondary"
+                        className="inline-block fmd:hidden"
+                        borderRounded="14px"
+                      />
+                      <Button
+                        Icon={<MdClose className="h-4 w-4" />}
+                        title="Cancel"
+                        variant="secondary"
+                        className="hidden w-max bg-[#18191d] fmd:flex"
+                        borderRounded="14px"
+                        disabled={isUploading}
+                      />
+                    </CoverUploadButton>
+                    <CoverUploadButton
+                      onClick={handleUploadCoverImage}
+                      className={`group`}
+                      variant="upload-cover"
+                    >
+                      <Button
+                        title="Save"
+                        variant="primary"
+                        className="group flex fmd:hidden"
+                        borderRounded="14px"
+                      />
+
+                      <Button
+                        title="Upload Cover"
+                        variant="primary"
+                        className="hidden w-max fmd:inline-block"
+                        borderRounded="14px"
+                        loaderIcon={
+                          coverImageLoading && (
+                            <CgSpinner
+                              className={`mx-auto h-4 w-4 animate-spin text-center text-white`}
+                            />
+                          )
+                        }
+                      />
+                    </CoverUploadButton>
+                  </div>
                 )}
               </div>
-            </div>
-          )}
-        <Profile3DotsMenu
-          isOwnProfile={isOwnProfile}
-          loggedInUser={loggedInUser}
-        />
 
-        <div className={`!mt-14`}>
-          <div className="flex w-full justify-center">
+              <CropperImage
+                coverImage={coverImage}
+                setCoverImage={setCoverImage}
+              />
+            </>
+          )}
+
+          <div
+            className={`absolute -bottom-12 left-[50%] h-[112px] !w-[112px] translate-x-[-50%] cursor-pointer`}
+          >
             <div
-              className={`flex flex-col items-baseline justify-between lg:flex-row`}
+              className="relative h-[112px] !w-[112px]"
+              onClick={handleImageClick}
             >
-              <h5
-                className={clsx(
-                  `inline-block items-center break-words text-center text-base font-semibold text-white ${
-                    !user.display_name.includes(" ") &&
-                    user.display_name.length > 20 &&
-                    "inline-block w-[90vw] break-words md:w-full"
-                  }`,
-                  !loggedInUser && `mt-6`
-                )}
-              >
-                <span title={user.display_name}>
-                  {sliceDisplayName(user.display_name)}
-                </span>
-                {verificationTick ? (
-                  <span className="verifiedIcon ml-0.5 inline-block h-[22px] w-[22px] min-w-[22px] pt-1 fsm:ml-1">
-                    <Image
-                      src={verificationTick}
-                      alt={"Membership"}
-                      width={22}
-                      height={22}
-                    />
-                  </span>
-                ) : null}
-                {user.organization && (
-                  <span
-                    className={cn(
-                      "verifiedIcon ml-0.5 inline-block h-[22px] w-[22px] min-w-[22px] rounded-full fsm:ml-1",
-                      user.membership.status === "citizen" ? "pt-2" : "pt-1"
-                    )}
-                  >
-                    <Image
-                      src={user.organization.profile_image}
-                      alt={user.organization.org_id}
-                      width={22}
-                      height={22}
-                      className="cursor-pointer rounded-full"
-                      onClick={() => {
-                        if (!user.organization) return;
-                        router.push({
-                          pathname: AppRoutes.profile.user_id,
-                          query: { user_id: user.organization.org_id },
-                        });
-                      }}
-                    />
-                  </span>
-                )}
-              </h5>
+              <Image
+                src={user.profile_image}
+                alt={user.display_name}
+                width={112}
+                height={112}
+                className="absolute left-[50%] top-[50%] !m-0 !h-[112px] !w-[112px] translate-x-[-50%] translate-y-[-50%] rounded-full border-2 border-background-shade-3 bg-black-shade-7 object-cover"
+                sizes={"256px"}
+              />
             </div>
           </div>
-
-          <div className="mt-1 flex w-full flex-col items-center justify-center">
-            <div className={`relative flex items-center gap-2`}>
-              <h6 className={`text-xs font-medium text-white`}>
-                {sliceAccountAddress(user._id)}
-              </h6>
-              <button
-                onClick={async () => {
-                  await copyText(user._id);
-                  toast.success("Address copied!");
-                }}
+        </div>
+        <div className={`relative object-contain px-2 fsm:px-4`}>
+          {!!loggedInUser &&
+            loggedInUser?._id.toLowerCase() !== user._id.toLowerCase() && (
+              <div
+                className={clsx(
+                  "absolute -top-[45px] right-4 hidden w-full gap-2 fmd:flex",
+                  follow ? "max-w-[114px]" : "max-w-[54px]"
+                )}
               >
-                <FiCopy className="text-gradient-hover h-4 w-4 text-gray-shade-7" />
-              </button>
-            </div>
-
-            <p className="mt-1 text-[11px] font-medium leading-6 text-gray-shade-7">
-              Member since {dayjs(user.createdAt).format("MMM, YYYY")}
-            </p>
-
-            {!!loggedInUser &&
-              loggedInUser?._id.toLowerCase() !== user._id.toLowerCase() && (
+                {follow && (
+                  <div
+                    className="flex h-10 w-[52px] flex-shrink-0 cursor-pointer items-center justify-center rounded-[14px] border border-gray-shade-3"
+                    onClick={chatHandler}
+                  >
+                    <ChatProfile />
+                  </div>
+                )}
                 <div
+                  title={follow ? "Unfollow" : "Follow"}
                   className={clsx(
-                    "mt-2 flex w-full max-w-[106px] justify-center gap-2 fmd:hidden"
+                    "flex h-10 w-[54px] flex-shrink-0 cursor-pointer items-center justify-center rounded-[14px] border",
+                    follow
+                      ? " border-gray-shade-3"
+                      : " gradient-border-3 p-[1px]"
+                  )}
+                  onClick={() => followUser(user._id)}
+                >
+                  {loadingState ? (
+                    <CgSpinner className="animate-spin text-xl text-white" />
+                  ) : follow ? (
+                    <EyeOffFollow />
+                  ) : (
+                    <Image
+                      src={"/images/gradient-eye.svg"}
+                      alt={"Follow"}
+                      width={24}
+                      height={24}
+                    />
+                  )}
+                </div>
+              </div>
+            )}
+          <Profile3DotsMenu
+            isOwnProfile={isOwnProfile}
+            loggedInUser={loggedInUser}
+          />
+
+          <div className={`!mt-14`}>
+            <div className="flex w-full justify-center">
+              <div
+                className={`flex flex-col items-baseline justify-between lg:flex-row`}
+              >
+                <h5
+                  className={clsx(
+                    `inline-block items-center break-words text-center text-base font-semibold text-white ${
+                      !user.display_name.includes(" ") &&
+                      user.display_name.length > 20 &&
+                      "inline-block w-[90vw] break-words md:w-full"
+                    }`,
+                    !loggedInUser && `mt-6`
                   )}
                 >
-                  {follow && (
-                    <div
-                      className="flex h-10 w-[52px] flex-shrink-0 cursor-pointer items-center justify-center rounded-[14px] border border-gray-shade-3"
-                      onClick={chatHandler}
-                    >
-                      <ChatProfile />
-                    </div>
-                  )}
-                  <div
-                    title={follow ? "Unfollow" : "Follow"}
-                    className={clsx(
-                      "flex h-10 w-[54px] flex-shrink-0 cursor-pointer items-center justify-center rounded-[14px] border",
-                      follow
-                        ? " border-gray-shade-3"
-                        : " gradient-border-3 p-[1px]"
-                    )}
-                    onClick={() => followUser(user._id)}
-                  >
-                    {loadingState ? (
-                      <CgSpinner className="animate-spin text-xl text-white" />
-                    ) : follow ? (
-                      <EyeOffFollow />
-                    ) : (
+                  <span title={user.display_name}>
+                    {sliceDisplayName(user.display_name)}
+                  </span>
+                  {verificationTick ? (
+                    <span className="verifiedIcon ml-0.5 inline-block h-[22px] w-[22px] min-w-[22px] pt-1 fsm:ml-1">
                       <Image
-                        src={"/images/gradient-eye.svg"}
-                        alt={"Follow"}
-                        width={24}
-                        height={24}
+                        src={verificationTick}
+                        alt={"Membership"}
+                        width={22}
+                        height={22}
                       />
+                    </span>
+                  ) : null}
+                  {user.organization && (
+                    <span
+                      className={cn(
+                        "verifiedIcon ml-0.5 inline-block h-[22px] w-[22px] min-w-[22px] rounded-full fsm:ml-1",
+                        user.membership.status === "citizen" ? "pt-2" : "pt-1"
+                      )}
+                    >
+                      <Image
+                        src={user.organization.profile_image}
+                        alt={user.organization.org_id}
+                        width={22}
+                        height={22}
+                        className="cursor-pointer rounded-full"
+                        onClick={() => {
+                          if (!user.organization) return;
+                          router.push({
+                            pathname: AppRoutes.profile.user_id,
+                            query: { user_id: user.organization.org_id },
+                          });
+                        }}
+                      />
+                    </span>
+                  )}
+                </h5>
+              </div>
+            </div>
+
+            <div className="mt-1 flex w-full flex-col items-center justify-center">
+              <div className={`relative flex items-center gap-2`}>
+                <h6 className={`text-xs font-medium text-white`}>
+                  {sliceAccountAddress(user._id)}
+                </h6>
+                <button
+                  onClick={async () => {
+                    await copyText(user._id);
+                    toast.success("Address copied!");
+                  }}
+                >
+                  <FiCopy className="text-gradient-hover h-4 w-4 text-gray-shade-7" />
+                </button>
+              </div>
+
+              <p className="mt-1 text-[11px] font-medium leading-6 text-gray-shade-7">
+                Member since {dayjs(user.createdAt).format("MMM, YYYY")}
+              </p>
+
+              {!!loggedInUser &&
+                loggedInUser?._id.toLowerCase() !== user._id.toLowerCase() && (
+                  <div
+                    className={clsx(
+                      "mt-2 flex w-full max-w-[106px] justify-center gap-2 fmd:hidden"
                     )}
+                  >
+                    {follow && (
+                      <div
+                        className="flex h-10 w-[52px] flex-shrink-0 cursor-pointer items-center justify-center rounded-[14px] border border-gray-shade-3"
+                        onClick={chatHandler}
+                      >
+                        <ChatProfile />
+                      </div>
+                    )}
+                    <div
+                      title={follow ? "Unfollow" : "Follow"}
+                      className={clsx(
+                        "flex h-10 w-[54px] flex-shrink-0 cursor-pointer items-center justify-center rounded-[14px] border",
+                        follow
+                          ? " border-gray-shade-3"
+                          : " gradient-border-3 p-[1px]"
+                      )}
+                      onClick={() => followUser(user._id)}
+                    >
+                      {loadingState ? (
+                        <CgSpinner className="animate-spin text-xl text-white" />
+                      ) : follow ? (
+                        <EyeOffFollow />
+                      ) : (
+                        <Image
+                          src={"/images/gradient-eye.svg"}
+                          alt={"Follow"}
+                          width={24}
+                          height={24}
+                        />
+                      )}
+                    </div>
+                  </div>
+                )}
+
+              {!!loggedInUser && (
+                <div className="mt-3 flex justify-center gap-2 flg:hidden">
+                  <div className="w-16 space-y-1.5 text-center">
+                    <span className="block text-xs font-medium text-gray-shade-7">
+                      Post
+                    </span>
+                    <span className="text-xs font-semibold text-white">
+                      {profileCardDetails.posts_count ?? "--"}
+                    </span>
+                  </div>
+                  <div className="w-16 space-y-1.5 text-center">
+                    <span className="block text-xs font-medium text-gray-shade-7">
+                      Followers
+                    </span>
+                    <span className="text-xs font-semibold text-white">
+                      {profileCardDetails.followers_count ?? "--"}
+                    </span>
+                  </div>
+                  <div className="w-16 space-y-1.5 text-center">
+                    <span className="block text-xs font-medium text-gray-shade-7">
+                      Following
+                    </span>
+                    <span className="text-xs font-semibold text-white">
+                      {profileCardDetails.following_count ?? "--"}
+                    </span>
+                  </div>
+                  <div className="w-16 space-y-1.5 text-center">
+                    <span className="block text-xs font-medium text-gray-shade-7">
+                      Referrals
+                    </span>
+                    <span className="text-xs font-semibold text-white">
+                      {profileCardDetails.total_referrees ?? "--"}
+                    </span>
                   </div>
                 </div>
               )}
+            </div>
 
-            {!!loggedInUser && (
-              <div className="mt-3 flex justify-center gap-2 flg:hidden">
-                <div className="w-16 space-y-1.5 text-center">
-                  <span className="block text-xs font-medium text-gray-shade-7">
-                    Post
-                  </span>
-                  <span className="text-xs font-semibold text-white">
-                    {profileCardDetails.posts_count ?? "--"}
-                  </span>
-                </div>
-                <div className="w-16 space-y-1.5 text-center">
-                  <span className="block text-xs font-medium text-gray-shade-7">
-                    Followers
-                  </span>
-                  <span className="text-xs font-semibold text-white">
-                    {profileCardDetails.followers_count ?? "--"}
-                  </span>
-                </div>
-                <div className="w-16 space-y-1.5 text-center">
-                  <span className="block text-xs font-medium text-gray-shade-7">
-                    Following
-                  </span>
-                  <span className="text-xs font-semibold text-white">
-                    {profileCardDetails.following_count ?? "--"}
-                  </span>
-                </div>
-                <div className="w-16 space-y-1.5 text-center">
-                  <span className="block text-xs font-medium text-gray-shade-7">
-                    Referrals
-                  </span>
-                  <span className="text-xs font-semibold text-white">
-                    {profileCardDetails.total_referrees ?? "--"}
-                  </span>
-                </div>
-              </div>
+            {user.profile_bio && (
+              <p
+                className={`mx-auto mt-2 max-w-xl whitespace-pre-wrap break-words text-center text-xs font-normal tracking-wide text-gray-shade-16 fsm:text-[13px]`}
+              >
+                {user.profile_bio}
+              </p>
             )}
           </div>
+          {(user.social_media.tiktok_username ||
+            user.social_media.facebook_username ||
+            user.social_media.instagram_username ||
+            user.social_media.onlyfans_username ||
+            user.social_media.twitch_username ||
+            user.social_media.twitter_username ||
+            user.social_media.website_url ||
+            user.social_media.telegram_username ||
+            user.social_media.youtube_url) && (
+            <div className="mt-3 flex w-full items-center justify-center gap-4">
+              {user.social_media.tiktok_username && (
+                <a
+                  href={`https://tiktok.com/@${user.social_media.tiktok_username}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <TbBrandTiktok className={socialLinks} />
+                </a>
+              )}
+              {user.social_media.facebook_username && (
+                <a
+                  href={`https://facebook.com/${user.social_media.facebook_username}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <RiFacebookCircleLine className={socialLinks} />
+                </a>
+              )}
+              {user.social_media.twitter_username && (
+                <a
+                  href={`https://twitter.com/${user.social_media.twitter_username}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <XLogo className="h-5 w-5 fill-white hover:fill-brand-primary" />
+                </a>
+              )}
+              {user.social_media.youtube_url && (
+                <a
+                  href={`${user.social_media.youtube_url}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <FiYoutube className={socialLinks} />
+                </a>
+              )}
+              {user.social_media.website_url && (
+                <a
+                  href={user.social_media.website_url}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <HiLink className={socialLinks} />
+                </a>
+              )}
 
-          {user.profile_bio && (
-            <p
-              className={`mx-auto mt-2 max-w-xl whitespace-pre-wrap break-words text-center text-xs font-normal tracking-wide text-gray-shade-16 fsm:text-[13px]`}
-            >
-              {user.profile_bio}
-            </p>
+              {user.social_media.instagram_username && (
+                <a
+                  href={`https://instagram.com/${user.social_media.instagram_username}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <FiInstagram className={socialLinks} />
+                </a>
+              )}
+              {user.social_media.twitch_username && (
+                <a
+                  href={`https://twitch.tv/${user.social_media.twitch_username}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <FiTwitch className={socialLinks} />
+                </a>
+              )}
+
+              {user.social_media.onlyfans_username && (
+                <a
+                  href={`https://onlyfans.com/${user.social_media.onlyfans_username}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <SiOnlyfans className={socialLinks} />
+                </a>
+              )}
+
+              {user.social_media.telegram_username && (
+                <a
+                  href={`https://t.me/${user.social_media.telegram_username}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <TbBrandTelegram className={socialLinks} />
+                </a>
+              )}
+            </div>
           )}
+          {!!loggedInUser &&
+            loggedInUser?._id.toLowerCase() !== user._id.toLowerCase() &&
+            mutualFollowersData?.users &&
+            !!mutualFollowersData.users.length && (
+              <FollowedComponent mutualFollowersData={mutualFollowersData} />
+            )}
+          <ProfileTabsSocial user={user} loggedInUser={loggedInUser} />
         </div>
-        {(user.social_media.tiktok_username ||
-          user.social_media.facebook_username ||
-          user.social_media.instagram_username ||
-          user.social_media.onlyfans_username ||
-          user.social_media.twitch_username ||
-          user.social_media.twitter_username ||
-          user.social_media.website_url ||
-          user.social_media.telegram_username ||
-          user.social_media.youtube_url) && (
-          <div className="mt-3 flex w-full items-center justify-center gap-4">
-            {user.social_media.tiktok_username && (
-              <a
-                href={`https://tiktok.com/@${user.social_media.tiktok_username}`}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <TbBrandTiktok className={socialLinks} />
-              </a>
-            )}
-            {user.social_media.facebook_username && (
-              <a
-                href={`https://facebook.com/${user.social_media.facebook_username}`}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <RiFacebookCircleLine className={socialLinks} />
-              </a>
-            )}
-            {user.social_media.twitter_username && (
-              <a
-                href={`https://twitter.com/${user.social_media.twitter_username}`}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <XLogo className="h-5 w-5 fill-white hover:fill-brand-primary" />
-              </a>
-            )}
-            {user.social_media.youtube_url && (
-              <a
-                href={`${user.social_media.youtube_url}`}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <FiYoutube className={socialLinks} />
-              </a>
-            )}
-            {user.social_media.website_url && (
-              <a
-                href={user.social_media.website_url}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <HiLink className={socialLinks} />
-              </a>
-            )}
-
-            {user.social_media.instagram_username && (
-              <a
-                href={`https://instagram.com/${user.social_media.instagram_username}`}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <FiInstagram className={socialLinks} />
-              </a>
-            )}
-            {user.social_media.twitch_username && (
-              <a
-                href={`https://twitch.tv/${user.social_media.twitch_username}`}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <FiTwitch className={socialLinks} />
-              </a>
-            )}
-
-            {user.social_media.onlyfans_username && (
-              <a
-                href={`https://onlyfans.com/${user.social_media.onlyfans_username}`}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <SiOnlyfans className={socialLinks} />
-              </a>
-            )}
-
-            {user.social_media.telegram_username && (
-              <a
-                href={`https://t.me/${user.social_media.telegram_username}`}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <TbBrandTelegram className={socialLinks} />
-              </a>
-            )}
-          </div>
+        {isModalOpen && (
+          <ProfileModal onClose={handleCloseModal} src={user.profile_image} />
         )}
-        {!!loggedInUser &&
-          loggedInUser?._id.toLowerCase() !== user._id.toLowerCase() &&
-          mutualFollowersData?.users &&
-          !!mutualFollowersData.users.length && (
-            <FollowedComponent mutualFollowersData={mutualFollowersData} />
-          )}
-        <ProfileTabsSocial user={user} loggedInUser={loggedInUser} />
       </div>
-
-      {isModalOpen && (
-        <ProfileModal onClose={handleCloseModal} src={user.profile_image} />
-      )}
-    </div>
+    </>
   );
 };
 export default ProfileHeader;

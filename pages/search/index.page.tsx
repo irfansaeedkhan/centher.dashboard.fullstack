@@ -1,13 +1,12 @@
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
-
 import { useSearchStore } from "@/store/search.store";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-
-import { UserWithFollow } from "./_components";
 import SearchUserSkeleton from "@/components/loading.skeletons/search.user";
 import { SearchUserIcon } from "@/assets/svgs";
+import { BackButton } from "@/components/button/back-button";
+import { UserWithFollow } from "./_components";
 import Searchbar from "./_components/search.bar";
 
 const Search: NextPageWithLayout = () => {
@@ -52,54 +51,58 @@ const Search: NextPageWithLayout = () => {
   }, [searchQuery, resetSearchResults, fetchSearchResults]);
 
   return (
-    <div className="flex w-full flex-col items-center justify-center">
-      <div className="mb-4 block w-full md:hidden">
-        <div className={`animationTextHeading mb-2 text-2xl`}>Search</div>
-        <Searchbar />
-      </div>
-      {searchQuery.trim() !== "" && (
-        <div className="fxs:w-full md:w-[544px]">
-          <div className={`animationTextHeading mb-4 text-xl fmd:text-2xl`}>
-            Search Result
-          </div>
-          <div className="flex flex-col">
-            {searchResults.length > 0 &&
-              searchResults.map((result, i) => {
-                if (i === searchResults.length - 1) {
-                  return (
-                    <UserWithFollow
-                      key={result._id}
-                      result={result}
-                      ref={lastResultRef}
-                    />
-                  );
-                }
-                return <UserWithFollow key={result._id} result={result} />;
-              })}
-
-            {(searchLoadingState === "loading" ||
-              searchLoadingState === "idle") && <SearchUserSkeleton />}
-
-            {searchLoadingState === "loaded" && searchResults.length === 0 && (
-              <div>
-                <div className="mt-10 flex justify-center">
-                  <SearchUserIcon />
-                </div>
-                <div className="mt-8 flex justify-center text-xl font-semibold text-white">
-                  <p>Sorry! No Result Found</p>
-                </div>
-              </div>
-            )}
-
-            {searchLoadingState === "failed" && (
-              <div className="textGradient font-semibold">
-                Something went wrong!
-              </div>
-            )}
-          </div>
+    <>
+      <BackButton />
+      <div className="flex w-full flex-col items-center justify-center">
+        <div className="mb-4 block w-full md:hidden">
+          <div className={`animationTextHeading mb-2 text-2xl`}>Search</div>
+          <Searchbar />
         </div>
-      )}
-    </div>
+        {searchQuery.trim() !== "" && (
+          <div className="fxs:w-full md:w-[544px]">
+            <div className={`animationTextHeading mb-4 text-xl fmd:text-2xl`}>
+              Search Result
+            </div>
+            <div className="flex flex-col">
+              {searchResults.length > 0 &&
+                searchResults.map((result, i) => {
+                  if (i === searchResults.length - 1) {
+                    return (
+                      <UserWithFollow
+                        key={result._id}
+                        result={result}
+                        ref={lastResultRef}
+                      />
+                    );
+                  }
+                  return <UserWithFollow key={result._id} result={result} />;
+                })}
+
+              {(searchLoadingState === "loading" ||
+                searchLoadingState === "idle") && <SearchUserSkeleton />}
+
+              {searchLoadingState === "loaded" &&
+                searchResults.length === 0 && (
+                  <div>
+                    <div className="mt-10 flex justify-center">
+                      <SearchUserIcon />
+                    </div>
+                    <div className="mt-8 flex justify-center text-xl font-semibold text-white">
+                      <p>Sorry! No Result Found</p>
+                    </div>
+                  </div>
+                )}
+
+              {searchLoadingState === "failed" && (
+                <div className="textGradient font-semibold">
+                  Something went wrong!
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 

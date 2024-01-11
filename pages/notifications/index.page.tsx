@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import clsx from "clsx";
-
 import { useNotificationsStore } from "@/store/notifications.store";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import SingleNotificationSkeleton from "@/components/loading.skeletons/single.notification";
 import { NotificationBell } from "@/assets/svgs";
-
 import {
   SingleNotification,
   useMarkNotificationsPageAsSeen,
@@ -16,6 +14,7 @@ import { useCentherLive } from "@/hooks/chat";
 import { Notify } from "@/live/types/notification";
 import { customLog } from "@/utils/custom.log";
 import { useWallet } from "@/web3/hooks/use.wallet";
+import { BackButton } from "@/components/button/back-button";
 
 const Notifications: NextPageWithLayout = () => {
   // Mark notifications page as seen
@@ -95,6 +94,7 @@ const Notifications: NextPageWithLayout = () => {
       >
         {notifications.length > 0 && (
           <div className="flex w-full max-w-[1005px] flex-col">
+            <BackButton />
             <div className={`mb-5 font-bold text-white`}>Notifications</div>
 
             {notifications.map((notification, index) => {
