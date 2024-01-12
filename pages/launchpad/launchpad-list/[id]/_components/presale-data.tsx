@@ -114,4 +114,5 @@ export const PresaleData: React.FC<PresaleDataProps> = ({
 
 const mainDiv = "flex w-full items-center justify-between gap-3";
 const textLeft = "text-sm font-medium text-gray-shade-14";
-const textRight = "text-sm font-medium text-white flex items-center gap-1";
+const textRight =
+  "text-sm flex-shrink-0 font-medium text-white flex items-center gap-1";

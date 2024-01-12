@@ -5,7 +5,12 @@ import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { useLaunchpad } from "@/hooks/launchpad";
 import { PresaleDataType } from "../_components/launchpad-card-data";
-import { PresaleData, ReferralData } from "./_components";
+import {
+  PresaleData,
+  PresaleStatus,
+  ReferralData,
+  ReferralsProgram,
+} from "./_components";
 import { formatIPFSUrl } from "@/utils/format.address";
 import axios from "axios";
 
@@ -52,9 +57,9 @@ const LaunchpadListDetails: NextPageWithLayout = () => {
         <PresaleData {...launchpadData} {...metaData} />
         <ReferralData {...launchpadData} />
       </div>
-      <div className="flex w-[312px] flex-shrink-0 flex-col gap-4 fsm:flex-row flg:flex-col">
-        <div className="h-[202px] w-full rounded-xl bg-black-shade-9 p-4 fxm:p-6"></div>
-        <div className="h-[104px] w-full rounded-xl bg-black-shade-9 p-4 fxm:p-6"></div>
+      <div className="flex w-full flex-shrink-0 flex-col gap-4 fsm:flex-row flg:w-[312px] flg:flex-col">
+        <ReferralsProgram {...launchpadData} />
+        <PresaleStatus {...launchpadData} />
       </div>
     </div>
   ) : (
