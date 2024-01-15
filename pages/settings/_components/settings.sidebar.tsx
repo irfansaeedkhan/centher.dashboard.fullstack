@@ -1,9 +1,10 @@
 import React from "react";
-import clsx from "clsx";
 import Link from "next/link";
+import clsx from "clsx";
 import { useRouter } from "next/router";
 import useUser from "@/hooks/use.user";
 import SettingSidebarSkeleton from "@/components/loading.skeletons/setting.sidebar.skeleton";
+import { BackButton } from "@/components/button/back-button";
 import { SettingsSidebarItem } from "./settings.sidebar.data";
 
 interface Props {
@@ -16,6 +17,7 @@ const SettingsSidebar: React.FC<Props> = ({ sidebarData }) => {
 
   return (
     <div className="w-[260px] flex-shrink-0">
+      <BackButton />
       <h6 className="mb-5 text-xl font-semibold leading-7 text-white flg:mb-10">
         Settings
       </h6>

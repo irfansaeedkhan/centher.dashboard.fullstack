@@ -20,7 +20,8 @@ import { PostModal } from "@/components/feed.components/create.post/post.modal";
 import { ArchivedPost, CompletedPost, Post } from "@/models/post";
 import { customLog } from "@/utils/custom.log";
 import { AppRoutes } from "@/constants/app.routes";
-import { BackButton, NoPostMessage } from "./_components";
+import { BackButton } from "@/components/button/back-button";
+import { NoPostMessage } from "./_components";
 
 const SinglePostPage: NextPageWithLayout = () => {
   const { user: loggedInUser } = useUser();
@@ -132,8 +133,7 @@ const SinglePostPage: NextPageWithLayout = () => {
 
   return (
     <>
-      <BackButton className="mb-3" />
-
+      <BackButton />
       {postLoading === "loaded" && (
         <>
           {firstPost?.status === "complete" && (
