@@ -1,10 +1,8 @@
 import { useState } from "react";
-
 import useUser from "@/hooks/use.user";
-
 import Button from "@/components/button";
 import ConnectWalletModal from "@/components/modal/connect-wallet-modal";
-import { WalletEnum, useWallet } from "@/web3/hooks/use.wallet";
+import { WalletEnum } from "@/web3/hooks/use.wallet";
 
 interface ConnectWalletProps {
   className?: string;
@@ -33,16 +31,15 @@ export const ConnectWalletComp: React.FC<ConnectWalletProps> = ({
         }}
         className={className}
       />
-      {connectWalletModal && (
-        <ConnectWalletModal
-          loggedInUser={loggedInUser}
-          setConnectWalletModal={setConnectWalletModal}
-          notloginCheck={notloginCheck}
-          connectWallet={connectWallet}
-          connectedAddress={connectedAddress}
-          disconnectWallet={disconnectWallet}
-        />
-      )}
+      <ConnectWalletModal
+        loggedInUser={loggedInUser}
+        onClose={() => setConnectWalletModal(false)}
+        open={connectWalletModal}
+        notloginCheck={notloginCheck}
+        connectWallet={connectWallet}
+        connectedAddress={connectedAddress}
+        disconnectWallet={disconnectWallet}
+      />
     </>
   );
 };

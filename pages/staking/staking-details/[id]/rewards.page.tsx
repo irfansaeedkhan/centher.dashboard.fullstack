@@ -18,18 +18,16 @@ import {
   GetClaimedRewardsInput,
   RewardsStat,
 } from "@/staking/types/rewards.interface";
+import ConnectWalletModal from "@/components/modal/connect-wallet-modal";
 import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
 import { eqAddress } from "@/live/utils/address.utils";
 import { useWallet } from "@/web3/hooks/use.wallet";
-import { CustomNewModal } from "@/components/modal/custom.new.modal";
-import { MetamaskIcon2 } from "@/assets/svgs";
 import RewardsTable from "./_components/rewards-table";
 import { ListCardDataOBj } from "../../_components/list-card-data";
 import UnstakeModal from "./_components/unstake-modal";
 import SuccessModalContent from "./_components/success-modal-content";
 import FailedModalContent from "./_components/failed-modal-content";
 import StakingMainWrapper from "../../_components/staking-main-wrapper";
-import ConnectWalletModal from "@/components/modal/connect-wallet-modal";
 
 enum ModalType {
   cancelStakingModal = "cancelStakingModal",
@@ -59,7 +57,6 @@ const ClaimRewards: NextPageWithLayout = () => {
   const [pageSize, setPageSize] = useState("10");
   const [rewards, setRewards] = useState<ClaimedRewards[]>([]);
   const [cancelErrors, setCancelErrors] = useState("");
-  const [cancelAmount, setCancelAmount] = useState("0");
   const [isLoading, setIsLoading] = useState(true);
   const [claimInProcess, setClaimInProcess] = useState(false);
   const [cancelInProcess, setCancelInProcess] = useState(false);
@@ -370,15 +367,15 @@ const ClaimRewards: NextPageWithLayout = () => {
           {ModalModel.content}
         </CustomModal>
       )}
-      {connectWalletModal && (
-        <ConnectWalletModal
-          setConnectWalletModal={setConnectWalletModal}
-          loggedInUser={user}
-          connectWallet={connectWallet}
-          connectedAddress={connectedAddress}
-          disconnectWallet={disconnectWallet}
-        />
-      )}
+
+      <ConnectWalletModal
+        onClose={() => setConnectWalletModal(false)}
+        open={connectWalletModal}
+        loggedInUser={user}
+        connectWallet={connectWallet}
+        connectedAddress={connectedAddress}
+        disconnectWallet={disconnectWallet}
+      />
     </>
   );
 };
