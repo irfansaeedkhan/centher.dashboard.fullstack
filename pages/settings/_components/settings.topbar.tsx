@@ -13,10 +13,9 @@ const SettingsTopBar: React.FC<Props> = ({ sidebarData }) => {
   const router = useRouter();
 
   return (
-    <div className="scrollSetLight2 flex h-[66px] w-full max-w-[675px] flex-shrink-0 gap-4 overflow-x-auto overflow-y-hidden">
-      <span className="h-[54px] flex-shrink-0">
-        <BackButton />
-      </span>
+    <div className="scrollSetLight2 flex w-full max-w-[675px] flex-shrink-0 items-center gap-2 overflow-x-auto py-1.5">
+      <BackButton svgClassName="size-10" />
+
       {sidebarData.map((item) => (
         <Link
           href={item.link}
