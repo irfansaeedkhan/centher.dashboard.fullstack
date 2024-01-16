@@ -71,7 +71,7 @@ export const PresaleData: React.FC<PresaleDataProps> = ({
         <div className={mainDiv}>
           <div className={textLeft}>Soft cap</div>
           <div className={textRight}>
-            {normalizeValue(formatUnits(maxTokensToSell, 18))}
+            {normalizeValue(formatUnits(minTokensToSell, 18))}
           </div>
         </div>
         <div className={mainDiv}>
@@ -95,16 +95,17 @@ export const PresaleData: React.FC<PresaleDataProps> = ({
           </div>
         </div>
         <div className={mainDiv}>
-          <div className={textLeft}>Liquidity lockup time</div>
+          <div className={textLeft}>Vesting Period</div>
           <div className={textRight}>
             {roundInfos[0].lockMonths}{" "}
             {roundInfos[0].lockMonths === "1" ? "Month" : "Months"}
           </div>
         </div>
         <div className={mainDiv}>
-          <div className={textLeft}>Listing on</div>
-          <div className={clsx(textRight, "text-gradient-1 cursor-pointer")}>
-            {website}
+          <div className={textLeft}>Lock Period</div>
+          <div className={textRight}>
+            {roundInfos[0].lockMonths}{" "}
+            {roundInfos[0].lockMonths === "1" ? "Month" : "Months"}
           </div>
         </div>
       </div>
