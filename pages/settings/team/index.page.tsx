@@ -72,7 +72,6 @@ const TeamSettings: NextPageWithLayout = () => {
   return (
     <>
       <div className="w-full max-w-[640px] px-3 fsm:px-5 fmd:px-0">
-        <BackButton />
         <h6 className="mb-10 text-xl font-semibold leading-7 text-white">
           Team
         </h6>
