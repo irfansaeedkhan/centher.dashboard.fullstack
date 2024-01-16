@@ -12,12 +12,14 @@ import Button from "../button";
 import HeaderProfile from "./header.profile";
 import SearchBar from "./search";
 import { useWallet } from "@/web3/hooks/use.wallet";
+import ConnectWalletModal from "../modal/connect-wallet-modal";
 
 const Header = () => {
   const { width } = useWindowSize();
   const [showBuyCitizenshipModal, setShowBuyCitizenshipModal] = useState(false);
   const { user, isLoading: isUserLoading } = useUser();
-  const { connectWallet, connectedAddress } = useWallet();
+  const [connectWalletModal, setConnectWalletModal] = useState(false);
+  const { connectedAddress, disconnectWallet, connectWallet } = useWallet();
   const [openModal, setOpenModal] = useState(false);
   const modalOpenerRef = React.useRef<HTMLDivElement>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -105,6 +107,7 @@ const Header = () => {
 
               {openModal && (
                 <HeaderProfile
+                  onOpen={() => setConnectWalletModal(true)}
                   onClickOutside={() => setOpenModal(false)}
                   modalOpenerRef={modalOpenerRef}
                   openBuyCitizenshipModal={openBuyCitizenshipModal}
@@ -136,6 +139,16 @@ const Header = () => {
           onClickClose={() => setShowBuyCitizenshipModal(false)}
         />
       )}
+      <ConnectWalletModal
+        onClose={() => setConnectWalletModal(false)}
+        open={connectWalletModal}
+        loggedInUser={user}
+        notloginCheck={true}
+        connectWallet={connectWallet}
+        connectedAddress={connectedAddress}
+        disconnectWallet={disconnectWallet}
+        authType="login"
+      />
     </div>
   );
 };

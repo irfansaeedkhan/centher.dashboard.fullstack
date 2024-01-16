@@ -121,9 +121,13 @@ export const useWalletService = () => {
       logger(error, "disconnect wallet");
     }
   }
-  async function connect(): Promise<any> {
+  async function connect(authType: "login" | "register"): Promise<any> {
+    let url = `${wallet_url}/app/signin?apikey=${api_key}`;
+    if (authType === "register") {
+      url = `${wallet_url}/app/signup?apikey=${api_key}`;
+    }
     globalPromise.current = new Promise((resolve, reject) => {
-      openWallet(`${wallet_url}/app?apikey=${api_key}`);
+      openWallet(url);
       globalPromiseResolve = resolve;
       globalPromiseReject = reject;
     });
