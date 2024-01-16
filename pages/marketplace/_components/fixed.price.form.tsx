@@ -386,6 +386,7 @@ const FixedPriceForm = ({
           connectWallet={connectWallet}
           connectedAddress={connectedAddress}
           disconnectWallet={disconnectWallet}
+          authType="login"
         />
       ) : (
         <div className="mt-2 flex flex-col items-center gap-2 fsm:flex-row">

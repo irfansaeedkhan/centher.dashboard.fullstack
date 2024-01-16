@@ -209,15 +209,15 @@ const StakingDetails: NextPageWithLayout = () => {
             </div>
           </div>
         </div>
-        {connectWalletModal && (
-          <ConnectWalletModal
-            setConnectWalletModal={setConnectWalletModal}
-            loggedInUser={user}
-            connectWallet={connectWallet}
-            connectedAddress={connectedAddress}
-            disconnectWallet={disconnectWallet}
-          />
-        )}
+        <ConnectWalletModal
+          onClose={() => setConnectWalletModal(false)}
+          open={connectWalletModal}
+          loggedInUser={user}
+          connectWallet={connectWallet}
+          connectedAddress={connectedAddress}
+          disconnectWallet={disconnectWallet}
+          authType="login"
+        />
       </div>
     </>
   );

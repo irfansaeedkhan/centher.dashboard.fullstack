@@ -271,6 +271,7 @@ export const FixedPriceNFTBuyerDescription: React.FC<Props> = ({
             connectWallet={connectWallet}
             connectedAddress={connectedAddress}
             disconnectWallet={disconnectWallet}
+            authType="login"
             className="w-full rounded-[14px]"
           />
         )}

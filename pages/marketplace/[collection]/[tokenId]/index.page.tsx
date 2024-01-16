@@ -3,11 +3,11 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import { NextPageWithLayout } from "@/pages/_app.page";
-import { ArrowLeftSimpleIcon } from "@/assets/svgs";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { getSingleNFTPageData } from "@/lib/get-single-nft-page-data";
 import { CFSNFTForPage } from "@/lib/get-single-nft-page-data/types";
 import useUser from "@/hooks/use.user";
+import { BackButton } from "@/components/button/back-button";
 import { NFTLeftSideComponent, NFTRightSideComponent } from "../../_components";
 
 const NFT: NextPageWithLayout = () => {
@@ -44,12 +44,7 @@ const NFT: NextPageWithLayout = () => {
         <title>{nft.ipfs_metadata.name}</title>
       </Head>
       <div className="w-full pb-16">
-        <button
-          className={`mb-8 flex h-12 w-12 items-center justify-center rounded-full bg-black-shade-10`}
-          onClick={() => router.back()}
-        >
-          <ArrowLeftSimpleIcon />
-        </button>
+        <BackButton />
         <div className="flex items-start gap-9 [@media(max-width:1279px)]:flex-col">
           <NFTLeftSideComponent nft={nft} />
           <NFTRightSideComponent

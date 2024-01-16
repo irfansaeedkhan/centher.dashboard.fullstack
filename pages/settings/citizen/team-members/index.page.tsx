@@ -7,6 +7,7 @@ import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import Button from "@/components/button";
 import { AppRoutes } from "@/constants/app.routes";
 import cn from "@/utils/cn";
+import { BackButton } from "@/components/button/back-button";
 import { SettingsPagesWrapper } from "../../_components";
 import {
   TeamMembersJoinedTab,
@@ -29,7 +30,7 @@ const TeamMembersSettings: NextPageWithLayout = () => {
   }, [router.query.tab, tab]);
 
   return (
-    <div className="w-full max-w-[640px] px-3 fsm:px-5 fmd:px-0">
+    <div>
       <h6 className="mb-10 text-xl font-semibold leading-7 text-white">
         Team Members
       </h6>

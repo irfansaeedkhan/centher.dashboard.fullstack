@@ -1,9 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ethers } from "ethers";
-import { JsonRpcSigner, TransactionReceipt } from "@ethersproject/providers";
+import {
+  JsonRpcProvider,
+  JsonRpcSigner,
+  TransactionReceipt,
+} from "@ethersproject/providers";
 import { useWalletService } from "./use.wallet.service";
 
 import { useWalletConnectService } from "./use.walletconnect";
+import { BlockchainConfig } from "../blockchain/config";
 
 export enum WalletEnum {
   METAMASK = "METAMASK",
@@ -18,8 +23,16 @@ export const useWallet = () => {
   const { open, walletProvider, disconnectFromWalletConnect, walletAccount } =
     useWalletConnectService();
 
-  const { address, connect, disconnect, sign, signer, send, showWallet } =
-    useWalletService();
+  const {
+    address,
+    connect,
+    disconnect,
+    sign,
+    signer,
+    send,
+    showWallet,
+    provider,
+  } = useWalletService();
   const [connectedAddress, setConnectedAddress] = useState<
     string | null | undefined
   >(null);
@@ -80,6 +93,10 @@ export const useWallet = () => {
     return null;
   }, [walletProvider, walletConnectSigner, signer]);
 
+  const getProvider = (): JsonRpcProvider => {
+    return new ethers.providers.JsonRpcProvider(BlockchainConfig.rpcProvider);
+  };
+
   const setWalletType = (wallet: WalletEnum) => {
     localStorage.setItem(CONNECTED_WALLET_KEY, wallet);
   };
@@ -97,11 +114,12 @@ export const useWallet = () => {
 
   const connectWallet = async (
     wallet: WalletEnum = WalletEnum.METAMASK,
+    authType: "login" | "register" = "login",
     showError: boolean = true
   ): Promise<void> => {
     if (wallet == WalletEnum.WALLET_SERVICE) {
       setWalletType(wallet);
-      await connect();
+      await connect(authType);
       localStorage.setItem(IS_WALLET_CONNECTED, "true");
     } else if (wallet == WalletEnum.WALLET_CONNECT) {
       setWalletType(wallet);
@@ -173,5 +191,6 @@ export const useWallet = () => {
     getSigner,
     disconnectWallet,
     openWallet,
+    getProvider,
   };
 };

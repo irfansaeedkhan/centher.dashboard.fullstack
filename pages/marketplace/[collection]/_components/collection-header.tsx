@@ -24,6 +24,7 @@ import {
   CopyIcon,
   TwitterSvg,
 } from "@/assets/svgs";
+import { BackButton } from "@/components/button/back-button";
 
 const PLACEHOLDER_SQUARE_IMAGE = "/images/placeholder-square.svg";
 const PLACEHOLDER_RECTANGLE_IMAGE = "/images/placeholder-rectangle.svg";
@@ -104,6 +105,7 @@ export const CollectionHeader: React.FC<Props> = ({
 
   return (
     <>
+      <BackButton />
       {(loadingCollection === "loading" || loadingCollection === "idle") && (
         <NftCollectionProfileSkeleton />
       )}
