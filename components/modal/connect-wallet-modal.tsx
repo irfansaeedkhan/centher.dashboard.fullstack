@@ -1,7 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { IoClose } from "react-icons/io5";
-import { useOnClickOutside } from "usehooks-ts";
 import { LoggedInUser } from "@/models/user";
 import {
   GradientArrowOutline,
@@ -14,9 +13,14 @@ import ModalContainer from "./modal-container";
 interface Props {
   loggedInUser: LoggedInUser | undefined;
   notloginCheck?: boolean;
+  authType: "login" | "register";
   connectedAddress: string | null | undefined;
   disconnectWallet: () => void;
-  connectWallet: (wallet?: WalletEnum, showError?: boolean) => Promise<void>;
+  connectWallet: (
+    wallet?: WalletEnum,
+    authType?: "login" | "register",
+    showError?: boolean
+  ) => Promise<void>;
   onClose: () => void;
   open: boolean;
 }
@@ -29,7 +33,28 @@ const ConnectWalletModal: React.FC<Props> = ({
   connectWallet,
   onClose,
   open,
+  authType,
 }) => {
+  const [runningOnInjectedProvider, setRunningOnInjectedProvider] =
+    useState<boolean>(false);
+
+  useEffect(() => {
+    // solution is
+    // first check if app is running on mobile
+    // then check if window.ethereum is exist
+    // if true , it means the app is running on custom browser that window.ethereum is injected ( metamask browser)
+    const hasEthereum = window.ethereum;
+    if (
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent
+      )
+    ) {
+      setRunningOnInjectedProvider(!!hasEthereum);
+    } else {
+      setRunningOnInjectedProvider(false);
+    }
+  }, []);
+
   useEffect(() => {
     if (connectedAddress && !notloginCheck) {
       if (loggedInUser?._id.toLowerCase() !== connectedAddress?.toLowerCase()) {
@@ -41,14 +66,14 @@ const ConnectWalletModal: React.FC<Props> = ({
 
   const connectionWallet = async (wallet: WalletEnum) => {
     if (notloginCheck) {
-      await connectWallet(wallet);
+      await connectWallet(wallet, authType);
     } else {
       if (!loggedInUser) {
         toast.error("Please login to buy this nft");
         onClose();
         return;
       }
-      await connectWallet(wallet);
+      await connectWallet(wallet, authType);
     }
     onClose();
   };
@@ -95,24 +120,26 @@ const ConnectWalletModal: React.FC<Props> = ({
             </span>
           </div>
         </div>
-        <div className="gradient-border-3 w-full max-w-[400px] !rounded-xl p-[1px]">
-          <div
-            onClick={async () => {
-              connectionWallet(WalletEnum.WALLET_SERVICE);
-            }}
-            className="flex w-full cursor-pointer items-center justify-between gap-10 !rounded-xl bg-popup-0 px-5 py-3"
-          >
-            <div className="flex items-center gap-3 fsm:gap-6">
-              <CentherIcon />
-              <h3 className="text-sm font-semibold text-white fmd:text-base">
-                Wallet for dummies
-              </h3>
+        {!runningOnInjectedProvider ? (
+          <div className="gradient-border-3 w-full max-w-[400px] !rounded-xl p-[1px]">
+            <div
+              onClick={async () => {
+                connectionWallet(WalletEnum.WALLET_SERVICE);
+              }}
+              className="flex w-full cursor-pointer items-center justify-between gap-10 !rounded-xl bg-popup-0 px-5 py-3"
+            >
+              <div className="flex items-center gap-3 fsm:gap-6">
+                <CentherIcon />
+                <h3 className="text-sm font-semibold text-white fmd:text-base">
+                  Wallet for Dummies
+                </h3>
+              </div>
+              <span>
+                <GradientArrowOutline />
+              </span>
             </div>
-            <span>
-              <GradientArrowOutline />
-            </span>
           </div>
-        </div>
+        ) : null}
       </div>
     </ModalContainer>
   );

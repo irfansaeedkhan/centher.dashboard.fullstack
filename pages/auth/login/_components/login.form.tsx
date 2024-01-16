@@ -124,6 +124,7 @@ export const LoginForm: React.FC = () => {
             connectWallet={connectWallet}
             connectedAddress={connectedAddress}
             disconnectWallet={disconnectWallet}
+            authType="login"
             className="flex h-11 w-full items-center justify-center text-[14px]"
             notloginCheck={true}
           />
