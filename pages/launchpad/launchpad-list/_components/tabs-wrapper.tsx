@@ -17,21 +17,10 @@ const sortOptions = [
     value: "2",
   },
 ];
-const FilterOptions = [
-  {
-    label: "APY",
-    value: "1",
-  },
-  {
-    label: "A-Z",
-    value: "2",
-  },
-];
 
 export const TabsWrapper: React.FC<Props> = ({ children }) => {
   const router = useRouter();
   const [sortItems, setSortItems] = useState<string>("1");
-  const [filterItems, setFilterItems] = useState<string>("1");
 
   return (
     <div>

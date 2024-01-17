@@ -1,5 +1,5 @@
 import React from "react";
-import { PresaleDataType } from "../../_components/launchpad-card-data";
+import { PresaleDataType } from "../../../_components/launchpad-card-data";
 import clsx from "clsx";
 import { sliceAccountAddress } from "@/utils/user.helpers";
 import { copyText } from "@/utils/copy.text";

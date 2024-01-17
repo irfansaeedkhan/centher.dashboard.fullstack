@@ -1,5 +1,5 @@
 import React from "react";
-import { PresaleDataType } from "../../_components/launchpad-card-data";
+import { PresaleDataType } from "../../../_components/launchpad-card-data";
 import Countdown, { CountdownRendererFn } from "react-countdown";
 import clsx from "clsx";
 

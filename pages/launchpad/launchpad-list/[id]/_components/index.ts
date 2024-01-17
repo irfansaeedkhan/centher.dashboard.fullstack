@@ -1,4 +1,3 @@
-export { PresaleData } from "./presale-data";
-export { ReferralData } from "./referral-data";
-export { ReferralsProgram } from "./referrals-program";
-export { PresaleStatus } from "./presale-status";
+export { DetailsTabsWrapper } from "./details-tabs-wrapper";
+export { LaunchpadOverview } from "./launchpad-overview/launchpad-overview";
+export { BookingList } from "./booking-list/booking-list";

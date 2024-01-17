@@ -108,7 +108,7 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
           <div className="flex w-full items-center justify-between gap-3">
             <p className="text-sm text-gray-shade-14">Rounds:</p>
             <p className="flex items-center gap-1 text-sm font-medium text-white">
-              <div
+              <span
                 className={clsx(
                   currentRound === 1 ? gradientRoundMain : simpleRoundMain
                 )}
@@ -120,8 +120,8 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
                 >
                   1
                 </span>
-              </div>
-              <div
+              </span>
+              <span
                 className={clsx(
                   currentRound === 2 ? gradientRoundMain : simpleRoundMain
                 )}
@@ -133,8 +133,8 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
                 >
                   2
                 </span>
-              </div>
-              <div
+              </span>
+              <span
                 className={clsx(
                   currentRound === 3 ? gradientRoundMain : simpleRoundMain
                 )}
@@ -146,7 +146,7 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
                 >
                   3
                 </span>
-              </div>
+              </span>
             </p>
           </div>
         </div>
@@ -177,13 +177,9 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
         </div>
         <div
           onClick={() => {
-            router.push({
-              pathname:
-                AppRoutes.launchpad.launchpad_list.launchpad_list_details,
-              query: {
-                id: id,
-              },
-            });
+            router.push(
+              `${AppRoutes.launchpad.launchpad_list.index}/${id}?list_type=launchpad_overview`
+            );
           }}
           className="gradient-borders-2 relative flex h-10 w-full cursor-pointer items-center justify-center rounded-3xl p-px"
         >

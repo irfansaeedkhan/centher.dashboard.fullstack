@@ -1,22 +1,18 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import axios from "axios";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { useLaunchpad } from "@/hooks/launchpad";
-import { PresaleDataType } from "../_components/launchpad-card-data";
-import {
-  PresaleData,
-  PresaleStatus,
-  ReferralData,
-  ReferralsProgram,
-} from "./_components";
 import { formatIPFSUrl } from "@/utils/format.address";
-import axios from "axios";
+import { DetailsTabsWrapper } from "./_components/details-tabs-wrapper";
+import { PresaleDataType } from "../_components/launchpad-card-data";
+import { BookingList, LaunchpadOverview } from "./_components";
 
 const LaunchpadListDetails: NextPageWithLayout = () => {
   const router = useRouter();
-  const { id } = router.query;
+  const { id, list_type } = router.query;
   const { sdk } = useLaunchpad();
   const [loading, setLoading] = useState<boolean>(false);
   const [launchpadData, setLaunchpadData] = useState<PresaleDataType>();
@@ -52,16 +48,13 @@ const LaunchpadListDetails: NextPageWithLayout = () => {
   }, [sdk, id]);
 
   return !loading && launchpadData && metaData ? (
-    <div className="flex flex-col gap-6 flg:flex-row">
-      <div className="flex flex-grow flex-col gap-4">
-        <PresaleData {...launchpadData} {...metaData} />
-        <ReferralData {...launchpadData} />
-      </div>
-      <div className="flex w-full flex-shrink-0 flex-col gap-4 fsm:flex-row flg:w-[312px] flg:flex-col">
-        <ReferralsProgram {...launchpadData} />
-        <PresaleStatus {...launchpadData} />
-      </div>
-    </div>
+    list_type === "launchpad_overview" ? (
+      <LaunchpadOverview launchpadData={launchpadData} metaData={metaData} />
+    ) : list_type === "booking_list" ? (
+      <BookingList {...launchpadData} />
+    ) : list_type === "referral_rewards" ? (
+      <LaunchpadOverview launchpadData={launchpadData} metaData={metaData} />
+    ) : null
   ) : (
     <div className="flex h-[calc(100vh-60px)] w-full items-center justify-center">
       <Image
@@ -77,9 +70,7 @@ const LaunchpadListDetails: NextPageWithLayout = () => {
 
 LaunchpadListDetails.getLayout = (page) => (
   <AllPagesWrapper pageTitle="Launchpad List">
-    <div className="mx-auto min-h-screen w-full max-w-[1112px] bg-black-shade-3 pb-10 font-monto">
-      {page}
-    </div>
+    <DetailsTabsWrapper>{page}</DetailsTabsWrapper>
   </AllPagesWrapper>
 );
 
