@@ -61,7 +61,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
     environment:
-      name: play-kub
+      name: playground-kub
       url: https://play-kubapp.centher.io
 
     steps:
