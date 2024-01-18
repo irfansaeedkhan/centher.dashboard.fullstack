@@ -143,17 +143,17 @@ jobs:
       - name: Delete existing image pull secret
         run: |
           export KUBECONFIG=${HOME}/.kube/config
-          kubectl delete secret play-kub-app-centh-pull-secret
+          kubectl delete secret stag-kub-app-centh-pull-secret
 
       - name: Create image pull secret from dockerhub
         run: |
-          kubectl create secret docker-registry play-kub-app-centh-pull-secret \
+          kubectl create secret docker-registry stag-kub-app-centh-pull-secret \
             --docker-username=${{ secrets.DOCKERHUB_USERNAME_STAGING }} \
             --docker-password=${{ secrets.DOCKERHUB_TOKEN_STAGING }}
 
       - name: Changed tag name
         run: |
-          sed -i "s#{IMAGE_TAG}#${{ steps.image-name.outputs.tagged_image }}#g" ./k8s/play-kub/app-centher-io-deployment.yml
+          sed -i "s#{IMAGE_TAG}#${{ steps.image-name.outputs.tagged_image }}#g" ./k8s/stag-kub/app-centher-io-deployment.yml
 
       - name: Deploy to play-kub kubernetes cluster
         run: |
