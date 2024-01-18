@@ -155,12 +155,12 @@ jobs:
         run: |
           sed -i "s#{IMAGE_TAG}#${{ steps.image-name.outputs.tagged_image }}#g" ./k8s/stag-kub/app-centher-io-deployment.yml
 
-      - name: Deploy to play-kub kubernetes cluster
+      - name: Deploy to stag-kub kubernetes cluster
         run: |
           export KUBECONFIG=${HOME}/.kube/config
           kubectl get deployments
-          kubectl apply -f ./k8s/play-kub/app-centher-io-deployment.yml
-          kubectl apply -f ./k8s/play-kub/app-centher-io-service.yml
+          kubectl apply -f ./k8s/stag-kub/app-centher-io-deployment.yml
+          kubectl apply -f ./k8s/stag-kub/app-centher-io-service.yml
 
       - name: Wait for deployment to complete
         run: kubectl rollout status deploy/app-centher-io-deployment -n centher-io-nsp --timeout=300s
