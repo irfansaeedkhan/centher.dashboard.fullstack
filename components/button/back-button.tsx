@@ -16,12 +16,7 @@ export const BackButton: React.FC<BackButtonProps> = ({
 
   return (
     <button onClick={router.back} className={cn(className)}>
-      <BackButtonAnimated
-        className={cn(
-          "transform opacity-60 duration-[800ms] ease-in-out hover:opacity-100",
-          svgClassName
-        )}
-      />
+      <BackButtonAnimated className={cn(svgClassName)} />
     </button>
   );
 };
