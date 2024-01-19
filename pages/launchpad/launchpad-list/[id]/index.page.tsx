@@ -8,7 +8,7 @@ import { useLaunchpad } from "@/hooks/launchpad";
 import { formatIPFSUrl } from "@/utils/format.address";
 import { DetailsTabsWrapper } from "./_components/details-tabs-wrapper";
 import { PresaleDataType } from "../_components/launchpad-card-data";
-import { BookingList, LaunchpadOverview } from "./_components";
+import { BookingList, LaunchpadOverview, ReferralRewards } from "./_components";
 
 const LaunchpadListDetails: NextPageWithLayout = () => {
   const router = useRouter();
@@ -53,7 +53,7 @@ const LaunchpadListDetails: NextPageWithLayout = () => {
     ) : list_type === "booking_list" ? (
       <BookingList {...launchpadData} />
     ) : list_type === "referral_rewards" ? (
-      <LaunchpadOverview launchpadData={launchpadData} metaData={metaData} />
+      <ReferralRewards />
     ) : null
   ) : (
     <div className="flex h-[calc(100vh-60px)] w-full items-center justify-center">

@@ -77,10 +77,13 @@ module.exports = {
         "yellow-shade": {
           theme: "#FEBF32",
           1: "#FED365",
+          2: "#FFB90599",
+          3: "#FFD505",
         },
         red: {
           theme: "#E34048",
           "shade-1": "#FF424D",
+          "shade-2": "#FF3628",
         },
         danger: "#EA3943",
         "gray-shade": {
@@ -140,6 +143,7 @@ module.exports = {
         },
         "green-shade": {
           1: "#76E268",
+          2: "#4AFF89",
         },
       },
     },

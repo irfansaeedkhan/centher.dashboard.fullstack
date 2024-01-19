@@ -1,8 +1,11 @@
 import React from "react";
-import { PresaleData } from "./presale-data";
-import { ReferralData } from "./referral-data";
-import { ReferralsProgram } from "./referrals-program";
-import { PresaleStatus } from "./presale-status";
+import {
+  PresaleData,
+  ReferralsProgram,
+  PresaleStatus,
+  RoundsBooking,
+  BuyToken,
+} from "./";
 import { PresaleDataType } from "../../../_components/launchpad-card-data";
 
 interface Props {
@@ -18,11 +21,12 @@ export const LaunchpadOverview: React.FC<Props> = ({
     <div className="flex flex-col gap-6 flg:flex-row">
       <div className="flex flex-grow flex-col gap-4">
         <PresaleData {...launchpadData} {...metaData} />
-        <ReferralData {...launchpadData} />
+        <BuyToken />
       </div>
-      <div className="flex w-full flex-shrink-0 flex-col gap-4 fsm:flex-row flg:w-[312px] flg:flex-col">
-        <ReferralsProgram {...launchpadData} />
+      <div className="grid-col-1 grid w-full flex-shrink-0 flex-col gap-4 fsm:flex-row fmd:grid-cols-2 flg:flex flg:w-[360px] flg:flex-col">
+        <RoundsBooking {...launchpadData} />
         <PresaleStatus {...launchpadData} />
+        <ReferralsProgram {...launchpadData} />
       </div>
     </div>
   );

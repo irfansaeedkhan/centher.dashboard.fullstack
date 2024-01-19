@@ -186,6 +186,8 @@ export { default as ArrowDiagonal } from "./arrow-diagonal.svg";
 export { default as TitleEditedIcon } from "./title.edited.svg";
 export { default as NewWalletIcon } from "./new-wallet-icon.svg";
 export { BackButtonAnimated } from "./back-button-animation";
+export { default as CrownIcon } from "./crown-icon.svg";
+export { default as GiftIcon } from "./gift-icon.svg";
 
 export const CentherIcon: React.FC<IconProps> = (props) => {
   return (

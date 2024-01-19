@@ -3,19 +3,19 @@ import { PresaleDataType } from "../../../_components/launchpad-card-data";
 
 export const PresaleStatus: React.FC<PresaleDataType> = ({}) => {
   return (
-    <div className="h-auto w-full rounded-xl bg-black-shade-9 p-4 fxm:p-6">
+    <div className="col-span-1 h-auto w-full rounded-xl bg-black-shade-9 p-4 fxm:p-6">
       <div className="flex flex-col gap-4">
         <div className={mainDiv}>
           <div className={textLeft}>Presale Status</div>
-          <div className={textRight}></div>
+          <div className={textRight}>Live</div>
         </div>
         <div className={mainDiv}>
           <div className={textLeft}>Minimum Buy</div>
-          <div className={textRight}></div>
+          <div className={textRight}>0 DXC</div>
         </div>
         <div className={mainDiv}>
           <div className={textLeft}>Maximum Buy</div>
-          <div className={textRight}></div>
+          <div className={textRight}>0 DXC</div>
         </div>
       </div>
     </div>

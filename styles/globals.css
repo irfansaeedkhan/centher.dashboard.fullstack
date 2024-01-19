@@ -1025,6 +1025,28 @@
     background: linear-gradient(180deg, #fff 0%, #ccc 100%);
     backdrop-filter: blur(20px);
   }
+  .staking-text-gradient-staked {
+    background: linear-gradient(
+      91deg,
+      #76e268 -15.45%,
+      #72bff6 50.29%,
+      #5691ff 99.04%
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .staking-text-gradient-unstaked {
+    background: linear-gradient(
+      90deg,
+      #ff4e4e 0%,
+      #ff8e26 51.09%,
+      #deff15 102.17%
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
 }
 
 @layer utilities {
