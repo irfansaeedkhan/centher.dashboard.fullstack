@@ -143,7 +143,12 @@ jobs:
       - name: Delete existing image pull secret
         run: |
           export KUBECONFIG=${HOME}/.kube/config
-          kubectl delete secret stag-kub-app-centh-pull-secret
+          if kubectl get secret stag-kub-app-centh-pull-secret &> /dev/null; then
+            kubectl delete secret stag-kub-app-centh-pull-secret
+            echo "Deleted image pull secret"
+          else
+            echo "Image pull secret does not exist. Nothing to delete."
+          fi
 
       - name: Create image pull secret from dockerhub
         run: |
