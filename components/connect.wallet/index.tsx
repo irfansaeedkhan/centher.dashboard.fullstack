@@ -7,9 +7,14 @@ import { WalletEnum } from "@/web3/hooks/use.wallet";
 interface ConnectWalletProps {
   className?: string;
   notloginCheck?: boolean;
+  authType: "login" | "register";
   connectedAddress: string | null | undefined;
   disconnectWallet: () => void;
-  connectWallet: (wallet?: WalletEnum, showError?: boolean) => Promise<void>;
+  connectWallet: (
+    wallet?: WalletEnum,
+    authType?: "login" | "register",
+    showError?: boolean
+  ) => Promise<void>;
 }
 
 export const ConnectWalletComp: React.FC<ConnectWalletProps> = ({
@@ -17,6 +22,7 @@ export const ConnectWalletComp: React.FC<ConnectWalletProps> = ({
   notloginCheck,
   disconnectWallet,
   connectWallet,
+  authType,
   connectedAddress,
 }) => {
   const { user: loggedInUser } = useUser();
@@ -37,6 +43,7 @@ export const ConnectWalletComp: React.FC<ConnectWalletProps> = ({
         open={connectWalletModal}
         notloginCheck={notloginCheck}
         connectWallet={connectWallet}
+        authType={authType}
         connectedAddress={connectedAddress}
         disconnectWallet={disconnectWallet}
       />

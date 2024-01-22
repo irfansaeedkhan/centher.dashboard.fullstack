@@ -184,6 +184,7 @@ export const RegisterForm: React.FC = () => {
             disconnectWallet={disconnectWallet}
             className="flex h-11 w-full items-center justify-center rounded-xl text-[14px]"
             notloginCheck={true}
+            authType="register"
           />
         )}
 

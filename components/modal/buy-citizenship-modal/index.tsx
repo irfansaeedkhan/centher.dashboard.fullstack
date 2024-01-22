@@ -241,6 +241,7 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
                       connectWallet={connectWallet}
                       connectedAddress={connectedAddress}
                       disconnectWallet={disconnectWallet}
+                      authType="login"
                       className="mx-auto mb-2 mt-6 w-[95%] py-3 text-sm"
                     />
                   ) : (

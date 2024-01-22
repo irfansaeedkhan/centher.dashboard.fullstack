@@ -5,14 +5,18 @@ import { BackButtonAnimated } from "@/assets/svgs";
 
 type BackButtonProps = {
   className?: string;
+  svgClassName?: string;
 };
 
-export const BackButton: React.FC<BackButtonProps> = ({ className }) => {
+export const BackButton: React.FC<BackButtonProps> = ({
+  className,
+  svgClassName,
+}) => {
   const router = useRouter();
 
   return (
     <button onClick={router.back} className={cn(className)}>
-      <BackButtonAnimated className="transform opacity-60 duration-[800ms] ease-in-out hover:opacity-100" />
+      <BackButtonAnimated className={cn(svgClassName)} />
     </button>
   );
 };

@@ -375,6 +375,7 @@ const ClaimRewards: NextPageWithLayout = () => {
         connectWallet={connectWallet}
         connectedAddress={connectedAddress}
         disconnectWallet={disconnectWallet}
+        authType="login"
       />
     </>
   );

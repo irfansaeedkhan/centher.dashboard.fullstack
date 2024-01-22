@@ -1866,6 +1866,7 @@ const CreateStaking: NextPageWithLayout = () => {
                   connectWallet={connectWallet}
                   connectedAddress={connectedAddress}
                   disconnectWallet={disconnectWallet}
+                  authType="login"
                   className="mx-auto mt-5 w-[45%] text-sm"
                 />
               ) : (
@@ -2347,6 +2348,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     connectWallet={connectWallet}
                     connectedAddress={connectedAddress}
                     disconnectWallet={disconnectWallet}
+                    authType="login"
                     className="mx-auto mt-5 w-[45%] text-sm"
                   />
                 </div>

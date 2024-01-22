@@ -216,6 +216,7 @@ const StakingDetails: NextPageWithLayout = () => {
           connectWallet={connectWallet}
           connectedAddress={connectedAddress}
           disconnectWallet={disconnectWallet}
+          authType="login"
         />
       </div>
     </>

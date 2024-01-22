@@ -147,6 +147,7 @@ const Header = () => {
         connectWallet={connectWallet}
         connectedAddress={connectedAddress}
         disconnectWallet={disconnectWallet}
+        authType="login"
       />
     </div>
   );

@@ -192,6 +192,7 @@ export const PurchaseCentherCard: React.FC<Props> = ({
         loggedInUser={loggedInUser}
         onClose={() => setConnectWalletModal(false)}
         open={connectWalletModal}
+        authType="login"
       />
     </div>
   );
