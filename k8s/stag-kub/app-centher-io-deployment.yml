@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-centher-io-deployment
+  namespace: centher-io-nsp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      serviceName: app-centher-io-service-name
+  template:
+    metadata:
+      labels:
+        serviceName: app-centher-io-service-name
+    spec:
+      containers:
+        - name: app-centher-io-container
+          image: {IMAGE_TAG}
+          ports:
+            - containerPort: 3000
+      imagePullSecrets:
+        - name: stag-kub-app-centh-pull-secret
