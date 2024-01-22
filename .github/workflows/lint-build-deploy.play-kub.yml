@@ -163,7 +163,6 @@ jobs:
       - name: Deploy to play-kub kubernetes cluster
         run: |
           export KUBECONFIG=${HOME}/.kube/config
-          kubectl get deployments
           kubectl apply -f ./k8s/play-kub/app-centher-io-deployment.yml
           kubectl apply -f ./k8s/play-kub/app-centher-io-service.yml
 
