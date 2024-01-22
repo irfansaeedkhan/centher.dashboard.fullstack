@@ -13,7 +13,7 @@ export const DetailsTabsWrapper: React.FC<Props> = ({ children }) => {
 
   return (
     <div className="mx-auto min-h-screen w-full max-w-[1112px] space-y-5 bg-black-shade-3 pb-10 font-monto">
-      <div className="scrollSetLight2 flex w-full max-w-[570px] flex-shrink-0 items-center gap-2.5 overflow-x-auto py-2">
+      <div className="scrollSetLight2 flex w-full max-w-[524px] flex-shrink-0 items-center gap-8 overflow-x-auto py-2">
         <BackButton />
         <div
           onClick={() => {
@@ -63,6 +63,6 @@ export const DetailsTabsWrapper: React.FC<Props> = ({ children }) => {
 };
 
 const defaultClass =
-  "w-fit flex-shrink-0 cursor-pointer px-4 py-1.5 text-xs leading-5 text-white fxm:text-sm fxm:leading-6";
+  "w-fit flex-shrink-0 cursor-pointer py-1.5 text-xs leading-5 text-white fxm:text-sm fxm:leading-6";
 
 const selectedClass = "myBox font-medium";
