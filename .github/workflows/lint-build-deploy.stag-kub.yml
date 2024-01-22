@@ -1,4 +1,4 @@
-name: Play-kub - Lint, Build & Deploy
+name: Stag-kub - Lint, Build & Deploy
 
 on:
   push:
@@ -163,7 +163,6 @@ jobs:
       - name: Deploy to stag-kub kubernetes cluster
         run: |
           export KUBECONFIG=${HOME}/.kube/config
-          kubectl get deployments
           kubectl apply -f ./k8s/stag-kub/app-centher-io-deployment.yml
           kubectl apply -f ./k8s/stag-kub/app-centher-io-service.yml
 
