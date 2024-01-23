@@ -51,7 +51,7 @@ const LaunchpadListDetails: NextPageWithLayout = () => {
     list_type === "launchpad_overview" ? (
       <LaunchpadOverview launchpadData={launchpadData} metaData={metaData} />
     ) : list_type === "booking_list" ? (
-      <BookingList {...launchpadData} />
+      <BookingList />
     ) : list_type === "referral_rewards" ? (
       <ReferralRewards />
     ) : null

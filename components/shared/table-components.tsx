@@ -1,9 +1,22 @@
 import React, { HTMLAttributes } from "react";
 import cn from "@/utils/cn";
 
-interface TableRowProps extends HTMLAttributes<HTMLTableRowElement> {}
+interface TableRowProps extends HTMLAttributes<HTMLTableRowElement> {
+  element: "tb" | "th";
+}
 
 export const TableRow: React.FC<TableRowProps> = ({ className, ...props }) => {
+  if (props.element === "th") {
+    return (
+      <tr
+        className={cn(
+          "max-w-full flex-grow text-left text-sm text-white",
+          className
+        )}
+        {...props}
+      />
+    );
+  }
   return (
     <tr
       className={cn(

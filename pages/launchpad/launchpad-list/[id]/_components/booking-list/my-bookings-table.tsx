@@ -14,7 +14,10 @@ export const MyBookingsTable: React.FC<Props> = ({ bookingsTab }) => {
     <div className="scrollSetLight3 overflow-x-auto">
       <table className="w-full table-auto rounded-lg">
         <thead>
-          <TableRow className="h-[64px] w-full !bg-elevation-1 px-4 text-sm font-semibold text-gray-shade-14">
+          <TableRow
+            element="th"
+            className="h-[64px] w-full bg-elevation-1 px-4 text-sm font-semibold text-gray-shade-14"
+          >
             <TableCell element={"th"}>Account Address</TableCell>
             <TableCell element={"th"}>Payment</TableCell>
             <TableCell element={"th"}>Receivable</TableCell>
@@ -30,7 +33,7 @@ export const MyBookingsTable: React.FC<Props> = ({ bookingsTab }) => {
         <tbody>
           {bookingsData.map((booking, i) => {
             return (
-              <TableRow key={i}>
+              <TableRow element="tb" key={i}>
                 <TableCell element={"td"}>
                   <a
                     href={`${BlockchainConfig.scanner.url}/address/${booking.account_address}`}

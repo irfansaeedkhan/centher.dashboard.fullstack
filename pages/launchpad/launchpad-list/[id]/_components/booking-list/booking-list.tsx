@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import clsx from "clsx";
-import { MyBookingsTable } from "./my-bookings-table";
+import { MainTimeline, MyBookingsTable } from "./";
 
 export const BookingList = () => {
   const [bookingsTab, setBookingsTab] = useState<
@@ -8,7 +8,7 @@ export const BookingList = () => {
   >("my-bookings");
 
   return (
-    <div>
+    <div className="flex flex-col gap-8">
       <div className="flex h-auto w-full flex-col overflow-hidden rounded-[14px] border border-gray-shade-3 bg-black-shade-3">
         <div className="flex items-center gap-8 overflow-x-auto bg-elevation-1 px-8 py-[18px]">
           <button
@@ -32,6 +32,7 @@ export const BookingList = () => {
         </div>
         <MyBookingsTable bookingsTab={bookingsTab} />
       </div>
+      <MainTimeline />
     </div>
   );
 };
