@@ -1,6 +1,6 @@
 import React from "react";
-import ModalContainer from "./modal-container";
 import TrxInProgressModal from "@/utils/modal/trx-modal";
+import ModalContainer from "./modal-container";
 
 interface Props {
   open: boolean;
@@ -10,12 +10,12 @@ interface Props {
 const TrxModal: React.FC<Props> = ({ open, onClose }) => {
   return (
     <ModalContainer
-      modalId="tx-modal"
+      modalId="trx-modal"
       isOpen={open}
       onClose={onClose}
       modalContentClassName="max-w-2xl p-6 rounded-2xl"
-      shouldCloseOnOverlayClick={true}
-      shouldCloseOnEsc={true}
+      shouldCloseOnOverlayClick={false}
+      shouldCloseOnEsc={false}
     >
       <TrxInProgressModal />
     </ModalContainer>

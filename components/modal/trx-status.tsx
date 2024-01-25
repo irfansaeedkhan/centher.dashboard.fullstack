@@ -1,33 +1,31 @@
 import React from "react";
-import { useRouter } from "next/router";
 import { IconFailure, SuccessIcon } from "@/assets/svgs";
-import ModalContainer from "./modal-container";
 import Button from "../button";
+import ModalContainer from "./modal-container";
 
 interface Props {
   open: boolean;
-  onClose: () => void;
+  success: boolean;
   title: string;
   description: string;
-  success: boolean;
+  onClose: () => void;
 }
 
 const TrxStatus: React.FC<Props> = ({
   open,
-  onClose,
+  success,
   title,
   description,
-  success,
+  onClose,
 }) => {
-  const router = useRouter();
   return (
     <ModalContainer
-      modalId="tx-modal"
+      modalId="trx-status-modal"
       isOpen={open}
       onClose={onClose}
       modalContentClassName="max-w-2xl p-6 rounded-2xl"
       shouldCloseOnOverlayClick={true}
-      shouldCloseOnEsc={true}
+      shouldCloseOnEsc={false}
     >
       <div className="flex flex-col items-center gap-8 text-center">
         {success ? <SuccessIcon /> : <IconFailure />}

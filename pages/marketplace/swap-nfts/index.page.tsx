@@ -11,6 +11,7 @@ import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import Button from "@/components/button";
 import TrxModal from "@/components/modal/trx-modal";
 import TrxStatus from "@/components/modal/trx-status";
+import { customLog } from "@/utils/custom.log";
 import { NextPageWithLayout } from "../../_app.page";
 
 type NftType = {
@@ -26,102 +27,108 @@ const SwapNfts: NextPageWithLayout = () => {
   const { user } = useUser();
   const { getSigner, getProvider } = useWallet();
   const [isLoading, setIsLoading] = useState(true);
-  const [progressModel, setProgressModel] = useState(false);
-  const [openSuccess, setOpenSuccess] = useState(false);
-  const [successStatus, setSuccessStatus] = useState<"success" | "failure">(
-    "success"
-  );
-
   const [userNfts, setUserNfts] = useState<NftType[]>([]);
+  const [trxModal, setTrxModal] = useState<
+    "trx-success" | "trx-fail" | "trx-progress" | null
+  >("trx-success");
 
   useEffect(() => {
     (async () => {
-      if (!user) return null;
+      try {
+        const provider = getProvider();
+        if (!user || !provider) return;
 
-      const provider = getProvider();
-      if (!provider) return;
-      setIsLoading(true);
-      const data = await BlockchainRead.getUserCollectionNfts(
-        SwapCollection,
-        user._id
-      );
+        setIsLoading(true);
 
-      const nfts = data.nfts;
-
-      const sortedData: NftType[] = [];
-
-      for (let i = 0; i < nfts.length; i++) {
-        const result = await BlockchainRead.isTokenSwaped(
-          provider,
+        const { nfts } = await BlockchainRead.getUserCollectionNfts(
           SwapCollection,
-          nfts[i].tokenId
+          user._id
         );
 
-        if (!result) {
-          const ipfsUrl = nfts[i].ipfs;
+        const filteredNfts: NftType[] = (
+          await Promise.all(
+            nfts.map(async (nft: any) => {
+              const result = await BlockchainRead.isTokenSwaped(
+                provider,
+                SwapCollection,
+                nft.tokenId
+              );
 
-          const { data } = await axios.get(formatIPFSUrl(ipfsUrl));
+              if (!result) {
+                return nft;
+              } else {
+                return null;
+              }
+            })
+          )
+        ).filter((nft) => nft !== null);
 
-          const imageUrl = formatIPFSUrl(data.image);
-          sortedData.push({
-            ...nfts[i],
-            image: imageUrl,
-          });
-        }
+        const filteredNftsWithImage = await Promise.all(
+          filteredNfts.map(async (nft: any) => {
+            const ipfsUrl = nft.ipfs;
+
+            const { data } = await axios.get(formatIPFSUrl(ipfsUrl));
+
+            const imageUrl = formatIPFSUrl(data.image);
+
+            return {
+              ...nft,
+              image: imageUrl,
+            };
+          })
+        );
+
+        setUserNfts(filteredNftsWithImage);
+        setIsLoading(false);
+      } catch (err: any) {
+        setUserNfts([]);
+        setIsLoading(false);
+        customLog(["development", "staging"], err);
       }
-
-      setUserNfts(sortedData);
-      setIsLoading(false);
     })();
   }, [user, getProvider]);
 
   const handleSwap = async (tokenId: string) => {
     try {
-      setProgressModel(true);
+      setTrxModal("trx-progress");
 
       const signer = getSigner();
       if (!signer) return;
+
       await BlockchainWrite.swapDexagon(
         signer,
         SwapCollection,
         Number(tokenId)
       );
 
-      setProgressModel(false);
-      setOpenSuccess(true);
-      setSuccessStatus("success");
-    } catch (error) {
-      setProgressModel(false);
-      setOpenSuccess(true);
-      setSuccessStatus("failure");
+      setTrxModal("trx-success");
+    } catch (err: any) {
+      setTrxModal("trx-fail");
+      customLog(["development", "staging"], err);
     }
   };
 
   return (
     <>
       <TrxModal
-        open={progressModel}
-        onClose={() => {
-          setProgressModel(false);
-        }}
+        open={trxModal === "trx-progress"}
+        onClose={() => setTrxModal(null)}
       />
 
       <TrxStatus
-        open={openSuccess}
-        onClose={() => {
-          setOpenSuccess(false);
-        }}
+        open={trxModal === "trx-success" || trxModal === "trx-fail"}
+        onClose={() => setTrxModal(null)}
         title={
-          successStatus === "success"
+          trxModal === "trx-success"
             ? "Transaction Successfully"
             : "Transaction Failed"
         }
         description={
-          successStatus === "success"
+          trxModal === "trx-success"
             ? "Your transaction has been successfully completed."
             : "Your transaction has been failed."
         }
-        success={successStatus === "success"}
+        success={trxModal === "trx-success"}
       />
       <div className="p-4">
         <div className="textGradient text-lg font-semibold fsm:text-2xl">
