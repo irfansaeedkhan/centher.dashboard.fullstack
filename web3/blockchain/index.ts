@@ -2,7 +2,7 @@ import { QueryNames } from "./enum/query.names.enum";
 import { ApolloProvider } from "./providers/apollo.provider";
 import { BigNumber, ethers } from "ethers";
 import { parseEther } from "ethers/lib/utils";
-import { JsonRpcSigner, Web3Provider } from "@ethersproject/providers";
+import { JsonRpcProvider, JsonRpcSigner } from "@ethersproject/providers";
 import { CitizenShipType } from "@/store/citizen.store";
 import { InsufficientFundError } from "@/staking/errors/params.error";
 import {
@@ -366,13 +366,13 @@ export class BlockchainRead {
   }
 
   static async isTokenSwaped(
-    signer: JsonRpcSigner,
+    provider: JsonRpcProvider,
     collection: string,
     tokenId: number
   ): Promise<boolean> {
     const nftAdapterContract = SmartContractProvider.getContract(
       SmartContractName.NFT_ADAPTER,
-      signer
+      provider
     );
 
     const result = await nftAdapterContract.functions.isSwapped(
@@ -381,6 +381,25 @@ export class BlockchainRead {
     );
 
     return result[0];
+  }
+
+  static async isUserWhitelistedForSwap(
+    provider: JsonRpcProvider,
+    user: string
+  ): Promise<boolean> {
+    const nftAdapterContract = SmartContractProvider.getContract(
+      SmartContractName.NFT_ADAPTER,
+      provider
+    );
+
+    const result =
+      await nftAdapterContract.functions.whitelistedUsersAndAllowance(user);
+
+    if (Number(result) > 0) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   static async isCitizen(
@@ -496,6 +515,22 @@ export class BlockchainRead {
     );
 
     return { nfts: nfts.nfts, history: data.marketplaceSaleHistories };
+  }
+
+  static async getUserCollectionNfts(
+    collection: string,
+    owner: string
+  ): Promise<any> {
+    const variables = {
+      collection,
+      owner,
+    };
+    const { data } = await ApolloProvider.query(
+      QueryNames.GET_USER_NFTS,
+      variables
+    );
+
+    return { nfts: data.nfts };
   }
 
   static async getERC20Balance(

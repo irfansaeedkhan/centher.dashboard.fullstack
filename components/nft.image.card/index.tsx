@@ -22,7 +22,7 @@ export interface NFTImageCardProps {
 
 export const NFTImageCard: React.FC<NFTImageCardProps> = ({ data }) => {
   const router = useRouter();
-  const { getSigner, connectedAddress } = useWallet();
+  const { getSigner, connectedAddress, getProvider } = useWallet();
   const locked = Number(data.unlock) * 1000 - getUTCNow() > 0;
   const auction = Number(data.endTime) * 1000 - getUTCNow() > 0;
   const internal = !data.external;
@@ -49,9 +49,10 @@ export const NFTImageCard: React.FC<NFTImageCardProps> = ({ data }) => {
 
   useEffect(() => {
     const setSwapHistory = async () => {
-      if (data && getSigner()) {
+      const provider = getProvider();
+      if (data && provider) {
         const isSwaped = await BlockchainRead.isTokenSwaped(
-          getSigner()!,
+          provider,
           data.collection,
           +data.tokenId
         );
@@ -60,7 +61,7 @@ export const NFTImageCard: React.FC<NFTImageCardProps> = ({ data }) => {
     };
 
     setSwapHistory();
-  }, [data, getSigner]);
+  }, [data, getProvider]);
 
   useEffect(() => {
     if (+data.endTime === 0) {

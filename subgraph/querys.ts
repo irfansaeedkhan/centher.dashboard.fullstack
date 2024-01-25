@@ -180,3 +180,13 @@ export const GET_USER_TOTAL_SOLD_NFTS = `query MyQuery2($collection: Bytes = "",
     type
   }
 }`;
+
+export const GET_USER_NFTS = `query MyQuery($collection: Bytes = "", $owner: Bytes = "") {
+  nfts(where: {collection: $collection, owner: $owner}, first: 1000) {
+  owner
+  tokenId
+  ipfs
+  creator
+  price
+}
+}`;

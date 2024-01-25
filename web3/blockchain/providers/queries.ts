@@ -9,6 +9,7 @@ import {
   registrationHistory,
   GET_COLLECTION_ADDITIONAL_INFO,
   GET_USER_TOTAL_SOLD_NFTS,
+  GET_USER_NFTS,
   purchaseWithBusdHistoryByUser,
   allPurchasesHistoryByUser,
   purchaseWithNtrHistoryByUser,
@@ -31,6 +32,7 @@ export class QueryFactory {
     REGISTRATION_HISTORY: registrationHistory,
     GET_COLLECTION_ADDITIONAL_INFO: GET_COLLECTION_ADDITIONAL_INFO,
     GET_USER_TOTAL_SOLD_NFTS: GET_USER_TOTAL_SOLD_NFTS,
+    GET_USER_NFTS: GET_USER_NFTS,
   };
 
   static getQuery(name: QueryNames): string {
