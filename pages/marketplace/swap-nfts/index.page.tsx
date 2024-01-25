@@ -30,7 +30,7 @@ const SwapNfts: NextPageWithLayout = () => {
   const [userNfts, setUserNfts] = useState<NftType[]>([]);
   const [trxModal, setTrxModal] = useState<
     "trx-success" | "trx-fail" | "trx-progress" | null
-  >("trx-success");
+  >(null);
 
   useEffect(() => {
     (async () => {
