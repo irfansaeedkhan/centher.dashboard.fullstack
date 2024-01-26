@@ -93,9 +93,9 @@ export const useWallet = () => {
     return null;
   }, [walletProvider, walletConnectSigner, signer]);
 
-  const getProvider = (): JsonRpcProvider => {
+  const getProvider = useCallback((): JsonRpcProvider => {
     return new ethers.providers.JsonRpcProvider(BlockchainConfig.rpcProvider);
-  };
+  }, []);
 
   const setWalletType = (wallet: WalletEnum) => {
     localStorage.setItem(CONNECTED_WALLET_KEY, wallet);
