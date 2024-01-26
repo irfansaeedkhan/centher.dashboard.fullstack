@@ -24,16 +24,6 @@ export type RoundCardData = {
   description: string;
 };
 
-export type CurrentComponent = {
-  token_price: number | string;
-  total_selling_amount: number | string;
-  soft_cap_busd: number | string;
-  start_time: Date | null;
-  end_time: Date | null;
-  min_contribution: number | string;
-  max_contribution: number | string;
-};
-
 export type FormState = {
   current_round:
     | "verify_token"

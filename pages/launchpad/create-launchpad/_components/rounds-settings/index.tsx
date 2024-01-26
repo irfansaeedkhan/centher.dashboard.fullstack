@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { BNBIcon } from "@/assets/svgs";
 import { DateInputField } from "@/components/shared";
 import { CustomNumberInput } from "@/components/custom-number-input";
-import { CurrentComponent, FormStateProps } from "../shared-types";
+import { FormStateProps } from "../shared-types";
 import { NoteDisclamer } from "../note-disclamer";
 
 export const RoundsSettingsForm: React.FC<FormStateProps> = ({
@@ -12,25 +12,9 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
   setFormState,
 }) => {
   const [currentRound, setCurrentRound] = useState(1);
-  const [currentComponent, setCurrentComponent] = useState<CurrentComponent>({
-    token_price: "",
-    total_selling_amount: "",
-    soft_cap_busd: "",
-    start_time: null,
-    end_time: null,
-    min_contribution: "",
-    max_contribution: "",
-  });
 
   const handleChangeEvent = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-
-    setCurrentComponent((prev) => {
-      return {
-        ...prev,
-        [name]: value,
-      };
-    });
     setFormState((prev) => {
       return {
         ...prev,
@@ -52,15 +36,9 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
   };
 
   const handleStartDateChangeEvent = (value: Date | null) => {
-    if (formState.verify_token.sale_rounds === 1 && value !== null) {
+    if (currentRound === 1 && value !== null) {
       if (new Date(value) < new Date()) {
         toast.error("Start time must be greater than todays date");
-        setCurrentComponent((prev) => {
-          return {
-            ...prev,
-            start_time: null,
-          };
-        });
         setFormState((prev) => {
           return {
             ...prev,
@@ -82,7 +60,7 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
         return;
       }
     }
-    if (formState.verify_token.sale_rounds === 2) {
+    if (currentRound === 2) {
       if (
         formState.rounds_settings.round[0].end_time !== null &&
         value !== null
@@ -94,12 +72,6 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
           toast.error(
             "Start time must be greater than previous round end time"
           );
-          setCurrentComponent((prev) => {
-            return {
-              ...prev,
-              start_time: null,
-            };
-          });
           setFormState((prev) => {
             return {
               ...prev,
@@ -123,7 +95,7 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
       }
     }
 
-    if (formState.verify_token.sale_rounds === 3) {
+    if (currentRound === 3) {
       if (
         formState.rounds_settings.round[1].end_time !== null &&
         value !== null
@@ -135,12 +107,6 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
           toast.error(
             "Start time must be greater than previous round end time"
           );
-          setCurrentComponent((prev) => {
-            return {
-              ...prev,
-              start_time: null,
-            };
-          });
           setFormState((prev) => {
             return {
               ...prev,
@@ -163,13 +129,6 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
         }
       }
     }
-
-    setCurrentComponent((prev) => {
-      return {
-        ...prev,
-        start_time: value,
-      };
-    });
     setFormState((prev) => {
       return {
         ...prev,
@@ -191,14 +150,11 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
   };
 
   const handleEndDateChangeEvent = (value: Date | null) => {
-    if (currentComponent.start_time === null) {
+    if (
+      formState.rounds_settings.round[currentRound - 1].start_time === null &&
+      value !== null
+    ) {
       toast.error("Please select start time first");
-      setCurrentComponent((prev) => {
-        return {
-          ...prev,
-          end_time: null,
-        };
-      });
       setFormState((prev) => {
         return {
           ...prev,
@@ -230,12 +186,6 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
         ) > new Date(value)
       ) {
         toast.error("End time must be greater than start time");
-        setCurrentComponent((prev) => {
-          return {
-            ...prev,
-            end_time: null,
-          };
-        });
         setFormState((prev) => {
           return {
             ...prev,
@@ -257,12 +207,6 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
         return;
       }
     }
-    setCurrentComponent((prev) => {
-      return {
-        ...prev,
-        end_time: value,
-      };
-    });
     setFormState((prev) => {
       return {
         ...prev,
@@ -329,15 +273,6 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
                 return;
               }
               setCurrentRound(index + 1);
-              setCurrentComponent({
-                total_selling_amount: 0,
-                token_price: 0,
-                soft_cap_busd: 0,
-                start_time: null,
-                end_time: null,
-                min_contribution: 0,
-                max_contribution: 0,
-              });
             }}
           >
             Round {index + 1}
@@ -359,7 +294,7 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
               className={gradientBorderInput}
               value={
                 formState.rounds_settings.round[currentRound - 1].token_price ??
-                currentComponent.token_price
+                ""
               }
               onChange={handleChangeEvent}
             />
@@ -387,7 +322,7 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
               className={gradientBorderInput}
               value={
                 formState.rounds_settings.round[currentRound - 1]
-                  .total_selling_amount ?? currentComponent.total_selling_amount
+                  .total_selling_amount ?? ""
               }
               onChange={handleChangeEvent}
             />
@@ -407,7 +342,7 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
               className={gradientBorderInput}
               value={
                 formState.rounds_settings.round[currentRound - 1]
-                  .soft_cap_busd ?? currentComponent.soft_cap_busd
+                  .soft_cap_busd ?? ""
               }
               onChange={handleChangeEvent}
             />
@@ -426,7 +361,7 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
             type="datetime"
             value={
               formState.rounds_settings.round[currentRound - 1].start_time ??
-              currentComponent.start_time
+              null
             }
             handleChangeEvent={(value: Date | null) =>
               handleStartDateChangeEvent(value)
@@ -436,11 +371,7 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
             title="End Time"
             type="datetime"
             value={
-              formState.rounds_settings.round[currentRound - 1].end_time
-                ? formState.rounds_settings.round[currentRound - 1].end_time
-                : currentComponent.end_time === null
-                ? undefined
-                : currentComponent.end_time
+              formState.rounds_settings.round[currentRound - 1].end_time ?? null
             }
             handleChangeEvent={(value: Date | null) =>
               handleEndDateChangeEvent(value)
@@ -462,7 +393,7 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
                 className={gradientBorderInput}
                 value={
                   formState.rounds_settings.round[currentRound - 1]
-                    .min_contribution ?? currentComponent.min_contribution
+                    .min_contribution ?? ""
                 }
                 onChange={handleChangeEvent}
               />
@@ -482,7 +413,7 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
                 className={gradientBorderInput}
                 value={
                   formState.rounds_settings.round[currentRound - 1]
-                    .max_contribution ?? currentComponent.max_contribution
+                    .max_contribution ?? ""
                 }
                 onChange={handleChangeEvent}
               />
