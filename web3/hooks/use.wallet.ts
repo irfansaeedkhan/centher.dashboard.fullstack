@@ -93,9 +93,9 @@ export const useWallet = () => {
     return null;
   }, [walletProvider, walletConnectSigner, signer]);
 
-  const getProvider = (): JsonRpcProvider => {
+  const getProvider = useCallback((): JsonRpcProvider => {
     return new ethers.providers.JsonRpcProvider(BlockchainConfig.rpcProvider);
-  };
+  }, []);
 
   const setWalletType = (wallet: WalletEnum) => {
     localStorage.setItem(CONNECTED_WALLET_KEY, wallet);
@@ -114,11 +114,12 @@ export const useWallet = () => {
 
   const connectWallet = async (
     wallet: WalletEnum = WalletEnum.METAMASK,
+    authType: "login" | "register" = "login",
     showError: boolean = true
   ): Promise<void> => {
     if (wallet == WalletEnum.WALLET_SERVICE) {
       setWalletType(wallet);
-      await connect();
+      await connect(authType);
       localStorage.setItem(IS_WALLET_CONNECTED, "true");
     } else if (wallet == WalletEnum.WALLET_CONNECT) {
       setWalletType(wallet);

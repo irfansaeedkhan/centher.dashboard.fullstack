@@ -369,6 +369,7 @@ export const CreateNFTCollectionForm = ({
             connectWallet={connectWallet}
             connectedAddress={connectedAddress}
             disconnectWallet={disconnectWallet}
+            authType="login"
             className="mt-2 w-full py-4"
           />
         ) : (

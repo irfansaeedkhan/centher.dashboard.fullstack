@@ -24,31 +24,26 @@ import { BlockchainConfig } from "@/web3/blockchain/config";
 import { useCentherLive } from "@/hooks/chat";
 import Button from "@/components/button";
 import { WalletEnum, useWallet } from "@/web3/hooks/use.wallet";
-import ConnectWalletModal from "@/components/modal/connect-wallet-modal";
 
 interface HeaderProfileProps {
   onClickOutside: () => void;
   modalOpenerRef: React.RefObject<HTMLDivElement>;
   openBuyCitizenshipModal: () => void;
+  onOpen: () => void;
 }
 
 const HeaderProfile: React.FC<HeaderProfileProps> = ({
   onClickOutside,
   modalOpenerRef,
   openBuyCitizenshipModal,
+  onOpen,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const { user: loggedInUser } = useUser();
   const { unreadNotifications, unreadConversations } = useCentherLive();
-  const [connectWalletModal, setConnectWalletModal] = useState(false);
-  const {
-    connectedAddress,
-    disconnectWallet,
-    getWalletType,
-    openWallet,
-    connectWallet,
-  } = useWallet();
+  const { connectedAddress, disconnectWallet, getWalletType, openWallet } =
+    useWallet();
   const wallet_type = getWalletType();
 
   const handleClickOutside = (e: MouseEvent) => {
@@ -327,7 +322,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
         ) : (
           <button
             className="textGradient flex items-center gap-3 stroke-brand-primary"
-            onClick={() => setConnectWalletModal(true)}
+            onClick={onOpen}
           >
             <ConnectIcon />
             <p className="textGradient text-sm font-medium leading-6">
@@ -336,16 +331,6 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
           </button>
         )}
       </div>
-      {connectWalletModal && (
-        <ConnectWalletModal
-          setConnectWalletModal={setConnectWalletModal}
-          loggedInUser={loggedInUser}
-          notloginCheck={true}
-          connectWallet={connectWallet}
-          connectedAddress={connectedAddress}
-          disconnectWallet={disconnectWallet}
-        />
-      )}
     </div>
   );
 };

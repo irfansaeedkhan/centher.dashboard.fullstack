@@ -69,7 +69,7 @@ export const PurchaseCentherCard: React.FC<Props> = ({
 
   const signer = getSigner();
   useEffect(() => {
-    if (!connectedAddress || !getSigner() || !roundInfo) return;
+    if (!connectedAddress || !signer || !roundInfo) return;
     setSelectedTokenA((prev) => ({
       ...prev,
       tokenName: "USDT",
@@ -185,15 +185,15 @@ export const PurchaseCentherCard: React.FC<Props> = ({
           connectedAddress={connectedAddress}
         />
       ) : null}
-      {connectWalletModal && (
-        <ConnectWalletModal
-          connectWallet={connectWallet}
-          disconnectWallet={disconnectWallet}
-          connectedAddress={connectedAddress}
-          loggedInUser={loggedInUser}
-          setConnectWalletModal={setConnectWalletModal}
-        />
-      )}
+      <ConnectWalletModal
+        connectWallet={connectWallet}
+        disconnectWallet={disconnectWallet}
+        connectedAddress={connectedAddress}
+        loggedInUser={loggedInUser}
+        onClose={() => setConnectWalletModal(false)}
+        open={connectWalletModal}
+        authType="login"
+      />
     </div>
   );
 };
