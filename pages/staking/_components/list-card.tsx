@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import dayjs from "dayjs";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { formatUnits } from "ethers/lib/utils";
-import { useFloating, useHover, useInteractions } from "@floating-ui/react";
 import clsx from "clsx";
-import { AiOutlineInfoCircle } from "react-icons/ai";
 import { FiArrowUpRight } from "react-icons/fi";
 import { toast } from "react-hot-toast";
 import { sliceAccountAddress } from "@/utils/user.helpers";
@@ -16,46 +15,35 @@ import { eqAddress } from "@/live/utils/address.utils";
 import { ArrowDiagonal, GradientCopy, Staking } from "@/assets/svgs";
 import { BlockchainConfig } from "@/web3/blockchain/config";
 import Button from "@/components/button";
+import { CentherStaking } from "@/staking";
+import { OptionalType } from "@/staking/types";
+import { setupUiModels } from "@/staking/helpers/mappers.helper";
+import useUser from "@/hooks/use.user";
 import { claimPeriodOptions, stakingPeriodOptions } from "../constants";
 import { ListCardDataOBj } from "./list-card-data";
+import ListCardSpacing from "./list-card-spacing";
+import StakedLiquidity from "./staked-liquidity";
 
 export interface ListCardProps {
   card: ListCardDataOBj;
   coins: Array<CoinDetails | undefined>;
+  sdk: OptionalType<CentherStaking>;
 }
 
-const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
+const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins, sdk }) => {
   const router = useRouter();
-  const [isOpenPool, setIsOpenPool] = useState(false);
-  const [isOpenCancel, setIsOpenCancel] = useState(false);
-  const [isOpenRefunded, setIsOpenRefunded] = useState(false);
+  const { user: loggedInUser } = useUser();
+  const [stakingPool, setStakingPool] = useState<ListCardDataOBj | null>(null);
 
-  const { refs, context } = useFloating({
-    open: isOpenPool,
-    onOpenChange: setIsOpenPool,
-  });
-  const { refs: refs2, context: context2 } = useFloating({
-    open: isOpenCancel,
-    onOpenChange: setIsOpenCancel,
-  });
-  const { refs: refs3, context: context3 } = useFloating({
-    open: isOpenRefunded,
-    onOpenChange: setIsOpenRefunded,
-  });
+  useEffect(() => {
+    if (!loggedInUser) return;
 
-  const hover = useHover(context);
-  const hover2 = useHover(context2);
-  const hover3 = useHover(context3);
-
-  const { getReferenceProps, getFloatingProps } = useInteractions([hover]);
-  const {
-    getReferenceProps: getReferenceProps2,
-    getFloatingProps: getFloatingProps2,
-  } = useInteractions([hover2]);
-  const {
-    getReferenceProps: getReferenceProps3,
-    getFloatingProps: getFloatingProps3,
-  } = useInteractions([hover3]);
+    sdk?.getProject(+card.id, loggedInUser._id).then((pool) => {
+      if (!pool) return;
+      const mappedPools = setupUiModels([pool]);
+      setStakingPool(mappedPools[0]);
+    });
+  }, [sdk, card, loggedInUser]);
 
   return (
     <div className="flex w-full flex-col gap-4 rounded-2xl bg-black-shade-9 p-4">
@@ -207,113 +195,47 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
             }
           </span>
         </div>
-        <div className={mainSection}>
-          <span className={label}>Liquidity Pool</span>
-          <div className={clsx(value, "flex items-center gap-1.5")}>
-            <span>
-              {card.liquidity_pool_provided == "no"
-                ? "Not provided"
-                : "Provided"}
-            </span>
-            {card.liquidity_pool_provided == "no" && (
-              <p
-                ref={refs.setReference}
-                {...getReferenceProps()}
-                className="relative"
-              >
-                <AiOutlineInfoCircle className="h-4 w-4 min-w-min cursor-pointer text-orange-600 hover:text-white" />
-
-                {isOpenPool && (
-                  <span
-                    className="absolute -bottom-[5.5rem] -right-[1rem] z-[100] flex w-[300px] max-w-[220px] flex-col gap-2 rounded-lg border border-[#262A2D] bg-transparent p-3 text-xs text-white shadow-lg backdrop-blur-[50px]"
-                    ref={refs.setFloating}
-                    {...getFloatingProps()}
-                  >
-                    <AiOutlineInfoCircle className="h-4 w-4 min-w-min text-orange-600" />
-                    <span>
-                      This staking pool does not provide Liquidity pool.
-                    </span>
-                  </span>
-                )}
-              </p>
-            )}
-          </div>
-        </div>
+        <ListCardSpacing
+          showInfoIcon={card.liquidity_pool_provided === "no" ? true : false}
+          title="Liquidity Pool"
+          negativeTitle="Not provided"
+          positiveTitle="Provided"
+          description="This staking pool does not provide Liquidity pool."
+        />
         <div className={mainSection}>
           <span className={label}>Burn tax on claim</span>
           <span className={value}>
             {card.burn_tax ? +card.burn_tax / 100 : 0}%{" "}
           </span>
         </div>
-        <div className={mainSection}>
-          <span className={label}>Is Cancelable</span>
-          <div className={clsx(value, "flex items-center gap-1.5")}>
-            <span>
-              {card.is_cancelable == "no" ? "Irreversible" : "Reversible"}
-            </span>
-            {card.liquidity_pool_provided == "no" && (
-              <p
-                ref={refs2.setReference}
-                {...getReferenceProps2()}
-                className="relative"
-              >
-                <AiOutlineInfoCircle className="h-4 w-4 min-w-min cursor-pointer text-orange-600 hover:text-white" />
+        <ListCardSpacing
+          showInfoIcon={card.is_cancelable === "no" ? true : false}
+          title="Is Cancelable"
+          negativeTitle="Irreversible"
+          positiveTitle="Reversible"
+          description="This staking pool is irreversible, you will be forced to wait
+          for the unblocking time specified in the contract once the
+          subscription has been activated."
+        />
 
-                {isOpenCancel && (
-                  <span
-                    className="absolute -right-[1rem] top-[18px] z-[100] flex w-[300px] max-w-[220px] flex-col gap-2 rounded-lg border border-[#262A2D] bg-transparent p-3 text-xs text-white shadow-lg backdrop-blur-[50px]"
-                    ref={refs2.setFloating}
-                    {...getFloatingProps2()}
-                  >
-                    <AiOutlineInfoCircle className="h-4 w-4 min-w-min text-orange-600" />
-                    <span>
-                      This staking pool is irreversible, you will be forced to
-                      wait for the unblocking time specified in the contract
-                      once the subscription has been activated.
-                    </span>
-                  </span>
-                )}
-              </p>
-            )}
-          </div>
-        </div>
         <div className={mainSection}>
           <span className={label}>Created on</span>
           <span className={value}>
-            {new Date(+card.start_time * 1000).toDateString()}
+            {dayjs(new Date(Number(+card.start_time) * 1000)).format(
+              "DD-MMM-YYYY"
+            )}
           </span>
         </div>
         {card.nonRefundable && (
-          <div className={mainSection}>
-            <span className={label}>Capital Release</span>
-            <div className={clsx(value, "flex items-center gap-1.5")}>
-              <span>Not Refunded</span>
-              {card.liquidity_pool_provided == "no" && (
-                <p
-                  ref={refs3.setReference}
-                  {...getReferenceProps3()}
-                  className="relative"
-                >
-                  <AiOutlineInfoCircle className="h-4 w-4 min-w-min cursor-pointer text-orange-600 hover:text-white" />
-
-                  {isOpenRefunded && (
-                    <span
-                      className="absolute -right-[1rem] top-[18px] z-[100] flex w-[300px] max-w-[220px] flex-col gap-2 rounded-lg border border-[#262A2D] bg-transparent p-3 text-xs text-white shadow-lg backdrop-blur-[50px]"
-                      ref={refs3.setFloating}
-                      {...getFloatingProps3()}
-                    >
-                      <AiOutlineInfoCircle className="h-4 w-4 min-w-min text-orange-600" />
-                      <span>
-                        All tokens staked in this pool will be used in a minting
-                        service and will not be refunded at the end of the
-                        staking period.
-                      </span>
-                    </span>
-                  )}
-                </p>
-              )}
-            </div>
-          </div>
+          <ListCardSpacing
+            showInfoIcon={true}
+            title="Capital Release"
+            negativeTitle="Not Refundable"
+            positiveTitle=""
+            description="All tokens staked in this pool will be used in a minting
+          service and will not be refunded at the end of the staking
+          period."
+          />
         )}
         <div className={mainSection}>
           <span className={label}>Minimum Stakable Amount</span>
@@ -356,6 +278,10 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
             </div>
           )}
       </div>
+      <p className="text-base font-semibold text-white">Staked Liquidity</p>
+      {stakingPool && (
+        <StakedLiquidity stakingPool={stakingPool} card={card} coins={coins} />
+      )}
     </div>
   );
 };

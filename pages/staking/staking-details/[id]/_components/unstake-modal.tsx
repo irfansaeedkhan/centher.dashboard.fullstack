@@ -5,7 +5,8 @@ import { CustomNumberInput } from "@/components/custom-number-input";
 const UnstakeModal: React.FC<{
   submit: (value: string) => void;
   errors: string;
-}> = ({ submit, errors }) => {
+  max: string;
+}> = ({ submit, errors, max }) => {
   const [amount, setAmount] = useState<string>("0");
   return (
     <div className="mt-4 p-4">
@@ -21,6 +22,7 @@ const UnstakeModal: React.FC<{
             className="mt-2 w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-white focus:outline-none focus:ring-0"
           />
         </div>
+        <p className="m-1 text-sm text-danger">Max: {max}</p>
         <p className="m-1 text-sm text-danger">{errors}</p>
       </div>
       <Button
@@ -29,7 +31,6 @@ const UnstakeModal: React.FC<{
         borderRounded="14px"
         variant="primary"
         onClick={() => submit(amount)}
-        disabled={errors.length > 0}
       />
     </div>
   );

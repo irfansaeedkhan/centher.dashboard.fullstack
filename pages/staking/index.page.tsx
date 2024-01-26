@@ -124,6 +124,7 @@ const Staking: NextPageWithLayout = () => {
           pools={stakingList}
           fetchTime={+new Date()}
           coins={coinsDetails}
+          sdk={sdk}
         />
       ) : stakingList?.length === 0 && isLoading ? (
         <div className="flex h-[calc(100vh-60px)] w-full items-center justify-center">

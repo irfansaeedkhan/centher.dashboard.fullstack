@@ -16,89 +16,97 @@ export class QueryFactory {
 const queries: Queries = {
   GET_PROJECTS: `query MyQuery($skip: Int , $first: Int ) {
     pools(where: {showOnCenther: true, isActive : true}, skip: $skip, first: $first) {
-      totalStakedAmount
-      totalPaidReward
-      startTime
-      stakingDurationPeriod
-      stakeToken
-      showOnCenther
-      rewardToken
-      rate
-      rewardModeForRef
-      poolOwner
-      name
-      minStakeAmount
-      metadataUri
-      maxStakableAmount
-      maxStakeAmount
-      levelTwo
-      levelThree
-      levelSix
-      levelOne
-      levelFour
-      levelFive
-      isUnstakable
-      isLP
-      isActive
-      id
-      firstRewardDuration
+      annualStakingRewardRate
+      cancellationFees
       claimDuration
       createdAt
-      cancellationFees
-      annualStakingRewardRate
-      tax
+      firstRewardDuration
+      id
+      isActive
+      isLP
+      isUnstakable
+      levelFive
+      levelFour
+      levelOne
+      levelSix
+      levelThree
+      levelTwo
+      maxStakableAmount
+      maxStakeAmount
+      metadataUri
+      minStakeAmount
+      name
       nonRefundable
+      poolOwner
+      rate
+      rewardModeForRef
+      rewardToken
+      showOnCenther
+      stakeToken
+      stakingDurationPeriod
+      startTime
+      tax
+      totalPaidReward
+      totalRestakedAmount
+      totalStakedAmount
     }
   }`,
-  GET_PROJECT: `query MyQuery($id: ID = "") {
-    pools(where: {id: $id, showOnCenther: true}) {
-      totalStakedAmount
-      totalPaidReward
-      startTime
-      stakingDurationPeriod
-      stakeToken
-      showOnCenther
-      rewardToken
-      rate
-      rewardModeForRef
-      poolOwner
-      name
-      minStakeAmount
-      metadataUri
-      maxStakableAmount
-      maxStakeAmount
-      levelTwo
-      levelThree
-      levelSix
-      levelOne
-      levelFour
-      levelFive
-      isUnstakable
-      isLP
-      isActive
+  GET_PROJECT: `query MyQuery($id: ID = "", $user: String = "") {
+  pools(where: {id: $id, showOnCenther: true}) {
+    annualStakingRewardRate
+    cancellationFees
+    claimDuration
+    createdAt
+    firstRewardDuration
+    id
+    isActive
+    isLP
+    isUnstakable
+    levelFive
+    levelFour
+    levelOne
+    levelSix
+    levelThree
+    levelTwo
+    maxStakableAmount
+    maxStakeAmount
+    metadataUri
+    minStakeAmount
+    name
+    nonRefundable
+    poolOwner
+    rate
+    rewardModeForRef
+    rewardToken
+    showOnCenther
+    stakeToken
+    stakingDurationPeriod
+    startTime
+    tax
+    totalPaidReward
+    totalRestakedAmount
+    totalStakedAmount
+    users(where: {referrer: $user}) {
+      joinedAt
       id
-      firstRewardDuration
-      claimDuration
-      createdAt
-      cancellationFees
-      annualStakingRewardRate
-      tax
-      nonRefundable
       transfers {
+        user
+        type
+        txId
+        paidFee
+        id
         endAt
         createdAt
-        type
-        user
-      }
-      users {
-        referrer
-        joinedAt
-        id
+        amount
+        unstake {
+          txId
+          id
+          createdAt
+          amount
+        }
       }
     }
-  }`,
-  GET_USER_TRANSFERS_BY_POOL: `query MyQuery($user: Bytes = "", $projectId: BigInt = "") {
-    transfers(where: {user: $user, projectId: $projectId}) {
+    transfers(where: {user: $user}) {
       user
       type
       txId
@@ -108,51 +116,37 @@ const queries: Queries = {
       endAt
       createdAt
       amount
+      unstake {
+        user
+        txId
+        projectId
+        id
+        createdAt
+        amount
+      }
     }
-  }`,
-  GET_USER_CLAIMED_REWARDS: `query MyQuery($poolId: BigInt = "", $user: Bytes = "", $first: Int = 10, $skip: Int = 10) {
-    rewardClaimeds(
-      where: {poolId: $poolId, user: $user, type: "main"}
-      first: $first
-      skip: $skip
-      orderDirection: desc
-      orderBy: blockNumber
-    ) {
-      user
-      transactionHash
-      poolId
-      id
-      blockTimestamp
-      blockNumber
-      amount
-      paidTax
-    }
-  }`,
-  GET_USER_CLAIMED_REF_REWARDS: `query MyQuery($first1: Int = 1000, $skip1: Int = 0, $projectId: BigInt = "", $user: Bytes = "") {
-    rewards(
-      where: {projectId: $projectId, user: $user,  type: "ref"}
-      first: $first1
-      skip: $skip1
-    ) {
-      user
+    rewards(where: {user: $user}) {
       type
       txId
       startDuration
       referral
       projectId
+      paidTax
       id
       endDuration
+      destination
       createdAt
       amount
-      paidTax
+      level
     }
-  }`,
-  GET_USER_REFERRALS: `query MyQuery($referrer: Bytes = "", $pool: BigInt = "") {
-    users(where: {referrer: $referrer, pool: $pool}) {
-      referrer
-      joinedAt
-      id
-      pool
-    }
-  }`,
+  }
+}`,
+  GET_USER_REFERRALS: `query MyQuery($pool: String = "", $referrer: Bytes = "") {
+  users(where: {pool: $pool, referrer: $referrer}) {
+    joinedAt
+    referrer
+    user
+    id
+  }
+}`,
 };

@@ -5,4 +5,6 @@ export interface IModalHandler {
   [key: string]: any;
 }
 
-export type TemplateCollection = { [key: string]: IModalHandler };
+export type TemplateCollection = {
+  [key: string]: IModalHandler;
+};

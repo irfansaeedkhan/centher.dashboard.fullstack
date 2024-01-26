@@ -5,6 +5,7 @@ import { ListCardDataOBj } from "@/pages/staking/_components/list-card-data";
 import { CreatePoolInput, MappedCreatePoolInput } from "../types";
 import { StakingProject } from "../types/get.projects.interface";
 import { CreatePoolParamsError } from "../errors/params.error";
+import { getStakeId } from "./stake.helper";
 
 export function setupCreatePoolData(
   input: CreatePoolInput
@@ -114,6 +115,7 @@ export function setupUiModels(input: StakingProject[]): ListCardDataOBj[] {
       is_active: e.isActive,
       totalStakedAmount: e.totalStakedAmount + "",
       totalPaidReward: e.totalPaidReward + "",
+      totalRestakedAmount: e.totalRestakedAmount,
       multilevel_rewards:
         e.rewardModeForRef == 0
           ? "No referral"
@@ -131,9 +133,17 @@ export function setupUiModels(input: StakingProject[]): ListCardDataOBj[] {
       metadata: null,
       metadataUrl: e.metadataUri,
       users: e.users,
-      transfers: e.transfers,
+      transfers: e.transfers?.map((s) => {
+        return { ...s, id: getStakeId(s.id + "") };
+      }),
+      unstakes: e.unstakes,
+      rewards: e.rewards?.map((s) => {
+        s.level = s.level ? +s.level + 1 + "" : "";
+        return s;
+      }),
       burn_tax: e.tax + "",
       nonRefundable: e.nonRefundable,
+      firstRewardDuration: e.firstRewardDuration + "",
     };
   });
 }

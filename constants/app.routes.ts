@@ -72,7 +72,6 @@ export const AppRoutes = {
     index: "/staking",
     staking_details: {
       index: "/staking/staking-details/[id]",
-      rewards: "/staking/staking-details/[id]/rewards",
       referrals: "/staking/staking-details/[id]/referrals",
       project_details: "/staking/staking-details/[id]/project-details",
     },
