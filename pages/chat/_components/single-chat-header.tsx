@@ -16,6 +16,7 @@ import { ChatModal } from "./chat-modal";
 import ProfileImgPlaceholder from "./profile-img-placeholder";
 import { customLog } from "@/utils/custom.log";
 import useUser from "@/hooks/use.user";
+import { BackButton } from "@/components/button/back-button";
 
 const loadingPage = "/images/chat-profile.png";
 const defaultImage = "/images/chat-profile.png";
@@ -202,6 +203,7 @@ const SingleChatHeader: React.FC<{ users: UsersDetails[] }> = ({ users }) => {
         className="flex w-full cursor-pointer items-center gap-2"
         onClick={() => router.push(`/profile/${link}`)}
       >
+        <BackButton svgClassName="size-9" />
         {/* TODO=> for channel use cover photo */}
         {image ? (
           <Image
