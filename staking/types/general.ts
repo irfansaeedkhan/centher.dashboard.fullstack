@@ -1,6 +1,7 @@
 import { JsonRpcSigner } from "@ethersproject/providers";
 import { Contract } from "ethers";
 import { getPaginationInfo } from "../helpers/pagination.helper";
+import { UserStakingTransfers } from "./get.projects.interface";
 
 export type OptionalType<T> = T | null | undefined;
 
@@ -19,4 +20,21 @@ export class PaginatedRequest {
   getPageSize(): number {
     return getPaginationInfo(this.page, this.pageSize).limit;
   }
+}
+
+export type UserStakingDetails = UserStakingTransfers & {
+  totalClaimableReward: string;
+  nextClaimTime: string;
+};
+
+export type stakeReward = {
+  stake: UserStakingDetails;
+  nextTime: string;
+  amount: string;
+};
+
+export interface AllUserReward {
+  amount: string;
+  status: string;
+  claimedAt?: string;
 }

@@ -8,12 +8,14 @@ import { formatIPFSUrl } from "@/utils/format.address";
 import { ZeroAddress } from "@/web3/constants/common";
 import { setupUiModels } from "@/staking/helpers/mappers.helper";
 import { useStaking } from "@/hooks/staking";
+import useUser from "@/hooks/use.user";
 import Details from "./_components/details";
 import { ListCardDataOBj } from "../../_components/list-card-data";
 import StakingMainWrapper from "../../_components/staking-main-wrapper";
 
 const ProjectDetails: NextPageWithLayout = () => {
   const router = useRouter();
+  const { user: loggedInUser } = useUser();
   const { sdk } = useStaking();
   const [poolId, setPoolId] = useState("0");
   const [stakingPool, setStakingPool] = useState<ListCardDataOBj | null>(null);
@@ -22,7 +24,7 @@ const ProjectDetails: NextPageWithLayout = () => {
   useEffect(() => {
     const poolId = router.query.id as string;
     setPoolId(poolId);
-  }, [poolId, router]);
+  }, [router]);
 
   useEffect(() => {
     const getPoolMetadata = async (address: string) => {
@@ -50,9 +52,9 @@ const ProjectDetails: NextPageWithLayout = () => {
         }
       });
     };
-    if (!stakingPool && poolId && sdk) {
+    if (!stakingPool && poolId && sdk && loggedInUser) {
       setIsLoading("loading");
-      sdk.getProject(+poolId).then((pool) => {
+      sdk.getProject(+poolId, loggedInUser._id).then((pool) => {
         if (pool) {
           getCoinDetails([pool.stakeToken, pool.rewardToken]).then();
           const mappedPools = setupUiModels([pool]);
@@ -60,7 +62,7 @@ const ProjectDetails: NextPageWithLayout = () => {
         }
       });
     }
-  }, [stakingPool, poolId, sdk]);
+  }, [stakingPool, poolId, sdk, loggedInUser]);
 
   return isLoading === "loaded" ? (
     <div className="mx-auto h-auto w-full rounded-xl border border-gray-shade-3 bg-black-shade-9 p-4 fxm:p-6">

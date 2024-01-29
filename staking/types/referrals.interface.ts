@@ -14,9 +14,11 @@ export interface Referral {
   // transfers: RefStake[];
   stakedAmount?: string;
   claimableReward?: string;
+  nextTime?: string;
+  user: string;
 }
 
-export class GetReferralsInput extends PaginatedRequest {
+export class GetReferralsInput {
   poolId: string = "";
   user: string = "";
   levels: number;
@@ -26,15 +28,10 @@ export class GetReferralsInput extends PaginatedRequest {
     poolId: string,
     user: string,
     levels: number,
-    claimable: boolean,
-    page: number,
-    pageSize: number
+    claimable: boolean
   ) {
-    super();
     this.poolId = poolId;
     this.user = user;
-    this.page = page;
-    this.pageSize = pageSize;
     this.levels = levels;
     this.isClaimable = claimable;
   }

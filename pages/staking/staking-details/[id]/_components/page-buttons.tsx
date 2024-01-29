@@ -17,7 +17,7 @@ const PageButtonsWrapper: FC<Props> = ({ children, stakingPool }) => {
   useEffect(() => {
     const poolId = router.query.id as string;
     setPoolId(poolId);
-  }, [poolId, router]);
+  }, [router]);
 
   return (
     <div className="mx-auto w-full max-w-[1144px] space-y-6">

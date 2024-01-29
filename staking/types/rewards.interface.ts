@@ -2,13 +2,14 @@ import { PaginatedRequest } from "./general";
 
 export interface ClaimedRewards {
   user: string;
-  transactionHash: string;
+  txId: string;
   poolId: number;
   id: string;
-  blockTimestamp: number;
+  createdAt: number;
   blockNumber: number;
   amount: string;
   paidTax: string;
+  destination: string;
 }
 
 export class GetClaimedRewardsInput extends PaginatedRequest {

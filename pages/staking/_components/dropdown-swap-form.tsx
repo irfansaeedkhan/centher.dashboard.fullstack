@@ -47,33 +47,47 @@ const DropdownSwapForm: React.FC<DropdownProps> = ({
     <div
       ref={ref}
       className={clsx(
-        "relative h-11 w-full rounded-3xl bg-black-shade-7 p-[1px]",
+        "relative h-10 w-full rounded-3xl bg-black-shade-7 p-[1px]",
         isOpen ? "gradient-border-4" : "border border-black-shade-7"
       )}
     >
       <div
         className={clsx(
-          `flex h-11 w-full cursor-pointer items-center justify-between rounded-lg px-4 text-sm font-semibold text-white`,
+          `flex h-10 w-full cursor-pointer items-center justify-center rounded-lg px-4 text-sm font-semibold text-white`,
           error && "border-red-500"
         )}
         onClick={() => setIsOpen(!isOpen)}
       >
-        <div className="flex w-full items-center justify-between gap-2">
+        <div className="flex w-full items-center justify-between gap-1.5">
           {selectedLabel ? (
             <Image
               src={`/images/${selectedValue?.icon}`}
               alt={"passport-banner"}
               height={100}
               width={100}
-              className="h-6 w-6 flex-shrink-0 rounded-xl object-cover"
+              className="h-5 w-5 flex-shrink-0 rounded-xl object-cover"
             />
           ) : null}{" "}
-          {selectedLabel || placeholder}{" "}
+          <span className="text-sm font-medium">
+            {selectedLabel || placeholder}{" "}
+          </span>
           {/* Show selected label or placeholder */}
           {isOpen ? (
-            <SlArrowUp className="h-2 w-2 fill-gray-400  fsm:h-3 fsm:w-3" />
+            <Image
+              src="/images/arrow-up-gradient.svg"
+              alt="arrow-up-gradient"
+              width={24}
+              height={24}
+              className="h-6 w-6 flex-shrink-0"
+            />
           ) : (
-            <SlArrowDown className="h-2 w-2 fill-gray-400 fsm:h-3 fsm:w-3" />
+            <Image
+              src="/images/arrow-down-gradient.svg"
+              alt="arrow-down-gradient"
+              width={24}
+              height={24}
+              className="h-6 w-6 flex-shrink-0"
+            />
           )}
         </div>
         {error && <p className="mt-1 text-xs text-red-500">{error}</p>}

@@ -1,7 +1,7 @@
 import { QueryNames } from "./enum/query.names.enum";
 import { ApolloProvider } from "./providers/apollo.provider";
 import { BigNumber, ethers } from "ethers";
-import { parseEther, parseUnits } from "ethers/lib/utils";
+import { parseUnits } from "ethers/lib/utils";
 import { JsonRpcProvider, JsonRpcSigner } from "@ethersproject/providers";
 import { CitizenShipType } from "@/store/citizen.store";
 import { InsufficientFundError } from "@/staking/errors/params.error";
@@ -19,11 +19,10 @@ import {
 import { SmartContractProvider } from "./providers/smart.contract.provider";
 import { SmartContractName } from "./enum/smart.contract.name.enum";
 import { logger } from "./helpers/alert.helper";
-import { getSigner, simpleRpcProvider } from "./helpers/provider.helper";
 import { normalizeValue } from "./helpers/math.helper";
 import { AddressFactory } from "./providers/address.provider";
 import { BlockchainConfig } from "./config";
-// import { MappedCreateLaunchpadInput } from "@/launchpad/types.ts";
+import { ZeroAddress } from "../constants/common";
 
 export class BlockchainRead {
   static async getERC20Allowance(
@@ -480,7 +479,10 @@ export class BlockchainRead {
     signer: JsonRpcSigner,
     poolId: number,
     user: string
-  ): Promise<string> {
+  ): Promise<{
+    nextTime: string;
+    claimableReward: string;
+  }> {
     try {
       const stakingContract = SmartContractProvider.getContract(
         SmartContractName.STAKING,
@@ -493,7 +495,35 @@ export class BlockchainRead {
           user
         );
 
-      return result["claimableReward"];
+      return {
+        nextTime: result.nextTimeToClaim?.toString(),
+        claimableReward: result.claimableReward?.toString(),
+      };
+    } catch (e) {
+      return { nextTime: "0", claimableReward: "0" };
+    }
+  }
+
+  static async getStakeDetails(
+    signer: JsonRpcSigner,
+    poolId: number,
+    user: string,
+    stakeId: number
+  ): Promise<any> {
+    try {
+      const stakingContract = SmartContractProvider.getContract(
+        SmartContractName.STAKING,
+        signer
+      );
+
+      const result =
+        await stakingContract.functions.calculateTotalRewardPerStake(
+          poolId,
+          user,
+          stakeId
+        );
+
+      return result;
     } catch (e) {
       return "0";
     }
@@ -1513,7 +1543,8 @@ export class BlockchainWrite {
 
   static async claimReward(
     signer: JsonRpcSigner,
-    poolId: string
+    poolId: string,
+    stakesId: number[]
   ): Promise<string> {
     try {
       const stakingContract = SmartContractProvider.getContract(
@@ -1521,9 +1552,9 @@ export class BlockchainWrite {
         signer
       );
 
-      await stakingContract.callStatic.claimReward(poolId);
-      const tx = await stakingContract.functions.claimReward(poolId);
-      await tx.wait();
+      await stakingContract.callStatic.claimReward(poolId, stakesId);
+      const tx = await stakingContract.functions.claimReward(poolId, stakesId);
+      await tx.wait(2);
       return tx.hash;
     } catch (error: any) {
       logger(error, "claimReward");
@@ -1534,7 +1565,7 @@ export class BlockchainWrite {
   static async claimRefReward(
     signer: JsonRpcSigner,
     poolId: string,
-    user: string
+    users: string[]
   ): Promise<string> {
     try {
       const stakingContract = SmartContractProvider.getContract(
@@ -1542,11 +1573,53 @@ export class BlockchainWrite {
         signer
       );
 
-      await stakingContract.callStatic.claimRewardForRef(poolId, user);
-      const tx = await stakingContract.functions.claimRewardForRef(
+      await stakingContract.callStatic.batchTxByRef(
         poolId,
-        user
+        users,
+        ZeroAddress,
+        false
       );
+      const tx = await stakingContract.functions.batchTxByRef(
+        poolId,
+        users,
+        ZeroAddress,
+        false
+      );
+
+      await tx.wait();
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "claimRefReward");
+      throw error;
+    }
+  }
+
+  static async stakeRefReward(
+    signer: JsonRpcSigner,
+    poolId: string,
+    users: string[],
+    referrer: string
+  ): Promise<string> {
+    try {
+      const stakingContract = SmartContractProvider.getContract(
+        SmartContractName.STAKING,
+        signer
+      );
+
+      await stakingContract.callStatic.batchTxByRef(
+        poolId,
+        users,
+        referrer,
+        true
+      );
+
+      const tx = await stakingContract.functions.batchTxByRef(
+        poolId,
+        users,
+        referrer,
+        true
+      );
+
       await tx.wait();
       return tx.hash;
     } catch (error: any) {
@@ -1558,29 +1631,18 @@ export class BlockchainWrite {
   static async unstake(
     signer: JsonRpcSigner,
     poolId: string,
-    amount: string
+    stakesId: number[]
   ): Promise<string> {
     try {
-      if (+amount <= 0) {
-        throw new Error("Invalid amount");
-      }
-
       const stakingContract = SmartContractProvider.getContract(
         SmartContractName.STAKING,
         signer
       );
 
-      await stakingContract.callStatic.unstake(
-        poolId,
-        parseEther(normalizeValue(amount))
-      );
+      await stakingContract.callStatic.unstake(poolId, stakesId);
+      const tx = await stakingContract.functions.unstake(poolId, stakesId);
 
-      const tx = await stakingContract.functions.unstake(
-        poolId,
-        parseEther(normalizeValue(amount))
-      );
-
-      await tx.wait();
+      await tx.wait(2);
       return tx.hash;
     } catch (error: any) {
       logger(error, "unstake");
@@ -1588,18 +1650,21 @@ export class BlockchainWrite {
     }
   }
 
-  static async restake(signer: JsonRpcSigner, poolId: string): Promise<string> {
+  static async restake(
+    signer: JsonRpcSigner,
+    poolId: string,
+    stakesId: number[]
+  ): Promise<string> {
     try {
       const stakingContract = SmartContractProvider.getContract(
         SmartContractName.STAKING,
         signer
       );
 
-      await stakingContract.callStatic.restake(poolId);
+      await stakingContract.callStatic.restakeByIds(poolId, stakesId);
+      const tx = await stakingContract.functions.restakeByIds(poolId, stakesId);
 
-      const tx = await stakingContract.functions.restake(poolId);
-
-      await tx.wait();
+      await tx.wait(2);
       return tx.hash;
     } catch (error: any) {
       logger(error, "restake");

@@ -982,6 +982,65 @@
     border-radius: 5rem;
     box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
   }
+
+  .text-gradient-orange {
+    background: linear-gradient(
+      270.23deg,
+      #70a2ff -85.42%,
+      #72f6d1 -48.05%,
+      #76e268 -3.57%,
+      #ffd505 38.24%,
+      #f76e64 85.39%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    width: fit-content;
+  }
+  .text-gradient-blue {
+    background: linear-gradient(270deg, #5691ff 25%, #72f6d1, #76e268);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .gradient-border-blue {
+    animation: animate 2s linear infinite;
+    border: 2px transparent;
+    border-radius: 100%;
+    background-image: linear-gradient(#1b1c22, #1b1c22),
+      radial-gradient(circle at top right, #5691ff 30%, #72f6d1, #76e268);
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+  }
+  .gradient-border-orange {
+    animation: animate 2s linear infinite;
+    border: 2px transparent;
+    border-radius: 100%;
+    background-image: linear-gradient(#1b1c22, #1b1c22),
+      radial-gradient(circle at top right, #76e268 30%, #ffd505, #f76e64);
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+  }
+  .staking-text-gradient-live {
+    background: linear-gradient(
+      91deg,
+      #a9cdff 0%,
+      #72f6d1 21.87%,
+      #a0ed8d 55.73%,
+      #fed365 81.77%,
+      #faa49e 100%
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .staking-text-gradient-unstakable {
+    background: linear-gradient(91deg, #76e268 0%, #ffd505 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
   .background-gradient-color {
     background: linear-gradient(
       270deg,

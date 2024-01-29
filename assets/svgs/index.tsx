@@ -184,8 +184,11 @@ export { default as IconSearch } from "./icon-search.svg";
 export { default as GradientCopy } from "./gradient-copy.svg";
 export { default as ArrowDiagonal } from "./arrow-diagonal.svg";
 export { default as TitleEditedIcon } from "./title.edited.svg";
-export { default as NewWalletIcon } from "./new-wallet-icon.svg";
 export { BackButtonAnimated } from "./back-button-animation";
+export { default as NewWalletIcon } from "./new-wallet-icon.svg";
+export { default as NewLockIcon } from "./new-lock-icon.svg";
+export { default as NewUnlockWalletIcon } from "./new-unlock-wallet-icon.svg";
+export { default as NewCalendarIcon } from "./new-calendar-icon.svg";
 export { default as CrownIcon } from "./crown-icon.svg";
 export { default as GiftIcon } from "./gift-icon.svg";
 

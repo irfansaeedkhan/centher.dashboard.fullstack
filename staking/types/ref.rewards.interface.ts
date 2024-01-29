@@ -14,14 +14,11 @@ export interface RefReward {
   paidTax: string;
 }
 
-export class GetRefRewardInput extends PaginatedRequest {
+export class GetRefRewardInput {
   poolId: string = "";
   user: string = "";
 
-  constructor(page: number, pageSize: number, poolId: string, user: string) {
-    super();
-    this.page = page;
-    this.pageSize = pageSize;
+  constructor(poolId: string, user: string) {
     this.poolId = poolId;
     this.user = user;
   }

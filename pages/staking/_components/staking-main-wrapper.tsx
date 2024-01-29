@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import clsx from "clsx";
 import { AppRoutes } from "@/constants/app.routes";
+import { BackButton } from "@/components/button/back-button";
 
 interface Props {
   children: React.ReactNode;
@@ -15,58 +16,44 @@ const StakingMainWrapper: FC<Props> = ({ children }) => {
   useEffect(() => {
     const poolId = router.query.id as string;
     setPoolId(poolId);
-  }, [poolId, router]);
+  }, [router]);
 
   return (
     <div className="mx-auto w-full max-w-[1144px] space-y-6 bg-black-shade-3 font-monto">
-      <div className="scrollSetLight2 flex w-full max-w-[780px] flex-shrink-0 items-center gap-4 overflow-x-auto py-2">
+      <div className="scrollSetLight2 flex w-full max-w-[800px] flex-shrink-0 items-center gap-4 overflow-x-auto py-2">
+        <BackButton />
         {router.pathname !== AppRoutes.staking.index &&
           router.pathname !== AppRoutes.staking.faqs && (
             <Link
               href={`/staking/staking-details/${poolId}`}
               className={clsx(
                 router.asPath === `/staking/staking-details/${poolId}` &&
-                  "myBox font-medium",
-                "w-fit flex-shrink-0 px-4 py-1.5 text-xs leading-5 text-white fxm:text-sm fxm:leading-6"
+                  selectedClass,
+                defaultClass
               )}
             >
-              My Staking
+              Personal Rewards
             </Link>
           )}
-        {router.pathname !== AppRoutes.staking.index &&
-          router.pathname !== AppRoutes.staking.faqs && (
-            <Link
-              href={`/staking/staking-details/${poolId}/rewards`}
-              className={clsx(
-                router.pathname.includes("rewards") && "myBox font-medium",
-                "w-fit flex-shrink-0 px-4 py-1.5 text-xs leading-5 text-white fxm:text-sm fxm:leading-6"
-              )}
-            >
-              Claim Rewards
-            </Link>
-          )}
-        {/* {stakingPool?.multilevel_rewards != "No referral" && ( */}
         {router.pathname !== AppRoutes.staking.index &&
           router.pathname !== AppRoutes.staking.faqs && (
             <Link
               href={`/staking/staking-details/${poolId}/referrals`}
               className={clsx(
-                router.pathname.includes("referrals") && "myBox font-medium",
-                "w-fit flex-shrink-0 px-4 py-1.5 text-xs leading-5 text-white fxm:text-sm fxm:leading-6"
+                router.pathname.includes("referrals") && selectedClass,
+                defaultClass
               )}
             >
-              Referrals
+              Referral Rewards
             </Link>
           )}
-        {/* )} */}
         {router.pathname !== AppRoutes.staking.index &&
           router.pathname !== AppRoutes.staking.faqs && (
             <Link
               href={`/staking/staking-details/${poolId}/project-details`}
               className={clsx(
-                router.pathname.includes("project-details") &&
-                  "myBox font-medium",
-                "w-fit flex-shrink-0 px-4 py-1.5 text-xs leading-5 text-white fxm:text-sm fxm:leading-6"
+                router.pathname.includes("project-details") && selectedClass,
+                defaultClass
               )}
             >
               Project Details
@@ -75,8 +62,8 @@ const StakingMainWrapper: FC<Props> = ({ children }) => {
         <Link
           href={AppRoutes.staking.index}
           className={clsx(
-            router.pathname === AppRoutes.staking.index && "myBox font-medium",
-            "w-fit flex-shrink-0 px-4 py-1.5 text-xs leading-5 text-white fxm:text-sm fxm:leading-6"
+            router.pathname === AppRoutes.staking.index && selectedClass,
+            defaultClass
           )}
         >
           Staking Home
@@ -84,16 +71,22 @@ const StakingMainWrapper: FC<Props> = ({ children }) => {
         <Link
           href={AppRoutes.staking.faqs}
           className={clsx(
-            router.pathname === AppRoutes.staking.faqs && "myBox font-medium",
-            "w-fit flex-shrink-0 px-4 py-1.5 text-xs leading-5 text-white fxm:text-sm fxm:leading-6"
+            router.pathname === AppRoutes.staking.faqs && selectedClass,
+            defaultClass
           )}
         >
           FAQs
         </Link>
       </div>
+
       {children}
     </div>
   );
 };
 
 export default StakingMainWrapper;
+
+const defaultClass =
+  "w-fit flex-shrink-0 px-4 py-1.5 text-xs leading-5 text-white fxm:text-sm fxm:leading-6";
+
+const selectedClass = "myBox font-medium";

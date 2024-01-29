@@ -4,7 +4,7 @@ export const config: ICentherStakingConfig = {
   subgraphUrl:
     process.env.NEXT_PUBLIC_APP_ENV === "production"
       ? "https://api.thegraph.com/subgraphs/name/sasimraza/centher-staking-mainnet"
-      : "https://api.thegraph.com/subgraphs/name/sasimraza/centher-staking",
+      : "https://api.thegraph.com/subgraphs/name/rezahssini/new-staking-with-ref-restake",
 };
 
-export const SwappingProjects: string[] = ["4", "30", "19"];
+export const SwappingProjects: string[] = [];

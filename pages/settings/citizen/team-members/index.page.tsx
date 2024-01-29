@@ -7,7 +7,6 @@ import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import Button from "@/components/button";
 import { AppRoutes } from "@/constants/app.routes";
 import cn from "@/utils/cn";
-import { BackButton } from "@/components/button/back-button";
 import { SettingsPagesWrapper } from "../../_components";
 import {
   TeamMembersJoinedTab,
