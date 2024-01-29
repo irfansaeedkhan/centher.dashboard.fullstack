@@ -1,5 +1,5 @@
 import { BigNumber } from "ethers";
-import { JsonRpcSigner, Web3Provider } from "@ethersproject/providers";
+import { JsonRpcSigner } from "@ethersproject/providers";
 import { StakingUploader } from "@/utils/upload.tools/staking.metadata.uploader.utils";
 import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
 import { AddressFactory } from "@/web3/blockchain/providers/address.provider";
@@ -161,21 +161,22 @@ export class CentherStaking {
   }
 
   @CatchError()
-  async getProject(poolId: number): Promise<StakingProject> {
-    // if (cacheIsOn && process.env.NEXT_PUBLIC_APP_ENV === "production") {
-    //   return staking_projects.find((e) => +e.id == poolId) as any;
-    // } else {
+  async getProject(
+    poolId: number,
+    userAddress: string
+  ): Promise<StakingProject> {
     const query = QueryFactory.getQuery(QueryNames.GET_PROJECT);
+
     const result = await this._connection?.query({
       query,
       variables: {
         id: poolId + "",
+        user: userAddress,
       },
       fetchPolicy: "no-cache",
     });
 
     return result?.data.pools[0];
-    // }
   }
 
   @CatchError()
@@ -227,49 +228,6 @@ export class CentherStaking {
   }
 
   @CatchError()
-  async getUserClaimedRewards(
-    input: GetClaimedRewardsInput
-  ): Promise<ClaimedRewards[]> {
-    const query = QueryFactory.getQuery(QueryNames.GET_USER_CLAIMED_REWARDS);
-    const result = await this._connection?.query({
-      query,
-      variables: {
-        poolId: input.poolId,
-        user: input.user,
-        first: input.getPageSize(),
-        skip: input.getPage(),
-      },
-      fetchPolicy: "no-cache",
-    });
-
-    return result?.data.rewardClaimeds;
-  }
-
-  @CatchError()
-  async getClaimedRefRewards(input: GetRefRewardInput): Promise<RefReward[]> {
-    try {
-      const query = QueryFactory.getQuery(
-        QueryNames.GET_USER_CLAIMED_REF_REWARDS
-      );
-
-      const result = await this._connection?.query({
-        query,
-        variables: {
-          projectId: input.poolId,
-          user: input.user,
-          first1: input.getPageSize(),
-          skip1: input.getPage(),
-        },
-        fetchPolicy: "no-cache",
-      });
-
-      return result?.data.rewards;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  @CatchError()
   async getUserReferrals(
     signer: JsonRpcSigner,
     input: GetReferralsInput
@@ -291,7 +249,7 @@ export class CentherStaking {
 
     if (input.levels >= 2 && firstLevel?.length > 0) {
       const secondLevelsPromise = firstLevel.map((e) =>
-        this.getUserLevelReferrals(input.poolId, e.id.split("-")[0], 2)
+        this.getUserLevelReferrals(input.poolId, e.user, 2)
       );
 
       secondLevels = (await Promise.all(secondLevelsPromise)).flat();
@@ -299,7 +257,7 @@ export class CentherStaking {
 
     if (input.levels >= 3 && secondLevels?.length > 0) {
       const thirdLevelsPromise = secondLevels.map((e) =>
-        this.getUserLevelReferrals(input.poolId, e.id.split("-")[0], 3)
+        this.getUserLevelReferrals(input.poolId, e.user, 3)
       );
 
       thirdLevels = (await Promise.all(thirdLevelsPromise)).flat();
@@ -307,7 +265,7 @@ export class CentherStaking {
 
     if (input.levels >= 4 && thirdLevels?.length > 0) {
       const forthLevelsPromise = thirdLevels.map((e) =>
-        this.getUserLevelReferrals(input.poolId, e.id.split("-")[0], 4)
+        this.getUserLevelReferrals(input.poolId, e.user, 4)
       );
 
       fourthLevels = (await Promise.all(forthLevelsPromise)).flat();
@@ -315,7 +273,7 @@ export class CentherStaking {
 
     if (input.levels >= 5 && fourthLevels?.length > 0) {
       const fivethLevelsPromise = fourthLevels.map((e) =>
-        this.getUserLevelReferrals(input.poolId, e.id.split("-")[0], 5)
+        this.getUserLevelReferrals(input.poolId, e.user, 5)
       );
 
       fivethLevels = (await Promise.all(fivethLevelsPromise)).flat();
@@ -323,7 +281,7 @@ export class CentherStaking {
 
     if (input.levels == 6 && fivethLevels?.length > 0) {
       const sixthLevelsPromise = fivethLevels.map((e) =>
-        this.getUserLevelReferrals(input.poolId, e.id.split("-")[0], 6)
+        this.getUserLevelReferrals(input.poolId, e.user, 6)
       );
 
       sixthLevels = (await Promise.all(sixthLevelsPromise)).flat();
@@ -337,13 +295,6 @@ export class CentherStaking {
       ...fivethLevels,
       ...sixthLevels,
     ].sort((a, b) => +b.joinedAt - +a.joinedAt);
-    let start = 0;
-    let end = finalResult.length - 1;
-
-    if (input.page && input.pageSize) {
-      start = input.page == 0 ? 0 : input.page - 1 * input.pageSize;
-      end = input.page * input.pageSize;
-    }
 
     if (finalResult.length) {
       const getUsersStakes = finalResult.map((e) =>
@@ -369,7 +320,7 @@ export class CentherStaking {
 
     return {
       count: finalResult.length,
-      data: finalResult.slice(start, end),
+      data: finalResult,
       totalRewards,
     };
   }
@@ -408,9 +359,17 @@ export class CentherStaking {
   }
 
   @CatchError()
-  async claimReward(signer: JsonRpcSigner, poolId: number): Promise<void> {
+  async claimReward(
+    signer: JsonRpcSigner,
+    poolId: number,
+    stakesId: number[]
+  ): Promise<void> {
     try {
-      const result = await BlockchainWrite.claimReward(signer, poolId + "");
+      const result = await BlockchainWrite.claimReward(
+        signer,
+        poolId + "",
+        stakesId
+      );
 
       if (!result?.length) {
         throw new Error("Invalid transaction");
@@ -424,13 +383,43 @@ export class CentherStaking {
   async claimRefReward(
     signer: JsonRpcSigner,
     poolId: number,
-    user: string
+    users: string[]
   ): Promise<void> {
     try {
       const result = await BlockchainWrite.claimRefReward(
         signer,
         poolId + "",
-        user
+        users
+      );
+
+      if (!result?.length) {
+        throw new Error("Invalid transaction");
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @CatchError()
+  async stakeRefReward(
+    signer: JsonRpcSigner,
+    userAddress: string,
+    poolId: number,
+    users: string[]
+  ): Promise<void> {
+    try {
+      const referrers = await BlockchainRead.getReferrersAddress(
+        signer,
+        userAddress
+      );
+
+      const referrer = referrers[0];
+
+      const result = await BlockchainWrite.stakeRefReward(
+        signer,
+        poolId + "",
+        users,
+        referrer
       );
 
       if (!result?.length) {
@@ -445,10 +434,14 @@ export class CentherStaking {
   async unstake(
     signer: JsonRpcSigner,
     poolId: number,
-    amount: string
+    stakesId: number[]
   ): Promise<void> {
     try {
-      const result = await BlockchainWrite.unstake(signer, poolId + "", amount);
+      const result = await BlockchainWrite.unstake(
+        signer,
+        poolId + "",
+        stakesId
+      );
 
       if (!result?.length) {
         throw new Error("Invalid transaction");
@@ -459,9 +452,17 @@ export class CentherStaking {
   }
 
   @CatchError()
-  async restake(signer: JsonRpcSigner, poolId: number): Promise<void> {
+  async restake(
+    signer: JsonRpcSigner,
+    poolId: number,
+    stakesId: number[]
+  ): Promise<void> {
     try {
-      const result = await BlockchainWrite.restake(signer, poolId + "");
+      const result = await BlockchainWrite.restake(
+        signer,
+        poolId + "",
+        stakesId
+      );
 
       if (!result?.length) {
         throw new Error("Invalid transaction");
@@ -471,11 +472,15 @@ export class CentherStaking {
     }
   }
 
+  @CatchError()
   async getReferralClaimableReward(
     signer: JsonRpcSigner,
     user: string,
     poolId: number
-  ): Promise<string> {
+  ): Promise<{
+    nextTime: string;
+    claimableReward: string;
+  }> {
     const result = await BlockchainRead.getRefClaimableReward(
       signer,
       poolId,
@@ -483,6 +488,22 @@ export class CentherStaking {
     );
 
     return result;
+  }
+
+  @CatchError()
+  async getStakeDetails(
+    signer: JsonRpcSigner,
+    poolId: number,
+    user: string,
+    stakeId: number
+  ): Promise<any> {
+    const { totalClaimableReward, nextClaimTime } =
+      await BlockchainRead.getStakeDetails(signer, poolId, user, stakeId);
+
+    return {
+      totalClaimableReward: totalClaimableReward?.toString(),
+      nextClaimTime: nextClaimTime?.toString(),
+    };
   }
 
   private async getUserLevelRefRewards(
@@ -493,11 +514,15 @@ export class CentherStaking {
     try {
       const result = await this.getReferralClaimableReward(
         signer,
-        input.id.split("-")[0],
+        input.user,
         +poolId
       );
 
-      input.claimableReward = result;
+      input.claimableReward = result.claimableReward;
+      input.nextTime =
+        result.nextTime && +result.nextTime > 0
+          ? +result.nextTime + 60 + ""
+          : result.nextTime;
       return input;
     } catch (error) {
       return input;
@@ -525,6 +550,7 @@ export class CentherStaking {
         joinedAt: e.joinedAt,
         id: e.id,
         level,
+        user: e.user,
       };
     });
   }
@@ -534,11 +560,7 @@ export class CentherStaking {
     poolId: string,
     signer: JsonRpcSigner
   ): Promise<Referral> {
-    const data = await this.getUserStakes(
-      signer,
-      +poolId,
-      input.id.split("-")[0]
-    );
+    const data = await this.getUserStakes(signer, +poolId, input.user);
 
     input.stakedAmount = data.totalStakeAmount;
     return input;

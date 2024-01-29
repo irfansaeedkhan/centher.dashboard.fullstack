@@ -1,5 +1,5 @@
-import { ArrowDownGradient, ArrowUpGradient } from "@/assets/svgs";
 import React, { useState } from "react";
+import Image from "next/image";
 
 const lockOptions = [
   { label: "1-10", value: "10" },
@@ -77,7 +77,23 @@ const CustomDropdown: React.FC<DropdownProps> = ({
       >
         <div className="flex items-center justify-between gap-2">
           <span className="textGradient text-sm">{selectedLabel}</span>
-          {isOpen ? <ArrowUpGradient /> : <ArrowDownGradient />}
+          {isOpen ? (
+            <Image
+              src="/images/arrow-up-gradient.svg"
+              alt="arrow-up-gradient"
+              width={24}
+              height={24}
+              className="h-6 w-6 flex-shrink-0"
+            />
+          ) : (
+            <Image
+              src="/images/arrow-down-gradient.svg"
+              alt="arrow-down-gradient"
+              width={24}
+              height={24}
+              className="h-6 w-6 flex-shrink-0"
+            />
+          )}
         </div>
         {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
       </div>

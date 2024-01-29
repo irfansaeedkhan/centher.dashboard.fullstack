@@ -28,8 +28,8 @@ export const TableCell: React.FC<TableCellProps> = ({
     return (
       <th
         className={clsx(
-          `min-w-[200px] flex-shrink-0 px-8 py-4 font-semibold flg:py-7`,
-          className
+          className,
+          `min-w-[200px] flex-shrink-0 px-8 py-4 font-semibold flg:py-7`
         )}
         {...props}
       />
@@ -38,8 +38,8 @@ export const TableCell: React.FC<TableCellProps> = ({
   return (
     <td
       className={clsx(
-        `min-w-[200px] flex-shrink-0 px-8 py-2 font-medium flg:py-5`,
-        className
+        className,
+        `min-w-[200px] flex-shrink-0 px-8 py-2 font-medium flg:py-5`
       )}
       {...props}
     />

@@ -10,7 +10,6 @@ import {
   rejectReceivedInvite,
 } from "@/lib/org-team-members";
 import { useGetReceivedInvites } from "@/hooks/org-team-members";
-import { BackButton } from "@/components/button/back-button";
 import { SettingsPagesWrapper, OrgTeamConfirmationModal } from "../_components";
 import { JoinedTeam, SingleReceivedInvite } from "./_components";
 

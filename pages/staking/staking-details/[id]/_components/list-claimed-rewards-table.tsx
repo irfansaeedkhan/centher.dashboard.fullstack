@@ -1,4 +1,5 @@
 import React from "react";
+import dayjs from "dayjs";
 import { formatUnits } from "ethers/lib/utils";
 import { RefReward } from "@/staking/types/ref.rewards.interface";
 import { BlockchainConfig } from "@/web3/blockchain/config";
@@ -28,60 +29,70 @@ const ListClaimedRewardsTable: React.FC<{
   };
 
   return (
-    <table className={`w-full max-w-full table-auto`}>
-      <thead className={`bg-elevation-1 text-left text-sm text-gray-shade-7`}>
-        <tr>
-          <TableCell element={"th"}>Date</TableCell>
-          <TableCell element={"th"}>Referral</TableCell>
-          <TableCell element={"th"}>Transaction</TableCell>
-          <TableCell element={"th"}>Amount</TableCell>
-
-          {+data?.[0]?.paidTax > 0 && (
+    <>
+      <table className={`w-full max-w-full table-auto`}>
+        <thead className={`bg-elevation-1 text-left text-sm text-gray-shade-7`}>
+          <tr>
+            <TableCell element={"th"}>Date</TableCell>
+            <TableCell element={"th"}>Referral</TableCell>
+            <TableCell element={"th"}>Transaction</TableCell>
+            <TableCell element={"th"}>Amount</TableCell>
             <TableCell element={"th"}>Tax Amount</TableCell>
-          )}
-          {+data?.[0]?.paidTax > 0 && (
             <TableCell element={"th"}>Profit</TableCell>
-          )}
-        </tr>
-      </thead>
-      <tbody className="">
-        {!data?.length ? (
-          <p className="m-8 w-full text-center text-gray-shade-7">
-            No record found!
-          </p>
-        ) : (
-          data.map((e: RefReward, i: number) => (
-            <TableRow key={i}>
-              <TableCell element={"td"}>
-                {new Date(+e.createdAt * 1000).toLocaleDateString()}
-              </TableCell>
+          </tr>
+        </thead>
 
-              <TableCell element={"td"}>
-                {" "}
-                {e.user.slice(0, 6)}...
-                {e.user.slice(-4)}
-              </TableCell>
-              <TableCell element={"td"}>
-                {Check_Reward_Form_TransactionHash(e)}
-              </TableCell>
-              <TableCell element={"td"}>
-                {formatUnits(+e.amount + +e.paidTax + "", decimals)} {token}
-              </TableCell>
-              {+e?.paidTax > 0 && (
-                <TableCell element={"td"}>
-                  {formatUnits(e.paidTax, decimals)} {token}
-                </TableCell>
-              )}
-              {+e?.paidTax > 0 && (
-                <TableCell element={"td"}>
-                  {formatUnits(e.amount, decimals)} {token}
-                </TableCell>
-              )}
-            </TableRow>
-          ))
-        )}
-      </tbody>
-    </table>
+        <tbody className="">
+          {data?.length
+            ? data.map((e: RefReward, i: number) => (
+                <TableRow key={i}>
+                  <TableCell element={"td"}>
+                    {dayjs(new Date(Number(+e.createdAt) * 1000)).format(
+                      "DD-MMM-YYYY"
+                    )}
+                  </TableCell>
+
+                  <TableCell element={"td"}>
+                    {" "}
+                    {e.user.slice(0, 6)}...
+                    {e.user.slice(-4)}
+                  </TableCell>
+                  <TableCell element={"td"}>
+                    {Check_Reward_Form_TransactionHash(e)}
+                  </TableCell>
+                  <TableCell element={"td"}>
+                    {Number(
+                      formatUnits(+e.amount + +e.paidTax + "", decimals)
+                    ).toFixed(3)}{" "}
+                    {token}
+                  </TableCell>
+                  {+e?.paidTax > 0 ? (
+                    <TableCell element={"td"}>
+                      {Number(formatUnits(e.paidTax, decimals)).toFixed(3)}{" "}
+                      {token}
+                    </TableCell>
+                  ) : (
+                    <TableCell element={"td"}>--</TableCell>
+                  )}
+                  {+e?.amount > 0 ? (
+                    <TableCell element={"td"}>
+                      {Number(formatUnits(e.amount, decimals)).toFixed(3)}{" "}
+                      {token}
+                    </TableCell>
+                  ) : (
+                    <TableCell element={"td"}>--</TableCell>
+                  )}
+                </TableRow>
+              ))
+            : null}
+        </tbody>
+      </table>
+      {!data?.length && (
+        <span className="flex h-20 w-full !min-w-full items-center justify-center rounded-bl-xl text-center text-gray-shade-7">
+          No record found!
+        </span>
+      )}
+    </>
   );
 };
 

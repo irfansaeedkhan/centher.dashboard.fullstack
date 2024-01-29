@@ -25,6 +25,7 @@ export type ListCardDataOBj = {
   supply: string;
   totalStakedAmount: string;
   totalPaidReward: string;
+  totalRestakedAmount: string;
   rate: number;
   nonRefundable: boolean;
   multilevel_rewards?:
@@ -34,6 +35,9 @@ export type ListCardDataOBj = {
   rewards_level?: { level: number; percent: number }[];
   metadata: any;
   metadataUrl: string;
-  users: StakingUser[] | undefined;
-  transfers: UserStakingTransfers[] | undefined;
+  firstRewardDuration: string;
+  users: StakingUser[];
+  transfers: UserStakingTransfers[];
+  rewards: any[];
+  unstakes: any[];
 };

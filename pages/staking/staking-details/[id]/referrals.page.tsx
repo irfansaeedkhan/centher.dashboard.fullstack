@@ -1,40 +1,31 @@
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/router";
-import { formatUnits, isAddress } from "ethers/lib/utils";
+import { formatUnits } from "ethers/lib/utils";
+import { formatEther } from "viem";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import { ClaimableReward, StakingUsers } from "@/assets/svgs";
+import { CrownIcon, GiftIcon, StakingUsers } from "@/assets/svgs";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
 import useUser from "@/hooks/use.user";
 import { useStaking } from "@/hooks/staking";
 import { setupUiModels } from "@/staking/helpers/mappers.helper";
 import { ZeroAddress } from "@/web3/constants/common";
-import {
-  GetRefRewardInput,
-  RefReward,
-} from "@/staking/types/ref.rewards.interface";
-import {
-  GetReferralsInput,
-  Referral,
-} from "@/staking/types/referrals.interface";
 import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
 import { eqAddress } from "@/live/utils/address.utils";
 import { IModalHandler, ModalManager, TemplateCollection } from "@/utils/modal";
 import { CustomModal } from "@/components/modal/custom.modal";
+import ConnectWalletModal from "@/components/modal/connect-wallet-modal";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { useWallet } from "@/web3/hooks/use.wallet";
 import { ListCardDataOBj } from "../../_components/list-card-data";
-import ReferralsTable from "./_components/referrals-table";
 import SuccessModalContent from "./_components/success-modal-content";
 import FailedModalContent from "./_components/failed-modal-content";
 import StakingMainWrapper from "../../_components/staking-main-wrapper";
-import Image from "next/image";
-import ConnectWalletModal from "@/components/modal/connect-wallet-modal";
-
-enum ModalType {
-  successFuncModal = "successFuncModal",
-  failedFuncModal = "failedFuncModal",
-}
+import { ReferralsTabs } from "./_components/referral-components";
+import { GetReferralsInput } from "@/staking/types/referrals.interface";
+import { ReferralInfo } from "./_components/referral-components/referrals-tabs";
+import { calculateNextRefReward } from "@/staking/helpers/stake.helper";
 
 const StakingReferrals: NextPageWithLayout = () => {
   const { getSigner, disconnectWallet, connectWallet, connectedAddress } =
@@ -45,30 +36,97 @@ const StakingReferrals: NextPageWithLayout = () => {
     content: "",
   });
   const [stakingPool, setStakingPool] = useState<ListCardDataOBj | null>(null);
-  const [coinsDetails, setCoinsDetails] = useState<
-    Array<CoinDetails | undefined>
-  >([]);
+  const [coinsDetails, setCoinsDetails] = useState<CoinDetails[]>([]);
   const { user } = useUser();
   const router = useRouter();
   const { sdk } = useStaking();
   const [poolId, setPoolId] = useState("0");
-  const [totalClaimed, setTotalClaimed] = useState("0");
-  const [claimedRewards, setClaimedRewards] = useState<RefReward[]>([]);
-  const [page, setPage] = useState("1");
-  const [pageSize, setPageSize] = useState("10");
-  const [currentTab, setCurrentTab] = useState<"rewards" | "referrals">(
-    "rewards"
-  );
   const [connectWalletModal, setConnectWalletModal] = useState(false);
-  const [claimRefRewardInProgress, setClaimRefRewardInProgress] = useState("");
-
-  const [referralsInfo, setReferralsInfo] = useState<{
-    data: Referral[];
-    count: number;
-    totalRewards: number;
-  } | null>(null);
-
   const [isLoading, setIsLoading] = useState(true);
+
+  const [totalClaimed, setTotalClaimed] = useState(0);
+  const [totalClaimable, setTotalClaimable] = useState("0");
+  const [totalReferrals, setTotalReferrals] = useState(0);
+  const [referralInfo, setReferralInfo] = useState<ReferralInfo | null>(null);
+
+  const getCoinDetails = async (tokens: string[]) => {
+    const list: string[] = [];
+    tokens.filter(Boolean).forEach((e) => {
+      if (e != ZeroAddress && list.indexOf(e) == -1) {
+        list.push(e);
+      }
+    });
+
+    const details = await fetchTokenMetadata(list);
+    const tokenDetails = details.map((e: any) => e.token._value);
+    setCoinsDetails(
+      tokenDetails.map((e: any) => {
+        return {
+          ...e,
+          contractAddress: e.contractAddress._value,
+          chain: e.chain._value,
+        };
+      })
+    );
+  };
+
+  async function loadData() {
+    if (sdk && poolId && connectedAddress) {
+      const pool = await sdk.getProject(+poolId, connectedAddress);
+
+      if (!coinsDetails?.length && pool) {
+        await getCoinDetails([pool.stakeToken, pool.rewardToken]);
+      }
+
+      const mappedPools = setupUiModels([pool]);
+      const mappedPool = mappedPools[0];
+
+      const totalClaimed = mappedPool.rewards
+        .filter((e) => e.type == "ref")
+        .reduce((a, b) => a + +b.amount, 0);
+
+      let maxLevel =
+        mappedPool?.rewards_level?.find((e) => !e.percent || +e.percent == 0)
+          ?.level || 6;
+
+      const refInfo = await sdk.getUserReferrals(
+        getSigner()!,
+        new GetReferralsInput(
+          mappedPool.id,
+          connectedAddress,
+          maxLevel,
+          mappedPool.multilevel_rewards == "Recurring Return (0 to 6 levels)"
+        )
+      );
+
+      refInfo.data = refInfo.data?.map((e) => {
+        if (
+          e.nextTime &&
+          +e.nextTime > +new Date() / 1000 &&
+          e.claimableReward &&
+          +e.claimableReward == 0
+        ) {
+          e.claimableReward = calculateNextRefReward(
+            mappedPool,
+            e.stakedAmount,
+            e.level
+          );
+        }
+        return e;
+      });
+
+      setReferralInfo(refInfo);
+      setTotalClaimable(refInfo.totalRewards + "");
+      setTotalClaimed(totalClaimed);
+      setStakingPool(mappedPool);
+      setTotalReferrals(mappedPool.users.length);
+    }
+  }
+
+  useEffect(() => {
+    const poolId = router.query.id as string;
+    setPoolId(poolId);
+  }, [router]);
 
   useEffect(() => {
     if (!getSigner()) {
@@ -79,104 +137,17 @@ const StakingReferrals: NextPageWithLayout = () => {
   }, [getSigner]);
 
   useEffect(() => {
-    const getCoinDetails = async (tokens: string[]) => {
-      const list: string[] = [];
-      tokens.filter(Boolean).forEach((e) => {
-        if (e != ZeroAddress && list.indexOf(e) == -1) {
-          list.push(e);
-        }
-      });
-
-      const details = await fetchTokenMetadata(list);
-      const tokenDetails = details.map((e: any) => e.token._value);
-      setCoinsDetails(
-        tokenDetails.map((e: any) => {
-          return {
-            ...e,
-            contractAddress: e.contractAddress._value,
-            chain: e.chain._value,
-          };
-        })
-      );
-    };
-
-    if (!stakingPool && poolId && sdk) {
+    if (!stakingPool && poolId && sdk && connectedAddress) {
       setIsLoading(true);
-      sdk.getProject(+poolId).then((pool) => {
-        if (pool) {
-          getCoinDetails([pool.stakeToken, pool.rewardToken]).then();
-          const mappedPools = setupUiModels([pool]);
-          setStakingPool(mappedPools[0]);
-          setIsLoading(false);
-        }
-        //else {//redirect to index}
+      loadData().then(() => {
+        setIsLoading(false);
       });
     }
-  }, [stakingPool, poolId, sdk]);
-
-  useEffect(() => {
-    const poolId = router.query.id as string;
-    setPoolId(poolId);
-  }, [poolId, router]);
-
-  useEffect(() => {
-    if (user && sdk && poolId) {
-      sdk
-        .getClaimedRefRewards(
-          new GetRefRewardInput(+page, +pageSize, poolId, user._id)
-        )
-        .then((data) => {
-          setClaimedRewards(data);
-          const total = data.reduce(
-            (a: number, b: { amount: string }) => a + +b.amount,
-            0
-          );
-          setTotalClaimed(total + "");
-        });
-    }
-  }, [poolId, sdk, user, page, pageSize, currentTab, stakingPool]);
-
-  useEffect(() => {
-    if (user && sdk && poolId && stakingPool) {
-      let maxLevel =
-        stakingPool?.rewards_level?.find((e) => !e.percent || +e.percent == 0)
-          ?.level || 6;
-      sdk
-        .getUserReferrals(
-          getSigner()!,
-          new GetReferralsInput(
-            poolId,
-            user._id,
-            maxLevel,
-            stakingPool.multilevel_rewards ==
-              "Recurring Return (0 to 6 levels)",
-            +page,
-            +pageSize
-          )
-        )
-        .then((data) => {
-          setReferralsInfo(data);
-        });
-    }
-  }, [poolId, sdk, user, page, pageSize, currentTab, stakingPool]);
-
-  const claimRefReward = async (user: string) => {
-    try {
-      if (isAddress(user) && sdk && poolId) {
-        setClaimRefRewardInProgress(user);
-        await sdk.claimRefReward(getSigner()!, +poolId, user);
-        modal.createModal(ModalType.successFuncModal);
-      } else throw new Error("invalid params");
-    } catch (error) {
-      modal.createModal(ModalType.failedFuncModal);
-    } finally {
-      setClaimRefRewardInProgress("");
-    }
-  };
+  }, [stakingPool, poolId, sdk, connectedAddress]);
 
   const modalTemplateCollection: TemplateCollection = {
     successFuncModal: {
-      title: "Creating Staking Pack",
+      title: "Claim Reward",
       visibility: true,
       content: () => (
         <SuccessModalContent
@@ -185,8 +156,18 @@ const StakingReferrals: NextPageWithLayout = () => {
         />
       ),
     },
+    successResttakeFuncModal: {
+      title: "Restake Referral reward",
+      visibility: true,
+      content: () => (
+        <SuccessModalContent
+          title="Restake Referral reward"
+          message="You staked your reward from your referral."
+        />
+      ),
+    },
     failedFuncModal: {
-      title: "Creating Staking Pack",
+      title: "Claim Referral Reward",
       visibility: true,
       content: () => (
         <FailedModalContent
@@ -199,7 +180,17 @@ const StakingReferrals: NextPageWithLayout = () => {
 
   const modal = new ModalManager(setModalModel, modalTemplateCollection);
 
-  return !connectWalletModal && (isLoading || !referralsInfo) ? (
+  return connectWalletModal ? (
+    <ConnectWalletModal
+      onClose={() => setConnectWalletModal(false)}
+      open={connectWalletModal}
+      loggedInUser={user}
+      connectWallet={connectWallet}
+      connectedAddress={connectedAddress}
+      disconnectWallet={disconnectWallet}
+      authType="login"
+    />
+  ) : isLoading ? (
     <div className="flex h-[calc(100vh-60px)] w-full items-center justify-center">
       <Image
         src="/images/preloader.png"
@@ -215,25 +206,27 @@ const StakingReferrals: NextPageWithLayout = () => {
         <div className="text-[min(10vw, 20px)] font-semibold text-white">
           Referrals Overview
         </div>
-        <div className="grid-col-1 mt-5 grid max-w-full flex-grow flex-wrap gap-5 fmd:grid-cols-2 flg:grid-cols-3">
-          <div className="col-span-2 flex h-[96px] w-full gap-4 rounded-xl bg-elevation-1 px-5 py-6 fmd:col-span-1">
-            <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-brand-primary/60 bg-brand-primary/10">
-              <ClaimableReward />
+        <div className="grid-col-1 grid max-w-full flex-grow flex-wrap gap-5 fmd:grid-cols-2 flg:grid-cols-3">
+          <div className="col-span-2 flex h-[48px] w-full gap-4 rounded-xl bg-transparent fmd:col-span-1">
+            <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-red-shade-2/60 bg-red-shade-2/10">
+              <GiftIcon />
             </div>
             <div>
               <p className="text-xs font-medium text-gray-shade-14">
                 Total Claimed Rewards
               </p>
               <p className="mt-[6px] font-semibold text-white">
-                {formatUnits(
-                  normalizeValue(totalClaimed + ""),
-                  coinsDetails.find((e) =>
-                    eqAddress(
-                      e?.contractAddress,
-                      stakingPool?.reward_token_address
-                    )
-                  )?.decimals
-                )}{" "}
+                {Number(
+                  formatUnits(
+                    normalizeValue(totalClaimed + ""),
+                    coinsDetails.find((e) =>
+                      eqAddress(
+                        e?.contractAddress,
+                        stakingPool?.reward_token_address
+                      )
+                    )?.decimals
+                  )
+                ).toFixed(3)}{" "}
                 {
                   coinsDetails.find((e) =>
                     eqAddress(
@@ -245,26 +238,16 @@ const StakingReferrals: NextPageWithLayout = () => {
               </p>
             </div>
           </div>
-          <div className="col-span-2 flex h-[96px] w-full gap-4 rounded-xl bg-elevation-1 px-5 py-6 fmd:col-span-1">
-            <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-[#D35DB9]/60 bg-[#D35DB9]/10">
-              <ClaimableReward />
+          <div className="col-span-2 flex h-[48px] w-full gap-4 rounded-xl bg-transparent fmd:col-span-1">
+            <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-yellow-shade-2/60 bg-yellow-shade-2/10">
+              <CrownIcon />
             </div>
             <div>
               <p className="text-xs font-medium text-gray-shade-14">
                 Total Claimable Rewards
               </p>
               <p className="mt-[6px] font-semibold text-white">
-                {formatUnits(
-                  referralsInfo?.totalRewards
-                    ? referralsInfo.totalRewards + ""
-                    : "0",
-                  coinsDetails.find((e) =>
-                    eqAddress(
-                      e?.contractAddress,
-                      stakingPool?.reward_token_address
-                    )
-                  )?.decimals
-                )}{" "}
+                {Number(formatEther(BigInt(totalClaimable))).toFixed(3)} {}
                 {
                   coinsDetails.find((e) =>
                     eqAddress(
@@ -276,8 +259,8 @@ const StakingReferrals: NextPageWithLayout = () => {
               </p>
             </div>
           </div>
-          <div className="col-span-2 flex h-[96px] w-full gap-4 rounded-xl bg-elevation-1 px-5 py-6 flg:col-span-1">
-            <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-[#5F97FF]/60 bg-[#5F97FF]/10">
+          <div className="col-span-2 flex h-[48px] w-full gap-4 rounded-xl bg-transparent flg:col-span-1">
+            <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-green-shade-2/60 bg-green-shade-2/10">
               <StakingUsers />
             </div>
             <div>
@@ -285,31 +268,21 @@ const StakingReferrals: NextPageWithLayout = () => {
                 Total Referrals
               </p>
               <p className="mt-[6px] font-semibold text-white">
-                {referralsInfo?.count}
+                {totalReferrals}
               </p>
             </div>
           </div>
         </div>
       </div>
-
-      <ReferralsTable
-        isClaiming={claimRefRewardInProgress}
-        rewards={claimedRewards}
-        referrals={referralsInfo?.data}
-        pageSize={pageSize}
-        setPageSize={setPageSize}
-        currentTab={currentTab}
-        setCurrentTab={setCurrentTab}
-        claimRefReward={claimRefReward}
+      <ReferralsTabs
         pool={stakingPool}
         coins={coinsDetails}
-        claimable={
-          stakingPool?.multilevel_rewards == "Recurring Return (0 to 6 levels)"
-        }
+        referralInfo={referralInfo}
+        reload={loadData}
       />
       {ModalModel.visibility && (
         <CustomModal
-          title={ModalModel.title as string}
+          title={" "}
           onClose={() => {
             modal.dismissModal();
           }}
@@ -317,16 +290,6 @@ const StakingReferrals: NextPageWithLayout = () => {
           {ModalModel.content}
         </CustomModal>
       )}
-
-      <ConnectWalletModal
-        onClose={() => setConnectWalletModal(false)}
-        open={connectWalletModal}
-        loggedInUser={user}
-        connectWallet={connectWallet}
-        connectedAddress={connectedAddress}
-        disconnectWallet={disconnectWallet}
-        authType="login"
-      />
     </>
   );
 };

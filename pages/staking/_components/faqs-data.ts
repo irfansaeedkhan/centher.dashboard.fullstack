@@ -23,13 +23,6 @@ export const faqsData: Faq[] = [
     answer:
       "The staking rewards will depend mainly on APY and Staking / Reward Token Price Ratio. Each project will have different claiming periods and of course the initial staked amount will affect the kind of profit you can make on daily, weekly, monthly basis.",
   },
-  // {
-  //   id: 5,
-  //   question:
-  //     "Will the staking rewards you earning depend on the platform and the NFTs you stake?",
-  //   answer:
-  //     "Yes, the staking rewards you earning depend on the platform and the NFTs you stake. Some platforms offer higher staking rewards than others. Some NFTs offer higher staking rewards than others.",
-  // },
 ];
 
 export type Faq = {

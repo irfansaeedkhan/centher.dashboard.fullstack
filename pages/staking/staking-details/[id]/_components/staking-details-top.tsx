@@ -1,25 +1,18 @@
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
 import { useRouter } from "next/router";
-import { ethers } from "ethers";
-import { AiOutlineInfoCircle } from "react-icons/ai";
-import axios from "axios";
-import { formatUnits, parseEther } from "ethers/lib/utils";
+import { BigNumber, ethers } from "ethers";
+import { formatEther, formatUnits, parseEther } from "ethers/lib/utils";
 import { useStaking } from "@/hooks/staking";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
-import { setupUiModels } from "@/staking/helpers/mappers.helper";
-import { ZeroAddress } from "@/web3/constants/common";
 import { ListCardDataOBj } from "@/pages/staking/_components/list-card-data";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { useWallet } from "@/web3/hooks/use.wallet";
-import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
-import { eqAddress } from "@/live/utils/address.utils";
 import { CustomModal } from "@/components/modal/custom.modal";
-import { formatIPFSUrl } from "@/utils/format.address";
 import { IModalHandler, ModalManager, TemplateCollection } from "@/utils/modal";
 import StakeNow, { StakingStat } from "./stake-now";
 import SuccessModalContent from "./success-modal-content";
 import FailedModalContent from "./failed-modal-content";
+import { eqAddress } from "@/live/utils/address.utils";
 
 const oneYearInSec = 31449600;
 
@@ -28,7 +21,12 @@ enum ModalType {
   failedFuncModal = "failedFuncModal",
 }
 
-const StakingDetailsTop = () => {
+const StakingDetailsTop: React.FC<{
+  setConnectWalletModal: (value: boolean) => void;
+  stakingPool: ListCardDataOBj;
+  coinsDetails: CoinDetails[];
+  reload: any;
+}> = ({ setConnectWalletModal, stakingPool, coinsDetails, reload }) => {
   const router = useRouter();
   const { getSigner, connectedAddress } = useWallet();
   const [ModalModel, setModalModel] = useState<IModalHandler>({
@@ -37,25 +35,16 @@ const StakingDetailsTop = () => {
     content: "",
   });
   const { sdk } = useStaking();
-  const [poolId, setPoolId] = useState("0");
   const [activeTab, setActiveTab] = useState("index");
   const [stakingStat, setStakingStat] = useState<StakingStat | null>(null);
-  const [coinsDetails, setCoinsDetails] = useState<
-    Array<CoinDetails | undefined>
-  >([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [stakingPool, setStakingPool] = useState<ListCardDataOBj | null>(null);
   const [rewardEstimation, setRewardEstimation] = useState<{
     claim: string;
     total: string;
   } | null>(null);
   const [stakingValue, setStakingValue] = useState<string>("0");
+  const [stakedAmount, setStakedAmount] = useState<string>("0");
+  const [restakedAmount, setRestakedAmount] = useState<string>("0");
   const [stakeLoader, setStakeLoader] = useState<boolean>(false);
-
-  useEffect(() => {
-    const poolId = router.query.id as string;
-    setPoolId(poolId);
-  }, [poolId, router]);
 
   useEffect(() => {
     if (router.pathname.includes("rewards")) {
@@ -68,83 +57,48 @@ const StakingDetailsTop = () => {
   }, [activeTab, router]);
 
   useEffect(() => {
-    const getPoolMetadata = async (address: string) => {
+    if (stakingPool && !stakingStat) {
       try {
-        const metadata = await axios.get(formatIPFSUrl(address));
-        if (stakingPool && metadata.data) {
-          stakingPool.metadata = metadata.data;
-          setStakingPool(stakingPool);
-        }
-      } catch (error) {}
-      setIsLoading(false);
-    };
+        const totalStakedAmount =
+          +stakingPool.totalStakedAmount + +stakingPool.totalRestakedAmount;
 
-    if (stakingPool && !stakingPool.metadata) {
-      getPoolMetadata(stakingPool.metadataUrl).then();
+        setStakingStat({
+          totalStakedAmount: totalStakedAmount + "",
+          totalStakingCap: stakingPool.supply,
+          tokenAddress: stakingPool.token_address,
+          minAmount: stakingPool.min_staking_amount,
+          maxAmount: stakingPool.max_staking_amount,
+        });
+      } catch (error) {}
     }
 
-    if (stakingPool && !stakingStat) {
-      setStakingStat({
-        totalStakedAmount: formatUnits(
-          stakingPool.totalStakedAmount
-            ? stakingPool.totalStakedAmount + ""
-            : "0",
-          18
-        ),
-        totalStakingCap: stakingPool.supply,
-        tokenAddress: stakingPool.token_address,
-        minAmount: stakingPool.min_staking_amount,
-        maxAmount: stakingPool.max_staking_amount,
-      });
+    if (stakingPool) {
+      try {
+        setStakedAmount(
+          stakingPool.totalStakedAmount?.trim() == ""
+            ? "0"
+            : formatEther(stakingPool.totalStakedAmount)
+        );
+        setRestakedAmount(
+          stakingPool.totalRestakedAmount?.trim() == ""
+            ? "0"
+            : formatEther(stakingPool.totalRestakedAmount)
+        );
+      } catch (error) {}
     }
   }, [stakingPool, stakingStat]);
 
   useEffect(() => {
-    const getCoinDetails = async (tokens: string[]) => {
-      const list: string[] = [];
-      tokens.filter(Boolean).forEach((e) => {
-        if (e != ZeroAddress && list.indexOf(e) == -1) {
-          list.push(e);
-        }
-      });
-
-      const details = await fetchTokenMetadata(list);
-      const tokenDetails = details.map((e: any) => e.token._value);
-      setCoinsDetails(
-        tokenDetails.map((e: any) => {
-          return {
-            ...e,
-            contractAddress: e.contractAddress._value,
-            chain: e.chain._value,
-          };
-        })
-      );
-    };
-
-    if (!stakingPool && poolId && sdk) {
-      setIsLoading(true);
-      sdk.getProject(+poolId).then((pool) => {
-        if (pool) {
-          getCoinDetails([pool.stakeToken, pool.rewardToken]).then();
-          const mappedPools = setupUiModels([pool]);
-          setStakingPool(mappedPools[0]);
-        }
-        //else {//redirect to index}
-      });
-    }
-  }, [stakingPool, poolId, sdk]);
-
-  useEffect(() => {
     if (stakingPool) {
       const total =
-        +(+stakingPool.apy / 10000).toFixed(2) *
+        +(+stakingPool.apy / 10000) *
         +stakingValue *
-        +(+stakingPool.staking_period / oneYearInSec).toFixed(4);
+        +(+stakingPool.staking_period / oneYearInSec);
 
       const claim =
-        +(+stakingPool.apy / 10000).toFixed(2) *
+        +(+stakingPool.apy / 10000) *
         +stakingValue *
-        +(+stakingPool.claim_period / oneYearInSec).toFixed(4);
+        +(+stakingPool.claim_period / oneYearInSec);
 
       let coef = 1;
       if (stakingPool.rate && stakingPool.rate > 0) {
@@ -152,8 +106,8 @@ const StakingDetailsTop = () => {
       }
 
       setRewardEstimation({
-        total: total * coef + "",
-        claim: claim * coef + "",
+        total: +total.toFixed(2) * coef + "",
+        claim: +claim.toFixed(2) * coef + "",
       });
     }
   }, [stakingValue, stakingPool]);
@@ -171,7 +125,7 @@ const StakingDetailsTop = () => {
       const amount = parseEther(normalizeValue(stakingValue) + "").toString();
       const minAmount = stakingPool?.min_staking_amount || "0";
       const maxAmount = stakingPool?.max_staking_amount || "0";
-      if (sdk && poolId) {
+      if (sdk) {
         if (
           stakingPool?.max_staking_amount &&
           +stakingPool?.max_staking_amount > 0 &&
@@ -217,17 +171,20 @@ const StakingDetailsTop = () => {
         setStakeLoader(true);
         await sdk.stake(
           getSigner()!,
-          +poolId,
+          +stakingPool.id,
           connectedAddress,
           amount,
           stakingPool?.token_address as string
         );
+
         setStakeLoader(false);
         modal.createModal(ModalType.successFuncModal, {
           title: "New Stake",
-          message:
-            "Your stake processed successfully. Reload the page to get the latest details.",
+          message: "Your stake processed successfully",
         });
+        setTimeout(async () => {
+          await reload(true);
+        }, 2500);
       } else {
         throw new Error("Invalid params");
       }
@@ -276,149 +233,104 @@ const StakingDetailsTop = () => {
 
   const modal = new ModalManager(setModalModel, modalTemplateCollection);
 
-  return stakingStat && !isLoading ? (
-    <div className="mx-auto h-auto w-full rounded-xl border border-gray-shade-3 bg-black-shade-9 p-4 fxm:p-6">
-      <div className="flex h-fit flex-col justify-between gap-8 flg:flex-row">
-        {stakingStat && (
-          <StakeNow
-            data={stakingStat}
-            onValueChanged={stakingValueChanges}
-            onSubmit={stakeSubmit}
-            coins={coinsDetails}
-            start={stakingPool?.start_time || "1"}
-            stakingLoader={stakeLoader}
-          />
-        )}
-        <div className="h-auto w-full rounded-2xl border border-gray-shade-3 p-8 flg:max-w-[512px]">
-          <p className="text-[min(10vw, 20px)] font-semibold text-white">
-            Reward Calculation
-          </p>
-          <div className="mt-11 flex items-center justify-between gap-5">
-            <p className="flex items-center gap-2 text-sm text-gray-shade-14">
-              <span>APY (%)</span>
-              <AiOutlineInfoCircle className="h-4 w-4" />
-            </p>
-            <p className="text-sm font-medium text-white">
-              {(stakingPool ? +stakingPool.apy : 0) / 100} %
-            </p>
-          </div>
-          <div className="mt-6 flex items-center justify-between gap-5">
-            <p className="flex items-center gap-2 text-sm text-gray-shade-14">
-              <span>Total staked</span>
-            </p>
-            <p className="text-sm font-medium text-white">
-              {Number(
-                formatUnits(
-                  stakingPool?.totalStakedAmount + "",
-                  coinsDetails.find((e) =>
-                    eqAddress(e?.contractAddress, stakingPool?.token_address)
-                  )?.decimals || 18
-                )
-              )?.toFixed(2)}{" "}
-              {
-                coinsDetails.find((e) =>
-                  eqAddress(e?.contractAddress, stakingPool?.token_address)
-                )?.symbol
-              }
-            </p>
-          </div>
-          <div className="mt-6 flex items-center justify-between gap-5">
-            <p className="flex items-center gap-2 text-sm text-gray-shade-14">
-              <span>Total paid rewards</span>
-            </p>
-            <p className="text-sm font-medium text-white">
-              {Number(
-                formatUnits(
-                  stakingPool?.totalPaidReward + "",
-                  coinsDetails.find((e) =>
-                    eqAddress(
-                      e?.contractAddress,
-                      stakingPool?.reward_token_address
-                    )
-                  )?.decimals || 18
-                )
-              )?.toFixed(2)}{" "}
-              {
-                coinsDetails.find((e) =>
-                  eqAddress(
-                    e?.contractAddress,
-                    stakingPool?.reward_token_address
-                  )
-                )?.symbol
-              }
-            </p>
-          </div>
-          <div className="mb-6 mt-6 flex items-center justify-between gap-5">
-            <p className="flex items-center gap-2 text-sm text-gray-shade-14">
-              <span>Stakers</span>
-            </p>
-            <p className="text-sm font-medium text-white">
-              {stakingPool?.users ? stakingPool?.users.length : 0}
-            </p>
-          </div>
-          <div className="border-b-2 border-gray-shade-3"></div>
-          <div className="mt-6 flex items-center justify-between gap-5">
-            <p className="flex items-center gap-2 text-sm text-gray-shade-14">
-              <span>Your reward in each claim</span>
-            </p>
-            <p className="text-sm font-medium text-white">
-              {rewardEstimation ? (
-                normalizeValue(rewardEstimation.claim) +
-                " " +
-                coinsDetails.find((e) =>
-                  eqAddress(
-                    e?.contractAddress,
-                    stakingPool?.reward_token_address
-                  )
-                )?.symbol
-              ) : (
-                <span className="textGradient text-sm">N/A</span>
-              )}
-            </p>
-          </div>
-          <div className="mt-6 flex items-center justify-between gap-5">
-            <p className="flex items-center gap-2 text-sm text-gray-shade-14">
-              <span>Your total reward</span>
-            </p>
-            <p className="text-sm font-medium text-white">
-              {rewardEstimation ? (
-                Number(normalizeValue(rewardEstimation.total))?.toFixed(2) +
-                " " +
-                coinsDetails.find((e) =>
-                  eqAddress(
-                    e?.contractAddress,
-                    stakingPool?.reward_token_address
-                  )
-                )?.symbol
-              ) : (
-                <span className="textGradient text-sm">N/A</span>
-              )}
-            </p>
+  return (
+    stakingStat && (
+      <div className="mx-auto h-auto w-full rounded-xl border border-gray-shade-3 bg-black-shade-9 p-4 fxm:p-6">
+        <div className="flex h-fit flex-col justify-between gap-8 flg:flex-row">
+          {stakingStat && (
+            <StakeNow
+              data={stakingStat}
+              onValueChanged={stakingValueChanges}
+              onSubmit={stakeSubmit}
+              coins={coinsDetails}
+              start={stakingPool?.start_time || "1"}
+              stakingLoader={stakeLoader}
+              connectedAddress={connectedAddress}
+              walletModal={() => setConnectWalletModal(true)}
+              signer={getSigner()}
+              amount={stakingValue}
+            />
+          )}
+          <div className="h-auto w-full rounded-2xl border border-gray-shade-3 bg-transparent p-8 flg:max-w-[512px]">
+            <div>
+              <p className="text-[min(10vw, 20px)] font-semibold text-white">
+                Staking Amount
+              </p>
+              <div className="mt-4 flex items-center justify-between gap-5">
+                <p className="flex items-center gap-2 text-sm text-gray-shade-14">
+                  <span>Token Staked</span>
+                </p>
+                <p className="text-sm font-medium text-white">
+                  {normalizeValue(Number(stakedAmount)?.toFixed(3))}&nbsp;
+                  {
+                    coinsDetails.find((e) =>
+                      eqAddress(e.contractAddress, stakingPool.token_address)
+                    )?.symbol
+                  }
+                </p>
+              </div>
+              <div className="mt-3 flex items-center justify-between gap-5">
+                <p className="flex items-center gap-2 text-sm text-gray-shade-14">
+                  <span>Token ReStaked</span>
+                </p>
+                <p className="text-sm font-medium text-white">
+                  {normalizeValue(Number(restakedAmount)?.toFixed(3))}&nbsp;
+                  {
+                    coinsDetails.find((e) =>
+                      eqAddress(e.contractAddress, stakingPool.token_address)
+                    )?.symbol
+                  }
+                </p>
+              </div>
+            </div>
+            <div className="mt-8">
+              <p className="text-[min(10vw, 20px)] font-semibold text-white">
+                Reward Calculation
+              </p>
+              <div className="mt-4 flex items-center justify-between gap-5">
+                <p className="flex items-center gap-2 text-sm text-gray-shade-14">
+                  <span>Your reward in each claim</span>
+                </p>
+                <p className="text-sm font-medium text-white">
+                  {normalizeValue(Number(rewardEstimation?.claim)?.toFixed(3))}
+                  &nbsp;
+                  {
+                    coinsDetails.find((e) =>
+                      eqAddress(e.contractAddress, stakingPool.token_address)
+                    )?.symbol
+                  }
+                </p>
+              </div>
+              <div className="mt-3 flex items-center justify-between gap-5">
+                <p className="flex items-center gap-2 text-sm text-gray-shade-14">
+                  <span>Your total reward</span>
+                </p>
+                <p className="text-sm font-medium text-white">
+                  {normalizeValue(Number(rewardEstimation?.total)?.toFixed(3))}
+                  &nbsp;
+                  {
+                    coinsDetails.find((e) =>
+                      eqAddress(e.contractAddress, stakingPool.token_address)
+                    )?.symbol
+                  }
+                </p>
+              </div>
+            </div>
           </div>
         </div>
+        {ModalModel.visibility && (
+          <CustomModal
+            title={" "}
+            onClose={() => {
+              modal.dismissModal();
+            }}
+          >
+            {ModalModel.content}
+          </CustomModal>
+        )}
       </div>
-      {ModalModel.visibility && (
-        <CustomModal
-          title={ModalModel.title as string}
-          onClose={() => {
-            modal.dismissModal();
-          }}
-        >
-          {ModalModel.content}
-        </CustomModal>
-      )}
-    </div>
-  ) : isLoading ? (
-    <div className="flex h-[calc(100vh-60px)] w-full items-center justify-center">
-      <Image
-        src="/images/preloader.png"
-        alt="preloader"
-        width={64}
-        height={64}
-        className="h-16 w-16 flex-shrink-0 object-cover"
-      />
-    </div>
-  ) : null;
+    )
+  );
 };
 
 export default StakingDetailsTop;

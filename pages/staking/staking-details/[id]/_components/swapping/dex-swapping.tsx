@@ -20,13 +20,14 @@ import {
   SwapRouter,
   SmartRouterTrade,
 } from "@pancakeswap/smart-router";
-import { hexToBigInt } from "viem";
-import { ethers } from "ethers";
+import { CustomNumberInput } from "@/components/custom-number-input";
 import {
   dexSwappingConfig,
   v3SubgraphProvider,
   viemProviders,
 } from "./dex-swapping-config";
+import { ethers } from "ethers";
+import { hexToBigInt } from "viem";
 import toast from "react-hot-toast";
 import { Loader } from "./loader";
 
@@ -44,8 +45,8 @@ export const DexSwapping = () => {
 
   const [trade, setTrade] = useState<SmartRouterTrade<TradeType> | null>(null);
 
-  const [fromAmount, setFromAmount] = useState<string>("0");
-  const [toAmount, setToAmount] = useState<string>("0");
+  const [fromAmount, setFromAmount] = useState<number>(0);
+  const [toAmount, setToAmount] = useState<number>(0);
   const [balances, setBalances] = useState<{ base: string; quote: string }>({
     base: "0",
     quote: "0",
@@ -201,18 +202,17 @@ export const DexSwapping = () => {
                 quote.numerator,
                 quote.denominator
               );
-              setToAmount(a.toFixed(6));
+              setToAmount(Number(a.toFixed(6)));
               setTrade(trade);
             }
           } catch (error) {
-            console.log(error);
             setBtnText("Insufficient liquidity for this trade.");
-            setToAmount("0");
+            setToAmount(0);
             setBtnDisabled(true);
           }
         }
         if (fromAmount == 0) {
-          setToAmount("0");
+          setToAmount(0);
         }
       } catch (error) {
         console.log(error);
@@ -281,8 +281,8 @@ export const DexSwapping = () => {
   };
 
   const handleFromAmount = (amount: string) => {
-    amount = amount.replace(/^0+/, "");
-    setFromAmount(amount);
+    // amount = amount.replace(/^0+/, "");
+    setFromAmount(Number(amount));
     getBestRoute(Number(amount));
   };
 
@@ -334,8 +334,8 @@ export const DexSwapping = () => {
         await transaction.wait(2);
         updateBalances();
         toast.success("Swapping successfully done");
-        setFromAmount("0");
-        setToAmount("0");
+        setFromAmount(0);
+        setToAmount(0);
       }
     } catch (error) {
       console.log(error);

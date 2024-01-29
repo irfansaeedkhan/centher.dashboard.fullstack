@@ -19,19 +19,23 @@ export interface StakingReward {
   endDuration: number;
   createdAt: number;
   amount: string;
+  level?: string;
 }
 
 export interface UserStakingTransfers {
   amount: number;
   createdAt: number;
   endAt: number;
-  id: number;
+  id: any;
   paidFee: number;
   projectId: number;
   txId: string;
   type: string;
   user: string;
+  unstake: any;
 }
+
+export type ReferralStake = UserStakingTransfers & { level?: number };
 
 export interface StakingUser {
   referrer: string;
@@ -86,10 +90,12 @@ export interface StakingProject {
   stakingDurationPeriod: number;
   totalPaidReward: number;
   totalStakedAmount: string;
-  rewards?: StakingReward[];
-  transfers?: UserStakingTransfers[];
-  users?: StakingUser[];
+  rewards: StakingReward[];
+  transfers: UserStakingTransfers[];
+  users: StakingUser[];
+  unstakes: any[];
   affiliate?: AffiliateSettings;
   tax: number;
   nonRefundable: boolean;
+  totalRestakedAmount: string;
 }

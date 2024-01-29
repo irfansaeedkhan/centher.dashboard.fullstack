@@ -75,33 +75,22 @@ const Details: React.FC<{ data: OptionalType<ListCardDataOBj> }> = ({
     <div className="flex flex-col gap-6">
       <p className="text-xl font-semibold text-white">{data?.pack}</p>
       <div className="flex flex-col gap-4">
-        <div className="flex flex-col gap-3">
-          <div className="text-sm font-semibold text-white">Official Links</div>
-          <div className="flex items-center gap-2">
-            {findLink("website_url") != "/#" ? (
-              <a
-                href={findLink("website_url")}
-                target="_blank"
-                rel="noreferrer noopener"
-                className={button}
-              >
-                <LinkNewIcon className="group-hover:[&>*]:stroke-white" />
-                <span>Website</span>
-              </a>
-            ) : null}
-            {findLink("whitepaper") != "/#" ? (
-              <a
-                href={findLink("whitepaper")}
-                target="_blank"
-                rel="noreferrer noopener"
-                className={button}
-              >
-                <Whitepaper className="group-hover:[&>*]:stroke-white" />
-                <span>Whitepaper</span>
-              </a>
-            ) : null}
-          </div>
+        <div className="flex flex-col gap-4">
+          <div className="text-sm font-semibold text-white">Description</div>
+          <p className="whitespace-pre-wrap text-xs font-medium text-gray-shade-14 md:text-sm">
+            {data?.metadata?.description
+              ? data?.metadata?.description
+              : "No Description"}
+          </p>
         </div>
+        {users && users.length > 0 ? (
+          <div className="mb-2 mt-3  flex flex-col gap-3">
+            <div className="text-sm font-semibold text-white">Team</div>
+            <TeamMembers teamMemberList={users} />
+          </div>
+        ) : (
+          ""
+        )}
         <div className="flex flex-col gap-3">
           <div className="text-sm font-semibold text-white">Social Links</div>
           <div className="flex flex-wrap items-center gap-2">
@@ -165,20 +154,6 @@ const Details: React.FC<{ data: OptionalType<ListCardDataOBj> }> = ({
           </div>
         </div>
         <div className="flex flex-col gap-3">
-          <div className="text-sm font-semibold text-white">Explorers</div>
-          <div className="flex items-center gap-2">
-            <a
-              href={findLink("explorers")}
-              target="_blank"
-              rel="noreferrer noopener"
-              className={button}
-            >
-              <SiBinance className="h-5 w-5 group-hover:[&>*]:stroke-white" />
-              <span>BscScan</span>
-            </a>
-          </div>
-        </div>
-        <div className="flex flex-col gap-3">
           <div className="text-sm font-semibold text-white">Category</div>
           <div className="flex flex-wrap items-center gap-2">
             {data?.metadata?.categories?.length ? (
@@ -201,22 +176,47 @@ const Details: React.FC<{ data: OptionalType<ListCardDataOBj> }> = ({
             )}
           </div>
         </div>
-        {users && users.length > 0 ? (
-          <div className="mb-2 mt-3  flex flex-col gap-3">
-            <div className="text-sm font-semibold text-white">Team</div>
-            <TeamMembers teamMemberList={users} />
+        <div className="flex flex-col gap-3">
+          <div className="text-sm font-semibold text-white">Official Links</div>
+          <div className="flex items-center gap-2">
+            {findLink("website_url") != "/#" ? (
+              <a
+                href={findLink("website_url")}
+                target="_blank"
+                rel="noreferrer noopener"
+                className={button}
+              >
+                <LinkNewIcon className="group-hover:[&>*]:stroke-white" />
+                <span>Website</span>
+              </a>
+            ) : null}
+            {findLink("whitepaper") != "/#" ? (
+              <a
+                href={findLink("whitepaper")}
+                target="_blank"
+                rel="noreferrer noopener"
+                className={button}
+              >
+                <Whitepaper className="group-hover:[&>*]:stroke-white" />
+                <span>Whitepaper</span>
+              </a>
+            ) : null}
           </div>
-        ) : (
-          ""
-        )}
-      </div>
-      <div className="flex flex-col gap-4">
-        <div className="text-sm font-semibold text-white">Description</div>
-        <p className="whitespace-pre-wrap text-xs font-medium text-gray-shade-14 md:text-sm">
-          {data?.metadata?.description
-            ? data?.metadata?.description
-            : "No Description"}
-        </p>
+        </div>
+        <div className="flex flex-col gap-3">
+          <div className="text-sm font-semibold text-white">Explorers</div>
+          <div className="flex items-center gap-2">
+            <a
+              href={findLink("explorers")}
+              target="_blank"
+              rel="noreferrer noopener"
+              className={button}
+            >
+              <SiBinance className="h-5 w-5 group-hover:[&>*]:stroke-white" />
+              <span>BscScan</span>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   );
