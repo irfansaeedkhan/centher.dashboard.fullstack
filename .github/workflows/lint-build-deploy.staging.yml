@@ -3,7 +3,7 @@ name: Staging - Lint, Build & Deploy
 on:
   push:
     branches:
-      - staging
+      - staging-disable
   pull_request:
     branches:
       - staging
