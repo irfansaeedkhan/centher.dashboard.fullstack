@@ -1863,10 +1863,8 @@ const CreateStaking: NextPageWithLayout = () => {
               </div>
               {!isConnected ? (
                 <ConnectWalletComp
-                  connectWallet={connectWallet}
-                  connectedAddress={connectedAddress}
-                  disconnectWallet={disconnectWallet}
                   authType="login"
+                  connectWallet={connectWallet}
                   className="mx-auto mt-5 w-[45%] text-sm"
                 />
               ) : (
@@ -2345,10 +2343,8 @@ const CreateStaking: NextPageWithLayout = () => {
               {!isConnected ? (
                 <div>
                   <ConnectWalletComp
-                    connectWallet={connectWallet}
-                    connectedAddress={connectedAddress}
-                    disconnectWallet={disconnectWallet}
                     authType="login"
+                    connectWallet={connectWallet}
                     className="mx-auto mt-5 w-[45%] text-sm"
                   />
                 </div>

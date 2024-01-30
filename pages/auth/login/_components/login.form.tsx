@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import { useSWRConfig } from "swr";
@@ -121,12 +121,9 @@ export const LoginForm: React.FC = () => {
       ) : (
         <div className="space-y-3">
           <ConnectWalletComp
-            connectWallet={connectWallet}
-            connectedAddress={connectedAddress}
-            disconnectWallet={disconnectWallet}
             authType="login"
+            connectWallet={connectWallet}
             className="flex h-11 w-full items-center justify-center text-[14px]"
-            notloginCheck={true}
           />
         </div>
       )}

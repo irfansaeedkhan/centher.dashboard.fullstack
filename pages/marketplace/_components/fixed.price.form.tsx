@@ -64,7 +64,7 @@ const FixedPriceForm = ({
   assetTab,
 }: FixedPriceFormProps) => {
   const { user: loggedInUser } = useUser();
-  const { connectWallet, connectedAddress, disconnectWallet } = useWallet();
+  const { connectWallet } = useWallet();
   const { user } = useGetUser(loggedInUser?._id);
   const [propertyModal, setPropertyModal] = useState(false);
   const [propertyDetails, setPropertyDetails] = useState<any>([]);
@@ -382,12 +382,7 @@ const FixedPriceForm = ({
       )}
 
       {!library ? (
-        <ConnectWalletComp
-          connectWallet={connectWallet}
-          connectedAddress={connectedAddress}
-          disconnectWallet={disconnectWallet}
-          authType="login"
-        />
+        <ConnectWalletComp authType="login" connectWallet={connectWallet} />
       ) : (
         <div className="mt-2 flex flex-col items-center gap-2 fsm:flex-row">
           <Button

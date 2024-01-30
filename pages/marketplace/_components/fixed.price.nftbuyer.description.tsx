@@ -37,8 +37,7 @@ export const FixedPriceNFTBuyerDescription: React.FC<Props> = ({
   refetchNFT,
   loggedInUser,
 }) => {
-  const { getSigner, connectWallet, connectedAddress, disconnectWallet } =
-    useWallet();
+  const { getSigner, connectWallet } = useWallet();
   const [isMigrated, setIsMigrated] = useState(false);
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
@@ -268,10 +267,8 @@ export const FixedPriceNFTBuyerDescription: React.FC<Props> = ({
           />
         ) : (
           <ConnectWalletComp
-            connectWallet={connectWallet}
-            connectedAddress={connectedAddress}
-            disconnectWallet={disconnectWallet}
             authType="login"
+            connectWallet={connectWallet}
             className="w-full rounded-[14px]"
           />
         )}
