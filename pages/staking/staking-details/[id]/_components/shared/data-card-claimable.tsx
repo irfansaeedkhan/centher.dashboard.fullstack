@@ -1,7 +1,7 @@
 import React from "react";
 import dayjs from "dayjs";
 import Countdown, { CountdownRendererFn } from "react-countdown";
-import { BNBIcon } from "@/assets/svgs";
+import { DXCIconBG } from "@/assets/svgs";
 import { stakeReward } from "@/staking/types";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
 import Button from "@/components/button";
@@ -38,9 +38,7 @@ export const DataCardClaimable: React.FC<{
       <div className={mainDiv}>
         <div className={textLeft}>Staked Amount</div>
         <div className={textRight}>
-          <span className="flex h-4 w-4 flex-shrink-0">
-            <BNBIcon />
-          </span>
+          <DXCIconBG className="flex size-4 flex-shrink-0" />
           <span>{formatEther(item.stake.amount)}</span>
           <span>{coin?.symbol}</span>
         </div>
@@ -48,10 +46,8 @@ export const DataCardClaimable: React.FC<{
       <div className={mainDiv}>
         <div className={textLeft}>Claimable Rewards</div>
         <div className={textRight}>
-          <span className="flex h-4 w-4 flex-shrink-0">
-            <BNBIcon />
-          </span>
-          <span>{formatEther(item.amount)}</span>
+          <DXCIconBG className="flex size-4 flex-shrink-0" />
+          <span>{Number(formatEther(item.amount)).toFixed(4)}</span>
           <span>{coin?.symbol}</span>
         </div>
       </div>
