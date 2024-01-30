@@ -12,6 +12,7 @@ interface Props {
 }
 const StakedLiquidity: React.FC<Props> = ({ stakingPool, card, coins }) => {
   const [filled, setFilled] = useState(0);
+  const [totalRewards, setTotalRewards] = useState(0);
 
   useEffect(() => {
     if (!stakingPool) return;
@@ -25,6 +26,9 @@ const StakedLiquidity: React.FC<Props> = ({ stakingPool, card, coins }) => {
     }
     const percentage = (Number(totalStakedAmount) / Number(supply)) * 100;
     setFilled(Math.ceil(percentage));
+    const totalRewards =
+      +stakingPool.totalPaidReward + +stakingPool.totalRestakedAmount;
+    setTotalRewards(totalRewards);
   }, [stakingPool]);
 
   return (
@@ -37,6 +41,24 @@ const StakedLiquidity: React.FC<Props> = ({ stakingPool, card, coins }) => {
       </div>
       <div className={mainSection}>
         <span className={label}>Total Paid Rewards</span>
+        <span className={value}>
+          {Number(
+            formatUnits(
+              totalRewards + "",
+              coins.find((e) =>
+                eqAddress(e?.contractAddress, stakingPool?.reward_token_address)
+              )?.decimals || 18
+            )
+          )?.toFixed(2)}{" "}
+          {
+            coins.find((e) =>
+              eqAddress(e?.contractAddress, stakingPool?.reward_token_address)
+            )?.symbol
+          }
+        </span>
+      </div>
+      <div className={mainSection}>
+        <span className={label}>Total Claimed Rewards</span>
         <span className={value}>
           {Number(
             formatUnits(
@@ -54,22 +76,36 @@ const StakedLiquidity: React.FC<Props> = ({ stakingPool, card, coins }) => {
         </span>
       </div>
       <div className={mainSection}>
-        <span className={label}>Total Claimed Rewards</span>
-        <span className={value}>4 DXC</span>
-      </div>
-      <div className={mainSection}>
         <span className={label}>Total ReStaked Rewards</span>
-        <span className={value}>4 DXC</span>
-      </div>
-      <div className={mainSection}>
-        <span className={label}>Total Pending Rewards</span>
-        <span className={value}>4 DXC</span>
+        <span className={value}>
+          {" "}
+          {Number(
+            formatUnits(
+              stakingPool?.totalRestakedAmount + "",
+              coins.find((e) =>
+                eqAddress(e?.contractAddress, stakingPool?.reward_token_address)
+              )?.decimals || 18
+            )
+          )?.toFixed(2)}{" "}
+          {
+            coins.find((e) =>
+              eqAddress(e?.contractAddress, stakingPool?.reward_token_address)
+            )?.symbol
+          }
+        </span>
       </div>
       <div className={mainSection}>
         <span className={label}>Total Staked</span>
-        <span className={value}>{`${Number(
-          formatEther(card.totalStakedAmount.toString())
-        ).toFixed(2)} DXC`}</span>
+        <span className={value}>
+          {`${Number(formatEther(card.totalStakedAmount.toString())).toFixed(
+            2
+          )} `}{" "}
+          {
+            coins.find((e) =>
+              eqAddress(e?.contractAddress, stakingPool?.reward_token_address)
+            )?.symbol
+          }{" "}
+        </span>
       </div>
       <div>
         <div
@@ -89,18 +125,6 @@ const StakedLiquidity: React.FC<Props> = ({ stakingPool, card, coins }) => {
               `absolute top-0 z-50 h-3 rounded-3xl`
             )}
           ></div>
-        </div>
-        <div className="mt-2 flex w-full items-center justify-between gap-3">
-          <p className="text-sm text-gray-shade-14">
-            {`${Number(formatEther(card.totalStakedAmount.toString())).toFixed(
-              2
-            )} DXC`}
-          </p>
-          <p className="text-sm text-gray-shade-14">
-            {`${Number(formatEther(card.totalStakedAmount.toString())).toFixed(
-              2
-            )} DXC`}
-          </p>
         </div>
       </div>
     </div>
