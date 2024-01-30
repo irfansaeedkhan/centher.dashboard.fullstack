@@ -9,6 +9,7 @@ import { formatIPFSUrl } from "@/utils/format.address";
 import { DetailsTabsWrapper } from "./_components/details-tabs-wrapper";
 import { PresaleDataType } from "../_components/launchpad-card-data";
 import { BookingList, LaunchpadOverview, ReferralRewards } from "./_components";
+import { customLog } from "@/utils/custom.log";
 
 const LaunchpadListDetails: NextPageWithLayout = () => {
   const router = useRouter();
@@ -24,26 +25,31 @@ const LaunchpadListDetails: NextPageWithLayout = () => {
 
   useEffect(() => {
     (async () => {
-      setLoading(true);
-      if (!sdk) {
+      try {
+        setLoading(true);
+        if (!sdk) {
+          setLoading(false);
+          return;
+        }
+        if (!id) {
+          setLoading(false);
+          return;
+        }
+
+        const result: PresaleDataType = await sdk.getPresale(id.toString());
+        const metaData = await axios.get(formatIPFSUrl(result.metadata));
+        setLaunchpadData(result);
+        console.log(metaData.data);
+        setMetaData({
+          token_name: metaData.data.token_name,
+          token_symbol: metaData.data.token_symbol,
+          website: metaData.data.website_url,
+        });
         setLoading(false);
-        return;
+        console.log(result);
+      } catch (err) {
+        customLog(["development", "staging"], err);
       }
-      if (!id) {
-        setLoading(false);
-        return;
-      }
-      const result: PresaleDataType = await sdk.getPresale(id.toString());
-      const metaData = await axios.get(formatIPFSUrl(result.metadata));
-      setLaunchpadData(result);
-      console.log(metaData.data);
-      setMetaData({
-        token_name: metaData.data.token_name,
-        token_symbol: metaData.data.token_symbol,
-        website: metaData.data.website_url,
-      });
-      setLoading(false);
-      console.log(result);
     })();
   }, [sdk, id]);
 

@@ -272,9 +272,12 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       const roundParams = [];
       for (let i = 0; i < formState.verify_token.sale_rounds; i++) {
         let roundData = {
-          startTime:
-            Number(formState.rounds_settings.round[i].start_time) / 1000,
-          endTime: Number(formState.rounds_settings.round[i].end_time) / 1000,
+          startTime: (
+            Number(formState.rounds_settings.round[i].start_time) / 1000
+          ).toFixed(),
+          endTime: (
+            Number(formState.rounds_settings.round[i].end_time) / 1000
+          ).toFixed(),
           lockMonths: Number(formState.verify_token.liquidity_lockup) / 30,
           minContribution: parseEther(
             formState.rounds_settings.round[i].min_contribution + ""
@@ -297,6 +300,8 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       ).toString();
 
       if (signer == null) return;
+
+      console.log(presaleInfoParams, roundParams);
 
       await BlockchainWrite.createLaunchpad(
         signer,

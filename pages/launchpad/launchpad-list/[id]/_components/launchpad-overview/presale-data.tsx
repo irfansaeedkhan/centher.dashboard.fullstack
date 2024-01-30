@@ -23,6 +23,7 @@ export const PresaleData: React.FC<PresaleDataProps> = ({
   roundInfos,
   maxTokensToSell,
   minTokensToSell,
+  releaseMonth,
 }) => {
   return (
     <div className="flex h-auto w-full flex-col gap-6 rounded-xl bg-black-shade-9 p-4 fxm:p-6">
@@ -31,7 +32,10 @@ export const PresaleData: React.FC<PresaleDataProps> = ({
           {token_name} Presale
         </h2>
         <span className="rounded-10px bg-brand-primary/[0.16] px-3 text-xs font-semibold leading-6 text-brand-primary">
-          Upcoming
+          {/* Upcoming  */}{" "}
+          {Number(roundInfos[0].startTime) < Number(new Date())
+            ? "Active"
+            : "Upcoming"}
         </span>
       </div>
       <p className="text-sm font-medium text-gray-shade-14">
@@ -97,8 +101,7 @@ export const PresaleData: React.FC<PresaleDataProps> = ({
         <div className={mainDiv}>
           <div className={textLeft}>Vesting Period</div>
           <div className={textRight}>
-            {roundInfos[0].lockMonths}{" "}
-            {roundInfos[0].lockMonths === "1" ? "Month" : "Months"}
+            {releaseMonth} {releaseMonth === "1" ? "Month" : "Months"}
           </div>
         </div>
         <div className={mainDiv}>

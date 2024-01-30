@@ -4,8 +4,36 @@ import Countdown, { CountdownRendererFn } from "react-countdown";
 import { PresaleDataType } from "../../../_components/launchpad-card-data";
 import Image from "next/image";
 
-export const RoundsBooking: React.FC<PresaleDataType> = ({}) => {
-  let currentRound = 1;
+export const RoundsBooking: React.FC<PresaleDataType> = ({
+  roundInfos,
+  roundDeep,
+}) => {
+  let currentRound;
+
+  const currentTime = Number(new Date());
+  let timeToShow = 0;
+
+  if (Number(roundInfos[0].startTime) > currentTime) {
+    timeToShow = Number(roundInfos[0].startTime);
+  } else {
+    timeToShow = Number(roundInfos[Number(roundDeep) - 1].endTime);
+  }
+
+  for (let i = 0; i < roundInfos.length; i++) {
+    if (
+      Number(roundInfos[i].startTime) < currentTime &&
+      currentTime > Number(roundInfos[i].endTime)
+    ) {
+      currentRound = i + 1;
+
+      break;
+    }
+  }
+
+  console.log("current round is: ", currentRound);
+  console.log("timeToShow is: ", new Date(timeToShow));
+  console.log("timeToShow is: ", timeToShow);
+
   return (
     <div className="col-span-1 flex h-auto w-full flex-col gap-6 rounded-xl bg-black-shade-9 p-4 fxm:p-6">
       <div className="flex flex-col gap-5">
@@ -65,9 +93,10 @@ export const RoundsBooking: React.FC<PresaleDataType> = ({}) => {
             The presale will start in
           </p>
           <Countdown
-            date={
-              new Date().getTime() + 1000 * 60 * 60 * 24 * 2 + 1000 * 30 * 60
-            }
+            // date={
+            //   new Date().getTime() + 1000 * 60 * 60 * 24 * 2 + 1000 * 30 * 60
+            // }
+            date={new Date(timeToShow)}
             renderer={countdownRenderer}
           />
         </div>

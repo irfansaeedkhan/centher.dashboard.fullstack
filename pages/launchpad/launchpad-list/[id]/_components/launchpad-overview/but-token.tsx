@@ -1,10 +1,54 @@
 import Button from "@/components/button";
 import { CustomNumberInput } from "@/components/custom-number-input";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { PresaleDataType } from "../../../_components/launchpad-card-data";
+import { customLog } from "@/utils/custom.log";
+import { BlockchainRead } from "@/web3/blockchain";
+import useUser from "@/hooks/use.user";
+import { useWallet } from "@/web3/hooks/use.wallet";
+import { BlockchainConfig } from "@/web3/blockchain/config";
+import { formatEther } from "viem";
 
-export const BuyToken = () => {
+interface Props extends PresaleDataType {
+  token_name: string;
+  token_symbol: string;
+  website: string;
+}
+
+export const BuyToken: React.FC<Props> = ({ token_symbol, fundType }) => {
+  const { user } = useUser();
+  const { getSigner, getProvider } = useWallet();
   const [payAmount, setPayAmount] = useState(0);
   const [receivedAmount, setReceivedAmount] = useState(0);
+
+  const [tokenBalance, setTokenBalance] = useState(0);
+
+  useEffect(() => {
+    const provider = getProvider();
+    if (!user || !provider) return;
+
+    (async () => {
+      try {
+        if (fundType === 0) {
+        } else {
+          const token =
+            process.env.NEXT_PUBLIC_APP_ENV === "production"
+              ? BlockchainConfig.contracts.USDT[56]
+              : BlockchainConfig.contracts.USDT[5];
+
+          const balance = await BlockchainRead.getERC20Balance(
+            user._id,
+            token,
+            provider
+          );
+          console.log("balance: ", balance);
+          setTokenBalance(Number(balance));
+        }
+      } catch (err) {
+        customLog(["development", "staging"], err);
+      }
+    })();
+  }, [fundType, getProvider, user]);
 
   return (
     <div className="flex h-auto w-full flex-col gap-6 rounded-xl bg-black-shade-9 p-4 fxm:p-6">
@@ -34,7 +78,7 @@ export const BuyToken = () => {
           </div>
         </div>
         <p className="my-4 ml-1 text-sm font-medium text-gray-shade-14">
-          Balance 0
+          Balance {formatEther(BigInt(tokenBalance))}
         </p>
         <div className="mb-5 mt-2 border-b-2 border-gray-shade-3"></div>
         <p className="font-small ml-1 text-sm text-gray-shade-14">Receive</p>
@@ -62,7 +106,7 @@ export const BuyToken = () => {
           </div>
         </div>
         <p className="font-small my-4 ml-1 text-sm text-gray-shade-14">
-          Select a token
+          {token_symbol}
         </p>
 
         <Button
