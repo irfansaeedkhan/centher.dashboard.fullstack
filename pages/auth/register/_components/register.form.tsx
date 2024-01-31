@@ -179,12 +179,9 @@ export const RegisterForm: React.FC = () => {
           </div>
         ) : (
           <ConnectWalletComp
-            connectWallet={connectWallet}
-            connectedAddress={connectedAddress}
-            disconnectWallet={disconnectWallet}
-            className="flex h-11 w-full items-center justify-center rounded-xl text-[14px]"
-            notloginCheck={true}
             authType="register"
+            connectWallet={connectWallet}
+            className="flex h-11 w-full items-center justify-center rounded-xl text-[14px]"
           />
         )}
 

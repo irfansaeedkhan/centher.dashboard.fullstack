@@ -472,7 +472,6 @@ export const RewardsTabs: React.FC<{
   };
 
   const modal = new ModalManager(setModalModel, modalTemplates);
-
   return (
     <div className="flex flex-col">
       <HistoryTabs
@@ -548,7 +547,7 @@ export const RewardsTabs: React.FC<{
       &nbsp;
       {isClaimed && (
         <RewardsClaimed
-          data={pool.rewards.sort((a, b) => a.createdAt - b.createdAt)}
+          data={pool.rewards.sort((a, b) => b.createdAt - a.createdAt)}
           tax={+(pool?.burn_tax || 0)}
           tokenDecimals={
             +(

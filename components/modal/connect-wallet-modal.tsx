@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-import toast from "react-hot-toast";
 import { IoClose } from "react-icons/io5";
-import { LoggedInUser } from "@/models/user";
 import {
   GradientArrowOutline,
   CentherIcon,
@@ -11,29 +9,21 @@ import { WalletEnum } from "@/web3/hooks/use.wallet";
 import ModalContainer from "./modal-container";
 
 interface Props {
-  loggedInUser: LoggedInUser | undefined;
-  notloginCheck?: boolean;
+  open: boolean;
   authType: "login" | "register";
-  connectedAddress: string | null | undefined;
-  disconnectWallet: () => void;
   connectWallet: (
     wallet?: WalletEnum,
     authType?: "login" | "register",
     showError?: boolean
   ) => Promise<void>;
   onClose: () => void;
-  open: boolean;
 }
 
 const ConnectWalletModal: React.FC<Props> = ({
-  loggedInUser,
-  notloginCheck,
-  connectedAddress,
-  disconnectWallet,
-  connectWallet,
-  onClose,
   open,
   authType,
+  connectWallet,
+  onClose,
 }) => {
   const [runningOnInjectedProvider, setRunningOnInjectedProvider] =
     useState<boolean>(false);
@@ -55,26 +45,8 @@ const ConnectWalletModal: React.FC<Props> = ({
     }
   }, []);
 
-  useEffect(() => {
-    if (connectedAddress && !notloginCheck) {
-      if (loggedInUser?._id.toLowerCase() !== connectedAddress?.toLowerCase()) {
-        toast.error("Please connect to correct account");
-        disconnectWallet();
-      }
-    }
-  }, [loggedInUser, connectedAddress, notloginCheck, disconnectWallet]);
-
   const connectionWallet = async (wallet: WalletEnum) => {
-    if (notloginCheck) {
-      await connectWallet(wallet, authType);
-    } else {
-      if (!loggedInUser) {
-        toast.error("Please login to buy this nft");
-        onClose();
-        return;
-      }
-      await connectWallet(wallet, authType);
-    }
+    await connectWallet(wallet, authType);
     onClose();
   };
 

@@ -5,10 +5,11 @@ import {
   JsonRpcSigner,
   TransactionReceipt,
 } from "@ethersproject/providers";
-import { useWalletService } from "./use.wallet.service";
-
-import { useWalletConnectService } from "./use.walletconnect";
+import useUser from "@/hooks/use.user";
+import { useGlobalModalContext } from "@/components/modal/global-modal/global-modal";
 import { BlockchainConfig } from "../blockchain/config";
+import { useWalletConnectService } from "./use.walletconnect";
+import { useWalletService } from "./use.wallet.service";
 
 export enum WalletEnum {
   METAMASK = "METAMASK",
@@ -20,6 +21,8 @@ const CONNECTED_WALLET_KEY = "connected_wallet";
 const IS_WALLET_CONNECTED = "is_wallet_connected";
 
 export const useWallet = () => {
+  const { user: loggedInUser } = useUser();
+  const { showModal, hideModal, MODAL_TYPES } = useGlobalModalContext();
   const { open, walletProvider, disconnectFromWalletConnect, walletAccount } =
     useWalletConnectService();
 
@@ -47,7 +50,7 @@ export const useWallet = () => {
     }
   }, [walletAccount.address, walletAccount.isConnected, walletProvider]);
 
-  const updateConnectedAccount = useCallback(async () => {
+  const updateConnectedAccount = useCallback(() => {
     if (address || walletAccount.address) {
       const connected_wallet = getWalletType();
       if (connected_wallet) {
@@ -74,8 +77,22 @@ export const useWallet = () => {
   }, [address, walletAccount.address]);
 
   useEffect(() => {
-    updateConnectedAccount();
-  }, [address, updateConnectedAccount]);
+    const connectedAddress = updateConnectedAccount();
+
+    if (loggedInUser?._id && connectedAddress) {
+      if (loggedInUser._id.toLowerCase() !== connectedAddress.toLowerCase()) {
+        showModal(MODAL_TYPES.WRONG_CONNECTED_ACCOUNT);
+      } else {
+        hideModal(MODAL_TYPES.WRONG_CONNECTED_ACCOUNT);
+      }
+    }
+  }, [
+    loggedInUser?._id,
+    MODAL_TYPES,
+    updateConnectedAccount,
+    showModal,
+    hideModal,
+  ]);
 
   const getSigner = useCallback((): JsonRpcSigner | null => {
     const connected_wallet = getWalletType();

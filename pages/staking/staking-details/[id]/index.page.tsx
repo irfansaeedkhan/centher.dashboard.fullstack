@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { NextPageWithLayout } from "@/pages/_app.page";
@@ -8,7 +8,6 @@ import useUser from "@/hooks/use.user";
 import { useAutoRestake, useStaking } from "@/hooks/staking";
 import { ZeroAddress } from "@/web3/constants/common";
 import { setupUiModels } from "@/staking/helpers/mappers.helper";
-import { RewardsStat } from "@/staking/types/rewards.interface";
 import { SwappingProjects } from "@/staking/config";
 import { useWallet } from "@/web3/hooks/use.wallet";
 import { ListCardDataOBj } from "../../_components/list-card-data";
@@ -20,14 +19,9 @@ import { CoinDetails } from "@/staking/types/coin.info.interface";
 import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
 
 const StakingDetails: NextPageWithLayout = () => {
-  const { user } = useUser();
   const router = useRouter();
+  const { user } = useUser();
   const { sdk } = useStaking();
-  const { getSigner, disconnectWallet, connectWallet, connectedAddress } =
-    useWallet();
-  const signer = getSigner();
-  const [poolId, setPoolId] = useState("0");
-  const [userStaked, setUserStaked] = useState<RewardsStat | null>(null);
   const [stakingPool, setStakingPool] = useState<ListCardDataOBj | null>(null);
   const [hasSwapping, setHasSwapping] = useState(false);
   const [connectWalletModal, setConnectWalletModal] = useState(false);
@@ -36,8 +30,13 @@ const StakingDetails: NextPageWithLayout = () => {
   const { isAutoRestakeEnabled, handleToggleAutoRestake } = useAutoRestake(
     stakingPool?.id
   );
+  const poolId = useMemo(() => {
+    return router.query.id?.toString() ? +router.query.id.toString() : 0;
+  }, [router]);
+  const { getSigner, connectWallet, connectedAddress } = useWallet();
+  const signer = getSigner();
 
-  const reloadPool = async () => {
+  const reloadPool = useCallback(async () => {
     if (sdk && connectedAddress) {
       const pool = await sdk.getProject(+poolId, connectedAddress);
       if (pool) {
@@ -45,55 +44,57 @@ const StakingDetails: NextPageWithLayout = () => {
         setStakingPool(mappedPools[0]);
         return mappedPools[0];
       } else return null;
+    } else {
+      setIsLoading(false);
+      setConnectWalletModal(true);
     }
-  };
-  const loadPoolData = async (force = false) => {
-    const getCoinDetails = async (tokens: string[]) => {
-      const list: string[] = [];
-      tokens.filter(Boolean).forEach((e) => {
-        if (e != ZeroAddress && list.indexOf(e) == -1) {
-          list.push(e);
-        }
-      });
+  }, [poolId, sdk, connectedAddress]);
 
-      const details = await fetchTokenMetadata(list);
-      if (details?.length) {
-        const tokenDetails = details.map((e: any) => e.token._value);
-        setCoinsDetails(
-          tokenDetails.map((e: any) => {
-            return {
-              ...e,
-              contractAddress: e.contractAddress._value,
-              chain: e.chain._value,
-            };
-          })
-        );
+  const loadPoolData = useCallback(
+    async (force = false) => {
+      const getCoinDetails = async (tokens: string[]) => {
+        const list: string[] = [];
+        tokens.filter(Boolean).forEach((e) => {
+          if (e != ZeroAddress && list.indexOf(e) == -1) {
+            list.push(e);
+          }
+        });
+
+        const details = await fetchTokenMetadata(list);
+        if (details?.length) {
+          const tokenDetails = details.map((e: any) => e.token._value);
+          setCoinsDetails(
+            tokenDetails.map((e: any) => {
+              return {
+                ...e,
+                contractAddress: e.contractAddress._value,
+                chain: e.chain._value,
+              };
+            })
+          );
+        }
+      };
+
+      if ((!stakingPool || force) && poolId && sdk && user) {
+        setIsLoading(true);
+        setStakingPool(null);
+        reloadPool().then((pool) => {
+          if (pool) {
+            getCoinDetails([
+              pool.token_address,
+              pool.reward_token_address,
+            ]).then();
+            setIsLoading(false);
+          }
+        });
       }
-    };
-
-    if ((!stakingPool || force) && poolId && sdk && user) {
-      setIsLoading(true);
-      setStakingPool(null);
-      reloadPool().then((pool) => {
-        if (pool) {
-          getCoinDetails([
-            pool.token_address,
-            pool.reward_token_address,
-          ]).then();
-          setIsLoading(false);
-        }
-      });
-    }
-  };
+    },
+    [poolId, sdk, stakingPool, user, reloadPool]
+  );
 
   useEffect(() => {
     loadPoolData();
-  }, [poolId, sdk, stakingPool, user]);
-
-  useEffect(() => {
-    const poolId = router.query.id as string;
-    setPoolId(poolId);
-  }, [router]);
+  }, [loadPoolData]);
 
   useEffect(() => {
     if (!signer) {
@@ -104,16 +105,8 @@ const StakingDetails: NextPageWithLayout = () => {
   }, [signer]);
 
   useEffect(() => {
-    if (sdk && poolId && user && signer) {
-      sdk.getUserStakes(signer!, +poolId, user._id).then((data) => {
-        setUserStaked(data);
-      });
-    }
-  }, [poolId, sdk, user, signer]);
-
-  useEffect(() => {
     if (poolId) {
-      setHasSwapping(SwappingProjects.includes(poolId));
+      setHasSwapping(SwappingProjects.includes(poolId.toString()));
     }
   }, [poolId]);
 
@@ -129,13 +122,10 @@ const StakingDetails: NextPageWithLayout = () => {
     </div>
   ) : connectWalletModal ? (
     <ConnectWalletModal
-      onClose={() => setConnectWalletModal(false)}
       open={connectWalletModal}
-      loggedInUser={user}
-      connectWallet={connectWallet}
-      connectedAddress={connectedAddress}
-      disconnectWallet={disconnectWallet}
       authType="login"
+      connectWallet={connectWallet}
+      onClose={() => setConnectWalletModal(false)}
     />
   ) : stakingPool ? (
     <>

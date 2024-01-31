@@ -19,7 +19,7 @@ const Header = () => {
   const [showBuyCitizenshipModal, setShowBuyCitizenshipModal] = useState(false);
   const { user, isLoading: isUserLoading } = useUser();
   const [connectWalletModal, setConnectWalletModal] = useState(false);
-  const { connectedAddress, disconnectWallet, connectWallet } = useWallet();
+  const { connectedAddress, connectWallet } = useWallet();
   const [openModal, setOpenModal] = useState(false);
   const modalOpenerRef = React.useRef<HTMLDivElement>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -49,6 +49,7 @@ const Header = () => {
   const openBuyCitizenshipModal = () => {
     setShowBuyCitizenshipModal(true);
   };
+
   return (
     <div
       className={`fixed top-0 z-[1000] flex h-[60px] w-full items-center justify-between gap-10 border-b-[1.5px] border-gray-shade-border-color bg-black-shade-9 px-5`}
@@ -140,14 +141,10 @@ const Header = () => {
         />
       )}
       <ConnectWalletModal
-        onClose={() => setConnectWalletModal(false)}
         open={connectWalletModal}
-        loggedInUser={user}
-        notloginCheck={true}
-        connectWallet={connectWallet}
-        connectedAddress={connectedAddress}
-        disconnectWallet={disconnectWallet}
         authType="login"
+        connectWallet={connectWallet}
+        onClose={() => setConnectWalletModal(false)}
       />
     </div>
   );

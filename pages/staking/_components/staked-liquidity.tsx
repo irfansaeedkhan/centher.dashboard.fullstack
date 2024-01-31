@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import clsx from "clsx";
-import { ListCardDataOBj } from "./list-card-data";
+import { BigNumber } from "ethers";
 import { formatEther, formatUnits } from "ethers/lib/utils";
 import { eqAddress } from "@/live/utils/address.utils";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
+import { ListCardDataOBj } from "./list-card-data";
 
 interface Props {
   stakingPool: ListCardDataOBj | null;
@@ -11,20 +11,18 @@ interface Props {
   card: ListCardDataOBj;
 }
 const StakedLiquidity: React.FC<Props> = ({ stakingPool, card, coins }) => {
-  const [filled, setFilled] = useState(0);
+  const [totalRewards, setTotalRewards] = useState<BigNumber>(
+    BigNumber.from(0)
+  );
 
   useEffect(() => {
     if (!stakingPool) return;
-    let supply = stakingPool.supply;
-    let totalStakedAmount = formatUnits(
-      stakingPool.totalStakedAmount ? stakingPool.totalStakedAmount + "" : "0",
-      18
+
+    setTotalRewards(
+      BigNumber.from(stakingPool.totalPaidReward).add(
+        BigNumber.from(stakingPool.totalRestakedAmount)
+      )
     );
-    if (Number(stakingPool.supply) === 0) {
-      supply = "999999999999999999";
-    }
-    const percentage = (Number(totalStakedAmount) / Number(supply)) * 100;
-    setFilled(Math.ceil(percentage));
   }, [stakingPool]);
 
   return (
@@ -40,7 +38,7 @@ const StakedLiquidity: React.FC<Props> = ({ stakingPool, card, coins }) => {
         <span className={value}>
           {Number(
             formatUnits(
-              stakingPool?.totalPaidReward + "",
+              totalRewards,
               coins.find((e) =>
                 eqAddress(e?.contractAddress, stakingPool?.reward_token_address)
               )?.decimals || 18
@@ -67,41 +65,16 @@ const StakedLiquidity: React.FC<Props> = ({ stakingPool, card, coins }) => {
       </div>
       <div className={mainSection}>
         <span className={label}>Total Staked</span>
-        <span className={value}>{`${Number(
-          formatEther(card.totalStakedAmount.toString())
-        ).toFixed(2)} DXC`}</span>
-      </div>
-      <div>
-        <div
-          className={clsx(
-            "relative h-3 w-full overflow-hidden rounded-3xl",
-            filled < 75 && `bg-[#76E268]/[0.16]`,
-            filled >= 75 && filled < 100 && `bg-[#FEBF32]/[0.16]`,
-            filled == 100 && `bg-[#E5535A]/[0.16]`
-          )}
-        >
-          <div
-            style={{ width: `${filled}%` }}
-            className={clsx(
-              filled < 75 && `bg-[#76E268]`,
-              filled >= 75 && filled < 100 && `bg-brand-primary`,
-              filled == 100 && `bg-[#EA3943]`,
-              `absolute top-0 z-50 h-3 rounded-3xl`
-            )}
-          ></div>
-        </div>
-        <div className="mt-2 flex w-full items-center justify-between gap-3">
-          <p className="text-sm text-gray-shade-14">
-            {`${Number(formatEther(card.totalStakedAmount.toString())).toFixed(
-              2
-            )} DXC`}
-          </p>
-          <p className="text-sm text-gray-shade-14">
-            {`${Number(formatEther(card.totalStakedAmount.toString())).toFixed(
-              2
-            )} DXC`}
-          </p>
-        </div>
+        <span className={value}>
+          {`${Number(
+            formatEther(BigNumber.from(stakingPool?.totalStakedAmount))
+          ).toFixed(2)} `}{" "}
+          {
+            coins.find((e) =>
+              eqAddress(e?.contractAddress, stakingPool?.reward_token_address)
+            )?.symbol
+          }{" "}
+        </span>
       </div>
     </div>
   );

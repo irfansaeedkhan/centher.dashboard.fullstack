@@ -1,15 +1,15 @@
-import {
-  MODAL_TYPES,
-  useGlobalModalContext,
-} from "@/components/modal/global-modal/global-modal";
-import { MetaMaskInpageProvider } from "@metamask/providers";
+import { useCallback, useEffect, useMemo } from "react";
 import {
   useDisconnect,
   useWeb3Modal,
   useWeb3ModalAccount,
   useWeb3ModalProvider,
 } from "@web3modal/ethers5/react";
-import { useCallback, useEffect, useMemo } from "react";
+import { MetaMaskInpageProvider } from "@metamask/providers";
+import {
+  MODAL_TYPES,
+  useGlobalModalContext,
+} from "@/components/modal/global-modal/global-modal";
 
 export const useWalletConnectService = () => {
   const { open } = useWeb3Modal();
@@ -27,7 +27,7 @@ export const useWalletConnectService = () => {
   }, [showModal]);
 
   const hideModalMethod = useCallback(() => {
-    hideModal();
+    hideModal(MODAL_TYPES.WRONG_NETWORK);
   }, [hideModal]);
 
   const handleChainChanged = useCallback(

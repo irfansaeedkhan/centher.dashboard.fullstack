@@ -39,8 +39,7 @@ export const AuctionNFTBuyerDescription: React.FC<Props> = ({
   nft,
   refetchNFT,
 }) => {
-  const { getSigner, connectedAddress, connectWallet, disconnectWallet } =
-    useWallet();
+  const { getSigner, connectedAddress, connectWallet } = useWallet();
   const bnbBalance = useGetBNBBalance(connectedAddress);
   const bnbPrice = useBNBPrice();
   const price =
@@ -270,10 +269,8 @@ export const AuctionNFTBuyerDescription: React.FC<Props> = ({
       </div>
       {!getSigner() ? (
         <ConnectWalletComp
-          connectWallet={connectWallet}
-          connectedAddress={connectedAddress}
-          disconnectWallet={disconnectWallet}
           authType="login"
+          connectWallet={connectWallet}
           className="w-full rounded-[14px]"
         />
       ) : (

@@ -7,7 +7,6 @@ import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { CrownIcon, GiftIcon, StakingUsers } from "@/assets/svgs";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
-import useUser from "@/hooks/use.user";
 import { useStaking } from "@/hooks/staking";
 import { setupUiModels } from "@/staking/helpers/mappers.helper";
 import { ZeroAddress } from "@/web3/constants/common";
@@ -28,8 +27,7 @@ import { ReferralInfo } from "./_components/referral-components/referrals-tabs";
 import { calculateNextRefReward } from "@/staking/helpers/stake.helper";
 
 const StakingReferrals: NextPageWithLayout = () => {
-  const { getSigner, disconnectWallet, connectWallet, connectedAddress } =
-    useWallet();
+  const { getSigner, connectWallet, connectedAddress } = useWallet();
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
     title: "",
@@ -37,7 +35,6 @@ const StakingReferrals: NextPageWithLayout = () => {
   });
   const [stakingPool, setStakingPool] = useState<ListCardDataOBj | null>(null);
   const [coinsDetails, setCoinsDetails] = useState<CoinDetails[]>([]);
-  const { user } = useUser();
   const router = useRouter();
   const { sdk } = useStaking();
   const [poolId, setPoolId] = useState("0");
@@ -182,13 +179,10 @@ const StakingReferrals: NextPageWithLayout = () => {
 
   return connectWalletModal ? (
     <ConnectWalletModal
-      onClose={() => setConnectWalletModal(false)}
       open={connectWalletModal}
-      loggedInUser={user}
-      connectWallet={connectWallet}
-      connectedAddress={connectedAddress}
-      disconnectWallet={disconnectWallet}
       authType="login"
+      connectWallet={connectWallet}
+      onClose={() => setConnectWalletModal(false)}
     />
   ) : isLoading ? (
     <div className="flex h-[calc(100vh-60px)] w-full items-center justify-center">

@@ -2,7 +2,7 @@ import React from "react";
 import toast from "react-hot-toast";
 import clsx from "clsx";
 import dayjs from "dayjs";
-import { BNBIcon, GradientCopy } from "@/assets/svgs";
+import { DXCIconBG, GradientCopy } from "@/assets/svgs";
 import { copyText } from "@/utils/copy.text";
 import { sliceAccountAddress } from "@/utils/user.helpers";
 import { ClaimedRewards } from "@/staking/types/rewards.interface";
@@ -52,10 +52,8 @@ export const DataCardClaimed: React.FC<ComponentProp> = (props) => {
             : "Restake Amount"}
         </div>
         <div className={textRight}>
-          <span className="flex h-4 w-4 flex-shrink-0">
-            <BNBIcon />
-          </span>
-          <span>{normalizeValue(formatEther(total))}</span>
+          <DXCIconBG className="flex size-4 flex-shrink-0" />
+          <span>{Number(normalizeValue(formatEther(total))).toFixed(4)}</span>
           <span>{props.tokenName}</span>
         </div>
       </div>
@@ -71,10 +69,12 @@ export const DataCardClaimed: React.FC<ComponentProp> = (props) => {
           <div className={mainDiv}>
             <div className={textLeft}>Burned Amount</div>
             <div className={textRight}>
-              <span className="flex h-4 w-4 flex-shrink-0">
-                <BNBIcon />
+              <DXCIconBG className="flex size-4 flex-shrink-0" />
+              <span>
+                {Number(
+                  formatEther(BigNumber.from(props.data.paidTax))
+                ).toFixed(4)}
               </span>
-              <span>{formatEther(BigNumber.from(props.data.paidTax))}</span>
               <span>{props.tokenName}</span>
             </div>
           </div>
@@ -83,10 +83,8 @@ export const DataCardClaimed: React.FC<ComponentProp> = (props) => {
       <div className={mainDiv}>
         <div className={textLeft}>Net Profit</div>
         <div className={textRight}>
-          <span className="flex h-4 w-4 flex-shrink-0">
-            <BNBIcon />
-          </span>
-          <span>{formatEther(props.data.amount)}</span>
+          <DXCIconBG className="flex size-4 flex-shrink-0" />
+          <span>{Number(formatEther(props.data.amount)).toFixed(4)}</span>
           <span>{props.tokenName}</span>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import React from "react";
 import dayjs from "dayjs";
-import { BNBIcon } from "@/assets/svgs";
+import { DXCIconBG } from "@/assets/svgs";
 import { AllUserReward } from "@/staking/types";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
 import { formatEther } from "ethers/lib/utils";
@@ -14,10 +14,8 @@ export const DataCardEarned: React.FC<{
       <div className={mainDiv}>
         <div className={textLeft}>Earned Rewards</div>
         <div className={textRight}>
-          <span className="flex h-4 w-4 flex-shrink-0">
-            <BNBIcon />
-          </span>
-          <span>{formatEther(item.amount)}</span>
+          <DXCIconBG className="flex size-4 flex-shrink-0" />
+          <span>{Number(formatEther(item.amount)).toFixed(4)}</span>
           <span>{coin?.symbol}</span>
         </div>
       </div>
@@ -40,7 +38,7 @@ export const DataCardEarned: React.FC<{
               {item.status}
             </span>
           ) : (
-            <span className="flex h-7 w-[85px] items-center justify-center rounded-full bg-green-shade-2/[0.16] text-green-shade-2">
+            <span className="flex h-7 w-[95px] items-center justify-center rounded-full bg-green-shade-2/[0.16] text-green-shade-2">
               {item.status}
             </span>
           )}
@@ -53,5 +51,3 @@ export const DataCardEarned: React.FC<{
 const mainDiv = "flex w-full items-center justify-between gap-3";
 const textLeft = "text-sm font-medium text-gray-shade-14";
 const textRight = "text-sm font-medium text-white flex items-center gap-1";
-const countDown =
-  "flex h-8 w-11 flex-shrink-0 items-center justify-center rounded-lg bg-white text-[11px] font-medium text-black";
