@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import axios from "axios";
 import useUser from "@/hooks/use.user";
-import { formatIPFSUrl } from "@/utils/format.address";
 import { sliceAccountAddress } from "@/utils/user.helpers";
+import { customLog } from "@/utils/custom.log";
 import { useWallet } from "@/web3/hooks/use.wallet";
 import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
 import { SwapCollection } from "@/web3/blockchain/config";
@@ -11,23 +10,14 @@ import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import Button from "@/components/button";
 import TrxModal from "@/components/modal/trx-modal";
 import TrxStatus from "@/components/modal/trx-status";
-import { customLog } from "@/utils/custom.log";
+import { OldDXCMetaNFT, getOldDXCMetaNFTs } from "@/lib/get-old-dxc-meta-nfts";
 import { NextPageWithLayout } from "../../_app.page";
-
-type NftType = {
-  creator: string;
-  image: string;
-  ipfs: string;
-  owner: string;
-  price: string;
-  tokenId: string;
-};
 
 const SwapNfts: NextPageWithLayout = () => {
   const { user } = useUser();
   const { getSigner, getProvider } = useWallet();
   const [isLoading, setIsLoading] = useState(true);
-  const [userNfts, setUserNfts] = useState<NftType[]>([]);
+  const [userNfts, setUserNfts] = useState<OldDXCMetaNFT[]>([]);
   const [trxModal, setTrxModal] = useState<
     "trx-success" | "trx-fail" | "trx-progress" | null
   >(null);
@@ -40,18 +30,15 @@ const SwapNfts: NextPageWithLayout = () => {
 
         setIsLoading(true);
 
-        const { nfts } = await BlockchainRead.getUserCollectionNfts(
-          SwapCollection,
-          user._id
-        );
+        const nfts = await getOldDXCMetaNFTs();
 
-        const filteredNfts: NftType[] = (
+        const filteredNfts = (
           await Promise.all(
-            nfts.map(async (nft: any) => {
+            nfts.map(async (nft) => {
               const result = await BlockchainRead.isTokenSwaped(
                 provider,
                 SwapCollection,
-                nft.tokenId
+                +nft.tokenId
               );
 
               if (!result) {
@@ -61,24 +48,9 @@ const SwapNfts: NextPageWithLayout = () => {
               }
             })
           )
-        ).filter((nft) => nft !== null);
+        ).filter((nft) => nft !== null) as OldDXCMetaNFT[];
 
-        const filteredNftsWithImage = await Promise.all(
-          filteredNfts.map(async (nft: any) => {
-            const ipfsUrl = nft.ipfs;
-
-            const { data } = await axios.get(formatIPFSUrl(ipfsUrl));
-
-            const imageUrl = formatIPFSUrl(data.image);
-
-            return {
-              ...nft,
-              image: imageUrl,
-            };
-          })
-        );
-
-        setUserNfts(filteredNftsWithImage);
+        setUserNfts(filteredNfts);
         setIsLoading(false);
       } catch (err: any) {
         setUserNfts([]);
@@ -135,7 +107,7 @@ const SwapNfts: NextPageWithLayout = () => {
           Swap NFT
         </div>
         {userNfts.length > 0 ? (
-          userNfts.map((nft: NftType) => (
+          userNfts.map((nft) => (
             <div
               key={nft.tokenId}
               className="mt-4 grid grid-cols-1 gap-3 fmd:grid-cols-2"
@@ -143,7 +115,9 @@ const SwapNfts: NextPageWithLayout = () => {
               <div className="col-span-1 flex h-[72px] w-full max-w-[1012px] rounded-2xl bg-[#1B1C22]">
                 <Image
                   alt="Swap Nfts"
-                  src={nft.image}
+                  src={
+                    nft.ipfs_metadata?.image ?? "/images/placeholder-square.svg"
+                  }
                   className="m-4 rounded-2xl object-contain"
                   height={40}
                   width={40}
