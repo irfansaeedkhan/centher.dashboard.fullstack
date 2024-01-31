@@ -53,15 +53,40 @@ const StakedLiquidity: React.FC<Props> = ({ stakingPool, card, coins }) => {
       </div>
       <div className={mainSection}>
         <span className={label}>Total Claimed Rewards</span>
-        <span className={value}>4 DXC</span>
+        <span className={value}>
+          {Number(
+            formatUnits(
+              stakingPool?.totalPaidReward + "",
+              coins.find((e) =>
+                eqAddress(e?.contractAddress, stakingPool?.reward_token_address)
+              )?.decimals || 18
+            )
+          )?.toFixed(2)}{" "}
+          {
+            coins.find((e) =>
+              eqAddress(e?.contractAddress, stakingPool?.reward_token_address)
+            )?.symbol
+          }
+        </span>
       </div>
       <div className={mainSection}>
         <span className={label}>Total ReStaked Rewards</span>
-        <span className={value}>4 DXC</span>
-      </div>
-      <div className={mainSection}>
-        <span className={label}>Total Pending Rewards</span>
-        <span className={value}>4 DXC</span>
+        <span className={value}>
+          {" "}
+          {Number(
+            formatUnits(
+              stakingPool?.totalRestakedAmount + "",
+              coins.find((e) =>
+                eqAddress(e?.contractAddress, stakingPool?.reward_token_address)
+              )?.decimals || 18
+            )
+          )?.toFixed(2)}{" "}
+          {
+            coins.find((e) =>
+              eqAddress(e?.contractAddress, stakingPool?.reward_token_address)
+            )?.symbol
+          }
+        </span>
       </div>
       <div className={mainSection}>
         <span className={label}>Total Staked</span>
