@@ -180,21 +180,6 @@ export class CentherStaking {
   }
 
   @CatchError()
-  async getProjectOverview(poolId: number): Promise<any> {
-    const query = QueryFactory.getQuery(QueryNames.GET_POOL_OVERVIEW);
-
-    const result = await this._connection?.query({
-      query,
-      variables: {
-        id: poolId + "",
-      },
-      fetchPolicy: "no-cache",
-    });
-
-    return result?.data.pool;
-  }
-
-  @CatchError()
   async getUserStakes(
     signer: JsonRpcSigner,
     poolId: number,

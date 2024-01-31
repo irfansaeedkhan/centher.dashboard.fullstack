@@ -38,7 +38,7 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins, sdk }) => {
   useEffect(() => {
     if (!loggedInUser) return;
 
-    sdk?.getProjectOverview(+card.id).then((pool) => {
+    sdk?.getProject(+card.id, loggedInUser._id).then((pool) => {
       if (!pool) return;
       const mappedPools = setupUiModels([pool]);
       setStakingPool(mappedPools[0]);
