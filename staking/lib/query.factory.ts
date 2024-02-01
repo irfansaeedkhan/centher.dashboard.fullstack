@@ -149,4 +149,44 @@ const queries: Queries = {
     id
   }
 }`,
+  GET_POOL_OVERVIEW: `query MyQuery($id: ID = "3") {
+  pool(id: $id) {
+    totalPaidReward
+    totalRestakedAmount
+    totalStakedAmount
+    users {
+      id
+    }
+    annualStakingRewardRate
+    cancellationFees
+    claimDuration
+    createdAt
+    firstRewardDuration
+    id
+    isActive
+    isLP
+    isUnstakable
+    levelFive
+    levelFour
+    levelOne
+    levelSix
+    levelThree
+    levelTwo
+    maxStakableAmount
+    maxStakeAmount
+    metadataUri
+    minStakeAmount
+    name
+    nonRefundable
+    rate
+    poolOwner
+    rewardModeForRef
+    rewardToken
+    showOnCenther
+    stakeToken
+    stakingDurationPeriod
+    startTime
+    tax
+  }
+}`,
 };
