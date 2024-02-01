@@ -83,15 +83,12 @@ export const HistoryTabs: React.FC<Props> = ({
         )}
       </div>
       {buttons.length > 0 && (
-        <div className="relative flex flex-shrink-0 fmd:hidden">
+        <div className="relative flex flex-shrink-0 fmd:hidden" ref={ref}>
           <span onClick={() => setButtonPopup(!buttonPopup)}>
             <BsThreeDots className="size-6 cursor-pointer text-gray-shade-14 hover:text-white" />
           </span>
           {buttonPopup && (
-            <div
-              ref={ref}
-              className="absolute right-0 top-8 h-auto w-[200px] rounded-lg bg-popup-0"
-            >
+            <div className="absolute right-0 top-8 h-auto w-[200px] rounded-lg bg-popup-0">
               <div className="flex flex-col gap-2 p-4">
                 {buttons.map((e: any, i: number) => {
                   return (

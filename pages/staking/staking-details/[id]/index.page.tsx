@@ -17,6 +17,7 @@ import { DexSwapping } from "./_components/swapping/dex-swapping";
 import { RewardsTabs } from "./_components/reward-components";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
 import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
+import { useWeb3ModalState } from "@web3modal/ethers5/react";
 
 const StakingDetails: NextPageWithLayout = () => {
   const router = useRouter();
@@ -30,6 +31,7 @@ const StakingDetails: NextPageWithLayout = () => {
   const { isAutoRestakeEnabled, handleToggleAutoRestake } = useAutoRestake(
     stakingPool?.id
   );
+  const { open, selectedNetworkId } = useWeb3ModalState();
   const poolId = useMemo(() => {
     return router.query.id?.toString() ? +router.query.id.toString() : 0;
   }, [router]);
@@ -97,12 +99,12 @@ const StakingDetails: NextPageWithLayout = () => {
   }, [loadPoolData]);
 
   useEffect(() => {
-    if (!signer) {
+    if (!signer && !connectedAddress && !open) {
       setConnectWalletModal(true);
     } else {
       setConnectWalletModal(false);
     }
-  }, [signer]);
+  }, [signer, connectedAddress, open]);
 
   useEffect(() => {
     if (poolId) {
@@ -126,6 +128,7 @@ const StakingDetails: NextPageWithLayout = () => {
       authType="login"
       connectWallet={connectWallet}
       onClose={() => setConnectWalletModal(false)}
+      crossIcon={false}
     />
   ) : stakingPool ? (
     <>

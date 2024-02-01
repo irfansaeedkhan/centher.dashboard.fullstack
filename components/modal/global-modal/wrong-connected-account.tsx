@@ -13,6 +13,8 @@ export const WrongConnectedAccountModal = () => {
         onClose={() => {}}
         shouldCloseOnEsc={false}
         shouldCloseOnOverlayClick={false}
+        modalClassName="px-4"
+        modalContentClassName="w-full"
       >
         <div className="">
           <h1 className="text-center text-lg font-semibold text-white">
@@ -27,7 +29,9 @@ export const WrongConnectedAccountModal = () => {
             <h3 className="text-base font-medium text-white">
               Correct Account
             </h3>
-            <p className="mt-1 text-sm text-gray-shade-14">{user?._id}</p>
+            <p className="mt-1 break-words text-sm text-gray-shade-14">
+              {user?._id}
+            </p>
           </div>
         </div>
       </ModalContainer>

@@ -1,4 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { ethers } from "ethers";
+import { hexToBigInt } from "viem";
+import toast from "react-hot-toast";
 import Button from "@/components/button";
 import { SwapToken } from "@/models/swap";
 import DropdownSwapForm, {
@@ -20,15 +23,11 @@ import {
   SwapRouter,
   SmartRouterTrade,
 } from "@pancakeswap/smart-router";
-import { CustomNumberInput } from "@/components/custom-number-input";
 import {
   dexSwappingConfig,
   v3SubgraphProvider,
   viemProviders,
 } from "./dex-swapping-config";
-import { ethers } from "ethers";
-import { hexToBigInt } from "viem";
-import toast from "react-hot-toast";
 import { Loader } from "./loader";
 
 export const DexSwapping = () => {
@@ -345,7 +344,7 @@ export const DexSwapping = () => {
   };
 
   return (
-    <div className="w-full rounded-xl border border-gray-shade-3 bg-black-shade-9 p-6">
+    <div className="w-full rounded-xl border border-gray-shade-3 bg-black-shade-9 p-4 fsm:p-6">
       <div>
         <div className="text-[min(10vw, 20px)] font-semibold text-white">
           Swap your token
@@ -359,7 +358,7 @@ export const DexSwapping = () => {
               <Loader />
             </div>
           ) : (
-            <div className="flex w-full flex-shrink-0 flex-col rounded-xl bg-elevation-1 px-5 py-6 fmd:col-span-1 flg:max-w-[512px]">
+            <div className="flex w-full flex-shrink-0 flex-col rounded-xl bg-elevation-1 px-4 py-6 fsm:px-5 fmd:col-span-1 flg:max-w-[512px]">
               <p className="font-small ml-1 text-sm text-gray-shade-14">Pay</p>
 
               <div className="flex w-full flex-row gap-2">
@@ -367,14 +366,14 @@ export const DexSwapping = () => {
                   <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
                     <input
                       type="number"
-                      value={fromAmount}
+                      value={fromAmount === 0 ? "" : fromAmount}
                       placeholder="Enter amout"
                       onChange={(v) => handleFromAmount(v.target.value)}
                       className="block w-full rounded-lg border-0 bg-transparent px-5 py-3 text-2xl placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
                     />
                   </div>
                 </div>
-                <div className="mx-1 mt-2 block w-2/6 appearance-none rounded-lg border-0 text-sm">
+                <div className="flex w-[122px] flex-shrink-0 appearance-none rounded-lg border-0 text-sm">
                   {dropDownTokens?.base ? (
                     <DropdownSwapForm
                       placeholder="Token"
@@ -387,7 +386,7 @@ export const DexSwapping = () => {
                   ) : null}
                 </div>
               </div>
-              <p className="my-4 ml-1 text-sm font-medium text-gray-shade-14">
+              <p className="my-4 ml-1 text-xs font-medium text-gray-shade-14 fxm:text-sm">
                 Balance {balances ? balances.base : ""}
               </p>
               <div className="my-1 border-b-2 border-gray-shade-3"></div>
@@ -407,7 +406,7 @@ export const DexSwapping = () => {
                     />
                   </div>
                 </div>
-                <div className="mx-1 mt-2 block w-2/6 appearance-none rounded-lg border-0 text-sm">
+                <div className="flex w-[122px] flex-shrink-0 appearance-none rounded-lg border-0 text-sm">
                   {dropDownTokens?.quote ? (
                     <DropdownSwapForm
                       placeholder="Token"
@@ -420,7 +419,7 @@ export const DexSwapping = () => {
                   ) : null}
                 </div>
               </div>
-              <p className="font-small my-4 ml-1 text-sm text-gray-shade-14">
+              <p className="my-4 ml-1 text-xs text-gray-shade-14 fxm:text-sm">
                 Balance {balances ? balances.quote : ""}
               </p>
 

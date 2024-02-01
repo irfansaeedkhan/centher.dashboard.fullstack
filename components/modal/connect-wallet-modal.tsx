@@ -17,6 +17,7 @@ interface Props {
     showError?: boolean
   ) => Promise<void>;
   onClose: () => void;
+  crossIcon?: boolean;
 }
 
 const ConnectWalletModal: React.FC<Props> = ({
@@ -24,6 +25,7 @@ const ConnectWalletModal: React.FC<Props> = ({
   authType,
   connectWallet,
   onClose,
+  crossIcon = true,
 }) => {
   const [runningOnInjectedProvider, setRunningOnInjectedProvider] =
     useState<boolean>(false);
@@ -56,16 +58,18 @@ const ConnectWalletModal: React.FC<Props> = ({
       isOpen={open}
       onClose={onClose}
       modalContentClassName="max-w-2xl p-6 rounded-2xl"
-      shouldCloseOnOverlayClick={true}
-      shouldCloseOnEsc={true}
+      shouldCloseOnOverlayClick={false}
+      shouldCloseOnEsc={false}
     >
       <div className="flex items-center">
         <h3 className="flex-grow text-center text-xl font-semibold text-white">
           Connect to wallet
         </h3>
-        <button className="text-white" onClick={onClose}>
-          <IoClose className="h-6 w-6" />
-        </button>
+        {crossIcon && (
+          <button className="text-white" onClick={onClose}>
+            <IoClose className="h-6 w-6" />
+          </button>
+        )}
       </div>
       <div className="mb-3 mt-8 flex w-full justify-center px-5 md:px-10">
         <p className="w-full max-w-[366px] text-center text-xs text-gray-shade-14">

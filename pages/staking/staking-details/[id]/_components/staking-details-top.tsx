@@ -41,7 +41,7 @@ const StakingDetailsTop: React.FC<{
     claim: string;
     total: string;
   } | null>(null);
-  const [stakingValue, setStakingValue] = useState<string>("0");
+  const [stakingValue, setStakingValue] = useState(0);
   const [stakedAmount, setStakedAmount] = useState<string>("0");
   const [restakedAmount, setRestakedAmount] = useState<string>("0");
   const [stakeLoader, setStakeLoader] = useState<boolean>(false);
@@ -113,7 +113,7 @@ const StakingDetailsTop: React.FC<{
   }, [stakingValue, stakingPool]);
 
   const stakingValueChanges = (value: string) => {
-    setStakingValue(value);
+    setStakingValue(+value);
   };
 
   const stakeSubmit = async (referrer: string) => {
@@ -182,6 +182,7 @@ const StakingDetailsTop: React.FC<{
           title: "New Stake",
           message: "Your stake processed successfully",
         });
+        setStakingValue(0);
         setTimeout(async () => {
           await reload(true);
         }, 2500);
@@ -190,7 +191,7 @@ const StakingDetailsTop: React.FC<{
       }
     } catch (error) {
       let message = error instanceof Error ? error.message : error;
-
+      setStakingValue(0);
       if (
         typeof message == "string" &&
         message.includes("call revert exception")
@@ -216,7 +217,7 @@ const StakingDetailsTop: React.FC<{
 
   const modalTemplateCollection: TemplateCollection = {
     successFuncModal: {
-      title: "Creating Staking Pack",
+      title: "Creating Staking Pack Successfully",
       visibility: true,
       content: (input: { title: string; message: string }) => (
         <SuccessModalContent message={input.message} title={input.title} />
@@ -235,7 +236,7 @@ const StakingDetailsTop: React.FC<{
 
   return (
     stakingStat && (
-      <div className="mx-auto h-auto w-full rounded-xl border border-gray-shade-3 bg-black-shade-9 p-4 fxm:p-6">
+      <div className="mx-auto h-auto w-full rounded-xl border border-gray-shade-3 bg-black-shade-9 p-4 fsm:p-6">
         <div className="flex h-fit flex-col justify-between gap-8 flg:flex-row">
           {stakingStat && (
             <StakeNow
@@ -251,7 +252,7 @@ const StakingDetailsTop: React.FC<{
               amount={stakingValue}
             />
           )}
-          <div className="h-auto w-full rounded-2xl border border-gray-shade-3 bg-transparent p-8 flg:max-w-[512px]">
+          <div className="h-auto w-full rounded-2xl border border-gray-shade-3 bg-transparent p-4 fsm:p-6 flg:max-w-[512px] flg:p-8">
             <div>
               <p className="text-[min(10vw, 20px)] font-semibold text-white">
                 Staking Amount
@@ -324,6 +325,7 @@ const StakingDetailsTop: React.FC<{
             onClose={() => {
               modal.dismissModal();
             }}
+            heightClass={"fxm:h-auto"}
           >
             {ModalModel.content}
           </CustomModal>
