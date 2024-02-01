@@ -106,6 +106,10 @@ const BookingMain: React.FC<Props> = ({
   ]);
 
   useEffect(() => {
+    if (!connectedAddress) setConnectWalletModal(true);
+  }, [connectedAddress, setConnectWalletModal]);
+
+  useEffect(() => {
     const allPurchases = [...purchaseBusdData, ...purchaseNtrData];
     const allPurchasesSorted = allPurchases
       .sort((a, b) => {
@@ -137,8 +141,6 @@ const BookingMain: React.FC<Props> = ({
   if (!allPurchases) return null;
   if (!myBookings) return null;
   if (!rewards) return null;
-
-  if (!connectedAddress) setConnectWalletModal(true);
 
   return (
     <div>
