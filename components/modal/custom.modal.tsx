@@ -1,3 +1,4 @@
+import cn from "@/utils/cn";
 import React from "react";
 import { IoClose } from "react-icons/io5";
 
@@ -6,6 +7,7 @@ interface CustomModalProps {
   title: string;
   onClose: () => void;
   disable?: string;
+  heightClass?: string;
 }
 
 export const CustomModal: React.FC<CustomModalProps> = (props) => {
@@ -33,7 +35,10 @@ export const CustomModal: React.FC<CustomModalProps> = (props) => {
           )}
         </div>
         <div
-          className={`customScrollbar flex items-center justify-center overflow-y-auto fmd:max-h-[600px] [@media(max-width:400px)]:h-[50vh]`}
+          className={cn(
+            `customScrollbar flex items-center justify-center overflow-y-auto fxm:h-[50vh] fmd:max-h-[600px]`,
+            props.heightClass
+          )}
         >
           {props.children}
         </div>

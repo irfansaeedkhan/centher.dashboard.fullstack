@@ -183,6 +183,7 @@ const StakingReferrals: NextPageWithLayout = () => {
       authType="login"
       connectWallet={connectWallet}
       onClose={() => setConnectWalletModal(false)}
+      crossIcon={false}
     />
   ) : isLoading ? (
     <div className="flex h-[calc(100vh-60px)] w-full items-center justify-center">

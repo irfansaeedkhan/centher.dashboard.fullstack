@@ -38,12 +38,12 @@ export const DataCardStaking: React.FC<ComponentProps> = (props) => {
   }
 
   return (
-    <div className="relative col-span-1 flex flex-col gap-3 rounded-xl border border-gray-shade-3 p-4 fxm:p-6">
+    <div className="relative col-span-1 flex flex-col gap-3 rounded-xl border border-gray-shade-3 p-4 pt-6 fxm:p-6">
       <div className="absolute -top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 transform">
         <div className="flex w-fit items-center justify-center rounded-xl border border-gray-shade-3 bg-[#1E1F28] px-3 py-1">
           <span
             className={clsx(
-              "text-sm font-medium",
+              "text-center text-xs font-medium fxm:text-sm",
               status?.toLowerCase() === "live" && "staking-text-gradient-live",
               status?.toLowerCase() === "staked" &&
                 "staking-text-gradient-staked",
