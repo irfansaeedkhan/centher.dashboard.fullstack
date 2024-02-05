@@ -1,7 +1,18 @@
 import React from "react";
 import { PresaleDataType } from "../../../_components/launchpad-card-data";
+import { formatUnits } from "viem";
 
-export const PresaleStatus: React.FC<PresaleDataType> = ({}) => {
+interface PresaleDataProps extends PresaleDataType {
+  token_name: string;
+  token_symbol: string;
+  website: string;
+}
+
+export const PresaleStatus: React.FC<PresaleDataProps> = ({
+  minTokensToSell,
+  maxTokensToSell,
+  token_symbol,
+}) => {
   return (
     <div className="col-span-1 h-auto w-full rounded-xl bg-black-shade-9 p-4 fxm:p-6">
       <div className="flex flex-col gap-4">
@@ -11,11 +22,15 @@ export const PresaleStatus: React.FC<PresaleDataType> = ({}) => {
         </div>
         <div className={mainDiv}>
           <div className={textLeft}>Minimum Buy</div>
-          <div className={textRight}>0 DXC</div>
+          <div className={textRight}>
+            {formatUnits(BigInt(minTokensToSell), 18)} {token_symbol}
+          </div>
         </div>
         <div className={mainDiv}>
           <div className={textLeft}>Maximum Buy</div>
-          <div className={textRight}>0 DXC</div>
+          <div className={textRight}>
+            {formatUnits(BigInt(maxTokensToSell), 18)} {token_symbol}
+          </div>
         </div>
       </div>
     </div>

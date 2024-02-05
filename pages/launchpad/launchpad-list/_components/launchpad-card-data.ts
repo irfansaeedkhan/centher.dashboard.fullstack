@@ -164,18 +164,16 @@ export type PresaleDataType = {
   isActive: boolean;
   totalPurchasesInBuyingToken: string;
   roundDeep: string;
-  roundInfos: [
-    {
-      token: string;
-      startTime: string;
-      endTime: string;
-      lockMonths: string;
-      minContribution: string;
-      maxContribution: string;
-      tokensToSell: string;
-      pricePerToken: string;
-    }
-  ];
+  roundInfos: {
+    token: string;
+    startTime: string;
+    endTime: string;
+    lockMonths: string;
+    minContribution: string;
+    maxContribution: string;
+    tokensToSell: string;
+    pricePerToken: string;
+  }[];
   tokenPurchaseWithBNB: [
     {
       id: string;

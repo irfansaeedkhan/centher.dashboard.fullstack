@@ -87,15 +87,17 @@ export const PresaleData: React.FC<PresaleDataProps> = ({
         <div className={mainDiv}>
           <div className={textLeft}>Presale start time</div>
           <div className={textRight}>
-            {dayjs(roundInfos[0].startTime).format("DD-MMM-YYYY HH:mm:A")}
+            {dayjs(Number(roundInfos[0].startTime) * 1000).format(
+              "DD-MMM-YYYY HH:mm:A"
+            )}
           </div>
         </div>
         <div className={mainDiv}>
           <div className={textLeft}>Presale end time</div>
           <div className={textRight}>
-            {dayjs(roundInfos[roundInfos.length - 1].endTime).format(
-              "DD-MMM-YYYY HH:mm:A"
-            )}
+            {dayjs(
+              Number(roundInfos[roundInfos.length - 1].endTime) * 1000
+            ).format("DD-MMM-YYYY HH:mm:A")}
           </div>
         </div>
         <div className={mainDiv}>

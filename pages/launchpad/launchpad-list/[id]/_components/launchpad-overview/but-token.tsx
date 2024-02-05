@@ -41,7 +41,7 @@ export const BuyToken: React.FC<Props> = ({ token_symbol, fundType }) => {
             token,
             provider
           );
-          console.log("balance: ", balance);
+
           setTokenBalance(Number(balance));
         }
       } catch (err) {
