@@ -30,7 +30,7 @@ export const RefDataCardClaimable: React.FC<{
   restakeInProgress,
   reload,
 }) => {
-  console.log("in the tab:", item.nextTime, item.item.claimableReward);
+  console.log("in the tab:", item.nextTime, item.claimableReward);
 
   return (
     <div className="col-span-1 flex flex-col gap-3 rounded-xl border border-gray-shade-3 p-4 fxm:p-6">
