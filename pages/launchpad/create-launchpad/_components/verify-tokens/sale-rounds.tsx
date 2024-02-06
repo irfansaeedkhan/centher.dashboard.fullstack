@@ -13,6 +13,7 @@ const SaleRounds: React.FC<FormStateProps> = ({ formState, setFormState }) => {
             (index) => {
               return {
                 round_no: index,
+                token_price: "",
                 total_selling_amount: "",
                 soft_cap_busd: "",
                 start_time: null,
