@@ -3,7 +3,7 @@ import clsx from "clsx";
 import dayjs from "dayjs";
 import { CgSpinner } from "react-icons/cg";
 import Countdown, { CountdownRendererFn } from "react-countdown";
-import { BNBIcon } from "@/assets/svgs";
+import { DXCIconBG } from "@/assets/svgs";
 import { UserStakingTransfers } from "@/staking/types/get.projects.interface";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { formatUnits } from "viem";
@@ -23,7 +23,7 @@ export const DataCardStaking: React.FC<ComponentProps> = (props) => {
     if (props.data.endAt < +new Date() / 1000) {
       status = "Expired";
     } else {
-      status = "live";
+      status = "Live";
     }
   } else {
     if (props.data.endAt < +new Date() / 1000) {
@@ -38,17 +38,20 @@ export const DataCardStaking: React.FC<ComponentProps> = (props) => {
   }
 
   return (
-    <div className="relative col-span-1 flex flex-col gap-3 rounded-xl border border-gray-shade-3 p-4 fxm:p-6">
+    <div className="relative col-span-1 flex flex-col gap-3 rounded-xl border border-gray-shade-3 p-4 pt-6 fxm:p-6">
       <div className="absolute -top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 transform">
         <div className="flex w-fit items-center justify-center rounded-xl border border-gray-shade-3 bg-[#1E1F28] px-3 py-1">
           <span
             className={clsx(
-              "text-sm font-medium",
-              status === "Live" && "staking-text-gradient-live",
-              status === "Staked" && "staking-text-gradient-staked",
-              status === "Unstaked" && "staking-text-gradient-unstaked",
-              status === "Unstakable" && "staking-text-gradient-unstakable",
-              status === "Expired" && "text-[#E34048]"
+              "text-center text-xs font-medium fxm:text-sm",
+              status?.toLowerCase() === "live" && "staking-text-gradient-live",
+              status?.toLowerCase() === "staked" &&
+                "staking-text-gradient-staked",
+              status?.toLowerCase() === "unstaked" &&
+                "staking-text-gradient-unstaked",
+              status?.toLowerCase() === "unstakable" &&
+                "staking-text-gradient-unstakable",
+              status?.toLowerCase() === "expired" && "text-[#E34048]"
             )}
           >
             {status}
@@ -59,12 +62,14 @@ export const DataCardStaking: React.FC<ComponentProps> = (props) => {
         <div className={textLeft}>Staked Amount</div>
         <div className={textRight}>
           <span className="flex h-4 w-4 flex-shrink-0">
-            <BNBIcon />
+            <DXCIconBG className="flex size-4 flex-shrink-0" />
           </span>
           <span>
-            {normalizeValue(
-              formatUnits(BigInt(props.data.amount), props.tokenDecimal)
-            )}
+            {Number(
+              normalizeValue(
+                formatUnits(BigInt(props.data.amount), props.tokenDecimal)
+              )
+            ).toFixed(4)}
           </span>
           <span>{props.tokenName}</span>
         </div>
@@ -142,7 +147,6 @@ export const DataCardStaking: React.FC<ComponentProps> = (props) => {
 const mainDiv = "flex w-full items-center justify-between gap-3";
 const textLeft = "text-sm font-medium text-gray-shade-14";
 const textRight = "text-sm font-medium text-white flex items-center gap-1";
-const textCenter = "flex w-full items-center justify-center gap-3";
 const countDown =
   "flex h-8 w-11 flex-shrink-0 items-center justify-center rounded-lg bg-white text-[11px] font-medium text-black";
 

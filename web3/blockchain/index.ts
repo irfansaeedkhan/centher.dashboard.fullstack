@@ -1394,7 +1394,7 @@ export class BlockchainWrite {
       );
 
       if (data.showOnCenther) {
-        const balance = await signer.getBalance(ownerAddress);
+        const balance = await signer.getBalance();
         const price = await stakingContract.functions.platformFees();
 
         if (+balance.toString() < +price.toString()) {

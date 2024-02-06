@@ -28,7 +28,7 @@ const Networks = {
   },
 };
 export const WrongNetworkModal = () => {
-  const { hideModal } = useGlobalModalContext();
+  const { hideModal, MODAL_TYPES } = useGlobalModalContext();
 
   const supportedChainId = useMemo(() => {
     return process.env.NEXT_PUBLIC_APP_ENV == "production" ? "0x38" : "0x5"; // 0x38 >> BSC , 0x5 >> GOERLI
@@ -74,7 +74,7 @@ export const WrongNetworkModal = () => {
   return (
     <CustomNewModal
       onClose={() => {
-        hideModal();
+        hideModal(MODAL_TYPES.WRONG_NETWORK);
       }}
       disable="yes"
       title={"Wrong Network"}

@@ -103,8 +103,7 @@ export const CreateNFTCollectionForm = ({
   const [selectedOption, setSelectedOption] = useState("");
   const [categoryError, setCategoryError] = useState(true);
   const { user: loggedInUser } = useUser();
-  const { getSigner, connectWallet, connectedAddress, disconnectWallet } =
-    useWallet();
+  const { getSigner, connectWallet } = useWallet();
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
     title: "",
@@ -366,10 +365,8 @@ export const CreateNFTCollectionForm = ({
         </div>
         {!getSigner() ? (
           <ConnectWalletComp
-            connectWallet={connectWallet}
-            connectedAddress={connectedAddress}
-            disconnectWallet={disconnectWallet}
             authType="login"
+            connectWallet={connectWallet}
             className="mt-2 w-full py-4"
           />
         ) : (

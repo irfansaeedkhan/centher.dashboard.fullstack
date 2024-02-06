@@ -31,7 +31,7 @@ interface Props {
   connectedAddress: string | null | undefined;
   walletModal: () => void;
   signer: any;
-  amount: string;
+  amount: number;
 }
 
 const Booking: React.FC<Props> = ({
@@ -99,7 +99,7 @@ const Booking: React.FC<Props> = ({
               }
               placeholder="00"
               className="block w-full appearance-none rounded-lg border-0 bg-gray-shade-24 bg-transparent px-5 py-3 text-sm placeholder:font-semibold placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
-              value={amount}
+              value={amount === 0 ? "" : amount}
               min={0}
               onChange={(e) => {
                 onValueChanged(e.target.value);
@@ -168,10 +168,12 @@ const Booking: React.FC<Props> = ({
               </div>
             )}
           </div>
-          <div className={mainSection}>
+          <div className="flex w-full flex-col justify-between gap-5 fsm:flex-row fsm:items-center">
             <div className={label}>
               <span className={label}>Balance = </span>
-              <span className={value}>
+              <span
+                className={`flex-shrink-0 text-xs font-medium text-white fxm:text-sm`}
+              >
                 {" "}
                 {+userBalance.toFixed(2)}{" "}
                 {
@@ -188,7 +190,7 @@ const Booking: React.FC<Props> = ({
                 variant={"primary"}
                 title="select"
                 borderRounded={"14px"}
-                className={clsx("text-sm")}
+                className={clsx("w-full text-sm fsm:w-fit")}
                 onClick={() => setBalanceAsInput(userBalance)}
               />
             </div>

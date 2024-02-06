@@ -2,7 +2,7 @@ import React from "react";
 import toast from "react-hot-toast";
 import clsx from "clsx";
 import dayjs from "dayjs";
-import { BNBIcon, GradientCopy } from "@/assets/svgs";
+import { DXCIconBG, GradientCopy } from "@/assets/svgs";
 import { copyText } from "@/utils/copy.text";
 import { sliceAccountAddress } from "@/utils/user.helpers";
 import { ClaimedRewards } from "@/staking/types/rewards.interface";
@@ -19,12 +19,12 @@ interface ComponentProp {
 export const DataCardClaimed: React.FC<ComponentProp> = (props) => {
   const total = BigNumber.from(props.data.amount).add(props.data.paidTax);
   return (
-    <div className="relative col-span-1 flex flex-col gap-3 rounded-xl border border-gray-shade-3 p-4 fxm:p-6">
+    <div className="relative col-span-1 flex flex-col gap-3 rounded-xl border border-gray-shade-3 p-4 pt-6 fxm:p-6">
       <div className="absolute -top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 transform">
         <div className="flex w-fit items-center justify-center rounded-xl border border-gray-shade-3 bg-[#1E1F28] px-3 py-1">
           <span
             className={clsx(
-              "text-sm font-medium",
+              "text-center text-xs font-medium fxm:text-sm",
               props.data.destination == "wallet"
                 ? "staking-text-gradient-staked"
                 : "staking-text-gradient-unstaked"
@@ -52,10 +52,8 @@ export const DataCardClaimed: React.FC<ComponentProp> = (props) => {
             : "Restake Amount"}
         </div>
         <div className={textRight}>
-          <span className="flex h-4 w-4 flex-shrink-0">
-            <BNBIcon />
-          </span>
-          <span>{normalizeValue(formatEther(total))}</span>
+          <DXCIconBG className="flex size-4 flex-shrink-0" />
+          <span>{Number(normalizeValue(formatEther(total))).toFixed(4)}</span>
           <span>{props.tokenName}</span>
         </div>
       </div>
@@ -71,10 +69,12 @@ export const DataCardClaimed: React.FC<ComponentProp> = (props) => {
           <div className={mainDiv}>
             <div className={textLeft}>Burned Amount</div>
             <div className={textRight}>
-              <span className="flex h-4 w-4 flex-shrink-0">
-                <BNBIcon />
+              <DXCIconBG className="flex size-4 flex-shrink-0" />
+              <span>
+                {Number(
+                  formatEther(BigNumber.from(props.data.paidTax))
+                ).toFixed(4)}
               </span>
-              <span>{formatEther(BigNumber.from(props.data.paidTax))}</span>
               <span>{props.tokenName}</span>
             </div>
           </div>
@@ -83,10 +83,8 @@ export const DataCardClaimed: React.FC<ComponentProp> = (props) => {
       <div className={mainDiv}>
         <div className={textLeft}>Net Profit</div>
         <div className={textRight}>
-          <span className="flex h-4 w-4 flex-shrink-0">
-            <BNBIcon />
-          </span>
-          <span>{formatEther(props.data.amount)}</span>
+          <DXCIconBG className="flex size-4 flex-shrink-0" />
+          <span>{Number(formatEther(props.data.amount)).toFixed(4)}</span>
           <span>{props.tokenName}</span>
         </div>
       </div>

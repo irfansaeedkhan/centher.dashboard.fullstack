@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import clsx from "clsx";
 import { formatEther } from "ethers/lib/utils";
 import { DXCIconBG, USDTIcon } from "@/assets/svgs";
-import useUser from "@/hooks/use.user";
 import {
   getTokenBalance,
   getTokenAllowance,
@@ -29,8 +28,7 @@ export const PurchaseCentherCard: React.FC<Props> = ({
   connectedAddress,
 }) => {
   const [roundNo, setRoundNo] = useState<number>(-1);
-  const { user: loggedInUser } = useUser();
-  const { getSigner, disconnectWallet, connectWallet } = useWallet();
+  const { getSigner, connectWallet } = useWallet();
   const [connectWalletModal, setConnectWalletModal] = useState(false);
   const [currentTab, setCurrentTab] = useState<"details" | "booking">(
     "booking"
@@ -186,13 +184,10 @@ export const PurchaseCentherCard: React.FC<Props> = ({
         />
       ) : null}
       <ConnectWalletModal
-        connectWallet={connectWallet}
-        disconnectWallet={disconnectWallet}
-        connectedAddress={connectedAddress}
-        loggedInUser={loggedInUser}
-        onClose={() => setConnectWalletModal(false)}
         open={connectWalletModal}
         authType="login"
+        connectWallet={connectWallet}
+        onClose={() => setConnectWalletModal(false)}
       />
     </div>
   );

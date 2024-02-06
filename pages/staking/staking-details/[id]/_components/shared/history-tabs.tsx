@@ -1,8 +1,10 @@
-import Button from "@/components/button";
+import React, { useRef, useState } from "react";
 import clsx from "clsx";
-import React from "react";
+import { useOnClickOutside } from "usehooks-ts";
+import { BsThreeDots } from "react-icons/bs";
 import { CgSpinner } from "react-icons/cg";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
+import Button from "@/components/button";
 
 interface Props {
   isOpen: boolean;
@@ -23,6 +25,11 @@ export const HistoryTabs: React.FC<Props> = ({
   actionAreaLoading,
   records,
 }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const [buttonPopup, setButtonPopup] = useState(false);
+
+  useOnClickOutside(ref, () => setButtonPopup(false));
+
   return (
     <div className="flex h-[76px] w-full items-center justify-between gap-5 rounded-xl border border-gray-shade-3 bg-[#1A1B21] px-6">
       <div className="flex w-full items-center gap-1.5">
@@ -50,7 +57,7 @@ export const HistoryTabs: React.FC<Props> = ({
           </div>
         )}
       </div>
-      <div className="flex flex-shrink-0 items-center gap-2">
+      <div className="hidden flex-shrink-0 items-center gap-2 fmd:flex">
         {actionAreaLoading ? (
           <>
             <CgSpinner className="h-5 animate-spin text-white" />
@@ -75,6 +82,36 @@ export const HistoryTabs: React.FC<Props> = ({
           })
         )}
       </div>
+      {buttons.length > 0 && (
+        <div className="relative flex flex-shrink-0 fmd:hidden" ref={ref}>
+          <span onClick={() => setButtonPopup(!buttonPopup)}>
+            <BsThreeDots className="size-6 cursor-pointer text-gray-shade-14 hover:text-white" />
+          </span>
+          {buttonPopup && (
+            <div className="absolute right-0 top-8 h-auto w-[200px] rounded-lg bg-popup-0">
+              <div className="flex flex-col gap-2 p-4">
+                {buttons.map((e: any, i: number) => {
+                  return (
+                    <Button
+                      key={i}
+                      className="text-xs"
+                      title={e.title}
+                      borderRounded="10px"
+                      onClick={async () => await e.handler(records)}
+                      disabled={loader?.length > 0}
+                      loaderIcon={
+                        loader == e.title ? (
+                          <CgSpinner className="h-5 animate-spin text-white" />
+                        ) : undefined
+                      }
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

@@ -2,9 +2,7 @@ import React, { useEffect, useMemo, useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import clsx from "clsx";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-import updateLocale from "dayjs/plugin/updateLocale";
+import moment from "moment";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import {
   ArchivedPost,
@@ -50,7 +48,7 @@ export const PostHeader: React.FC<Props> = ({
   }, [loggedInUser?._id, postUser._id]);
 
   const isBefore15Minutes = useMemo(() => {
-    return dayjs().diff(dayjs(post.createdAt), "minute") < 15;
+    return moment().diff(moment(post.createdAt), "minute") < 15;
   }, [post.createdAt]);
 
   const createdTime = useMemo(() => {
@@ -66,13 +64,13 @@ export const PostHeader: React.FC<Props> = ({
     }
 
     try {
-      return dayjs().diff(dayjs(new Date(createdAt)), "day") < 7
-        ? dayjs(new Date(createdAt)).fromNow()
-        : dayjs().diff(dayjs(new Date(createdAt)), "day") > 365
-        ? dayjs(new Date(createdAt)).format("D MMM, YYYY")
-        : dayjs(new Date(createdAt)).format("D MMM");
+      return moment().diff(moment(new Date(createdAt)), "day") < 7
+        ? moment(new Date(createdAt)).fromNow()
+        : moment().diff(moment(new Date(createdAt)), "day") > 365
+        ? moment(new Date(createdAt)).format("D MMM, YYYY")
+        : moment(new Date(createdAt)).format("D MMM");
     } catch (error) {
-      // There is some issue with dayjs, so we are returning 2s as a fallback
+      // There was some issue with smaller time, so we are returning 2s as a fallback
       return "2s";
     }
   }, [post, postType, parentPost]);
@@ -257,35 +255,16 @@ export const PostHeader: React.FC<Props> = ({
   );
 };
 
-// Reset threshold for relative time
-dayjs.extend(relativeTime, {
-  thresholds: [
-    { l: "s", r: 1 },
-    { l: "ss", r: 59, d: "second" },
-    { l: "m", r: 1 },
-    { l: "mm", r: 59, d: "minute" },
-    { l: "h", r: 1 },
-    { l: "hh", r: 23, d: "hour" },
-    { l: "d", r: 1 },
-    { l: "dd", r: 29, d: "day" },
-    { l: "M", r: 1 },
-    { l: "MM", r: 11, d: "month" },
-    { l: "y" },
-    { l: "yy", d: "year" },
-  ],
-});
-
-dayjs.extend(updateLocale);
-dayjs.updateLocale("en", {
+moment.updateLocale("en", {
   relativeTime: {
     past: "%s",
-    s: "%ds",
+    s: "1s",
     ss: "%ds",
-    m: "%dm",
+    m: "1m",
     mm: "%dm",
-    h: "%dh",
+    h: "1h",
     hh: "%dh",
-    d: "%dd",
+    d: "1d",
     dd: "%dd",
   },
 });
