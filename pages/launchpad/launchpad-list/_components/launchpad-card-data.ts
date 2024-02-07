@@ -141,6 +141,46 @@ export type LaunchpadDataType = {
   currentRound: number;
 };
 
+export type TokenPurchaseWithBNB = {
+  id: string;
+  token: string;
+  beneficiary: string;
+  round: string;
+  amount: string;
+  amountForOwner: string;
+  blockNumber: string;
+  blockTimestamp: string;
+  transactionHash: string;
+  receivable?: string;
+  pricePerToken?: string;
+};
+
+export type TokenPurchaseWithBUSD = {
+  id: string;
+  token: string;
+  beneficiary: string;
+  round: string;
+  amount: string;
+  amountForOwner: string;
+  blockNumber: string;
+  blockTimestamp: string;
+  transactionHash: string;
+  receivable?: string;
+  pricePerToken?: string;
+};
+
+export type tokenClaim = {
+  id: string;
+  token: string;
+  beneficiary: string;
+  round: number;
+  tokenAmount: string;
+  blockNumber: string;
+  blockTimestamp: string;
+  transactionHash: string;
+  presale: string;
+};
+
 export type PresaleDataType = {
   id: string;
   token: string;
@@ -174,44 +214,38 @@ export type PresaleDataType = {
     tokensToSell: string;
     pricePerToken: string;
   }[];
-  tokenPurchaseWithBNB: [
-    {
-      id: string;
-      token: string;
-      beneficiary: string;
-      round: string;
-      bnbAmount: string;
-      bnbAmountForOwner: string;
-      blockNumber: string;
-      blockTimestamp: string;
-      transactionHash: string;
-    }
-  ];
-  tokenPurchaseWithBUSD: [
-    {
-      id: string;
-      token: string;
-      beneficiary: string;
-      round: string;
-      busdAmount: string;
-      busdAmountForOwner: string;
-      blockNumber: string;
-      blockTimestamp: string;
-      transactionHash: string;
-    }
-  ];
-  tokenClaim: [
-    {
-      id: string;
-      token: string;
-      beneficiary: string;
-      round: number;
-      tokenAmount: string;
-      blockNumber: string;
-      blockTimestamp: string;
-      transactionHash: string;
-      presale: string;
-    }
-  ];
+  tokenPurchaseWithBNB: {
+    id: string;
+    token: string;
+    beneficiary: string;
+    round: string;
+    amount: string;
+    amountForOwner: string;
+    blockNumber: string;
+    blockTimestamp: string;
+    transactionHash: string;
+  }[];
+  tokenPurchaseWithBUSD: {
+    id: string;
+    token: string;
+    beneficiary: string;
+    round: string;
+    amount: string;
+    amountForOwner: string;
+    blockNumber: string;
+    blockTimestamp: string;
+    transactionHash: string;
+  }[];
+  tokenClaim: {
+    id: string;
+    token: string;
+    beneficiary: string;
+    round: number;
+    tokenAmount: string;
+    blockNumber: string;
+    blockTimestamp: string;
+    transactionHash: string;
+    presale: string;
+  }[];
   refRewardClaim: [];
 };

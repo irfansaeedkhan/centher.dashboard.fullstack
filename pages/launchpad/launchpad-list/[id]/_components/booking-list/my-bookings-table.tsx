@@ -4,12 +4,45 @@ import { BlockchainConfig } from "@/web3/blockchain/config";
 import { sliceAccountAddress } from "@/utils/user.helpers";
 import { TableCell, TableRow } from "@/components/shared";
 import { bookingsData } from "./data";
+import {
+  PresaleDataType,
+  TokenPurchaseWithBNB,
+  TokenPurchaseWithBUSD,
+} from "../../../_components/launchpad-card-data";
+import { formatUnits } from "viem";
 
-interface Props {
+interface Props extends PresaleDataType {
   bookingsTab: "my-bookings" | "recent-bookings";
 }
 
-export const MyBookingsTable: React.FC<Props> = ({ bookingsTab }) => {
+export const MyBookingsTable: React.FC<Props> = ({
+  bookingsTab,
+  fundType,
+  tokenPurchaseWithBNB,
+  tokenPurchaseWithBUSD,
+  roundInfos,
+}) => {
+  let bookings: TokenPurchaseWithBNB[] | TokenPurchaseWithBUSD[];
+  if (fundType === 0) {
+    bookings = tokenPurchaseWithBNB;
+  } else {
+    bookings = tokenPurchaseWithBUSD;
+  }
+
+  console.log("bookings: ", bookings);
+
+  // console.log("roundInfos: ", roundInfos[0]);
+
+  for (let i = 0; i < bookings.length; i++) {
+    const currentRoundPrice =
+      roundInfos[Number(bookings[i].round)].pricePerToken;
+    const receivable =
+      (Number(bookings[i].amount) * 1e18) / Number(currentRoundPrice);
+
+    bookings[i].receivable = receivable.toString();
+    bookings[i].pricePerToken = currentRoundPrice;
+  }
+
   return (
     <div className="scrollSetLight3 overflow-x-auto">
       <table className="w-full table-auto rounded-lg">
@@ -31,28 +64,36 @@ export const MyBookingsTable: React.FC<Props> = ({ bookingsTab }) => {
           </TableRow>
         </thead>
         <tbody>
-          {bookingsData.map((booking, i) => {
+          {bookings.map((booking, i) => {
             return (
               <TableRow element="tb" key={i}>
                 <TableCell element={"td"}>
                   <a
-                    href={`${BlockchainConfig.scanner.url}/address/${booking.account_address}`}
+                    href={`${BlockchainConfig.scanner.url}/address/${booking.beneficiary}`}
                     target="_blank"
                     rel="noreferrer noopener"
                     className="hover:text-gradient"
                   >
-                    {sliceAccountAddress(booking.account_address)}
+                    {sliceAccountAddress(booking.beneficiary)}
                   </a>
                 </TableCell>
-                <TableCell element={"td"}>{booking.payment}</TableCell>
-                <TableCell element={"td"}>{booking.receiveable}</TableCell>
-                <TableCell element={"td"}>{booking.dxc_price}</TableCell>
-                <TableCell element={"td"}>{booking.round}</TableCell>
                 <TableCell element={"td"}>
-                  {sliceAccountAddress(booking.trx_hash)}
+                  {formatUnits(BigInt(booking.amount), 18)}
                 </TableCell>
                 <TableCell element={"td"}>
-                  {dayjs(booking.date).format("DD-MMM-YYYY")}
+                  {formatUnits(BigInt(Number(booking.receivable)), 18)}
+                </TableCell>
+                <TableCell element={"td"}>
+                  {formatUnits(BigInt(Number(booking.pricePerToken)), 18)}
+                </TableCell>
+                <TableCell element={"td"}>{booking.round}</TableCell>
+                <TableCell element={"td"}>
+                  {sliceAccountAddress(booking.transactionHash)}
+                </TableCell>
+                <TableCell element={"td"}>
+                  {dayjs(Number(booking.blockTimestamp) * 1000).format(
+                    "DD-MMM-YYYY"
+                  )}
                 </TableCell>
                 {bookingsTab === "my-bookings" && (
                   <TableCell

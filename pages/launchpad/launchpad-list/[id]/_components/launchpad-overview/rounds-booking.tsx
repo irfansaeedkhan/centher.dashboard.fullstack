@@ -4,35 +4,31 @@ import Countdown, { CountdownRendererFn } from "react-countdown";
 import { PresaleDataType } from "../../../_components/launchpad-card-data";
 import Image from "next/image";
 
-export const RoundsBooking: React.FC<PresaleDataType> = ({
+interface PresaleDataProps extends PresaleDataType {
+  token_name: string;
+  token_symbol: string;
+  website: string;
+  currentRound: number;
+}
+
+export const RoundsBooking: React.FC<PresaleDataProps> = ({
+  token_symbol,
   roundInfos,
   roundDeep,
+  currentRound,
+  minTokensToSell,
+  maxTokensToSell,
 }) => {
-  let currentRound;
+  // let currentRound;
 
-  const currentTime = Number(new Date());
-  let timeToShow = 0;
+  const currentTime = Number((Date.now() / 1000).toFixed());
+  let timeToShow;
 
   if (Number(roundInfos[0].startTime) > currentTime) {
     timeToShow = Number(roundInfos[0].startTime);
   } else {
     timeToShow = Number(roundInfos[Number(roundDeep) - 1].endTime);
   }
-
-  for (let i = 0; i < roundInfos.length; i++) {
-    if (
-      Number(roundInfos[i].startTime) < currentTime &&
-      currentTime > Number(roundInfos[i].endTime)
-    ) {
-      currentRound = i + 1;
-
-      break;
-    }
-  }
-
-  console.log("current round is: ", currentRound);
-  console.log("timeToShow is: ", new Date(timeToShow));
-  console.log("timeToShow is: ", timeToShow);
 
   return (
     <div className="col-span-1 flex h-auto w-full flex-col gap-6 rounded-xl bg-black-shade-9 p-4 fxm:p-6">
@@ -90,13 +86,13 @@ export const RoundsBooking: React.FC<PresaleDataType> = ({
             className="absolute left-0 top-0 m-auto h-[56px] w-full fmd:inset-0"
           />
           <p className="max-w-[85px] text-[11px] font-semibold text-white">
-            The presale will start in
+            The presale will {currentTime > timeToShow ? "start" : "end"} in
           </p>
           <Countdown
             // date={
             //   new Date().getTime() + 1000 * 60 * 60 * 24 * 2 + 1000 * 30 * 60
             // }
-            date={new Date(timeToShow)}
+            date={new Date(timeToShow * 1000)}
             renderer={countdownRenderer}
           />
         </div>
@@ -129,8 +125,8 @@ export const RoundsBooking: React.FC<PresaleDataType> = ({
             ></div>
           </div>
           <div className="flex items-center justify-between gap-3 text-xs font-medium text-gray-shade-14">
-            <p>0 DXC</p>
-            <p>100 DXC</p>
+            <p>0 {token_symbol}</p>
+            <p>100 {token_symbol}</p>
           </div>
         </div>
       </div>

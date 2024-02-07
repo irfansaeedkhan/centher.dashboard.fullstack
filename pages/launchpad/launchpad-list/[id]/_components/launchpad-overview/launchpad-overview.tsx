@@ -18,7 +18,7 @@ export const LaunchpadOverview: React.FC<Props> = ({
   launchpadData,
 }) => {
   let currentRound = -1;
-  const nowTime = Date.now();
+  const nowTime = Number((Date.now() / 1000).toFixed());
 
   const roundInfos = launchpadData.roundInfos;
 
@@ -58,12 +58,11 @@ export const LaunchpadOverview: React.FC<Props> = ({
     ) {
       currentRound = 3; // in round 3
     }
-  } else if (
-    nowTime >= Number(roundInfos[2].endTime) &&
-    roundInfos[2] !== undefined
-  ) {
+  } else if (roundInfos[2] && nowTime >= Number(roundInfos[2].endTime)) {
     currentRound = -4; // all round is ended
   }
+
+  console.log("currentRound: ", currentRound);
 
   return (
     <div className="flex flex-col gap-6 flg:flex-row">
@@ -72,7 +71,11 @@ export const LaunchpadOverview: React.FC<Props> = ({
         <BuyToken {...launchpadData} {...metaData} />
       </div>
       <div className="grid-col-1 grid w-full flex-shrink-0 flex-col gap-4 fsm:flex-row fmd:grid-cols-2 flg:flex flg:w-[360px] flg:flex-col">
-        <RoundsBooking {...launchpadData} />
+        <RoundsBooking
+          {...launchpadData}
+          {...metaData}
+          currentRound={currentRound}
+        />
         <PresaleStatus {...launchpadData} {...metaData} />
         <ReferralsProgram {...launchpadData} />
       </div>

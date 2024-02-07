@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import clsx from "clsx";
 import { MainTimeline, MyBookingsTable } from "./";
+import { PresaleDataType } from "../../../_components/launchpad-card-data";
 
-export const BookingList = () => {
+export const BookingList: React.FC<PresaleDataType> = (props) => {
   const [bookingsTab, setBookingsTab] = useState<
     "my-bookings" | "recent-bookings"
   >("my-bookings");
@@ -30,7 +31,7 @@ export const BookingList = () => {
             Recent Bookings
           </button>
         </div>
-        <MyBookingsTable bookingsTab={bookingsTab} />
+        <MyBookingsTable bookingsTab={bookingsTab} {...props} />
       </div>
       <MainTimeline />
     </div>

@@ -37,16 +37,16 @@ const LaunchpadListDetails: NextPageWithLayout = () => {
         }
 
         const result: PresaleDataType = await sdk.getPresale(id.toString());
+
         const metaData = await axios.get(formatIPFSUrl(result.metadata));
         setLaunchpadData(result);
-        console.log(metaData.data);
+
         setMetaData({
           token_name: metaData.data.token_name,
           token_symbol: metaData.data.token_symbol,
           website: metaData.data.website_url,
         });
         setLoading(false);
-        console.log(result);
       } catch (err) {
         customLog(["development", "staging"], err);
       }
@@ -57,7 +57,7 @@ const LaunchpadListDetails: NextPageWithLayout = () => {
     list_type === "launchpad_overview" ? (
       <LaunchpadOverview launchpadData={launchpadData} metaData={metaData} />
     ) : list_type === "booking_list" ? (
-      <BookingList />
+      <BookingList {...launchpadData} />
     ) : list_type === "referral_rewards" ? (
       <ReferralRewards />
     ) : null

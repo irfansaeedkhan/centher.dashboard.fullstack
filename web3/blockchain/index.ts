@@ -23,6 +23,7 @@ import { normalizeValue } from "./helpers/math.helper";
 import { AddressFactory } from "./providers/address.provider";
 import { BlockchainConfig } from "./config";
 import { ZeroAddress } from "../constants/common";
+// import { MaxUint256 } from "@pancakeswap/sdk";
 
 export class BlockchainRead {
   static async getERC20Allowance(
@@ -1708,6 +1709,7 @@ export class BlockchainWrite {
       throw error;
     }
   }
+
   static async adminCallUpdateRoundInfo(
     signer: JsonRpcSigner,
     roundIndex: number,
@@ -1893,6 +1895,37 @@ export class BlockchainWrite {
       return tx.hash;
     } catch (error: any) {
       logger(error, "getTokenApproval");
+      throw error;
+    }
+  }
+  static async getTokenApprovalForLaunchpad(
+    tokenName: TokenName,
+    signer: JsonRpcSigner
+  ): Promise<string> {
+    try {
+      const launchpadAddress = AddressFactory.getContractAddress(
+        SmartContractName.LAUNCHPAD
+      );
+
+      const tokenContract = SmartContractProvider.getTokenContract(
+        tokenName,
+        signer
+      );
+
+      // const amount = ethers.utils.parseUnits(
+      //   BlockchainConfig.maxSupply.toString()
+      // );
+
+      await tokenContract.callStatic.approve(launchpadAddress, MaxUint256);
+      const tx = await tokenContract.functions.approve(
+        launchpadAddress,
+        MaxUint256
+      );
+      await tx.wait();
+
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "getTokenApprovalForLaunchpad");
       throw error;
     }
   }
@@ -2094,6 +2127,60 @@ export class BlockchainWrite {
       return "Done";
     } catch (error: any) {
       logger(error, "setAffiliateSetting");
+      throw error;
+    }
+  }
+
+  //launchpadV2
+  static async buyPresaleToken(
+    isBNB: boolean,
+    presaleTokenAddress: String,
+    amount: number,
+    signer: JsonRpcSigner
+  ): Promise<string> {
+    try {
+      const presaleContract = SmartContractProvider.getContract(
+        SmartContractName.LAUNCHPAD,
+        signer
+      );
+
+      // let tokenPurchase;
+      let tx;
+      const purchaseAmount = ethers.utils.parseUnits(amount.toString(), 18);
+
+      if (!isBNB) {
+        await presaleContract.callStatic.tokenPurchaseWithBUSD(
+          presaleTokenAddress,
+          purchaseAmount
+        );
+        tx = await await presaleContract.functions.tokenPurchaseWithBUSD(
+          presaleTokenAddress,
+          purchaseAmount
+        );
+        await tx.wait();
+      } else {
+        await presaleContract.callStatic.tokenPurchaseWithBNB(
+          presaleTokenAddress,
+          { value: amount }
+        );
+        tx = await presaleContract.functions.tokenPurchaseWithBNB(
+          presaleTokenAddress,
+          {
+            value: purchaseAmount,
+          }
+        );
+        await tx.wait();
+      }
+
+      // if (!tokenPurchase) {
+      //   throw new Error("Token cannot be purchased");
+      // }
+
+      // const tx = await tokenPurchase(purchaseAmount);
+
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "buyPresaleToken");
       throw error;
     }
   }

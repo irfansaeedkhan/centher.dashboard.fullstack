@@ -3,11 +3,13 @@ import { CustomNumberInput } from "@/components/custom-number-input";
 import React, { useEffect, useState } from "react";
 import { PresaleDataType } from "../../../_components/launchpad-card-data";
 import { customLog } from "@/utils/custom.log";
-import { BlockchainRead } from "@/web3/blockchain";
+import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
 import useUser from "@/hooks/use.user";
 import { useWallet } from "@/web3/hooks/use.wallet";
 import { BlockchainConfig } from "@/web3/blockchain/config";
 import { formatEther } from "viem";
+import { formatUnits } from "ethers/lib/utils";
+import { BigNumber } from "ethers";
 
 interface Props extends PresaleDataType {
   token_name: string;
@@ -15,7 +17,11 @@ interface Props extends PresaleDataType {
   website: string;
 }
 
-export const BuyToken: React.FC<Props> = ({ token_symbol, fundType }) => {
+export const BuyToken: React.FC<Props> = ({
+  token_symbol,
+  fundType,
+  token,
+}) => {
   const { user } = useUser();
   const { getSigner, getProvider } = useWallet();
   const [payAmount, setPayAmount] = useState(0);
@@ -49,6 +55,22 @@ export const BuyToken: React.FC<Props> = ({ token_symbol, fundType }) => {
       }
     })();
   }, [fundType, getProvider, user]);
+
+  const doPurchase = async () => {
+    const signer = getSigner();
+    if (!signer) return;
+
+    try {
+      if (fundType === 0) {
+        await BlockchainWrite.buyPresaleToken(true, token, payAmount, signer);
+      } else {
+        await BlockchainWrite.getTokenApprovalForLaunchpad("USDT", signer);
+        await BlockchainWrite.buyPresaleToken(false, token, payAmount, signer);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   return (
     <div className="flex h-auto w-full flex-col gap-6 rounded-xl bg-black-shade-9 p-4 fxm:p-6">
@@ -112,7 +134,7 @@ export const BuyToken: React.FC<Props> = ({ token_symbol, fundType }) => {
         <Button
           title={"Buy"}
           // disabled={isSwapping}
-          // onClick={() => doSwap()}
+          onClick={() => doPurchase()}
           variant="primary"
           className="mt-4 w-full flex-shrink-0 rounded-[10px] text-sm fsm:text-base"
         />
