@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import { BlockchainConfig } from "@/web3/blockchain/config";
 import { sliceAccountAddress } from "@/utils/user.helpers";
 import { TableCell, TableRow } from "@/components/shared";
-import { bookingsData } from "./data";
+
 import {
   PresaleDataType,
   TokenPurchaseWithBNB,
@@ -13,36 +13,10 @@ import { formatUnits } from "viem";
 
 interface Props extends PresaleDataType {
   bookingsTab: "my-bookings" | "recent-bookings";
+  bookings: TokenPurchaseWithBNB[] | TokenPurchaseWithBUSD[];
 }
 
-export const MyBookingsTable: React.FC<Props> = ({
-  bookingsTab,
-  fundType,
-  tokenPurchaseWithBNB,
-  tokenPurchaseWithBUSD,
-  roundInfos,
-}) => {
-  let bookings: TokenPurchaseWithBNB[] | TokenPurchaseWithBUSD[];
-  if (fundType === 0) {
-    bookings = tokenPurchaseWithBNB;
-  } else {
-    bookings = tokenPurchaseWithBUSD;
-  }
-
-  console.log("bookings: ", bookings);
-
-  // console.log("roundInfos: ", roundInfos[0]);
-
-  for (let i = 0; i < bookings.length; i++) {
-    const currentRoundPrice =
-      roundInfos[Number(bookings[i].round)].pricePerToken;
-    const receivable =
-      (Number(bookings[i].amount) * 1e18) / Number(currentRoundPrice);
-
-    bookings[i].receivable = receivable.toString();
-    bookings[i].pricePerToken = currentRoundPrice;
-  }
-
+export const MyBookingsTable: React.FC<Props> = ({ bookingsTab, bookings }) => {
   return (
     <div className="scrollSetLight3 overflow-x-auto">
       <table className="w-full table-auto rounded-lg">

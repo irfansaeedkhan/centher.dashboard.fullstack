@@ -1,12 +1,44 @@
 import React, { useState } from "react";
 import clsx from "clsx";
 import { MainTimeline, MyBookingsTable } from "./";
-import { PresaleDataType } from "../../../_components/launchpad-card-data";
+import {
+  PresaleDataType,
+  TokenPurchaseWithBNB,
+  TokenPurchaseWithBUSD,
+} from "../../../_components/launchpad-card-data";
+import useUser from "@/hooks/use.user";
 
 export const BookingList: React.FC<PresaleDataType> = (props) => {
   const [bookingsTab, setBookingsTab] = useState<
     "my-bookings" | "recent-bookings"
   >("my-bookings");
+
+  const { user } = useUser();
+
+  let bookings: TokenPurchaseWithBNB[] | TokenPurchaseWithBUSD[];
+  let myBookings: TokenPurchaseWithBNB[] | TokenPurchaseWithBUSD[] = [];
+
+  if (props.fundType === 0) {
+    bookings = props.tokenPurchaseWithBNB;
+  } else {
+    bookings = props.tokenPurchaseWithBUSD;
+  }
+
+  for (let i = 0; i < bookings.length; i++) {
+    const currentRoundPrice =
+      props.roundInfos[Number(bookings[i].round)].pricePerToken;
+    const receivable =
+      (Number(bookings[i].amount) * 1e18) / Number(currentRoundPrice);
+
+    bookings[i].receivable = receivable.toString();
+    bookings[i].pricePerToken = currentRoundPrice;
+  }
+
+  for (let i = 0; i < bookings.length; i++) {
+    if (user?._id === bookings[i].beneficiary) {
+      myBookings.push(bookings[i]);
+    }
+  }
 
   return (
     <div className="flex flex-col gap-8">
@@ -31,7 +63,11 @@ export const BookingList: React.FC<PresaleDataType> = (props) => {
             Recent Bookings
           </button>
         </div>
-        <MyBookingsTable bookingsTab={bookingsTab} {...props} />
+        <MyBookingsTable
+          bookingsTab={bookingsTab}
+          {...props}
+          bookings={bookingsTab === "my-bookings" ? myBookings : bookings}
+        />
       </div>
       <MainTimeline />
     </div>
