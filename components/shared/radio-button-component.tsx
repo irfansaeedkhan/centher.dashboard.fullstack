@@ -29,11 +29,17 @@ export const RadioButtonComponent: React.FC<Props> = ({
           <span className="background-gradient-color h-[10px] w-[10px] flex-shrink-0 rounded-full"></span>
         )}
       </div>
-      <span className="flex text-sm uppercase text-white">
+      <span className="flex text-xs uppercase text-white fxm:text-sm">
         <span>{value}</span>
-        {additionalValue && <span className="ml-1">{additionalValue}</span>}
+        {additionalValue && (
+          <span className="ml-0.5 text-[10px] fxm:text-sm">
+            {additionalValue}
+          </span>
+        )}
         {additionalValue?.toString().includes("%") && (
-          <span className="text-gradient ml-1 w-fit">(Recommended)</span>
+          <span className="text-gradient ml-0.5 w-fit text-[10px] fxm:text-sm">
+            (Recommended)
+          </span>
         )}
       </span>
     </div>

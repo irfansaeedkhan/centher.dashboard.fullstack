@@ -23,7 +23,7 @@ const ReleaseMonth: React.FC<FormStateProps> = ({
         Release Month
         <span className="text-gradient ml-[2px]">*</span>
       </label>
-      <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center gap-4">
         <RadioButtonComponent
           selectedValue={formState.verify_token.release_month}
           value={3}
