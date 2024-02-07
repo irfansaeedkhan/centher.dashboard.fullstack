@@ -39,10 +39,10 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
 
   const handleStartDateChangeEvent = (value: Date | null) => {
     if (currentRound === 1 && value !== null) {
-      if (
-        new Date(value) <
-        new Date(currentDate.setMinutes(currentDate.getMinutes() - 5))
-      ) {
+      const currentDate = new Date();
+      const oneMinuteEarlier = new Date(currentDate);
+      oneMinuteEarlier.setMinutes(currentDate.getMinutes() - 1);
+      if (value < oneMinuteEarlier) {
         toast.error("Start time must be greater than todays date");
         setFormState((prev) => {
           return {
@@ -335,7 +335,7 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
         </div>
         <div className={gradientBorderInputMain}>
           <label htmlFor="soft_cap_busd" className={label}>
-            Soft Cap Busd
+            Soft Cap
             <span className={labelSpan}>*</span>
           </label>
           <div className={gradientBorderInputParent}>

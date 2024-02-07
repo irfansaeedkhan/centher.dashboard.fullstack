@@ -63,7 +63,7 @@ export const VerifyTokenForm: React.FC<Props> = ({
             type="text"
             id="token_address"
             name="token_address"
-            placeholder="Example: Centher Token"
+            placeholder="Centher Token"
             className={gradientBorderInput}
             value={formState.verify_token.token_address}
             onChange={handleChange}
@@ -113,7 +113,7 @@ export const VerifyTokenForm: React.FC<Props> = ({
             htmlFor="add_fee"
             className={clsx(label, "text-gray-shade-14")}
           >
-            Add Fee
+            Add Fee %
           </label>
           <div className={gradientBorderInputParent}>
             <CustomNumberInput
@@ -121,7 +121,7 @@ export const VerifyTokenForm: React.FC<Props> = ({
               max={100}
               id="add_fee"
               name="add_fee"
-              placeholder="Example: 3%"
+              placeholder="3"
               className={gradientBorderInput}
               value={
                 formState.verify_token.add_fee === 0

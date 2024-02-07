@@ -16,7 +16,7 @@ const FeeOptions: React.FC<FormStateProps> = ({ formState, setFormState }) => {
         <RadioButtonComponent
           selectedValue={formState.verify_token.fee_option}
           value={5}
-          additionalValue={"% BNB raised only"}
+          additionalValue={`% ${formState.verify_token.currency} raised only`}
           handleClick={(value) =>
             setFormState((prev) => {
               return {
