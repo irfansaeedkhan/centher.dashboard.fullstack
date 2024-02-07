@@ -39,8 +39,8 @@ const queries: Queries = {
       totalPurchasesInBuyingToken
       roundDeep
       roundInfos {token, startTime, endTime, lockMonths, minContribution, maxContribution, tokensToSell, pricePerToken}
-      tokenPurchaseWithBNB {token,beneficiary, bnbAmount}
-      tokenPurchaseWithBUSD {token, beneficiary, busdAmount}
+      tokenPurchaseWithBNB {token,beneficiary, amount, amountForOwner, round, transactionHash, blockTimestamp}
+      tokenPurchaseWithBUSD {token, beneficiary, amount, amountForOwner, round, transactionHash, blockTimestamp}
       tokenClaim {token, beneficiary, tokenAmount}
       refRewardClaim {token, referrer, amount}
     }
