@@ -22,8 +22,7 @@ import { logger } from "./helpers/alert.helper";
 import { normalizeValue } from "./helpers/math.helper";
 import { AddressFactory } from "./providers/address.provider";
 import { BlockchainConfig } from "./config";
-import { ZeroAddress } from "../constants/common";
-// import { MaxUint256 } from "@pancakeswap/sdk";
+import { MaxUint256, ZeroAddress } from "../constants/common";
 
 export class BlockchainRead {
   static async getERC20Allowance(
