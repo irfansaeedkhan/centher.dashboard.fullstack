@@ -24,23 +24,16 @@ import { PromotionCard3Mobile } from "@/components/feed.components/promotion.car
 import { PromotionCard2Mobile } from "@/components/feed.components/promotion.cards/card-2-mobile";
 import { PromotionCard7Mobile } from "@/components/feed.components/promotion.cards/card-7-mobile";
 import { PromotionCard8Mobile } from "@/components/feed.components/promotion.cards/card-8-mobile";
-import { SwapLicenseModal } from "@/components/modal/swap.license.modal";
 import useUser from "@/hooks/use.user";
 import { customLog } from "@/utils/custom.log";
 import { AppRoutes } from "@/constants/app.routes";
 import { NoPost } from "@/assets/svgs";
-import { BlockchainRead } from "@/web3/blockchain";
-import { useWallet } from "@/web3/hooks/use.wallet";
 
 const Feed: NextPageWithLayout = () => {
   const { user } = useUser();
   const router = useRouter();
   const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
   const openPostModal = useNewPostStore((state) => state.openModal);
-  const { getProvider } = useWallet();
-
-  const [whitelistedUser, setWhitelistedUser] = useState(false);
-
   const {
     posts,
     fetchPosts,
@@ -98,26 +91,6 @@ const Feed: NextPageWithLayout = () => {
     }
   };
 
-  useEffect(() => {
-    (async () => {
-      if (!user) return null;
-
-      const provider = getProvider();
-      if (!provider) return;
-
-      const isWhitelisted = await BlockchainRead.isUserWhitelistedForSwap(
-        provider,
-        user?._id
-      );
-
-      if (isWhitelisted) {
-        setWhitelistedUser(true);
-      } else {
-        setWhitelistedUser(false);
-      }
-    })();
-  }, [getProvider, user]);
-
   const handleCreatePostView = async (postId: string) => {
     try {
       await createPostView(postId);
@@ -129,8 +102,6 @@ const Feed: NextPageWithLayout = () => {
 
   return (
     <>
-      {whitelistedUser && <SwapLicenseModal />}
-
       {((loading === "loaded" && posts.length === 0) || posts.length > 0) && (
         <CreatePostCard />
       )}
