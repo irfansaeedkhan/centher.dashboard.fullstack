@@ -59,7 +59,6 @@ export const AppRoutes = {
     explore: "/marketplace/explore",
     collections: "/marketplace/collections",
     collection: "/marketplace/[collection]",
-    swap_nfts: "/marketplace/swap-nfts",
     // Citizen Only Start
     create_collection: "/marketplace/create-collection",
     create_nft: "/marketplace/create",
