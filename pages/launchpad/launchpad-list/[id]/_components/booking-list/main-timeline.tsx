@@ -5,16 +5,21 @@ import { PresaleDataType } from "../../../_components/launchpad-card-data";
 import { useGetContributionInfoForLaunchpad } from "@/web3/hooks/use.contracts.functions";
 import useUser from "@/hooks/use.user";
 
-export const MainTimeline: React.FC<PresaleDataType> = ({
+interface Props extends PresaleDataType {
+  roundNumber: number;
+}
+
+export const MainTimeline: React.FC<Props> = ({
   fundType,
   roundInfos,
   tokenPurchaseWithBNB,
   tokenPurchaseWithBUSD,
   token,
+  roundNumber,
 }) => {
   const { user } = useUser();
   const { contributionInfo, refreshContributionInfo, loadingState } =
-    useGetContributionInfoForLaunchpad(user?._id, token, 0);
+    useGetContributionInfoForLaunchpad(user?._id, token, roundNumber - 1);
   // const currentTime = Date.now();
   // console.log("currentTime: ", Math.floor(currentTime / 1000));
 
@@ -37,6 +42,7 @@ export const MainTimeline: React.FC<PresaleDataType> = ({
   //             roundInfo.lockMonths * monthInEpoch
   //           : contributionInfo.purchaseTimeForNtr +
   //             roundInfo.lockMonths * monthInEpoch
+  console.log("MainTimeline -> contributionInfo", contributionInfo);
   return (
     <div className="flex flex-col gap-3">
       <FirstLastTimeline

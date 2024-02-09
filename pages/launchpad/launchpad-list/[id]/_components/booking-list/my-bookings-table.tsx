@@ -14,9 +14,14 @@ import { formatUnits } from "viem";
 interface Props extends PresaleDataType {
   bookingsTab: "my-bookings" | "recent-bookings";
   bookings: TokenPurchaseWithBNB[] | TokenPurchaseWithBUSD[];
+  setRoundNumber: (roundNo: number) => void;
 }
 
-export const MyBookingsTable: React.FC<Props> = ({ bookingsTab, bookings }) => {
+export const MyBookingsTable: React.FC<Props> = ({
+  bookingsTab,
+  bookings,
+  setRoundNumber,
+}) => {
   return (
     <div className="scrollSetLight3 overflow-x-auto">
       <table className="w-full table-auto rounded-lg">
@@ -72,7 +77,7 @@ export const MyBookingsTable: React.FC<Props> = ({ bookingsTab, bookings }) => {
                 {bookingsTab === "my-bookings" && (
                   <TableCell
                     element={"td"}
-                    // onClick={() => setRoundNo(Number(booking.round) - 1)}
+                    onClick={() => setRoundNumber(Number(booking.round) + 1)}
                   >
                     <span className="text-gradient-1 cursor-pointer">
                       Timeline
