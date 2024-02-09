@@ -43,6 +43,14 @@ export interface ContributionInfo {
   isClaimableForNtr: boolean;
 }
 
+export interface LaunchpadContributionInfo {
+  contributedFund: number;
+  purchaseTime: number;
+  claimedToken: number;
+  totalClaimableToken: number;
+  lastClaimedTime: number;
+}
+
 export interface PurchasedInfo {
   purchasedDate: string;
   contributedBusdAmount: number;

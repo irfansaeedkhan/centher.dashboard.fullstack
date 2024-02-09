@@ -69,7 +69,7 @@ export const BookingList: React.FC<PresaleDataType> = (props) => {
           bookings={bookingsTab === "my-bookings" ? myBookings : bookings}
         />
       </div>
-      <MainTimeline />
+      <MainTimeline {...props} />
     </div>
   );
 };

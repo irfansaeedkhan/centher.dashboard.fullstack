@@ -60,7 +60,7 @@ export const MyBookingsTable: React.FC<Props> = ({ bookingsTab, bookings }) => {
                 <TableCell element={"td"}>
                   {formatUnits(BigInt(Number(booking.pricePerToken)), 18)}
                 </TableCell>
-                <TableCell element={"td"}>{booking.round}</TableCell>
+                <TableCell element={"td"}>{booking.round + 1}</TableCell>
                 <TableCell element={"td"}>
                   {sliceAccountAddress(booking.transactionHash)}
                 </TableCell>

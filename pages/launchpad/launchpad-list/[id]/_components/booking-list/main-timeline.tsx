@@ -1,14 +1,48 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { dummyDataArray } from "./data";
 import { FirstLastTimeline, NumberTimeline } from "./";
+import { PresaleDataType } from "../../../_components/launchpad-card-data";
+import { useGetContributionInfoForLaunchpad } from "@/web3/hooks/use.contracts.functions";
+import useUser from "@/hooks/use.user";
 
-export const MainTimeline = () => {
+export const MainTimeline: React.FC<PresaleDataType> = ({
+  fundType,
+  roundInfos,
+  tokenPurchaseWithBNB,
+  tokenPurchaseWithBUSD,
+  token,
+}) => {
+  const { user } = useUser();
+  const { contributionInfo, refreshContributionInfo, loadingState } =
+    useGetContributionInfoForLaunchpad(user?._id, token, 0);
+  // const currentTime = Date.now();
+  // console.log("currentTime: ", Math.floor(currentTime / 1000));
+
+  // const lockPeriod = new Date(
+  //   currentTime + Number(roundInfos[0].lockMonths) * 1000
+  // );
+
+  // useEffect(() => {
+  //   if (!user) return;
+  //   (async () => {
+  //     try {
+  //       const data = await useGetContributionInfoForLaunchpad(user, token, 0);
+  //       console.log(data);
+  //     } catch (e) {}
+  //   })();
+  // }, [token, user]);
+
+  // fundType === 0
+  //           ? contributionInfo.purchaseTimeForBusd +
+  //             roundInfo.lockMonths * monthInEpoch
+  //           : contributionInfo.purchaseTimeForNtr +
+  //             roundInfo.lockMonths * monthInEpoch
   return (
     <div className="flex flex-col gap-3">
       <FirstLastTimeline
         title="4 months Lock Period will End in"
         para="DXC tokens will be released 12,5% monthly."
-        endTime={new Date("2025-10-10T00:00:00")}
+        endTime={new Date()}
       />
       <div className="flex flex-col gap-1">
         {dummyDataArray.map((data, index) => (
