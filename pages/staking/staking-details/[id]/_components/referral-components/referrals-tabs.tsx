@@ -116,6 +116,13 @@ export const ReferralsTabs: React.FC<{
           (e) => e.claimableReward && +e.claimableReward > 0
         )?.length > 1
       ) {
+        console.log(
+          "create batch funcs:",
+          referralInfo?.data
+            .filter((e) => e.claimableReward && +e.claimableReward > 0)
+            .map((e) => e.user)
+            .join(",")
+        );
         setBatchActions([
           { title: "Claim All", handler: claimAll },
           { title: "Restake All", handler: restakeAll },

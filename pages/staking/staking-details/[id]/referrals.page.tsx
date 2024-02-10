@@ -103,6 +103,12 @@ const StakingReferrals: NextPageWithLayout = () => {
           e.claimableReward &&
           +e.claimableReward == 0
         ) {
+          console.log(
+            "create future reward:",
+            e.user,
+            e.nextTime,
+            e.claimableReward
+          );
           e.claimableReward = calculateNextRefReward(
             mappedPool,
             e.stakedAmount,
