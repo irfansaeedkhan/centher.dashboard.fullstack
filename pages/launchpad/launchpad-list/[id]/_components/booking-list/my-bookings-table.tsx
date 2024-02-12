@@ -15,12 +15,14 @@ interface Props extends PresaleDataType {
   bookingsTab: "my-bookings" | "recent-bookings";
   bookings: TokenPurchaseWithBNB[] | TokenPurchaseWithBUSD[];
   setRoundNumber: (roundNo: number) => void;
+  setPurchaseTime: (purchaseTime: number) => void;
 }
 
 export const MyBookingsTable: React.FC<Props> = ({
   bookingsTab,
   bookings,
   setRoundNumber,
+  setPurchaseTime,
 }) => {
   return (
     <div className="scrollSetLight3 overflow-x-auto">
@@ -77,7 +79,10 @@ export const MyBookingsTable: React.FC<Props> = ({
                 {bookingsTab === "my-bookings" && (
                   <TableCell
                     element={"td"}
-                    onClick={() => setRoundNumber(Number(booking.round) + 1)}
+                    onClick={() => {
+                      setRoundNumber(Number(booking.round) + 1);
+                      setPurchaseTime(Number(booking.blockTimestamp));
+                    }}
                   >
                     <span className="text-gradient-1 cursor-pointer">
                       Timeline
