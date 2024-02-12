@@ -1047,6 +1047,14 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
+  #react-select-5-input {
+    color: #fff !important;
+  }
+  #react-select-5-input:focus {
+    outline: none !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
 }
 
 @layer utilities {

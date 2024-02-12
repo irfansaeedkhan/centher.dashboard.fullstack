@@ -116,6 +116,10 @@ const ConnectWalletModal: React.FC<Props> = ({
             </div>
           </div>
         ) : null}
+        <p className="w-full max-w-[366px] text-center text-xs text-gray-shade-14">
+          Feeling lost? Login to Centher like you do with other social networks
+          simply using username and password instead!
+        </p>
       </div>
     </ModalContainer>
   );

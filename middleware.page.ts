@@ -126,7 +126,6 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.marketplace.explore,
   AppRoutes.marketplace.collections,
   AppRoutes.marketplace.collection,
-  AppRoutes.marketplace.swap_nfts,
 
   AppRoutes.launchpad,
 

@@ -40,13 +40,13 @@ export const SwapLicenseModal = () => {
             swap your license with a new version compatible with Centher.
           </p>
         </div>
-        <Link
+        {/* <Link
           className="w-full"
           href={AppRoutes.marketplace.swap_nfts}
           onClick={() => setShowSwapLicenseModal(false)}
         >
           <Button className="w-full" title="Swap license" variant="primary" />
-        </Link>
+        </Link> */}
       </div>
     </ModalContainer>
   );

@@ -14,7 +14,6 @@ import { isAddress } from "ethers/lib/utils";
 import cn from "@/utils/cn";
 import { CrossIcon, TeamMemberIcon } from "@/assets/svgs";
 import { NextPageWithLayout } from "@/pages/_app.page";
-import { CustomModal } from "@/components/modal/custom.modal";
 import Button from "@/components/button";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { eqAddress } from "@/live/utils/address.utils";
@@ -31,6 +30,9 @@ import {
   WalletApprovalError,
   WalletConnectedError,
 } from "@/staking/errors/params.error";
+import DropdownStakingForm from "@/pages/staking/_components/dropdown-staking-form";
+import { ConnectWalletComp } from "@/components/connect.wallet";
+import ModalContainer from "@/components/modal/modal-container";
 import { PreLoader } from "@/components/pre.loader";
 import { useStaking } from "@/hooks/staking";
 import { BlockchainRead } from "@/web3/blockchain";
@@ -60,8 +62,7 @@ import {
   firstReward,
   stakingPeriodOptions,
 } from "../constants";
-import DropdownStakingForm from "@/pages/staking/_components/dropdown-staking-form";
-import { ConnectWalletComp } from "@/components/connect.wallet";
+import { BackButton } from "@/components/button/back-button";
 
 const categoryOptions = [
   { value: "Metaverse", label: "Metaverse" },
@@ -150,6 +151,12 @@ const CreateStaking: NextPageWithLayout = () => {
     ];
     if (allowedExtensions.indexOf(previewUrl?.type?.toLowerCase()) == -1) {
       toast.error("Invalid file type");
+      return;
+    }
+    // Check file size (5MB = 5 * 1024 * 1024 bytes)
+    const maxSizeInBytes = 5 * 1024 * 1024;
+    if (previewUrl?.size > maxSizeInBytes) {
+      toast.error("File size should be less than 5MB");
       return;
     }
     setProfile(previewUrl);
@@ -362,17 +369,20 @@ const CreateStaking: NextPageWithLayout = () => {
     // max_staking_amount: Joi.number().label("max staking amount"),
     max_staking_amount: Joi.when("liquidity_pool_provided", {
       is: "yes",
-      then: Joi.number().min(0).label("liquidity pool provided"),
+      then: Joi.number()
+        .greater(Joi.ref("min_staking_amount"))
+        .label("max staking amount"),
       otherwise: Joi.number()
         .optional()
         .allow("")
         .min(0)
         .label("liquidity pool provided"),
     }),
-    // total_supply: Joi.number().min(1).label("max staking amount"),
     total_supply: Joi.when("liquidity_pool_provided", {
       is: "yes",
-      then: Joi.number().min(0).label("total sypply"),
+      then: Joi.number()
+        .greater(Joi.ref("max_staking_amount"))
+        .label("total sypply"),
       otherwise: Joi.number().optional().allow("").min(0).label("total sypply"),
     }),
     website_url: Joi.string().max(150).label("website_url"),
@@ -426,9 +436,7 @@ const CreateStaking: NextPageWithLayout = () => {
       liquidity_pool_provided: "no",
       is_cancelable: "no",
       category: [],
-      start_date: new Date(+new Date() + 24 * 60 * 60 * 1000)
-        .toISOString()
-        .slice(0, 10),
+      start_date: new Date(+new Date()).toISOString().slice(0, 10),
     },
   });
 
@@ -974,19 +982,16 @@ const CreateStaking: NextPageWithLayout = () => {
     <section className="flex w-full">
       <div className=" flex flex-grow flex-col">
         <div className="flex items-center gap-3 pb-6">
-          <button
+          <div
             onClick={() => {
               setFormStep(0);
             }}
-            className={cn(
-              "hover:gradient-border-3 group flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-gray-shade-9 p-[1px]",
-              {
-                hidden: formStep == 0,
-              }
-            )}
+            className={cn({
+              hidden: formStep == 0,
+            })}
           >
-            <BsArrowLeftShort className="h-6 w-6 fill-gray-shade-18 group-hover:fill-white" />
-          </button>
+            <BackButton />
+          </div>
           <h1 className="textGradient font-semibold leading-[42px] sm:text-2xl ">
             {formStep == 0
               ? "Submit Your Staking Project"
@@ -996,7 +1001,7 @@ const CreateStaking: NextPageWithLayout = () => {
         <div className="form-box relative flex w-full gap-10 overflow-hidden">
           {/* form1 */}
           <motion.div
-            className={cn("min-w-[85%] flex-1  fmd:min-w-full", {
+            className={cn("min-w-[85%] flex-1 fmd:min-w-full", {
               hidden: formStep == 1,
             })}
             animate={{
@@ -1004,10 +1009,10 @@ const CreateStaking: NextPageWithLayout = () => {
             }}
           >
             <div className="flex w-full flex-col gap-6 rounded-[20px] border-2 border-gray-shade-3 bg-black-shade-9 p-3 fmd:p-6">
-              {/* logo and cover  */}
+              {/* logo and cover */}
 
               <div className="flex w-full flex-col gap-6">
-                <div className="w-full  max-w-[340px]">
+                <div className="w-full max-w-[340px]">
                   <p className="text-gradient pb-4 text-xs font-normal">
                     <span className="text-gradient">( * )</span>{" "}
                     <span className="text-gradient">is required</span>
@@ -1162,7 +1167,7 @@ const CreateStaking: NextPageWithLayout = () => {
               </div>
               <div className="mb-2 grid w-full gap-4 fmd:grid-cols-2 fmd:gap-6">
                 {/* staking name */}
-                <div className="col-span-2 w-full  text-sm font-medium text-white md:col-span-2">
+                <div className="col-span-2 w-full text-sm font-medium text-white md:col-span-2">
                   <label
                     htmlFor="staking_name"
                     className="block font-normal tracking-wide"
@@ -1175,7 +1180,7 @@ const CreateStaking: NextPageWithLayout = () => {
                       type="text"
                       {...stakingForm.register("staking_name")}
                       id="staking_name"
-                      placeholder="For example: DeXa Pack 1"
+                      placeholder="Staking Project Name"
                       className="block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
                     />
                   </div>
@@ -1453,15 +1458,14 @@ const CreateStaking: NextPageWithLayout = () => {
                     htmlFor="apy"
                     className="block font-normal tracking-wide"
                   >
-                    APY
-                    <span className="text-gradient ml-[2px]">*</span>
+                    APY %<span className="text-gradient ml-[2px]">*</span>
                   </label>
                   <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
                     <input
                       type="number"
                       {...stakingForm.register("apy")}
                       id="apy"
-                      placeholder="For example: 2%"
+                      placeholder="2"
                       className="block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
                     />
                   </div>
@@ -1485,7 +1489,8 @@ const CreateStaking: NextPageWithLayout = () => {
                       type="date"
                       {...stakingForm.register("start_date")}
                       id="start_date"
-                      placeholder="For example: DeXa Pack 1"
+                      min={new Date().toISOString().split("T")[0]}
+                      placeholder="Start Date"
                       className="block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm accent-yellow-400 placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
                     />
                   </div>
@@ -1718,7 +1723,7 @@ const CreateStaking: NextPageWithLayout = () => {
                       type="text"
                       {...stakingForm.register("min_staking_amount")}
                       id="min_staking_amount"
-                      placeholder="Example: 1000"
+                      placeholder="1000"
                       className="block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
                     />
                   </div>
@@ -1805,7 +1810,7 @@ const CreateStaking: NextPageWithLayout = () => {
                   <label htmlFor="test" className="block font-normal">
                     Project Metadata
                   </label>
-                  <div className="mt-2 flex w-full  items-center justify-between rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-0">
+                  <div className="mt-2 flex w-full items-center justify-between rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-0">
                     <span className="text-sm text-gray-shade-17">
                       Add metadata here{" "}
                     </span>
@@ -1878,62 +1883,78 @@ const CreateStaking: NextPageWithLayout = () => {
                 />
               )}
             </div>
-            {metaDataModal && (
-              <CustomModal
-                onClose={() => {
-                  setMetaDataModal(false);
-                }}
-                title={"Add new metadata"}
-              >
-                <div className="mt-8 flex w-full flex-col gap-2 p-[2px] text-center">
-                  <div className="flex w-full flex-col gap-2">
-                    <label className="text-start text-sm font-normal text-white">
-                      Type
-                    </label>
-                    <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
-                      <input
-                        type="text"
-                        name="title"
-                        id="title"
-                        autoComplete="off"
-                        placeholder="Project"
-                        className="w-full rounded-lg border-0 !bg-black-shade-2 px-5 py-3 text-sm font-semibold text-white ring-2 ring-black-shade-7 focus:outline-none focus:!ring-0"
-                        onChange={handleMetaDataChange}
-                        value={metaDataDetails.title}
-                      />
-                    </div>
+
+            <ModalContainer
+              isOpen={metaDataModal}
+              modalId="create-staking-metadata"
+              onClose={() => {
+                setMetaDataModal(false);
+              }}
+              shouldCloseOnEsc={false}
+              shouldCloseOnOverlayClick={false}
+            >
+              <div className="relative flex h-[28px] items-center justify-between rounded-t">
+                <span className="word-break text-[16px] font-semibold text-white fmd:text-[18px]">
+                  Add Metadata
+                </span>
+
+                <button
+                  className={`text-white`}
+                  onClick={() => {
+                    setMetaDataModal(false);
+                  }}
+                >
+                  <IoClose className="h-6 w-6" />
+                </button>
+              </div>
+              <div className="mt-8 flex w-full flex-col gap-2 p-[2px] text-center">
+                <div className="flex w-full flex-col gap-2">
+                  <label className="text-start text-sm font-normal text-white">
+                    Type
+                  </label>
+                  <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
+                    <input
+                      type="text"
+                      name="title"
+                      id="title"
+                      autoComplete="off"
+                      placeholder="Project"
+                      className="w-full rounded-lg border-0 !bg-black-shade-2 px-5 py-3 text-sm font-semibold text-white ring-2 ring-black-shade-7 focus:outline-none focus:!ring-0"
+                      onChange={handleMetaDataChange}
+                      value={metaDataDetails.title}
+                    />
                   </div>
-                  <div className="flex w-full flex-col gap-2">
-                    <label className="text-start text-sm font-normal text-white">
-                      Name
-                    </label>
-                    <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
-                      <input
-                        type="text"
-                        name="data"
-                        id="data"
-                        autoComplete="off"
-                        placeholder="Premium"
-                        className="w-full rounded-lg border-0 !bg-black-shade-2 px-5 py-3 text-sm font-semibold text-white ring-2 ring-black-shade-7 focus:outline-none focus:ring-0"
-                        onChange={handleMetaDataChange}
-                        value={metaDataDetails.data}
-                      />
-                    </div>
-                  </div>
-                  {metaDataErr && (
-                    <p className={`pb-2 text-xs font-medium text-red-500`}>
-                      {metaDataErr}
-                    </p>
-                  )}
-                  <Button
-                    title={"Save"}
-                    variant="primary"
-                    onClick={addNewMetaDataFunc}
-                    className="mt-2"
-                  />
                 </div>
-              </CustomModal>
-            )}
+                <div className="flex w-full flex-col gap-2">
+                  <label className="text-start text-sm font-normal text-white">
+                    Name
+                  </label>
+                  <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
+                    <input
+                      type="text"
+                      name="data"
+                      id="data"
+                      autoComplete="off"
+                      placeholder="Premium"
+                      className="w-full rounded-lg border-0 !bg-black-shade-2 px-5 py-3 text-sm font-semibold text-white ring-2 ring-black-shade-7 focus:outline-none focus:ring-0"
+                      onChange={handleMetaDataChange}
+                      value={metaDataDetails.data}
+                    />
+                  </div>
+                </div>
+                {metaDataErr && (
+                  <p className={`pb-2 text-xs font-medium text-red-500`}>
+                    {metaDataErr}
+                  </p>
+                )}
+                <Button
+                  title={"Save"}
+                  variant="primary"
+                  onClick={addNewMetaDataFunc}
+                  className="mt-2"
+                />
+              </div>
+            </ModalContainer>
           </motion.div>
           {/* form2 */}
           <motion.div
@@ -1944,7 +1965,7 @@ const CreateStaking: NextPageWithLayout = () => {
               translateX: `${100 - formStep * 100}%`,
             }}
           >
-            <div className="flex w-full flex-col gap-6 rounded-[20px] border-2 border-gray-shade-3 bg-black-shade-9  p-3 fmd:p-6">
+            <div className="flex w-full flex-col gap-6 rounded-[20px] border-2 border-gray-shade-3 bg-black-shade-9 p-3 fmd:p-6">
               <div className="mb-2 grid w-full gap-4 fmd:grid-cols-2 fmd:gap-6">
                 <div className="col-span-2 mb-2 grid w-full gap-6 border-b-2 border-gray-shade-3 pb-8 md:grid-cols-2">
                   <div className="col-span-2 w-full text-sm font-medium text-white md:col-span-1">
@@ -1960,7 +1981,7 @@ const CreateStaking: NextPageWithLayout = () => {
                         {...stakingForm.register("whitepaper")}
                         type="text"
                         id="whitepaper"
-                        placeholder="Example: yourweb.com/"
+                        placeholder="https://example.com/whitepaper"
                         className="block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
                       />
                     </div>
@@ -1983,7 +2004,7 @@ const CreateStaking: NextPageWithLayout = () => {
                         {...stakingForm.register("website_url")}
                         type="text"
                         id="website_url"
-                        placeholder="Example: yourweb.com/"
+                        placeholder="https://example.com"
                         className="block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
                       />
                     </div>
@@ -1996,7 +2017,7 @@ const CreateStaking: NextPageWithLayout = () => {
                 </div>
 
                 <div className="col-span-2 mb-2 grid w-full gap-6 border-b-2 border-gray-shade-3 pb-8 md:grid-cols-2">
-                  <div className="col-span-2  w-full text-sm font-medium text-white md:col-span-1">
+                  <div className="col-span-2 w-full text-sm font-medium text-white md:col-span-1">
                     <label
                       htmlFor="facebook"
                       className="block font-normal tracking-wide"
@@ -2008,7 +2029,7 @@ const CreateStaking: NextPageWithLayout = () => {
                         type="text"
                         {...stakingForm.register("facebook")}
                         id="facebook"
-                        placeholder="Example: yourlogo.com/"
+                        placeholder="https://facebook.com/username"
                         className="block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
                       />
                     </div>
@@ -2019,7 +2040,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     )}
                   </div>
 
-                  <div className="col-span-2  w-full text-sm font-medium text-white md:col-span-1">
+                  <div className="col-span-2 w-full text-sm font-medium text-white md:col-span-1">
                     <label
                       htmlFor="twitter"
                       className="block font-normal tracking-wide"
@@ -2031,7 +2052,7 @@ const CreateStaking: NextPageWithLayout = () => {
                         type="text"
                         {...stakingForm.register("twitter")}
                         id="twitter"
-                        placeholder="Example: t.com/"
+                        placeholder="https://X.com/username"
                         className="block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
                       />
                     </div>
@@ -2042,7 +2063,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     )}
                   </div>
 
-                  <div className="col-span-2  w-full text-sm font-medium text-white md:col-span-1">
+                  <div className="col-span-2 w-full text-sm font-medium text-white md:col-span-1">
                     <label
                       htmlFor="github"
                       className="block font-normal tracking-wide"
@@ -2054,7 +2075,7 @@ const CreateStaking: NextPageWithLayout = () => {
                         type="text"
                         {...stakingForm.register("github")}
                         id="github"
-                        placeholder="Example: github.com/"
+                        placeholder="https://github.com/username"
                         className="block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
                       />
                     </div>
@@ -2065,7 +2086,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     )}
                   </div>
 
-                  <div className="col-span-2  w-full text-sm font-medium text-white md:col-span-1">
+                  <div className="col-span-2 w-full text-sm font-medium text-white md:col-span-1">
                     <label
                       htmlFor="telegram"
                       className="block font-normal tracking-wide"
@@ -2077,7 +2098,7 @@ const CreateStaking: NextPageWithLayout = () => {
                         type="text"
                         {...stakingForm.register("telegram")}
                         id="telegram"
-                        placeholder="Example: yourtel.com/"
+                        placeholder="https://t.me/username"
                         className="block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
                       />
                     </div>
@@ -2088,7 +2109,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     )}
                   </div>
 
-                  <div className="col-span-2  w-full text-sm font-medium text-white md:col-span-1">
+                  <div className="col-span-2 w-full text-sm font-medium text-white md:col-span-1">
                     <label
                       htmlFor="instagram"
                       className="block font-normal tracking-wide"
@@ -2100,7 +2121,7 @@ const CreateStaking: NextPageWithLayout = () => {
                         type="text"
                         {...stakingForm.register("instagram")}
                         id="instagram"
-                        placeholder="Example: instagram.com/"
+                        placeholder="https://instagram.com/username"
                         className="block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
                       />
                     </div>
@@ -2111,7 +2132,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     )}
                   </div>
 
-                  <div className="col-span-2  w-full text-sm font-medium text-white md:col-span-1">
+                  <div className="col-span-2 w-full text-sm font-medium text-white md:col-span-1">
                     <label
                       htmlFor="discord"
                       className="block font-normal tracking-wide"
@@ -2123,7 +2144,7 @@ const CreateStaking: NextPageWithLayout = () => {
                         type="text"
                         {...stakingForm.register("discord")}
                         id="discord"
-                        placeholder="Example: yourweb.com/"
+                        placeholder="https://discord.com"
                         className="block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
                       />
                     </div>
@@ -2146,7 +2167,7 @@ const CreateStaking: NextPageWithLayout = () => {
                         type="text"
                         {...stakingForm.register("reddit")}
                         id="reddit"
-                        placeholder="Example: reddit.com/"
+                        placeholder="https://reddit.com/user/username"
                         className="block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
                       />
                     </div>
@@ -2159,7 +2180,7 @@ const CreateStaking: NextPageWithLayout = () => {
                 </div>
 
                 <div className="col-span-2 mb-2 grid w-full gap-6 border-b-2 border-gray-shade-3 pb-8 md:grid-cols-2">
-                  <div className="col-span-2  w-full text-sm font-medium text-white md:col-span-1">
+                  <div className="col-span-2 w-full text-sm font-medium text-white md:col-span-1">
                     <label
                       htmlFor="explorers"
                       className="block font-normal tracking-wide"
@@ -2172,7 +2193,7 @@ const CreateStaking: NextPageWithLayout = () => {
                         type="text"
                         {...stakingForm.register("explorers")}
                         id="explorers"
-                        placeholder="Example: BscScan"
+                        placeholder="BscScan"
                         className="block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
                       />
                     </div>
@@ -2183,7 +2204,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     )}
                   </div>
 
-                  <div className="col-span-2  w-full text-sm font-medium text-white md:col-span-1">
+                  <div className="col-span-2 w-full text-sm font-medium text-white md:col-span-1">
                     <label
                       htmlFor="category"
                       className="block font-normal tracking-wide"
@@ -2200,9 +2221,10 @@ const CreateStaking: NextPageWithLayout = () => {
                           options={categoryOptions}
                           styles={customStyles}
                           isMulti
-                          className={`mt-2 p-[2px] ${
-                            isFocused ? "gradient-border" : ""
-                          }`}
+                          className={clsx(
+                            "mt-2 p-[2px]",
+                            isFocused && "gradient-border "
+                          )}
                           classNamePrefix="select"
                           onFocus={handleFocus}
                           onBlur={handleBlur}
@@ -2234,7 +2256,7 @@ const CreateStaking: NextPageWithLayout = () => {
                         {...stakingForm.register("description")}
                         id="description"
                         rows={4}
-                        placeholder="Example: This is the best project"
+                        placeholder="Staking Project Description"
                         className="block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
                       />
                     </div>
@@ -2254,7 +2276,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     Team Members
                   </label>
                   <div className="mt-4 w-full rounded-lg border-[1px] border-gray-shade-3">
-                    <div className="grid gap-6 p-6 pb-0  md:grid-cols-2">
+                    <div className="grid gap-6 p-6 pb-0 md:grid-cols-2">
                       {/* Job title input */}
                       <div className="w-full text-sm font-medium text-white">
                         <label
@@ -2268,7 +2290,7 @@ const CreateStaking: NextPageWithLayout = () => {
                             type="text"
                             name="jobTitle"
                             id="jobTitle"
-                            placeholder="Example: CEO, CTO, COO etc"
+                            placeholder="CEO, CTO, COO etc"
                             className="block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
                             value={memberData.jobTitle}
                             onChange={handleMemberInputChange}
@@ -2289,7 +2311,7 @@ const CreateStaking: NextPageWithLayout = () => {
                             type="text"
                             name="walletAddress"
                             id="walletAddress"
-                            placeholder="Example: 0x018rhf63hjj7763kuxx098nbvxx90cc23BBK99KXX028"
+                            placeholder="0x319AA5C21E960DCFFAFEC79476ABBA0ADA5C2DC7"
                             className="block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
                             value={memberData.walletAddress}
                             onChange={handleMemberInputChange}
@@ -2316,7 +2338,7 @@ const CreateStaking: NextPageWithLayout = () => {
                       />
                     </div>
                     {/* Display added members */}
-                    <div className=" ">
+                    <div>
                       {members.map((member, index) => (
                         <div
                           key={index}
