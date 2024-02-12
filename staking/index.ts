@@ -619,27 +619,34 @@ export class CentherStaking {
     ownerAddress: string,
     statusController: ProgressCallback
   ): Promise<void> {
-    try {
-      statusController(CreatePoolStepsEnum.stake_approval, 0);
-      statusController(CreatePoolStepsEnum.stake_approval, 20);
+    const stakeTokenAllowance = await this.handleTokenAllowance(
+      signer,
+      input.stakeToken,
+      ownerAddress
+    );
 
-      await BlockchainWrite.SetApprovalForWallet(
-        signer,
-        input.stakeToken,
-        ownerAddress,
-        AddressFactory.getContractAddress(SmartContractName.STAKING)
-      );
+    if (!stakeTokenAllowance) {
+      try {
+        statusController(CreatePoolStepsEnum.stake_approval, 0);
+        statusController(CreatePoolStepsEnum.stake_approval, 20);
+        await BlockchainWrite.SetApprovalForWallet(
+          signer,
+          input.stakeToken,
+          ownerAddress,
+          AddressFactory.getContractAddress(SmartContractName.STAKING)
+        );
 
-      statusController(CreatePoolStepsEnum.stake_approval, 100);
-    } catch (error: any) {
-      let message = "";
-      if (error instanceof InsufficientFundError) {
-        message = "Staking token balance is 0";
-      } else {
-        message = error instanceof Error ? error.message : error;
+        statusController(CreatePoolStepsEnum.stake_approval, 100);
+      } catch (error: any) {
+        let message = "";
+        if (error instanceof InsufficientFundError) {
+          message = "Staking token balance is 0";
+        } else {
+          message = error instanceof Error ? error.message : error;
+        }
+
+        throw new WalletApprovalError(message);
       }
-
-      throw new WalletApprovalError(message);
     }
 
     if (
@@ -650,6 +657,15 @@ export class CentherStaking {
       try {
         statusController(CreatePoolStepsEnum.reward_approval, 0);
         statusController(CreatePoolStepsEnum.reward_approval, 20);
+
+        if (
+          await this.handleTokenAllowance(
+            signer,
+            input.rewardToken,
+            ownerAddress
+          )
+        )
+          return;
 
         await BlockchainWrite.SetApprovalForWallet(
           signer,
@@ -670,6 +686,24 @@ export class CentherStaking {
         throw new WalletApprovalError(message);
       }
     }
+  }
+
+  private async handleTokenAllowance(
+    signer: JsonRpcSigner,
+    token: string,
+    ownerAddress: string
+  ): Promise<Boolean> {
+    const allowances = await BlockchainRead.getERC20Allowance(
+      signer,
+      token,
+      ownerAddress,
+      AddressFactory.getContractAddress(SmartContractName.STAKING)
+    );
+
+    const maxUintRange =
+      "115792089237316195423570985008687907853269984665640564039457584007913129639935";
+
+    return Number(allowances) === Number(maxUintRange);
   }
 
   private initConnection(url: string): void {
