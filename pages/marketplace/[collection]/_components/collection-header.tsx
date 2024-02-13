@@ -345,14 +345,14 @@ export const CollectionHeader: React.FC<Props> = ({
                   </h5>
                 </div>
                 <div className="text-left fmd:text-center">
-                  <h4 className={detailsCardTitle}>Owner</h4>
+                  <h4 className={detailsCardTitle}>Revenue</h4>
                   <h5 className={detailsCardValue}>
                     $
-                    {collectionAdditionalInfo?.ownerIncome &&
-                    collectionAdditionalInfo?.ownerIncome > 0
+                    {collectionAdditionalInfo?.revenue &&
+                    collectionAdditionalInfo?.revenue > 0
                       ? formatNumber(
                           formatBNB2USD(
-                            collectionAdditionalInfo?.ownerIncome,
+                            collectionAdditionalInfo?.revenue,
                             bnbPrice
                           )
                         )

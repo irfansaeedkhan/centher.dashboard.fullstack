@@ -153,7 +153,7 @@ export const useCollectionStore = create<CollectionStore>()(
             100
           ).toFixed(2);
 
-          const ownerIncome = history.reduce(
+          const revenue = history.reduce(
             (a: number, b: any) => a + +b.price,
             0
           );
@@ -163,7 +163,7 @@ export const useCollectionStore = create<CollectionStore>()(
             collectionAdditionalInfo: {
               minPrice: +minPrice,
               listedPercent: +listedPercent,
-              ownerIncome: +ownerIncome,
+              revenue: +revenue,
             },
           }));
         },
