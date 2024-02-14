@@ -254,7 +254,7 @@ const CreateLaunchpad: NextPageWithLayout = () => {
           formState.verify_token.fee_option === "Other"
             ? formState.verify_token.add_fee
             : formState.verify_token.fee_option,
-        releaseMonth: 10,
+        releaseMonth: 10, //formState.verify_token.release_month,
         isRefSupport:
           formState.verify_token.multilevel_reward === "recurring_return"
             ? true
@@ -300,8 +300,6 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       ).toString();
 
       if (signer == null) return;
-
-      console.log(presaleInfoParams, roundParams);
 
       await BlockchainWrite.createLaunchpad(
         signer,

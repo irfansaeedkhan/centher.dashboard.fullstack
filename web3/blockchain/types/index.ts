@@ -56,3 +56,13 @@ export type IBlockchainConfig = {
   ipfsUrl: string;
   subgraphUrl: string;
 };
+
+export type PresaleRoundDetails = {
+  startTime: number;
+  endTime: number;
+  lockMonths: number;
+  minContribution: number | BigNumber;
+  maxContribution: number | BigNumber;
+  tokensToSell: number | BigNumber;
+  pricePerToken: number | BigNumber;
+};

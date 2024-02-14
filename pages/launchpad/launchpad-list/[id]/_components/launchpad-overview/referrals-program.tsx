@@ -11,12 +11,12 @@ export const ReferralsProgram: React.FC<PresaleDataType> = ({
   levelSix,
 }) => {
   const percents: number[] = [
-    +levelOne,
-    +levelTwo,
-    +levelThree,
-    +levelFour,
-    +levelFive,
-    +levelSix,
+    (+levelOne * 100) / 10000,
+    (+levelTwo * 100) / 10000,
+    (+levelThree * 100) / 10000,
+    (+levelFour * 100) / 10000,
+    (+levelFive * 100) / 10000,
+    (+levelSix * 100) / 10000,
   ];
   return (
     <>
@@ -28,12 +28,12 @@ export const ReferralsProgram: React.FC<PresaleDataType> = ({
                 Referrals Program
               </h2>
               <span className="rounded-10px bg-brand-primary/[0.16] px-3 text-xs font-semibold leading-6 text-brand-primary">
-                {Number(levelOne) +
-                  Number(levelTwo) +
-                  Number(levelThree) +
-                  Number(levelFour) +
-                  Number(levelFive) +
-                  Number(levelSix)}{" "}
+                {Number(percents[0]) +
+                  Number(percents[1]) +
+                  Number(percents[2]) +
+                  Number(percents[3]) +
+                  Number(percents[4]) +
+                  Number(percents[5])}{" "}
                 %
               </span>
             </div>

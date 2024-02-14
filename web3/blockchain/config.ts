@@ -93,7 +93,7 @@ export const BlockchainConfig: IBlockchainConfig = {
 
     LAUNCHPAD: {
       56: "",
-      5: "0xa99FCC8d166951b425c1Ab148fc566f3615DAAB7", //"0x6797F0E827F86F4a36E5a538e6CD9dA5cAF43d6D",
+      5: "0xC8a14A3067cAe2A3FD17BB9dfa87Cc5364A4009c", //"0x6797F0E827F86F4a36E5a538e6CD9dA5cAF43d6D",
     },
   },
   network:

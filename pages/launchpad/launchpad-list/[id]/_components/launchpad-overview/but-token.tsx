@@ -10,17 +10,20 @@ import { BlockchainConfig } from "@/web3/blockchain/config";
 import { formatEther } from "viem";
 import { formatUnits } from "ethers/lib/utils";
 import { BigNumber } from "ethers";
+import { PresaleRoundDetails } from "@/web3/blockchain/types";
 
 interface Props extends PresaleDataType {
   token_name: string;
   token_symbol: string;
   website: string;
+  currentRound: number;
 }
 
 export const BuyToken: React.FC<Props> = ({
   token_symbol,
   fundType,
   token,
+  currentRound,
 }) => {
   const { user } = useUser();
   const { getSigner, getProvider } = useWallet();
@@ -28,6 +31,9 @@ export const BuyToken: React.FC<Props> = ({
   const [receivedAmount, setReceivedAmount] = useState(0);
 
   const [tokenBalance, setTokenBalance] = useState(0);
+  const [roundPrice, setroundPrice] = useState(-1);
+
+  currentRound = currentRound - 1;
 
   useEffect(() => {
     const provider = getProvider();
@@ -56,6 +62,20 @@ export const BuyToken: React.FC<Props> = ({
     })();
   }, [fundType, getProvider, user]);
 
+  useEffect(() => {
+    if (currentRound < 0) return;
+
+    const provider = getProvider();
+    if (!provider) return;
+
+    (async () => {
+      const data: PresaleRoundDetails[] =
+        await BlockchainRead.launchpadPresaleRoundDetails(provider, token);
+
+      setroundPrice(Number(data[currentRound].pricePerToken));
+    })();
+  }, [getProvider, token, currentRound]);
+
   const doPurchase = async () => {
     const signer = getSigner();
     if (!signer) return;
@@ -72,6 +92,15 @@ export const BuyToken: React.FC<Props> = ({
     }
   };
 
+  const handleReceiveAmount = (e: any) => {
+    e.preventDefault();
+
+    setPayAmount(Number(e.target.value));
+
+    const receivableAmount = (Number(e.target.value) * 1e18) / roundPrice;
+    setReceivedAmount(receivableAmount);
+  };
+
   return (
     <div className="flex h-auto w-full flex-col gap-6 rounded-xl bg-black-shade-9 p-4 fxm:p-6">
       <div className="flex w-full flex-shrink-0 flex-col">
@@ -83,7 +112,7 @@ export const BuyToken: React.FC<Props> = ({
               <CustomNumberInput
                 value={payAmount === 0 ? "" : payAmount}
                 placeholder="0"
-                onChange={(e) => setPayAmount(Number(e.target.value))}
+                onChange={(e) => handleReceiveAmount(e)}
                 className="block w-full rounded-lg border-0 bg-transparent px-5 py-3 text-2xl placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
               />
             </div>
@@ -110,7 +139,7 @@ export const BuyToken: React.FC<Props> = ({
             <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
               <CustomNumberInput
                 value={receivedAmount === 0 ? "" : receivedAmount}
-                onChange={(e) => setReceivedAmount(Number(e.target.value))}
+                // onChange={(e) => setReceivedAmount(Number(e.target.value))}
                 placeholder="0"
                 className="block w-full rounded-lg border-0 bg-transparent px-5 py-3 text-2xl placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
               />

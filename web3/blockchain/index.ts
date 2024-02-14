@@ -618,6 +618,24 @@ export class BlockchainRead {
     return "0";
   }
 
+  static async launchpadPresaleRoundDetails(
+    signer: JsonRpcProvider,
+    presaleToken: string
+  ): Promise<any> {
+    try {
+      const launchpadContract = SmartContractProvider.getContract(
+        SmartContractName.LAUNCHPAD,
+        signer
+      );
+
+      const roundDetails = await launchpadContract.getRoundInfo(presaleToken);
+
+      return roundDetails;
+    } catch (error: any) {
+      logger(error, "launchpadPresaleRoundDetails");
+    }
+  }
+
   static async presaleAlreadyCreated(
     token: string,
     signer?: JsonRpcSigner
@@ -2183,6 +2201,31 @@ export class BlockchainWrite {
       return tx.hash;
     } catch (error: any) {
       logger(error, "buyPresaleToken");
+      throw error;
+    }
+  }
+
+  static async claimPresaleToken(
+    presaleTokenAddress: String,
+    round: number,
+    signer: JsonRpcSigner
+  ): Promise<string> {
+    try {
+      const presaleContract = SmartContractProvider.getContract(
+        SmartContractName.LAUNCHPAD,
+        signer
+      );
+
+      await presaleContract.callStatic.claimTokens(presaleTokenAddress, round);
+      let tx = await await presaleContract.functions.claimTokens(
+        presaleTokenAddress,
+        round
+      );
+      await tx.wait();
+
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "claimPresaleToken");
       throw error;
     }
   }

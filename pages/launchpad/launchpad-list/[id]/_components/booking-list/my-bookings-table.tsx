@@ -16,6 +16,7 @@ interface Props extends PresaleDataType {
   bookings: TokenPurchaseWithBNB[] | TokenPurchaseWithBUSD[];
   setRoundNumber: (roundNo: number) => void;
   setPurchaseTime: (purchaseTime: number) => void;
+  tokenSymbol: string;
 }
 
 export const MyBookingsTable: React.FC<Props> = ({
@@ -23,6 +24,7 @@ export const MyBookingsTable: React.FC<Props> = ({
   bookings,
   setRoundNumber,
   setPurchaseTime,
+  tokenSymbol,
 }) => {
   return (
     <div className="scrollSetLight3 overflow-x-auto">
@@ -35,7 +37,7 @@ export const MyBookingsTable: React.FC<Props> = ({
             <TableCell element={"th"}>Account Address</TableCell>
             <TableCell element={"th"}>Payment</TableCell>
             <TableCell element={"th"}>Receivable</TableCell>
-            <TableCell element={"th"}>DXC Price</TableCell>
+            <TableCell element={"th"}>{tokenSymbol} Price</TableCell>
             <TableCell element={"th"}>Round</TableCell>
             <TableCell element={"th"}>Trx Hash</TableCell>
             <TableCell element={"th"}>Date</TableCell>

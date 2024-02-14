@@ -8,7 +8,12 @@ import {
   TokenPurchaseWithBUSD,
 } from "../../../_components/launchpad-card-data";
 
-export const BookingList: React.FC<PresaleDataType> = (props) => {
+interface Props extends PresaleDataType {
+  token_name: string;
+  token_symbol: string;
+}
+
+export const BookingList: React.FC<Props> = (props) => {
   const [roundNumber, setRoundNumber] = useState<number>(0);
   const [purchaseTime, setPurchaseTime] = useState<number>(0);
   const [bookingsTab, setBookingsTab] = useState<
@@ -41,7 +46,7 @@ export const BookingList: React.FC<PresaleDataType> = (props) => {
       myBookings.push(bookings[i]);
     }
   }
-  // console.log("BookingList -> myBookings", myBookings);
+
   return (
     <div className="flex flex-col gap-8">
       <div className="flex h-auto w-full flex-col overflow-hidden rounded-[14px] border border-gray-shade-3 bg-black-shade-3">
@@ -71,6 +76,7 @@ export const BookingList: React.FC<PresaleDataType> = (props) => {
           bookingsTab={bookingsTab}
           {...props}
           bookings={bookingsTab === "my-bookings" ? myBookings : bookings}
+          tokenSymbol={props.token_symbol}
         />
       </div>
       {bookingsTab === "my-bookings" && roundNumber !== 0 && (
@@ -79,6 +85,7 @@ export const BookingList: React.FC<PresaleDataType> = (props) => {
           roundNumber={roundNumber}
           lockMonths={Number(props.roundInfos[0].lockMonths)}
           purchaseTime={purchaseTime}
+          tokenSymbol={props.token_symbol}
         />
       )}
     </div>

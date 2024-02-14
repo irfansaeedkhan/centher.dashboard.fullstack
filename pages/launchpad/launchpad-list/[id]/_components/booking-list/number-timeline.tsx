@@ -1,22 +1,60 @@
+import { BlockchainWrite } from "@/web3/blockchain";
+import { useWallet } from "@/web3/hooks/use.wallet";
 import clsx from "clsx";
 import React from "react";
 import Countdown, { CountdownRendererFn } from "react-countdown";
 
+// interface Props {
+//   id_no: number;
+//   amount: string;
+//   endTime: Date;
+//   claimed: number;
+//   claimable: number;
+// }
+
+// id_no,
+// amount,
+// endTime,
+// claimed,
+// claimable,
+
 interface Props {
-  id_no: number;
-  amount: string;
-  endTime: Date;
-  claimed: number;
+  index: number;
+  nowTime: number;
+  startTime: number;
+  endTime: number;
+  claimablePerMonth: number;
+  claimedMonths: number;
   claimable: number;
+  lock: number;
+  purchaseAmount: number;
+  claimed: number;
+  roundNumber: number;
+  tokenSymbol: string;
+  token: string;
 }
 
 export const NumberTimeline: React.FC<Props> = ({
-  id_no,
-  amount,
+  index,
   endTime,
-  claimed,
   claimable,
+  claimablePerMonth,
+  claimed,
+  tokenSymbol,
+  token,
+  roundNumber,
 }) => {
+  const { getSigner } = useWallet();
+  const handleClaim = async () => {
+    const signer = getSigner();
+    if (!signer) return;
+
+    try {
+      await BlockchainWrite.claimPresaleToken(token, roundNumber - 1, signer);
+    } catch (e) {
+      console.log(e);
+    }
+  };
   return (
     <div className="relative flex w-full items-center gap-4">
       <div
@@ -25,22 +63,25 @@ export const NumberTimeline: React.FC<Props> = ({
           Date.now() > Number(endTime) ? "bg-gray-shade-16" : "bg-gray-shade-12"
         )}
       >
-        {id_no === 1
-          ? id_no + "st"
-          : id_no === 2
-          ? id_no + "nd"
-          : id_no === 3
-          ? id_no + "rd"
-          : id_no + "th"}
+        {index === 1
+          ? index + "st"
+          : index === 2
+          ? index + "nd"
+          : index === 3
+          ? index + "rd"
+          : index + "th"}
       </div>
       <div className="rainbow-scroll flex h-auto min-h-[88px] max-w-full flex-grow items-center justify-between gap-10 overflow-x-auto rounded-[14px] bg-elevation-1 px-6 py-5">
         <div className="min-w-[260px]">
           <p className="text-sm text-gray-shade-7">Amount</p>
           <h4 className="mt-[6px] text-sm font-semibold text-white">
-            {amount} DXC (10%)
+            {claimablePerMonth} {tokenSymbol} (10%)
           </h4>
         </div>
-        <Countdown date={new Date(endTime)} renderer={countdownRenderer} />
+        <Countdown
+          date={new Date(endTime * 1000)}
+          renderer={countdownRenderer}
+        />
 
         <div className="min-w-[90px]">
           <p className="text-sm text-gray-shade-7">Claimable</p>
@@ -82,6 +123,10 @@ export const NumberTimeline: React.FC<Props> = ({
             //       : openClaimModal("NTR")
             //     : null;
             // }}
+
+            onClick={() => {
+              handleClaim();
+            }}
             disabled={claimable === 0 || claimed > 0}
           >
             Claim now

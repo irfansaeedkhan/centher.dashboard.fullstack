@@ -18,8 +18,22 @@ export const RoundsBooking: React.FC<PresaleDataProps> = ({
   currentRound,
   minTokensToSell,
   maxTokensToSell,
+
+  totalPurchasesInBuyingToken,
 }) => {
-  // let currentRound;
+  let totalSoldOutInPresaleToken =
+    Number(Number(totalPurchasesInBuyingToken) * 1e18) /
+    Number(maxTokensToSell);
+
+  totalSoldOutInPresaleToken = Number(totalSoldOutInPresaleToken) / 1e18;
+
+  console.log(
+    "totalSoldOutInPresaleToken: ",
+    typeof totalSoldOutInPresaleToken,
+    totalSoldOutInPresaleToken,
+    totalPurchasesInBuyingToken,
+    maxTokensToSell
+  );
 
   const currentTime = Number((Date.now() / 1000).toFixed());
   let timeToShow;

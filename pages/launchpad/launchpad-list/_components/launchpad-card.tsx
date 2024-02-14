@@ -12,8 +12,6 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
   start_date,
   end_date,
   status,
-  launchpad_title,
-  liquidity,
   lockup_time,
   soft_cap,
   currentPurchasesValue,

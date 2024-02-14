@@ -62,13 +62,15 @@ export const LaunchpadOverview: React.FC<Props> = ({
     currentRound = -4; // all round is ended
   }
 
-  console.log("currentRound: ", currentRound);
-
   return (
     <div className="flex flex-col gap-6 flg:flex-row">
       <div className="flex flex-grow flex-col gap-4">
         <PresaleData {...launchpadData} {...metaData} />
-        <BuyToken {...launchpadData} {...metaData} />
+        <BuyToken
+          {...launchpadData}
+          {...metaData}
+          currentRound={currentRound}
+        />
       </div>
       <div className="grid-col-1 grid w-full flex-shrink-0 flex-col gap-4 fsm:flex-row fmd:grid-cols-2 flg:flex flg:w-[360px] flg:flex-col">
         <RoundsBooking
