@@ -51,7 +51,7 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins, sdk }) => {
         <Image
           src={
             card.metadata?.banner?.length
-              ? formatIPFSUrl("ipfs:" + card.metadata.banner)
+              ? formatIPFSUrl(card.metadata.banner)
               : "/images/profile-header-cover.jpg"
           }
           alt="token-address-symbol"
@@ -66,7 +66,7 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins, sdk }) => {
           <Image
             src={
               card.metadata
-                ? formatIPFSUrl("ipfs:" + card.metadata.icon)
+                ? formatIPFSUrl(card.metadata.icon)
                 : "/images/profile-header-cover.jpg"
             }
             alt="token-address-symbol"

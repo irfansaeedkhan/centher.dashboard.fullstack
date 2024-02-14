@@ -14,7 +14,6 @@ import { isAddress } from "ethers/lib/utils";
 import cn from "@/utils/cn";
 import { CrossIcon, TeamMemberIcon } from "@/assets/svgs";
 import { NextPageWithLayout } from "@/pages/_app.page";
-import { CustomModal } from "@/components/modal/custom.modal";
 import Button from "@/components/button";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { eqAddress } from "@/live/utils/address.utils";
@@ -31,6 +30,9 @@ import {
   WalletApprovalError,
   WalletConnectedError,
 } from "@/staking/errors/params.error";
+import DropdownStakingForm from "@/pages/staking/_components/dropdown-staking-form";
+import { ConnectWalletComp } from "@/components/connect.wallet";
+import ModalContainer from "@/components/modal/modal-container";
 import { PreLoader } from "@/components/pre.loader";
 import { useStaking } from "@/hooks/staking";
 import { BlockchainRead } from "@/web3/blockchain";
@@ -60,8 +62,7 @@ import {
   firstReward,
   stakingPeriodOptions,
 } from "../constants";
-import DropdownStakingForm from "@/pages/staking/_components/dropdown-staking-form";
-import { ConnectWalletComp } from "@/components/connect.wallet";
+import { BackButton } from "@/components/button/back-button";
 
 const categoryOptions = [
   { value: "Metaverse", label: "Metaverse" },
@@ -379,7 +380,9 @@ const CreateStaking: NextPageWithLayout = () => {
     }),
     total_supply: Joi.when("liquidity_pool_provided", {
       is: "yes",
-      then: Joi.number().min(0).label("total sypply"),
+      then: Joi.number()
+        .greater(Joi.ref("max_staking_amount"))
+        .label("total sypply"),
       otherwise: Joi.number().optional().allow("").min(0).label("total sypply"),
     }),
     website_url: Joi.string().max(150).label("website_url"),
@@ -979,19 +982,16 @@ const CreateStaking: NextPageWithLayout = () => {
     <section className="flex w-full">
       <div className=" flex flex-grow flex-col">
         <div className="flex items-center gap-3 pb-6">
-          <button
+          <div
             onClick={() => {
               setFormStep(0);
             }}
-            className={cn(
-              "hover:gradient-border-3 group flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-gray-shade-9 p-[1px]",
-              {
-                hidden: formStep == 0,
-              }
-            )}
+            className={cn({
+              hidden: formStep == 0,
+            })}
           >
-            <BsArrowLeftShort className="h-6 w-6 fill-gray-shade-18 group-hover:fill-white" />
-          </button>
+            <BackButton />
+          </div>
           <h1 className="textGradient font-semibold leading-[42px] sm:text-2xl ">
             {formStep == 0
               ? "Submit Your Staking Project"
@@ -1883,62 +1883,78 @@ const CreateStaking: NextPageWithLayout = () => {
                 />
               )}
             </div>
-            {metaDataModal && (
-              <CustomModal
-                onClose={() => {
-                  setMetaDataModal(false);
-                }}
-                title={"Add new metadata"}
-              >
-                <div className="mt-8 flex w-full flex-col gap-2 p-[2px] text-center">
-                  <div className="flex w-full flex-col gap-2">
-                    <label className="text-start text-sm font-normal text-white">
-                      Type
-                    </label>
-                    <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
-                      <input
-                        type="text"
-                        name="title"
-                        id="title"
-                        autoComplete="off"
-                        placeholder="Project"
-                        className="w-full rounded-lg border-0 !bg-black-shade-2 px-5 py-3 text-sm font-semibold text-white ring-2 ring-black-shade-7 focus:outline-none focus:!ring-0"
-                        onChange={handleMetaDataChange}
-                        value={metaDataDetails.title}
-                      />
-                    </div>
+
+            <ModalContainer
+              isOpen={metaDataModal}
+              modalId="create-staking-metadata"
+              onClose={() => {
+                setMetaDataModal(false);
+              }}
+              shouldCloseOnEsc={false}
+              shouldCloseOnOverlayClick={false}
+            >
+              <div className="relative flex h-[28px] items-center justify-between rounded-t">
+                <span className="word-break text-[16px] font-semibold text-white fmd:text-[18px]">
+                  Add Metadata
+                </span>
+
+                <button
+                  className={`text-white`}
+                  onClick={() => {
+                    setMetaDataModal(false);
+                  }}
+                >
+                  <IoClose className="h-6 w-6" />
+                </button>
+              </div>
+              <div className="mt-8 flex w-full flex-col gap-2 p-[2px] text-center">
+                <div className="flex w-full flex-col gap-2">
+                  <label className="text-start text-sm font-normal text-white">
+                    Type
+                  </label>
+                  <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
+                    <input
+                      type="text"
+                      name="title"
+                      id="title"
+                      autoComplete="off"
+                      placeholder="Project"
+                      className="w-full rounded-lg border-0 !bg-black-shade-2 px-5 py-3 text-sm font-semibold text-white ring-2 ring-black-shade-7 focus:outline-none focus:!ring-0"
+                      onChange={handleMetaDataChange}
+                      value={metaDataDetails.title}
+                    />
                   </div>
-                  <div className="flex w-full flex-col gap-2">
-                    <label className="text-start text-sm font-normal text-white">
-                      Name
-                    </label>
-                    <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
-                      <input
-                        type="text"
-                        name="data"
-                        id="data"
-                        autoComplete="off"
-                        placeholder="Premium"
-                        className="w-full rounded-lg border-0 !bg-black-shade-2 px-5 py-3 text-sm font-semibold text-white ring-2 ring-black-shade-7 focus:outline-none focus:ring-0"
-                        onChange={handleMetaDataChange}
-                        value={metaDataDetails.data}
-                      />
-                    </div>
-                  </div>
-                  {metaDataErr && (
-                    <p className={`pb-2 text-xs font-medium text-red-500`}>
-                      {metaDataErr}
-                    </p>
-                  )}
-                  <Button
-                    title={"Save"}
-                    variant="primary"
-                    onClick={addNewMetaDataFunc}
-                    className="mt-2"
-                  />
                 </div>
-              </CustomModal>
-            )}
+                <div className="flex w-full flex-col gap-2">
+                  <label className="text-start text-sm font-normal text-white">
+                    Name
+                  </label>
+                  <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
+                    <input
+                      type="text"
+                      name="data"
+                      id="data"
+                      autoComplete="off"
+                      placeholder="Premium"
+                      className="w-full rounded-lg border-0 !bg-black-shade-2 px-5 py-3 text-sm font-semibold text-white ring-2 ring-black-shade-7 focus:outline-none focus:ring-0"
+                      onChange={handleMetaDataChange}
+                      value={metaDataDetails.data}
+                    />
+                  </div>
+                </div>
+                {metaDataErr && (
+                  <p className={`pb-2 text-xs font-medium text-red-500`}>
+                    {metaDataErr}
+                  </p>
+                )}
+                <Button
+                  title={"Save"}
+                  variant="primary"
+                  onClick={addNewMetaDataFunc}
+                  className="mt-2"
+                />
+              </div>
+            </ModalContainer>
           </motion.div>
           {/* form2 */}
           <motion.div
@@ -2205,9 +2221,10 @@ const CreateStaking: NextPageWithLayout = () => {
                           options={categoryOptions}
                           styles={customStyles}
                           isMulti
-                          className={`mt-2 p-[2px] ${
-                            isFocused ? "gradient-border" : ""
-                          }`}
+                          className={clsx(
+                            "mt-2 p-[2px]",
+                            isFocused && "gradient-border "
+                          )}
                           classNamePrefix="select"
                           onFocus={handleFocus}
                           onBlur={handleBlur}

@@ -1106,6 +1106,20 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
+  .staking-text-gradient-unstakable {
+    background: linear-gradient(91deg, #76e268 0%, #ffd505 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  #react-select-5-input {
+    color: #fff !important;
+  }
+  #react-select-5-input:focus {
+    outline: none !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
 }
 
 @layer utilities {

@@ -26,7 +26,7 @@ import { MaxUint256, ZeroAddress } from "../constants/common";
 
 export class BlockchainRead {
   static async getERC20Allowance(
-    signer: JsonRpcSigner,
+    signer: JsonRpcSigner | JsonRpcProvider,
     tokenAddress: string,
     owner: string,
     spender: string

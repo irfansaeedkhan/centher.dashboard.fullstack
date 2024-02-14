@@ -3,7 +3,7 @@ import { User } from "./user";
 export interface CollectionAdditionalInfo {
   listedPercent: number;
   minPrice: number;
-  ownerIncome: number;
+  revenue: number;
 }
 
 export interface CFSCollection {

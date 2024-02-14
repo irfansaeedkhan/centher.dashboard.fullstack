@@ -203,7 +203,6 @@ const SingleChatHeader: React.FC<{ users: UsersDetails[] }> = ({ users }) => {
         className="flex w-full cursor-pointer items-center gap-2"
         onClick={() => router.push(`/profile/${link}`)}
       >
-        <BackButton svgClassName="size-9" />
         {/* TODO=> for channel use cover photo */}
         {image ? (
           <Image
@@ -216,7 +215,6 @@ const SingleChatHeader: React.FC<{ users: UsersDetails[] }> = ({ users }) => {
         ) : (
           <ProfileImgPlaceholder className="min-h-[40px] min-w-[40px] " />
         )}
-
         <div className="flex flex-grow flex-col gap-1">
           <h6 className="text-sm font-semibold leading-[17.07px] text-white">
             {title.length < 20 ? title : title.substring(0, 17) + "..."}
@@ -225,6 +223,7 @@ const SingleChatHeader: React.FC<{ users: UsersDetails[] }> = ({ users }) => {
             {typingUsers ? typingUsers : status}
           </p>
         </div>
+        <BackButton svgClassName="size-[50px]" />
       </div>
 
       {/* <div className="flex flex-shrink-0 flex-col items-end justify-between">
