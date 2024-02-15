@@ -8,9 +8,9 @@ import useUser from "@/hooks/use.user";
 import { useWallet } from "@/web3/hooks/use.wallet";
 import { BlockchainConfig } from "@/web3/blockchain/config";
 import { formatEther } from "viem";
-import { formatUnits } from "ethers/lib/utils";
-import { BigNumber } from "ethers";
 import { PresaleRoundDetails } from "@/web3/blockchain/types";
+import { SmartContractProvider } from "@/web3/blockchain/providers/smart.contract.provider";
+import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.enum";
 
 interface Props extends PresaleDataType {
   token_name: string;
@@ -32,6 +32,7 @@ export const BuyToken: React.FC<Props> = ({
 
   const [tokenBalance, setTokenBalance] = useState(0);
   const [roundPrice, setroundPrice] = useState(-1);
+  const [allowance, setAllowance] = useState(false);
 
   currentRound = currentRound - 1;
 
@@ -76,6 +77,31 @@ export const BuyToken: React.FC<Props> = ({
     })();
   }, [getProvider, token, currentRound]);
 
+  useEffect(() => {
+    const provider = getProvider();
+    if (!user || !provider) return;
+    (async () => {
+      const presaleContract = SmartContractProvider.getContract(
+        SmartContractName.LAUNCHPAD,
+        provider
+      );
+      const usdtContract = SmartContractProvider.getContract(
+        SmartContractName.USDT,
+        provider
+      );
+      const allowance = await BlockchainRead.getERC20Allowance(
+        provider,
+        usdtContract.address,
+        user._id,
+        presaleContract.address
+      );
+
+      if (payAmount < Number(allowance)) {
+        setAllowance(true);
+      }
+    })();
+  }, [getProvider, token, user, payAmount]);
+
   const doPurchase = async () => {
     const signer = getSigner();
     if (!signer) return;
@@ -84,7 +110,10 @@ export const BuyToken: React.FC<Props> = ({
       if (fundType === 0) {
         await BlockchainWrite.buyPresaleToken(true, token, payAmount, signer);
       } else {
-        await BlockchainWrite.getTokenApprovalForLaunchpad("USDT", signer);
+        if (!allowance) {
+          await BlockchainWrite.getTokenApprovalForLaunchpad("USDT", signer);
+        }
+
         await BlockchainWrite.buyPresaleToken(false, token, payAmount, signer);
       }
     } catch (e) {

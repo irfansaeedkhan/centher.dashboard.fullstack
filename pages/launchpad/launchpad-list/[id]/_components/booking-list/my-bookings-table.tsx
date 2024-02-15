@@ -64,7 +64,9 @@ export const MyBookingsTable: React.FC<Props> = ({
                   {formatUnits(BigInt(booking.amount), 18)}
                 </TableCell>
                 <TableCell element={"td"}>
-                  {formatUnits(BigInt(Number(booking.receivable)), 18)}
+                  {Math.floor(
+                    Number(formatUnits(BigInt(Number(booking.receivable)), 18))
+                  )}
                 </TableCell>
                 <TableCell element={"td"}>
                   {formatUnits(BigInt(Number(booking.pricePerToken)), 18)}
