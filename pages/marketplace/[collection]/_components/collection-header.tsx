@@ -345,21 +345,6 @@ export const CollectionHeader: React.FC<Props> = ({
                   </h5>
                 </div>
                 <div className="text-left fmd:text-center">
-                  <h4 className={detailsCardTitle}>Revenue</h4>
-                  <h5 className={detailsCardValue}>
-                    $
-                    {collectionAdditionalInfo?.revenue &&
-                    collectionAdditionalInfo?.revenue > 0
-                      ? formatNumber(
-                          formatBNB2USD(
-                            collectionAdditionalInfo?.revenue,
-                            bnbPrice
-                          )
-                        )
-                      : 0}
-                  </h5>
-                </div>
-                <div className="text-left fmd:text-center">
                   <h4 className={detailsCardTitle}>Floor Price</h4>
                   <h5 className={detailsCardValue}>
                     $

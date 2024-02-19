@@ -532,24 +532,13 @@ export class BlockchainRead {
     }
   }
 
-  static async getCollectionAdditionalInfo(
-    collection: string,
-    seller: string
-  ): Promise<any> {
+  static async getCollectionAdditionalInfo(collection: string): Promise<any> {
     const { data: nfts } = await ApolloProvider.query(
       QueryNames.GET_COLLECTION_ADDITIONAL_INFO,
       { collection }
     );
 
-    const { data } = await ApolloProvider.query(
-      QueryNames.GET_USER_TOTAL_SOLD_NFTS,
-      {
-        collection,
-        seller,
-      }
-    );
-
-    return { nfts: nfts.nfts, history: data.marketplaceSaleHistories };
+    return { nfts: nfts.nfts };
   }
 
   static async getUserCollectionNfts(

@@ -131,10 +131,9 @@ export const useCollectionStore = create<CollectionStore>()(
           const collection = get().collection;
           if (!collection) return;
 
-          const { nfts: result, history } =
+          const { nfts: result } =
             await BlockchainRead.getCollectionAdditionalInfo(
-              collection.collection,
-              collection.creator
+              collection.collection
             );
 
           const listedItems = result.filter(
@@ -153,17 +152,11 @@ export const useCollectionStore = create<CollectionStore>()(
             100
           ).toFixed(2);
 
-          const revenue = history.reduce(
-            (a: number, b: any) => a + +b.price,
-            0
-          );
-
           set((state) => ({
             ...state,
             collectionAdditionalInfo: {
               minPrice: +minPrice,
               listedPercent: +listedPercent,
-              revenue: +revenue,
             },
           }));
         },
