@@ -1,7 +1,17 @@
 import { CrownIcon, GiftIcon, StakingUsers } from "@/assets/svgs";
 import React from "react";
 
-export const RewardsTopSection = () => {
+interface Props {
+  claimedRewards: string;
+  claimableRewards: string;
+  referrerCounts: number;
+}
+
+export const RewardsTopSection: React.FC<Props> = ({
+  claimableRewards,
+  claimedRewards,
+  referrerCounts,
+}) => {
   return (
     <div className="flex w-full flex-col gap-5 rounded-xl border border-gray-shade-3 bg-black-shade-9 p-6">
       <div className="text-[min(10vw, 20px)] font-semibold text-white">
@@ -16,7 +26,9 @@ export const RewardsTopSection = () => {
             <p className="text-xs font-medium text-gray-shade-14">
               Total Claimed Rewards
             </p>
-            <p className="mt-[6px] font-semibold text-white">11.1162 DXC</p>
+            <p className="mt-[6px] font-semibold text-white">
+              {claimedRewards}
+            </p>
           </div>
         </div>
         <div className="col-span-2 flex h-[48px] w-full gap-4 rounded-xl bg-transparent fmd:col-span-1">
@@ -27,7 +39,9 @@ export const RewardsTopSection = () => {
             <p className="text-xs font-medium text-gray-shade-14">
               Total Claimable Rewards
             </p>
-            <p className="mt-[6px] font-semibold text-white">11.1162 DXC</p>
+            <p className="mt-[6px] font-semibold text-white">
+              {claimableRewards}
+            </p>
           </div>
         </div>
         <div className="col-span-2 flex h-[48px] w-full gap-4 rounded-xl bg-transparent flg:col-span-1">
@@ -38,7 +52,9 @@ export const RewardsTopSection = () => {
             <p className="text-xs font-medium text-gray-shade-14">
               Total Referrals
             </p>
-            <p className="mt-[6px] font-semibold text-white">20000000</p>
+            <p className="mt-[6px] font-semibold text-white">
+              {referrerCounts}
+            </p>
           </div>
         </div>
       </div>

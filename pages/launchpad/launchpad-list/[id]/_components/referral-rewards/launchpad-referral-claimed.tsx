@@ -1,14 +1,20 @@
 import React from "react";
 import { ReferralClaimedCard } from "./";
 import { LaunchpadGridWrapper } from "../launchpad-grid-wrapper";
-import { ClaimedData } from "../data";
+import { ClaimedDataType } from "../data";
 
-export const LaunchpadReferralsClaimed: React.FC<{
+interface Props {
+  claimedRefData: ClaimedDataType[];
   open: boolean;
-}> = ({ open }) => {
+}
+
+export const LaunchpadReferralsClaimed: React.FC<Props> = ({
+  open,
+  claimedRefData,
+}) => {
   return (
     <LaunchpadGridWrapper open={open}>
-      {ClaimedData?.map((data, i) => (
+      {claimedRefData?.map((data, i) => (
         <ReferralClaimedCard {...data} key={i} />
       ))}
     </LaunchpadGridWrapper>

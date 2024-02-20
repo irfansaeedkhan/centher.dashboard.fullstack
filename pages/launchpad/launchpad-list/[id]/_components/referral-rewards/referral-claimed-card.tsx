@@ -3,7 +3,7 @@ import clsx from "clsx";
 import dayjs from "dayjs";
 import toast from "react-hot-toast";
 import { formatEther } from "ethers/lib/utils";
-import { BNBIcon, GradientCopy } from "@/assets/svgs";
+import { BNBIcon, USDTIcon, GradientCopy } from "@/assets/svgs";
 import { copyText } from "@/utils/copy.text";
 import { sliceAccountAddress } from "@/utils/user.helpers";
 import { ClaimedDataType } from "../data";
@@ -16,12 +16,12 @@ export const ReferralClaimedCard: React.FC<ClaimedDataType> = ({ ...item }) => {
           <span
             className={clsx(
               "text-sm font-medium",
-              item.claimed
+              item.amount
                 ? "staking-text-gradient-staked"
                 : "staking-text-gradient-unstaked"
             )}
           >
-            {item.claimed ? "Claimed to wallet" : "Restaked by User"}
+            {item.amount ? "Claimed to wallet" : "Restaked by User"}
           </span>
         </div>
       </div>
@@ -29,12 +29,12 @@ export const ReferralClaimedCard: React.FC<ClaimedDataType> = ({ ...item }) => {
         <div className={textLeft}>User Address</div>
         <div className={clsx(textRight, "group")}>
           <span className="group-hover:textGradient">
-            {sliceAccountAddress(item.user_address)}
+            {sliceAccountAddress(item.referrer)}
           </span>
           <GradientCopy
             className="cursor-pointer"
             onClick={async () => {
-              await copyText(item.user_address);
+              await copyText(item.referrer);
               toast.success("Address copied!");
             }}
           />
@@ -43,29 +43,31 @@ export const ReferralClaimedCard: React.FC<ClaimedDataType> = ({ ...item }) => {
       <div className={mainDiv}>
         <div className={textLeft}>Claim Date</div>
         <div className={textRight}>
-          <span>{dayjs(item.claim_date).format("DD-MMM-YYYY")}</span>
+          <span>
+            {dayjs(Number(item.blockTimestamp) * 1000).format("DD-MMM-YYYY")}
+          </span>
         </div>
       </div>
       <div className={mainDiv}>
         <div className={textLeft}>Claimed Amount</div>
         <div className={textRight}>
           <span className="flex h-4 w-4 flex-shrink-0">
-            <BNBIcon />
+            {item.fundType === 0 ? <BNBIcon /> : <USDTIcon />}
           </span>
-          <span>{Number(formatEther(item.claim_amount)).toFixed(3)}</span>
-          <span>{item.claim_amount_coin}</span>
+          <span>{Number(formatEther(item.amount)).toFixed(3)}</span>
+          <span>{item.fundType === 0 ? "BNB" : "USDT"}</span>
         </div>
       </div>
       <div className={mainDiv}>
         <div className={textLeft}>Transaction Hash</div>
         <div className={clsx(textRight, "group")}>
           <span className="group-hover:textGradient">
-            {sliceAccountAddress(item.transaction_hash)}
+            {sliceAccountAddress(item.transactionHash)}
           </span>
           <GradientCopy
             className="cursor-pointer"
             onClick={async () => {
-              await copyText(item.transaction_hash);
+              await copyText(item.transactionHash);
               toast.success("Address copied!");
             }}
           />

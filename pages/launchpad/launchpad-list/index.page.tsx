@@ -49,13 +49,52 @@ const LaunchpadList: NextPageWithLayout = () => {
 
         // check active round
         let currentRound = -1;
-        for (let i = 0; i < roundLength; i++) {
-          if (
-            Number(item.roundInfos[i].startTime) < currentTimeInSecs &&
-            Number(item.roundInfos[i].endTime) > currentTimeInSecs
+
+        const nowTime = Number((Date.now() / 1000).toFixed());
+
+        if (item.roundInfos[0]) {
+          if (nowTime < Number(item.roundInfos[0].startTime)) {
+            currentRound = -1; // any round is not started
+          } else if (
+            nowTime >= Number(item.roundInfos[0].startTime) &&
+            nowTime < Number(item.roundInfos[0].endTime)
           ) {
-            currentRound = i + 1;
+            currentRound = 1; // in round 1
           }
+        }
+        if (item.roundInfos[0] && item.roundInfos[1]) {
+          if (
+            nowTime >= Number(item.roundInfos[0].endTime) &&
+            nowTime <
+              (item.roundInfos[1] && Number(item.roundInfos[1].startTime))
+          ) {
+            currentRound = -2; // round 2 is not started
+          } else if (
+            nowTime >=
+              (item.roundInfos[1] && Number(item.roundInfos[1].startTime)) &&
+            nowTime < Number(item.roundInfos[1].endTime)
+          ) {
+            currentRound = 2; // in round 2
+          }
+        }
+
+        if (item.roundInfos[0] && item.roundInfos[1] && item.roundInfos[2]) {
+          if (
+            nowTime >= Number(item.roundInfos[1].endTime) &&
+            nowTime < Number(item.roundInfos[2].startTime)
+          ) {
+            currentRound = -3; // round 3 is not started
+          } else if (
+            nowTime >= Number(item.roundInfos[2].startTime) &&
+            nowTime < Number(item.roundInfos[2].endTime)
+          ) {
+            currentRound = 3; // in round 3
+          }
+        } else if (
+          item.roundInfos[2] &&
+          nowTime >= Number(item.roundInfos[2].endTime)
+        ) {
+          currentRound = -4; // all round is ended
         }
 
         if (currentTimeInSecs < startSale) {

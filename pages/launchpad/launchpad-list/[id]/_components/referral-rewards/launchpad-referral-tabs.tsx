@@ -1,12 +1,22 @@
 import React, { useState } from "react";
 import { HistoryMainTabs } from "./history-main-tabs";
-import {
-  LaunchpadReferralsClaimable,
-  LaunchpadReferralsClaimed,
-  LaunchpadReferralsEarned,
-} from "./";
+import { LaunchpadReferralsClaimable, LaunchpadReferralsClaimed } from "./";
+import { PresaleDataType } from "../../../_components/launchpad-card-data";
+import { ClaimableDataType, ClaimedDataType } from "../data";
 
-export const LaunchpadReferralTabs = () => {
+interface Props {
+  metaData: { token_name: string; token_symbol: string; website: string };
+  launchpadData: PresaleDataType;
+  claimableRefData: ClaimableDataType[];
+  claimedRefData: ClaimedDataType[];
+}
+
+export const LaunchpadReferralTabs: React.FC<Props> = ({
+  launchpadData,
+  metaData,
+  claimableRefData,
+  claimedRefData,
+}) => {
   const [isClaimable, setIsClaimable] = useState(false);
   const [isClaimed, setIsClaimed] = useState(false);
   const [isReward, setIsReward] = useState(false);
@@ -31,8 +41,13 @@ export const LaunchpadReferralTabs = () => {
         loader={batchLoading}
         actionAreaLoading={false}
       />
-      <LaunchpadReferralsClaimable open={isClaimable} />
-      <HistoryMainTabs
+      <LaunchpadReferralsClaimable
+        open={isClaimable}
+        launchpadData={launchpadData}
+        metaData={metaData}
+        claimableRefData={claimableRefData}
+      />
+      {/* <HistoryMainTabs
         isOpen={isReward}
         onClose={() => {
           setIsClaimable(false);
@@ -45,7 +60,7 @@ export const LaunchpadReferralTabs = () => {
         loader={batchLoading}
         actionAreaLoading={false}
       />
-      <LaunchpadReferralsEarned open={isReward} />
+      <LaunchpadReferralsEarned open={isReward} /> */}
       <HistoryMainTabs
         isOpen={isClaimed}
         onClose={() => {
@@ -59,7 +74,10 @@ export const LaunchpadReferralTabs = () => {
         loader={batchLoading}
         actionAreaLoading={false}
       />
-      <LaunchpadReferralsClaimed open={isClaimed} />
+      <LaunchpadReferralsClaimed
+        open={isClaimed}
+        claimedRefData={claimedRefData}
+      />
     </div>
   );
 };

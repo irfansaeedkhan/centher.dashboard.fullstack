@@ -27,14 +27,6 @@ export const RoundsBooking: React.FC<PresaleDataProps> = ({
 
   totalSoldOutInPresaleToken = Number(totalSoldOutInPresaleToken) / 1e18;
 
-  console.log(
-    "totalSoldOutInPresaleToken: ",
-    typeof totalSoldOutInPresaleToken,
-    totalSoldOutInPresaleToken,
-    totalPurchasesInBuyingToken,
-    maxTokensToSell
-  );
-
   const currentTime = Number((Date.now() / 1000).toFixed());
   let timeToShow;
 

@@ -618,6 +618,25 @@ export class BlockchainRead {
     return "0";
   }
 
+  static async launchpadActiveRound(
+    signer: JsonRpcProvider,
+    token: string
+  ): Promise<string> {
+    try {
+      const launchpadContract = SmartContractProvider.getContract(
+        SmartContractName.LAUNCHPAD,
+        signer
+      );
+
+      const getRound = await launchpadContract.getRound(token);
+
+      return getRound.toString();
+    } catch (error: any) {
+      logger(error, "launchpadActiveRound");
+    }
+    return "0";
+  }
+
   static async launchpadPresaleRoundDetails(
     signer: JsonRpcProvider,
     presaleToken: string

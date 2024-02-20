@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import { formatEther } from "ethers/lib/utils";
 import { sliceAccountAddress } from "@/utils/user.helpers";
 import { copyText } from "@/utils/copy.text";
-import { BNBIcon, GradientCopy } from "@/assets/svgs";
+import { BNBIcon, USDTIcon, GradientCopy } from "@/assets/svgs";
 import { ClaimableDataType } from "../data";
 
 export const ReferralClaimableCard: React.FC<ClaimableDataType> = ({
@@ -17,12 +17,12 @@ export const ReferralClaimableCard: React.FC<ClaimableDataType> = ({
         <div className={textLeft}>User Address</div>
         <div className={clsx(textRight, "group")}>
           <span className="group-hover:textGradient">
-            {sliceAccountAddress(item.user_address)}
+            {sliceAccountAddress(item.user)}
           </span>
           <GradientCopy
             className="cursor-pointer"
             onClick={async () => {
-              await copyText(item.user_address);
+              await copyText(item.user);
               toast.success("Address copied!");
             }}
           />
@@ -31,10 +31,12 @@ export const ReferralClaimableCard: React.FC<ClaimableDataType> = ({
       <div className={mainDiv}>
         <div className={textLeft}>Booking Date</div>
         <div className={textRight}>
-          <span>{dayjs(item.booking_date).format("DD-MMM-YYYY")}</span>
+          <span>
+            {dayjs(Number(item.blockTimestamp) * 1000).format("DD-MMM-YYYY")}
+          </span>
         </div>
       </div>
-      <div className={mainDiv}>
+      {/* <div className={mainDiv}>
         <div className={textLeft}>Booked Amount</div>
         <div className={textRight}>
           <span className="flex h-4 w-4 flex-shrink-0">
@@ -43,21 +45,21 @@ export const ReferralClaimableCard: React.FC<ClaimableDataType> = ({
           <span>{Number(formatEther(item.booking_amount)).toFixed(3)}</span>
           <span>{item.booking_amount_coin}</span>
         </div>
-      </div>
+      </div> */}
       <div className={mainDiv}>
         <div className={textLeft}>Booking Round</div>
         <div className={textRight}>
-          <span>{item.round}</span>
+          <span>{item.round + 1}</span>
         </div>
       </div>
       <div className={mainDiv}>
         <div className={textLeft}>Rewards Available</div>
         <div className={textRight}>
           <span className="flex h-4 w-4 flex-shrink-0">
-            <BNBIcon />
+            {item.fundType === 0 ? <BNBIcon /> : <USDTIcon />}
           </span>
-          <span>{Number(formatEther(item.rewards_available)).toFixed(3)}</span>
-          <span>{item.rewards_available_coin}</span>
+          <span>{Number(formatEther(item.amount)).toFixed(3)}</span>
+          <span>{item.fundType === 0 ? "BNB" : "USDT"}</span>
         </div>
       </div>
     </div>

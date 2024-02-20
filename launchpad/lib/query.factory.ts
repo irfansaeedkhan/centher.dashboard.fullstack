@@ -78,4 +78,32 @@ const queries: Queries = {
     }
 }
   `,
+  GET_CLAIMABLE_REF_REWARDS: `query MyQuery($token: Bytes = "", $referrer: Bytes = ""){
+    setRefRewards(where: {token: $token, referrer: $referrer}){
+      id
+      token
+      user
+      referrer
+      amount
+      level
+      round
+      fundType
+      blockTimestamp
+      transactionHash
+    }
+}
+  `,
+  GET_CLAIMED_REF_REWARDS: `
+  query MyQuery($token: Bytes = "", $referrer: Bytes = ""){
+    refRewardClaims(where: {token: $token, referrer: $referrer}){
+      id
+      token
+      referrer
+      fundType
+      amount
+      transactionHash
+      blockTimestamp
+    }
+}
+  `,
 };

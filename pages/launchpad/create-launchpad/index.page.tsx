@@ -254,7 +254,7 @@ const CreateLaunchpad: NextPageWithLayout = () => {
           formState.verify_token.fee_option === "Other"
             ? formState.verify_token.add_fee
             : formState.verify_token.fee_option,
-        releaseMonth: 10, //formState.verify_token.release_month,
+        releaseMonth: formState.verify_token.release_month,
         isRefSupport:
           formState.verify_token.multilevel_reward === "recurring_return"
             ? true
@@ -298,6 +298,11 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       presaleInfoParams.maxTokensToSell = parseEther(
         totalPresaleSellingAmount.toString()
       ).toString();
+
+      console.log(
+        "formState.verify_token.release_month: ",
+        formState.verify_token.release_month
+      );
 
       if (signer == null) return;
 
@@ -382,8 +387,9 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       }
 
       if (
-        formState.verify_token.multilevel_reward === "recurring_return" ||
-        (presaleDetails.isRefSupport && !presaleDetails.isActive)
+        formState.verify_token.multilevel_reward === "recurring_return" &&
+        !presaleDetails.isActive
+        // || (presaleDetails.isRefSupport && !presaleDetails.isActive)
       ) {
         await setRefSettings();
       }

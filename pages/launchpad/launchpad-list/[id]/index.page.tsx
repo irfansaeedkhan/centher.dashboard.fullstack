@@ -63,7 +63,7 @@ const LaunchpadListDetails: NextPageWithLayout = () => {
         token_symbol={metaData.token_symbol}
       />
     ) : list_type === "referral_rewards" ? (
-      <ReferralRewards />
+      <ReferralRewards launchpadData={launchpadData} metaData={metaData} />
     ) : null
   ) : (
     <div className="flex h-[calc(100vh-60px)] w-full items-center justify-center">

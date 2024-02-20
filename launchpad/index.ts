@@ -38,6 +38,36 @@ export class CentherLaunchpad {
     return result?.data.presales[0];
   }
 
+  async getRefRewards(token: string, referrer: string): Promise<any[]> {
+    const query = QueryFactory.getQuery(QueryNames.GET_CLAIMABLE_REF_REWARDS);
+
+    const result = await this._connection?.query({
+      query,
+      variables: {
+        token: token,
+        referrer: referrer,
+      },
+      fetchPolicy: "no-cache",
+    });
+
+    return result?.data.setRefRewards;
+  }
+
+  async getClaimedRefRewards(token: string, referrer: string): Promise<any[]> {
+    const query = QueryFactory.getQuery(QueryNames.GET_CLAIMED_REF_REWARDS);
+
+    const result = await this._connection?.query({
+      query,
+      variables: {
+        token: token,
+        referrer: referrer,
+      },
+      fetchPolicy: "no-cache",
+    });
+
+    return result?.data.refRewardClaims;
+  }
+
   private initConnection(url: string): void {
     this._connection = getConnection(url);
   }
