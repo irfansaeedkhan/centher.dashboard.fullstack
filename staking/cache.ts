@@ -119,7 +119,7 @@ export const project_metadata = [
     library: [],
     banner:
       "ipfs://QmSDnto2uC7SqvWfvrJEjntkSk31hZ21HGhjbwHUYDpezp/centher/625945d0-45bc-11ee-b3f1-b769a1ba9d46",
-    icon: "QmQRfCbz48buWjKyeixNkmqEwbZrBVVWno6jeRbaX3PC9N/centher/66265360-45bc-11ee-b3f1-b769a1ba9d46",
+    icon: "ipfs://QmQRfCbz48buWjKyeixNkmqEwbZrBVVWno6jeRbaX3PC9N/centher/66265360-45bc-11ee-b3f1-b769a1ba9d46",
     socialMedias: [
       { name: "website_url", link: "https://www.phintech.io" },
       {
@@ -157,7 +157,7 @@ export const project_metadata = [
     library: [],
     banner:
       "ipfs://QmVviQHR1ZTwAsZttR4SKYLdpuxn3ACY7HiGPTgEL7ZnQm/centher/66292d00-67ff-11ee-87e2-81594cb5404d",
-    icon: "QmUzJbW1YKz2DN1UMiZkgtYaaqhj6jJHZzmofxaZuAsLaa/centher/678a91c0-67ff-11ee-87e2-81594cb5404d",
+    icon: "ipfs://QmUzJbW1YKz2DN1UMiZkgtYaaqhj6jJHZzmofxaZuAsLaa/centher/678a91c0-67ff-11ee-87e2-81594cb5404d",
     socialMedias: [
       { name: "website_url", link: "https://dexagon.io/" },
       {
