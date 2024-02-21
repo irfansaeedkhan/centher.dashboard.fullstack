@@ -14,7 +14,7 @@ export const staking_projects = [
     name: "Prospera",
     minStakeAmount: "500000000000000000000",
     metadataUri:
-      "ipfs:QmQh3rBJRAhehb2w56hQQHXwWvcCFrdBiuSKSxjXYYkwkh/centher/6c1bbf30-45bc-11ee-b3f1-b769a1ba9d46.json",
+      "ipfs://QmQh3rBJRAhehb2w56hQQHXwWvcCFrdBiuSKSxjXYYkwkh/centher/6c1bbf30-45bc-11ee-b3f1-b769a1ba9d46.json",
     maxStakableAmount: "0",
     maxStakeAmount: "0",
     levelTwo: "50",
@@ -51,7 +51,7 @@ export const staking_projects = [
     name: "Prospera",
     minStakeAmount: "500000000000000000000",
     metadataUri:
-      "ipfs:QmZmrVzGGYcdppXZ3JXbWZi5ghPwazWmgZwKiujf66R7dd/centher/1bfa8070-4b2c-11ee-b82e-2f96bb0e5e83.json",
+      "ipfs://QmZmrVzGGYcdppXZ3JXbWZi5ghPwazWmgZwKiujf66R7dd/centher/1bfa8070-4b2c-11ee-b82e-2f96bb0e5e83.json",
     maxStakableAmount: "0",
     maxStakeAmount: "0",
     levelTwo: "50",
@@ -88,7 +88,7 @@ export const staking_projects = [
     name: "Supreme DeXa Staking",
     minStakeAmount: "25000000000000000000",
     metadataUri:
-      "ipfs:QmNNq2ikQWXW6B7dVoXs6m8AMAisBtDUmtYkBd4XPvm1wa/centher/67f49e30-67ff-11ee-87e2-81594cb5404d.json",
+      "ipfs://QmNNq2ikQWXW6B7dVoXs6m8AMAisBtDUmtYkBd4XPvm1wa/centher/67f49e30-67ff-11ee-87e2-81594cb5404d.json",
     maxStakableAmount: "0",
     maxStakeAmount: "0",
     levelTwo: "150",
@@ -115,10 +115,10 @@ export const staking_projects = [
 export const project_metadata = [
   {
     ipfsAddress:
-      "ipfs:QmZmrVzGGYcdppXZ3JXbWZi5ghPwazWmgZwKiujf66R7dd/centher/1bfa8070-4b2c-11ee-b82e-2f96bb0e5e83.json",
+      "ipfs://QmZmrVzGGYcdppXZ3JXbWZi5ghPwazWmgZwKiujf66R7dd/centher/1bfa8070-4b2c-11ee-b82e-2f96bb0e5e83.json",
     library: [],
     banner:
-      "QmSDnto2uC7SqvWfvrJEjntkSk31hZ21HGhjbwHUYDpezp/centher/625945d0-45bc-11ee-b3f1-b769a1ba9d46",
+      "ipfs://QmSDnto2uC7SqvWfvrJEjntkSk31hZ21HGhjbwHUYDpezp/centher/625945d0-45bc-11ee-b3f1-b769a1ba9d46",
     icon: "QmQRfCbz48buWjKyeixNkmqEwbZrBVVWno6jeRbaX3PC9N/centher/66265360-45bc-11ee-b3f1-b769a1ba9d46",
     socialMedias: [
       { name: "website_url", link: "https://www.phintech.io" },
@@ -153,10 +153,10 @@ export const project_metadata = [
   },
   {
     ipfsAddress:
-      "ipfs:QmNNq2ikQWXW6B7dVoXs6m8AMAisBtDUmtYkBd4XPvm1wa/centher/67f49e30-67ff-11ee-87e2-81594cb5404d.json",
+      "ipfs://QmNNq2ikQWXW6B7dVoXs6m8AMAisBtDUmtYkBd4XPvm1wa/centher/67f49e30-67ff-11ee-87e2-81594cb5404d.json",
     library: [],
     banner:
-      "QmVviQHR1ZTwAsZttR4SKYLdpuxn3ACY7HiGPTgEL7ZnQm/centher/66292d00-67ff-11ee-87e2-81594cb5404d",
+      "ipfs://QmVviQHR1ZTwAsZttR4SKYLdpuxn3ACY7HiGPTgEL7ZnQm/centher/66292d00-67ff-11ee-87e2-81594cb5404d",
     icon: "QmUzJbW1YKz2DN1UMiZkgtYaaqhj6jJHZzmofxaZuAsLaa/centher/678a91c0-67ff-11ee-87e2-81594cb5404d",
     socialMedias: [
       { name: "website_url", link: "https://dexagon.io/" },
