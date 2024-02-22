@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
@@ -11,6 +11,8 @@ import {
   PresaleDataType,
 } from "./_components/launchpad-card-data";
 import { LaunchpadCard } from "./_components/launchpad-card";
+import { set } from "lodash";
+import Image from "next/image";
 
 const LaunchpadList: NextPageWithLayout = () => {
   const router = useRouter();
@@ -18,9 +20,11 @@ const LaunchpadList: NextPageWithLayout = () => {
   const { sdk } = useLaunchpad();
 
   const [projects, setProjects] = useState<LaunchpadDataType[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
+      setIsLoading(true);
       if (!sdk) return;
 
       const result: PresaleDataType[] = await sdk.getPresales();
@@ -154,10 +158,25 @@ const LaunchpadList: NextPageWithLayout = () => {
         );
         setProjects(upcomingFilter);
       }
+      setIsLoading(false);
     })();
   }, [sdk, list_type]);
 
   if (!projects) return;
+
+  if (isLoading) {
+    return (
+      <div className="mt-10 flex w-full items-center justify-center">
+        <Image
+          src="/images/preloader.png"
+          alt="Preloader"
+          width={64}
+          height={64}
+          className="h-16 w-16 flex-shrink-0 object-cover"
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-1 gap-5 fmd:grid-cols-2 flg:grid-cols-3">
