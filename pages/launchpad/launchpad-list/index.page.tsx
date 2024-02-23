@@ -13,6 +13,7 @@ import {
 import { LaunchpadCard } from "./_components/launchpad-card";
 import { set } from "lodash";
 import Image from "next/image";
+import { EmptyLaunchpad } from "@/assets/svgs/launchpad-v2";
 
 const LaunchpadList: NextPageWithLayout = () => {
   const router = useRouter();
@@ -179,10 +180,29 @@ const LaunchpadList: NextPageWithLayout = () => {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-5 fmd:grid-cols-2 flg:grid-cols-3">
-      {projects.map((data) => (
-        <LaunchpadCard key={data.id} {...data} />
-      ))}
+    <div
+      className={`gap-5 ${
+        projects.length === 0
+          ? ""
+          : "grid grid-cols-1 fmd:grid-cols-2 flg:grid-cols-3"
+      }`}
+    >
+      {projects.length === 0 ? (
+        <div className="mt-20 flex flex-col items-center justify-center gap-3">
+          <EmptyLaunchpad className="h-[96px] w-[176px]" />
+          <div className="text-base font-semibold text-white">
+            No launchpad on list
+          </div>
+          <div className="text-sm font-normal text-[#A0A4BB]">
+            No launchpads are currently listed, All live
+            <div className="text-sm font-normal text-[#A0A4BB]">
+              and upcoming launches will be featured here.
+            </div>
+          </div>
+        </div>
+      ) : (
+        projects.map((data) => <LaunchpadCard key={data.id} {...data} />)
+      )}
     </div>
   );
 };
