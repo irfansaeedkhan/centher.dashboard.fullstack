@@ -15,6 +15,7 @@ interface Props {
   contributionInfo: ContributionInfo;
   refetchContributionInfo: () => void;
   isBUSD: boolean;
+  roundNo: number;
 }
 
 export const TimelinePeriod: React.FC<Props> = ({
@@ -23,8 +24,10 @@ export const TimelinePeriod: React.FC<Props> = ({
   contributionInfo,
   refetchContributionInfo,
   isBUSD,
+  roundNo,
 }) => {
   let monthInEpoch = 2592000;
+
   const [modal, setModal] = useState<ModalState>({
     isOpen: false,
     status: "warning",
@@ -44,7 +47,7 @@ export const TimelinePeriod: React.FC<Props> = ({
   const handleClaim = async (claimFrom: ClaimCentherFrom) => {
     try {
       setModal((prev) => ({ ...prev, status: "progress" }));
-      await BlockchainWrite.claimTokens(signer, roundInfo.round, claimFrom);
+      await BlockchainWrite.claimTokens(signer, roundNo, claimFrom);
       refetchContributionInfo();
       setModal((prev) => ({
         ...prev,
@@ -53,12 +56,22 @@ export const TimelinePeriod: React.FC<Props> = ({
         bodyText: `You claimed DXC. Please check your balance.`,
         onClickConfirm: () => {},
       }));
-    } catch (error) {
-      toast.error("Claim Transaction Failed");
+    } catch (err: any) {
+      let errorMsg: string;
+      if (
+        err.reason?.toLowerCase().includes("user rejected") ||
+        err.message?.toLowerCase().includes("user rejected")
+      ) {
+        errorMsg = "User rejected the transaction";
+      } else {
+        errorMsg = err.message ?? "Something is wrong! Please try again later.";
+      }
+
       setModal((prev) => ({
         ...prev,
         status: "error",
         confirmButtonText: "Try Again",
+        bodyText: errorMsg,
       }));
     }
   };
