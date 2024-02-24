@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import axios from "axios";
@@ -23,35 +23,37 @@ const LaunchpadListDetails: NextPageWithLayout = () => {
     website: string;
   }>();
 
-  useEffect(() => {
-    (async () => {
-      try {
-        setLoading(true);
-        if (!sdk) {
-          setLoading(false);
-          return;
-        }
-        if (!id) {
-          setLoading(false);
-          return;
-        }
-
-        const result: PresaleDataType = await sdk.getPresale(id.toString());
-
-        const metaData = await axios.get(formatIPFSUrl(result.metadata));
-        setLaunchpadData(result);
-
-        setMetaData({
-          token_name: metaData.data.token_name,
-          token_symbol: metaData.data.token_symbol,
-          website: metaData.data.website_url,
-        });
+  const loadSdk = useCallback(async () => {
+    try {
+      setLoading(true);
+      if (!sdk) {
         setLoading(false);
-      } catch (err) {
-        customLog(["development", "staging"], err);
+        return;
       }
-    })();
-  }, [sdk, id]);
+      if (!id) {
+        setLoading(false);
+        return;
+      }
+
+      const result: PresaleDataType = await sdk.getPresale(id.toString());
+
+      const metaData = await axios.get(formatIPFSUrl(result.metadata));
+      setLaunchpadData(result);
+
+      setMetaData({
+        token_name: metaData.data.token_name,
+        token_symbol: metaData.data.token_symbol,
+        website: metaData.data.website_url,
+      });
+      setLoading(false);
+    } catch (err) {
+      customLog(["development", "staging"], err);
+    }
+  }, [id, sdk]);
+
+  useEffect(() => {
+    loadSdk();
+  }, [loadSdk]);
 
   return !loading && launchpadData && metaData ? (
     list_type === "launchpad_overview" ? (

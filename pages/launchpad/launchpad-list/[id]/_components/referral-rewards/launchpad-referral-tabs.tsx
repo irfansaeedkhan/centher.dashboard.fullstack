@@ -40,6 +40,8 @@ export const LaunchpadReferralTabs: React.FC<Props> = ({
         title="Claimable Rewards History"
         loader={batchLoading}
         actionAreaLoading={false}
+        claimedRefData={claimedRefData}
+        launchpadData={launchpadData}
       />
       <LaunchpadReferralsClaimable
         open={isClaimable}
@@ -73,6 +75,8 @@ export const LaunchpadReferralTabs: React.FC<Props> = ({
         title="Claimed Rewards History"
         loader={batchLoading}
         actionAreaLoading={false}
+        claimedRefData={claimedRefData}
+        launchpadData={launchpadData}
       />
       <LaunchpadReferralsClaimed
         open={isClaimed}

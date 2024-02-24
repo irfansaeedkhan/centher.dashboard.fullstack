@@ -1,6 +1,6 @@
 import Button from "@/components/button";
 import { CustomNumberInput } from "@/components/custom-number-input";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { PresaleDataType } from "../../../_components/launchpad-card-data";
 import { customLog } from "@/utils/custom.log";
 import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
@@ -40,63 +40,57 @@ export const BuyToken: React.FC<Props> = ({
 
   currentRound = currentRound - 1;
 
-  useEffect(() => {
+  const checkBalance = useCallback(async () => {
     const provider = getProvider();
     if (!user || !provider) return;
+    try {
+      if (fundType === 0) {
+      } else {
+        const token =
+          process.env.NEXT_PUBLIC_APP_ENV === "production"
+            ? BlockchainConfig.contracts.USDT[56]
+            : BlockchainConfig.contracts.USDT[5];
 
-    (async () => {
-      try {
-        if (fundType === 0) {
-        } else {
-          const token =
-            process.env.NEXT_PUBLIC_APP_ENV === "production"
-              ? BlockchainConfig.contracts.USDT[56]
-              : BlockchainConfig.contracts.USDT[5];
+        const balance = await BlockchainRead.getERC20Balance(
+          user._id,
+          token,
+          provider
+        );
 
-          const balance = await BlockchainRead.getERC20Balance(
-            user._id,
-            token,
-            provider
-          );
-
-          setTokenBalance(Number(balance));
-        }
-      } catch (err) {
-        customLog(["development", "staging"], err);
+        setTokenBalance(Number(balance));
       }
-    })();
+    } catch (err) {
+      customLog(["development", "staging"], err);
+    }
   }, [fundType, getProvider, user]);
 
-  useEffect(() => {
+  const loadRoundDetails = useCallback(async () => {
     if (currentRound < 0) return;
 
     const provider = getProvider();
     if (!provider) return;
 
-    (async () => {
-      const data: PresaleRoundDetails[] =
-        await BlockchainRead.launchpadPresaleRoundDetails(provider, token);
+    const data: PresaleRoundDetails[] =
+      await BlockchainRead.launchpadPresaleRoundDetails(provider, token);
 
-      setroundPrice(Number(data[currentRound].pricePerToken));
-    })();
-  }, [getProvider, token, currentRound]);
+    setroundPrice(Number(data[currentRound].pricePerToken));
+  }, [currentRound, getProvider, token]);
 
-  useEffect(() => {
+  const checkUserPurchases = useCallback(async () => {
     if (currentRound < 0) return;
     if (!user) return;
+    const data = fundType === 0 ? tokenPurchaseWithBNB : tokenPurchaseWithBUSD;
 
-    (async () => {
-      const data =
-        fundType === 0 ? tokenPurchaseWithBNB : tokenPurchaseWithBUSD;
-
-      if (data.length > 0) {
-        for (let i = 0; i < data.length; i++) {
-          if (data[i].beneficiary === user._id) {
-            setAlreadyPurchased(true);
-          }
+    if (data.length > 0) {
+      for (let i = 0; i < data.length; i++) {
+        if (
+          data[i].beneficiary === user._id &&
+          currentRound <= Number(data[i].round)
+        ) {
+          setAlreadyPurchased(true);
         }
       }
-    })();
+    }
   }, [
     currentRound,
     fundType,
@@ -105,30 +99,45 @@ export const BuyToken: React.FC<Props> = ({
     user,
   ]);
 
-  useEffect(() => {
+  const checkAllowance = useCallback(async () => {
     const provider = getProvider();
     if (!user || !provider) return;
-    (async () => {
-      const presaleContract = SmartContractProvider.getContract(
-        SmartContractName.LAUNCHPAD,
-        provider
-      );
-      const usdtContract = SmartContractProvider.getContract(
-        SmartContractName.USDT,
-        provider
-      );
-      const allowance = await BlockchainRead.getERC20Allowance(
-        provider,
-        usdtContract.address,
-        user._id,
-        presaleContract.address
-      );
 
-      if (payAmount < Number(allowance)) {
-        setAllowance(true);
-      }
-    })();
-  }, [getProvider, token, user, payAmount]);
+    const presaleContract = SmartContractProvider.getContract(
+      SmartContractName.LAUNCHPAD,
+      provider
+    );
+    const usdtContract = SmartContractProvider.getContract(
+      SmartContractName.USDT,
+      provider
+    );
+    const allowance = await BlockchainRead.getERC20Allowance(
+      provider,
+      usdtContract.address,
+      user._id,
+      presaleContract.address
+    );
+
+    if (payAmount < Number(allowance)) {
+      setAllowance(true);
+    }
+  }, [getProvider, payAmount, user]);
+
+  useEffect(() => {
+    checkBalance();
+  }, [checkBalance]);
+
+  useEffect(() => {
+    loadRoundDetails();
+  }, [loadRoundDetails]);
+
+  useEffect(() => {
+    checkUserPurchases();
+  }, [checkUserPurchases]);
+
+  useEffect(() => {
+    checkAllowance();
+  }, [checkAllowance]);
 
   const doPurchase = async () => {
     const signer = getSigner();

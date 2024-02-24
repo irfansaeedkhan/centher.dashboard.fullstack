@@ -2211,12 +2211,6 @@ export class BlockchainWrite {
         await tx.wait();
       }
 
-      // if (!tokenPurchase) {
-      //   throw new Error("Token cannot be purchased");
-      // }
-
-      // const tx = await tokenPurchase(purchaseAmount);
-
       return tx.hash;
     } catch (error: any) {
       logger(error, "buyPresaleToken");
@@ -2239,6 +2233,29 @@ export class BlockchainWrite {
       let tx = await await presaleContract.functions.claimTokens(
         presaleTokenAddress,
         round
+      );
+      await tx.wait();
+
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "claimPresaleToken");
+      throw error;
+    }
+  }
+
+  static async claimAllRefRewards(
+    presaleTokenAddress: String,
+    signer: JsonRpcSigner
+  ): Promise<string> {
+    try {
+      const presaleContract = SmartContractProvider.getContract(
+        SmartContractName.LAUNCHPAD,
+        signer
+      );
+
+      await presaleContract.callStatic.claimRefReward(presaleTokenAddress);
+      let tx = await await presaleContract.functions.claimRefReward(
+        presaleTokenAddress
       );
       await tx.wait();
 

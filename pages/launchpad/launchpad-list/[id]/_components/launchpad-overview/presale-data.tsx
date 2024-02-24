@@ -19,7 +19,6 @@ export const PresaleData: React.FC<PresaleDataProps> = ({
   token_name,
   token_symbol,
   token,
-  website,
   roundInfos,
   maxTokensToSell,
   minTokensToSell,

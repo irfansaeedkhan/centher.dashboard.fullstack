@@ -16,7 +16,6 @@ export const RoundsBooking: React.FC<PresaleDataProps> = ({
   roundInfos,
   roundDeep,
   currentRound,
-  minTokensToSell,
   maxTokensToSell,
 
   totalPurchasesInBuyingToken,

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { LaunchpadReferralTabs, RewardsTopSection } from "./";
 import { PresaleDataType } from "../../../_components/launchpad-card-data";
 import { useLaunchpad } from "@/hooks/launchpad";
@@ -27,47 +27,54 @@ export const ReferralRewards: React.FC<Props> = ({
     claimableRewards: string;
     referrerCounts: number;
   }>({ claimableRewards: "", claimedRewards: "", referrerCounts: 0 });
-  useEffect(() => {
+
+  const loadData = useCallback(async () => {
     if (!sdk) return;
     if (!user) return;
     if (!id) return;
+    try {
+      let claimableAmount = 0;
+      let claimedAmount = 0;
 
-    (async () => {
-      try {
-        const result = await sdk.getRefRewards(id.toString(), user._id);
-        setclaimableRefData(result);
-        let claimableAmount = 0;
-        let claimedAmount = 0;
-        let rewardTokenType = result[0].fundType;
+      const result = await sdk.getRefRewards(id.toString(), user._id);
 
-        for (let i = 0; i < result.length; i++) {
-          claimableAmount += Number(result[i].amount);
-        }
+      let rewardTokenType = result[0].fundType;
 
-        const result2 = await sdk.getClaimedRefRewards(id.toString(), user._id);
-
-        for (let i = 0; i < result2.length; i++) {
-          claimedAmount += Number(result2[i].amount);
-        }
-
-        setclaimedRefData(result2);
-
-        claimableAmount = claimableAmount - claimedAmount;
-
-        setRefRewardDetails({
-          claimableRewards: `${(claimableAmount / 1e18).toString()} ${
-            rewardTokenType === 0 ? "BNB" : "USDT"
-          }`,
-          claimedRewards: `${(claimedAmount / 1e18).toString()} ${
-            rewardTokenType === 0 ? "BNB" : "USDT"
-          }`,
-          referrerCounts: result.length,
-        });
-      } catch (err) {
-        customLog(["development", "staging"], err);
+      for (let i = 0; i < result.length; i++) {
+        claimableAmount += Number(result[i].amount);
       }
-    })();
-  }, [id, user, sdk]);
+
+      const result2 = await sdk.getClaimedRefRewards(id.toString(), user._id);
+
+      if (result2.length === 0) {
+        setclaimableRefData(result);
+      }
+
+      for (let i = 0; i < result2.length; i++) {
+        claimedAmount += Number(result2[i].amount);
+      }
+
+      setclaimedRefData(result2);
+
+      claimableAmount = claimableAmount - claimedAmount;
+
+      setRefRewardDetails({
+        claimableRewards: `${(claimableAmount / 1e18).toString()} ${
+          rewardTokenType === 0 ? "BNB" : "USDT"
+        }`,
+        claimedRewards: `${(claimedAmount / 1e18).toString()} ${
+          rewardTokenType === 0 ? "BNB" : "USDT"
+        }`,
+        referrerCounts: result.length,
+      });
+    } catch (err) {
+      customLog(["development", "staging"], err);
+    }
+  }, [id, sdk, user]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   return (
     <div className="flex flex-col gap-6">
