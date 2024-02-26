@@ -1,11 +1,11 @@
-import { SelectedFile, useNewPostStore } from "@/store/new.post.store";
-
+import { usePostEditorStore } from "@/store/post-editor-store";
 import {
   MAX_IMAGE_SIZE,
   MAX_VIDEO_SIZE,
   SUPPORTED_IMAGE_MIME_TYPES,
   SUPPORTED_VIDEO_MIME_TYPES,
 } from "@/constants/supported.media.type";
+import { SelectedFile } from "../types";
 
 // Function will be called when user click on photo or video icon on create post
 export const validateSelectedFiles = (
@@ -30,10 +30,10 @@ export const validateSelectedFiles = (
       validateFile(event.target.files[i], fileType);
     }
 
-    const { addSelectedFiles, getLastPost } =
-      useNewPostStore.getState().actions;
+    const { addSelectedFiles, getLastActivePost } =
+      usePostEditorStore.getState().actions;
 
-    const lastPost = getLastPost();
+    const lastActivePost = getLastActivePost();
 
     // Convert to array
     const files: SelectedFile[] = Array.from(event.target.files ?? []).map(
@@ -44,11 +44,10 @@ export const validateSelectedFiles = (
     );
 
     // Only add files in store if there are less than 4 files
-
     if (
-      lastPost &&
-      lastPost.media.length < 4 &&
-      files.length + lastPost.media.length <= 4
+      lastActivePost &&
+      lastActivePost.media.length < 4 &&
+      files.length + lastActivePost.media.length <= 4
     ) {
       addSelectedFiles(files);
     } else {
@@ -67,9 +66,11 @@ export const validateSelectedFiles = (
   }
 };
 
-/** Function will validate following details of a file
- * file size
- * file type
+/** Function will validate following details of a file:
+ *
+ * `file size`
+ *
+ * `file type`
  */
 export const validateFile = (file: File, fileType: FileType) => {
   const error: SelectFileError = {
@@ -127,9 +128,9 @@ export type FileType = "image" | "video";
 
 export interface SelectFileError {
   code:
-    | 0
+    | 0 // 0 for no error
     | "app_file_format_not_supported"
     | "app_file_size_exceeded"
-    | "app_max_file_count"; // 0 for no error
+    | "app_max_file_count";
   message: string;
 }

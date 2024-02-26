@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useInView } from "react-intersection-observer";
+import { useShallow } from "zustand/react/shallow";
 import { useMyRepliesStore } from "@/store/my.replies.store";
 import { useCreateUserProfileView } from "@/hooks/user.profile.views";
 import { NextPageWithLayout } from "@/pages/_app.page";
@@ -26,7 +27,9 @@ const Replies: NextPageWithLayout = () => {
 
   const router = useRouter();
   const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
-  const openPostModal = useNewPostStore((state) => state.openModal);
+  const { openModal: openPostModal } = useNewPostStore(
+    useShallow((state) => state.actions)
+  );
   const { user } = useUser();
 
   const [lastPostRef, _lastPostInView, lastPostEntry] = useInView();

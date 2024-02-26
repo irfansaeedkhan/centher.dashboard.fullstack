@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useInView } from "react-intersection-observer";
+import { useShallow } from "zustand/react/shallow";
 import { useMyPostStore } from "@/store/my.post.store";
 import { useProfileCardStore } from "@/store/profile.card.store";
 import { useFeedStore } from "@/store/feed.store";
-import { useNewPostStore } from "@/store/new.post.store";
+import { usePostEditorStore } from "@/store/post-editor-store";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import useUser from "@/hooks/use.user";
 import useGetUser from "@/hooks/use.get.user";
@@ -23,7 +24,7 @@ import AdsWrapper from "@/components/wrappers/ads-wrapper";
 import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
 import { PostModal } from "@/components/feed.components/create.post/post.modal";
 import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
-import { CreatePostCard } from "@/components/feed.components/create.post/create.post.card";
+import { CreatePostCard } from "@/components/post-editor/create-post-card";
 import { SuggestedCardMobile } from "@/components/feed.components/suggested-card-mobile";
 import { PromotionCard2Mobile } from "@/components/feed.components/promotion.cards/card-2-mobile";
 import { PromotionCard5Mobile } from "@/components/feed.components/promotion.cards/card-5-mobile";
@@ -39,7 +40,9 @@ const Profile: NextPageWithLayout = () => {
 
   const router = useRouter();
   const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
-  const openPostModal = useNewPostStore((state) => state.openModal);
+  const { openModal: openPostModal } = usePostEditorStore(
+    useShallow((state) => state.actions)
+  );
   const { user: loggedInUser } = useUser();
   const { user } = useGetUser(router.query.user_id?.toString()?.toLowerCase());
 
@@ -118,7 +121,9 @@ const Profile: NextPageWithLayout = () => {
 
   return (
     <>
-      {loggedInUser?._id === router.query.user_id && <CreatePostCard />}
+      {loggedInUser && loggedInUser._id === router.query.user_id && (
+        <CreatePostCard user={loggedInUser} />
+      )}
 
       {posts.map((post, index) => {
         return (

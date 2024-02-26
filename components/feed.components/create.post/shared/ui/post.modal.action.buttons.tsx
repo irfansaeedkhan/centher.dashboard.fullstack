@@ -3,10 +3,14 @@ import React, { useEffect, useRef, useState } from "react";
 import { cva } from "class-variance-authority";
 import toast from "react-hot-toast";
 import { useOnClickOutside } from "usehooks-ts";
+import { useShallow } from "zustand/react/shallow";
 import { EmojiPlugin } from "@draft-js-plugins/emoji";
 import { useNewPostStore } from "@/store/new.post.store";
 import { customLog } from "@/utils/custom.log";
-import { SUPPORTED_VIDEO_TYPES } from "@/constants/supported.media.type";
+import {
+  SUPPORTED_IMAGE_MIME_TYPES,
+  SUPPORTED_VIDEO_MIME_TYPES,
+} from "@/constants/supported.media.type";
 import { PhotoIcon, VideoIcon, CameraIcon2 } from "@/assets/svgs";
 import {
   FileType,
@@ -26,7 +30,15 @@ export const PostModalActionButtons: React.FC<Props> = ({
   placement,
   onClickActionButton,
 }) => {
-  const { getLastPost, addNewPost, posts, isModalOpen } = useNewPostStore();
+  const { posts, isModalOpen } = useNewPostStore(
+    useShallow((state) => ({
+      posts: state.posts,
+      isModalOpen: state.isModalOpen,
+    }))
+  );
+  const { getLastPost, addNewPost } = useNewPostStore(
+    useShallow((state) => state.actions)
+  );
   const [showCameraModal, setShowCameraModal] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiPickerContainerRef = useRef<HTMLDivElement>(null);
@@ -120,7 +132,7 @@ export const PostModalActionButtons: React.FC<Props> = ({
           type="file"
           id="files-photo"
           name="photos-file"
-          accept=".gif,.jpg,.jpeg,.jfif,.pjpeg,.pjp,.png"
+          accept={SUPPORTED_IMAGE_MIME_TYPES.join(",")}
           style={{ display: "none" }}
           multiple
           onChange={(e) => handleSelectFiles(e, "image")}
@@ -172,7 +184,7 @@ export const PostModalActionButtons: React.FC<Props> = ({
           type="file"
           id="files-videos"
           name="videos-file"
-          accept={SUPPORTED_VIDEO_TYPES}
+          accept={SUPPORTED_VIDEO_MIME_TYPES.join(",")}
           style={{ display: "none" }}
           onChange={(e) => handleSelectFiles(e, "video")}
         />

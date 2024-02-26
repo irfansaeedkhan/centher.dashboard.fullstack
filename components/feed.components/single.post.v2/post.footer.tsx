@@ -35,8 +35,7 @@ export const PostFooter: React.FC<Props> = ({
   return (
     <footer
       className={clsx(
-        "flex justify-between fsm:justify-start fsm:gap-x-5",
-        post.text_content ? "mt-3" : "mt-4"
+        "mt-3.5 flex justify-between fsm:justify-start fsm:gap-x-5"
       )}
     >
       <AnalyticsCount

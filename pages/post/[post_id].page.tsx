@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import { useInView } from "react-intersection-observer";
+import { useShallow } from "zustand/react/shallow";
 import clsx from "clsx";
 import { useProfileCardStore } from "@/store/profile.card.store";
 import { useFeedStore } from "@/store/feed.store";
-import { useNewPostStore } from "@/store/new.post.store";
+import { usePostEditorStore } from "@/store/post-editor-store";
 import { useSinglePostStore } from "@/store/single.post.store";
 import useUser from "@/hooks/use.user";
 import { NextPageWithLayout } from "@/pages/_app.page";
@@ -16,7 +17,7 @@ import {
   createPostView,
 } from "@/components/feed.components";
 import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
-import { PostModal } from "@/components/feed.components/create.post/post.modal";
+import { PostEditorModal } from "@/components/post-editor/post-editor-modal";
 import { ArchivedPost, CompletedPost, Post } from "@/models/post";
 import { customLog } from "@/utils/custom.log";
 import { AppRoutes } from "@/constants/app.routes";
@@ -69,7 +70,9 @@ const SinglePostPage: NextPageWithLayout = () => {
     return { firstPost: null, threadPosts: [] };
   }, [posts, router.query.post_id]);
 
-  const openPostModal = useNewPostStore((state) => state.openModal);
+  const { openModal: openPostModal } = usePostEditorStore(
+    useShallow((state) => state.actions)
+  );
 
   const [lastReplyRef, _lastReplyInView, lastReplyEntry] = useInView();
 
@@ -107,14 +110,16 @@ const SinglePostPage: NextPageWithLayout = () => {
   ) => {
     try {
       await actionFunction(postId);
-      if (postType === "reply" || postType === "thread-post") {
+      if (postType === "reply") {
         removePost(postId, postType);
-      } else {
-        feedStore.removePost(postId);
-
+      } else if (postType === "thread-post") {
+        removePost(postId, postType);
         // Decrement post count on profile card
         useProfileCardStore.getState().decrementPostsCount();
-
+      } else {
+        feedStore.removePost(postId);
+        // Decrement post count on profile card
+        useProfileCardStore.getState().decrementPostsCount();
         router.replace(AppRoutes.feed.index);
       }
     } catch (error: any) {
@@ -319,7 +324,9 @@ const SinglePostPage: NextPageWithLayout = () => {
         <NoPostMessage message="Something went wrong!" />
       )}
 
-      {isReplyModalOpen && <PostModal modalTitle="Reply" />}
+      {isReplyModalOpen && loggedInUser && (
+        <PostEditorModal modalTitle="Reply" user={loggedInUser} />
+      )}
     </>
   );
 };
