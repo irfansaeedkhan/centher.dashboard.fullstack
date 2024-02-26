@@ -1,4 +1,5 @@
 import React from "react";
+import { useShallow } from "zustand/react/shallow";
 import clsx from "clsx";
 import type { EmojiPlugin } from "@draft-js-plugins/emoji";
 import { useNewPostStore } from "@/store/new.post.store";
@@ -21,15 +22,17 @@ const PostModalFooter: React.FC<Props> = ({
   EmojiSuggestions,
   EmojiSelect,
 }) => {
-  const {
-    isPostModalLoading,
-    nonCitizenUserPostText,
-    createPost,
-    addNewPost,
-    modalType,
-    editPost,
-    getLastPost,
-  } = useNewPostStore();
+  const { isPostModalLoading, nonCitizenUserPostText, modalType } =
+    useNewPostStore(
+      useShallow((state) => ({
+        isPostModalLoading: state.isPostModalLoading,
+        nonCitizenUserPostText: state.nonCitizenUserPostText,
+        modalType: state.modalType,
+      }))
+    );
+  const { addNewPost, createPost, editPost, getLastPost } = useNewPostStore(
+    useShallow((state) => state.actions)
+  );
 
   const lastPost = getLastPost();
 

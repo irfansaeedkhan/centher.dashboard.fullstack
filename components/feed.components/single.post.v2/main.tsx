@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useShallow } from "zustand/react/shallow";
 import clsx from "clsx";
 import { HiOutlineArchive } from "react-icons/hi";
 import { useInView } from "react-intersection-observer";
@@ -71,7 +72,9 @@ export const SinglePostV2: React.FC<Props> = ({
 }) => {
   const { user: loggedInUser } = useUser();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const openPostModal = useNewPostStore((state) => state.openModal);
+  const { openModal: openPostModal } = useNewPostStore(
+    useShallow((state) => state.actions)
+  );
   const [loggedInPostModal, setLoggedInPostModal] = useState({
     isOpen: false,
     onClose: () => {
@@ -181,29 +184,29 @@ export const SinglePostV2: React.FC<Props> = ({
           onClickRestore={onClickRestore}
           onClickDelete={onClickDelete}
           onClickEdit={() => {
-            setIsEditModalOpen(true);
-            openPostModal({
-              modalType: "edit",
-              postId: post._id,
-              posts: [
-                {
-                  uuid: post._id,
-                  post_text: post.text_content ?? "",
-                  entities: post.entities,
-                  media:
-                    post.media?.map((media) => {
-                      return {
-                        type: "edit",
-                        uuid: media.url,
-                        original: media,
-                        isDeleted: false,
-                      };
-                    }) ?? [],
-                },
-              ],
-              shouldAddNewPost: false,
-              onCloseModal: () => setIsEditModalOpen(false),
-            });
+            // setIsEditModalOpen(true);
+            // openPostModal({
+            //   modalType: "edit",
+            //   postId: post._id,
+            //   posts: [
+            //     {
+            //       uuid: post._id,
+            //       post_text: post.text_content ?? "",
+            //       entities: post.entities,
+            //       media:
+            //         post.media?.map((media) => {
+            //           return {
+            //             type: "edit",
+            //             uuid: media.url,
+            //             original: media,
+            //             isDeleted: false,
+            //           };
+            //         }) ?? [],
+            //     },
+            //   ],
+            //   shouldAddNewPost: false,
+            //   onCloseModal: () => setIsEditModalOpen(false),
+            // });
           }}
         />
 
@@ -248,7 +251,7 @@ export const SinglePostV2: React.FC<Props> = ({
             />
           )}
 
-          {post.text_content && <PostTextContent post={post} />}
+          {post.post_editor_state && <PostTextContent post={post} />}
 
           {/*  Fullscreen Lightbox */}
           {fullscreenPreview.isOpen && post.media && !!post.media.length && (

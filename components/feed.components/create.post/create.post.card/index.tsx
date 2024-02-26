@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Image from "next/image";
+import { useShallow } from "zustand/react/shallow";
 import { useNewPostStore } from "@/store/new.post.store";
 import useUser from "@/hooks/use.user";
 import { PostModalActionButtons } from "../shared/ui/post.modal.action.buttons";
@@ -9,7 +10,7 @@ interface Props {}
 
 export const CreatePostCard: React.FC<Props> = () => {
   const { user } = useUser();
-  const { openModal } = useNewPostStore();
+  const { openModal } = useNewPostStore(useShallow((state) => state.actions));
   const [isNewPostModalOpen, setIsNewPostModalOpen] = useState(false);
 
   if (!user) return null;

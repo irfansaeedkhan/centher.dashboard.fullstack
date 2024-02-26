@@ -1,19 +1,19 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { useShallow } from "zustand/react/shallow";
 import { toast } from "react-hot-toast";
-import { MdOutlineCameraswitch } from "react-icons/md";
-import Image from "next/image";
 import Webcam from "react-webcam";
-import { CameraCustomModal } from "@/components/modal/camera-modal";
-import { useNewPostStore } from "@/store/new.post.store";
+import { MdOutlineCameraswitch } from "react-icons/md";
 import Button from "@/components/button";
+import { CameraCustomModal } from "@/components/modal/camera-modal";
+import { usePostEditorStore } from "@/store/post-editor-store";
 
 interface Props {
   onClose: () => void;
 }
 
-const CameraModal = ({ onClose }: Props) => {
-  const { addSelectedFiles } = useNewPostStore(
+export const CameraModal = ({ onClose }: Props) => {
+  const { addSelectedFiles } = usePostEditorStore(
     useShallow((state) => state.actions)
   );
   const [cameraSource, setCameraSource] = useState<"user" | "environment">(
@@ -251,4 +251,3 @@ const CameraModal = ({ onClose }: Props) => {
     </CameraCustomModal>
   );
 };
-export default CameraModal;

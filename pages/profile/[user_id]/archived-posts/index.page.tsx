@@ -50,16 +50,19 @@ const ArchivedPosts: NextPageWithLayout = () => {
     fetchPosts();
   }, [fetchPosts]);
 
-  const handleRestoreAction = async (postId: string, isReply: boolean) => {
+  const handleRestoreAction = async (
+    postId: string,
+    postType: "reply" | "thread" | "other"
+  ) => {
     try {
       await unArchivePost(postId);
       removePost(postId);
 
-      if (!isReply) {
+      if (postType !== "reply") {
         // Increment post count on profile card
         useProfileCardStore.getState().incrementPostsCount();
         const post = await getPost(postId, !!loggedInUser);
-        if (post.status === "complete") {
+        if (post.status === "complete" && postType !== "thread") {
           useFeedStore.getState().addNewPost(post);
         }
       }
@@ -97,7 +100,14 @@ const ArchivedPosts: NextPageWithLayout = () => {
                   bottom: true,
                 }}
                 onClickRestore={() =>
-                  handleRestoreAction(post._id, !!post.parent_post_id)
+                  handleRestoreAction(
+                    post._id,
+                    post.parent_post_id
+                      ? "reply"
+                      : post.is_thread
+                      ? "thread"
+                      : "other"
+                  )
                 }
                 onClickDelete={() => handleDeleteAction(post._id)}
               />

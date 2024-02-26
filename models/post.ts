@@ -1,3 +1,4 @@
+import { SerializedEditorState, SerializedLexicalNode } from "lexical";
 import { User } from "./user";
 
 export interface BasePost {
@@ -11,6 +12,7 @@ export interface BasePost {
   thread_id: string | undefined;
   thread_index: number | undefined;
   createdAt: string;
+  version: number;
 }
 
 export interface DeletedPost extends BasePost {
@@ -20,24 +22,23 @@ export interface DeletedPost extends BasePost {
 export interface ArchivedPost extends BasePost {
   status: "archived";
   parent_post_id: string | undefined;
-  text_content?: string;
-  media?: PostMedia[];
-  entities: PostEntities;
+  post_editor_state: SerializedEditorState<SerializedLexicalNode>;
+  media: PostMedia[];
 }
 
 export interface CompletedPost extends BasePost {
   status: "complete";
   parent_post: ParentPost | undefined;
-  text_content?: string;
-  media?: PostMedia[];
-  entities: PostEntities;
+  post_editor_state: SerializedEditorState<SerializedLexicalNode>;
+  media: PostMedia[];
 }
 
 export type Post = DeletedPost | CompletedPost;
 
 export interface PostMedia {
+  object_name: string;
   url: string;
-  type: "image" | "video";
+  type: string;
   alt?: string;
 }
 
