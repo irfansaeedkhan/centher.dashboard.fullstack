@@ -489,10 +489,13 @@ export class BlockchainRead {
         signer
       );
 
+      const currentRef = await signer.getAddress();
+
       const result =
         await stakingContract.functions.calculateClaimableRewardForRef(
           poolId,
-          user
+          user,
+          currentRef
         );
       console.log("get ref details for user :", user);
       console.log("claimable reward:", result.claimableReward?.toString());
