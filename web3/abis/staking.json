@@ -1,42 +1,174 @@
 [
-  { "inputs": [], "name": "AlreadySelected", "type": "error" },
-  { "inputs": [], "name": "AlreadySetted", "type": "error" },
-  { "inputs": [], "name": "AmountIsZero", "type": "error" },
+  {
+    "inputs": [],
+    "name": "AlreadySelected",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "AlreadySetted",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "AmountIsZero",
+    "type": "error"
+  },
   {
     "inputs": [],
     "name": "CannotSetAffiliateSettingForActivePool",
     "type": "error"
   },
-  { "inputs": [], "name": "ClaimedRewardExist", "type": "error" },
-  { "inputs": [], "name": "GiveMaxAllowanceOfRewardToken", "type": "error" },
-  { "inputs": [], "name": "GiveMaxAllowanceOfStakeToken", "type": "error" },
-  { "inputs": [], "name": "InvalidMaxStakableAmount", "type": "error" },
-  { "inputs": [], "name": "InvalidRewardMode", "type": "error" },
-  { "inputs": [], "name": "InvalidRewardRate", "type": "error" },
-  { "inputs": [], "name": "InvalidStakeAmount", "type": "error" },
-  { "inputs": [], "name": "InvalidStartTime", "type": "error" },
-  { "inputs": [], "name": "InvalidTaxationPercent", "type": "error" },
-  { "inputs": [], "name": "InvalidTokenAddress", "type": "error" },
-  { "inputs": [], "name": "InvalidUnstakeAmount", "type": "error" },
-  { "inputs": [], "name": "Locked", "type": "error" },
-  { "inputs": [], "name": "MaxStakableAmountReached", "type": "error" },
-  { "inputs": [], "name": "NonRefundable", "type": "error" },
-  { "inputs": [], "name": "NotCitizen", "type": "error" },
-  { "inputs": [], "name": "NotRegistered", "type": "error" },
-  { "inputs": [], "name": "NotValidReferral", "type": "error" },
-  { "inputs": [], "name": "OnlyExecutor", "type": "error" },
-  { "inputs": [], "name": "OnlyOwner", "type": "error" },
-  { "inputs": [], "name": "OnlyPoolOwnerCanAccess", "type": "error" },
-  { "inputs": [], "name": "PoolNotActive", "type": "error" },
-  { "inputs": [], "name": "PoolNotEligibleForRestake", "type": "error" },
-  { "inputs": [], "name": "PoolNotExist", "type": "error" },
-  { "inputs": [], "name": "PoolOwnerNotEligibleToStake", "type": "error" },
-  { "inputs": [], "name": "PoolRefModeIsNotTimeBased", "type": "error" },
-  { "inputs": [], "name": "PoolStakingNotStarted", "type": "error" },
-  { "inputs": [], "name": "UserNotEnoughStake", "type": "error" },
-  { "inputs": [], "name": "UserStakesNotFound", "type": "error" },
-  { "inputs": [], "name": "ValueNotEqualToPlatformFees", "type": "error" },
-  { "inputs": [], "name": "ZeroAddressNotAllowed", "type": "error" },
+  {
+    "inputs": [],
+    "name": "ClaimedRewardExist",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "GiveMaxAllowanceOfRewardToken",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "GiveMaxAllowanceOfStakeToken",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidMaxStakableAmount",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidRewardMode",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidRewardRate",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidStakeAmount",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidStartTime",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidTaxationPercent",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidTokenAddress",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidUnstakeAmount",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "Locked",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "MaxStakableAmountReached",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NonRefundable",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NotCitizen",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NotRegistered",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NotValidReferral",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "OnlyExecutor",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "OnlyOwner",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "OnlyPoolOwnerCanAccess",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "PoolNotActive",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "PoolNotEligibleForRestake",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "PoolNotExist",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "PoolOwnerNotEligibleToStake",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "PoolRefModeIsNotTimeBased",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "PoolStakingNotStarted",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "UserNotEnoughStake",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "UserStakesNotFound",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ValueNotEqualToPlatformFees",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ZeroAddressNotAllowed",
+    "type": "error"
+  },
   {
     "anonymous": false,
     "inputs": [
@@ -48,8 +180,16 @@
       },
       {
         "components": [
-          { "internalType": "uint256", "name": "level", "type": "uint256" },
-          { "internalType": "uint256", "name": "percent", "type": "uint256" }
+          {
+            "internalType": "uint256",
+            "name": "level",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "percent",
+            "type": "uint256"
+          }
         ],
         "indexed": false,
         "internalType": "struct ICentherStaking.AffiliateSetting[]",
@@ -300,7 +440,11 @@
       },
       {
         "components": [
-          { "internalType": "address", "name": "poolOwner", "type": "address" },
+          {
+            "internalType": "address",
+            "name": "poolOwner",
+            "type": "address"
+          },
           {
             "internalType": "address",
             "name": "stakeToken",
@@ -311,13 +455,21 @@
             "name": "rewardToken",
             "type": "address"
           },
-          { "internalType": "uint256", "name": "rate", "type": "uint256" },
+          {
+            "internalType": "uint256",
+            "name": "rate",
+            "type": "uint256"
+          },
           {
             "internalType": "uint256",
             "name": "annualStakingRewardRate",
             "type": "uint256"
           },
-          { "internalType": "uint256", "name": "startTime", "type": "uint256" },
+          {
+            "internalType": "uint256",
+            "name": "startTime",
+            "type": "uint256"
+          },
           {
             "internalType": "uint256",
             "name": "stakingDurationPeriod",
@@ -365,8 +517,16 @@
                 "name": "isUnstakable",
                 "type": "bool"
               },
-              { "internalType": "bool", "name": "isLP", "type": "bool" },
-              { "internalType": "bool", "name": "isActive", "type": "bool" },
+              {
+                "internalType": "bool",
+                "name": "isLP",
+                "type": "bool"
+              },
+              {
+                "internalType": "bool",
+                "name": "isActive",
+                "type": "bool"
+              },
               {
                 "internalType": "bool",
                 "name": "showOnCenther",
@@ -526,22 +686,50 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "", "type": "uint256" },
-      { "internalType": "uint256", "name": "", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
     ],
     "name": "affiliateSettings",
     "outputs": [
-      { "internalType": "uint256", "name": "level", "type": "uint256" },
-      { "internalType": "uint256", "name": "percent", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "level",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "percent",
+        "type": "uint256"
+      }
     ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_poolId", "type": "uint256" },
-      { "internalType": "address", "name": "_user", "type": "address" },
-      { "internalType": "uint256[]", "name": "_stakeIds", "type": "uint256[]" }
+      {
+        "internalType": "uint256",
+        "name": "_poolId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_user",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "_stakeIds",
+        "type": "uint256[]"
+      }
     ],
     "name": "autoUserRestakeByIds",
     "outputs": [],
@@ -550,10 +738,26 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_poolId", "type": "uint256" },
-      { "internalType": "address[]", "name": "_user", "type": "address[]" },
-      { "internalType": "address", "name": "_referrer", "type": "address" },
-      { "internalType": "bool", "name": "isRestakeTx", "type": "bool" }
+      {
+        "internalType": "uint256",
+        "name": "_poolId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address[]",
+        "name": "_user",
+        "type": "address[]"
+      },
+      {
+        "internalType": "address",
+        "name": "_referrer",
+        "type": "address"
+      },
+      {
+        "internalType": "bool",
+        "name": "isRestakeTx",
+        "type": "bool"
+      }
     ],
     "name": "batchTxByRef",
     "outputs": [],
@@ -562,8 +766,21 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_poolId", "type": "uint256" },
-      { "internalType": "address", "name": "_user", "type": "address" }
+      {
+        "internalType": "uint256",
+        "name": "_poolId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_user",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_referrer",
+        "type": "address"
+      }
     ],
     "name": "calculateClaimableRewardForRef",
     "outputs": [
@@ -572,7 +789,11 @@
         "name": "claimableReward",
         "type": "uint256"
       },
-      { "internalType": "uint256", "name": "passdTime", "type": "uint256" },
+      {
+        "internalType": "uint256",
+        "name": "passdTime",
+        "type": "uint256"
+      },
       {
         "internalType": "uint256",
         "name": "nextTimeToClaim",
@@ -584,12 +805,24 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "poolId", "type": "uint256" },
-      { "internalType": "address", "name": "user", "type": "address" }
+      {
+        "internalType": "uint256",
+        "name": "poolId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      }
     ],
     "name": "calculateTotalReward",
     "outputs": [
-      { "internalType": "uint256", "name": "totalReward", "type": "uint256" },
+      {
+        "internalType": "uint256",
+        "name": "totalReward",
+        "type": "uint256"
+      },
       {
         "internalType": "uint256",
         "name": "totalClaimableReward",
@@ -611,9 +844,21 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "poolId", "type": "uint256" },
-      { "internalType": "address", "name": "user", "type": "address" },
-      { "internalType": "uint256", "name": "stakeId", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "poolId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "stakeId",
+        "type": "uint256"
+      }
     ],
     "name": "calculateTotalRewardPerStake",
     "outputs": [
@@ -622,15 +867,27 @@
         "name": "totalClaimableReward",
         "type": "uint256"
       },
-      { "internalType": "uint256", "name": "nextClaimTime", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "nextClaimTime",
+        "type": "uint256"
+      }
     ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_poolId", "type": "uint256" },
-      { "internalType": "uint256[]", "name": "_stakedIds", "type": "uint256[]" }
+      {
+        "internalType": "uint256",
+        "name": "_poolId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "_stakedIds",
+        "type": "uint256[]"
+      }
     ],
     "name": "claimReward",
     "outputs": [],
@@ -639,8 +896,16 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_poolId", "type": "uint256" },
-      { "internalType": "address", "name": "_user", "type": "address" }
+      {
+        "internalType": "uint256",
+        "name": "_poolId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_user",
+        "type": "address"
+      }
     ],
     "name": "claimRewardForRef",
     "outputs": [],
@@ -649,9 +914,21 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "poolId", "type": "uint256" },
-      { "internalType": "address", "name": "referrer", "type": "address" },
-      { "internalType": "address", "name": "referral", "type": "address" },
+      {
+        "internalType": "uint256",
+        "name": "poolId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "referrer",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "referral",
+        "type": "address"
+      },
       {
         "internalType": "uint256",
         "name": "stakingDuration",
@@ -660,7 +937,11 @@
     ],
     "name": "createKey",
     "outputs": [
-      { "internalType": "bytes32", "name": "key", "type": "bytes32" }
+      {
+        "internalType": "bytes32",
+        "name": "key",
+        "type": "bytes32"
+      }
     ],
     "stateMutability": "pure",
     "type": "function"
@@ -669,8 +950,16 @@
     "inputs": [
       {
         "components": [
-          { "internalType": "string", "name": "name", "type": "string" },
-          { "internalType": "uint256", "name": "startTime", "type": "uint256" },
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "startTime",
+            "type": "uint256"
+          },
           {
             "internalType": "address",
             "name": "stakeToken",
@@ -726,15 +1015,31 @@
             "name": "cancellationFees",
             "type": "uint256"
           },
-          { "internalType": "uint256", "name": "rate", "type": "uint256" },
+          {
+            "internalType": "uint256",
+            "name": "rate",
+            "type": "uint256"
+          },
           {
             "internalType": "string",
             "name": "poolMetadata",
             "type": "string"
           },
-          { "internalType": "bool", "name": "isUnstakable", "type": "bool" },
-          { "internalType": "bool", "name": "isLP", "type": "bool" },
-          { "internalType": "bool", "name": "showOnCenther", "type": "bool" },
+          {
+            "internalType": "bool",
+            "name": "isUnstakable",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "isLP",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "showOnCenther",
+            "type": "bool"
+          },
           {
             "internalType": "uint256",
             "name": "taxationPercent",
@@ -748,7 +1053,11 @@
     ],
     "name": "createPool",
     "outputs": [
-      { "internalType": "uint256", "name": "newPoolId", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "newPoolId",
+        "type": "uint256"
+      }
     ],
     "stateMutability": "payable",
     "type": "function"
@@ -756,14 +1065,28 @@
   {
     "inputs": [],
     "name": "executor",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_registration", "type": "address" },
-      { "internalType": "address", "name": "_platform", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "_registration",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_platform",
+        "type": "address"
+      }
     ],
     "name": "initialize",
     "outputs": [],
@@ -771,60 +1094,132 @@
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "name": "nonRefundable",
-    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "platform",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "platformFees",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "poolIds",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "name": "poolTax",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "name": "poolsInfo",
     "outputs": [
-      { "internalType": "address", "name": "poolOwner", "type": "address" },
-      { "internalType": "address", "name": "stakeToken", "type": "address" },
-      { "internalType": "address", "name": "rewardToken", "type": "address" },
-      { "internalType": "uint256", "name": "rate", "type": "uint256" },
+      {
+        "internalType": "address",
+        "name": "poolOwner",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "stakeToken",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "rewardToken",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "rate",
+        "type": "uint256"
+      },
       {
         "internalType": "uint256",
         "name": "annualStakingRewardRate",
         "type": "uint256"
       },
-      { "internalType": "uint256", "name": "startTime", "type": "uint256" },
+      {
+        "internalType": "uint256",
+        "name": "startTime",
+        "type": "uint256"
+      },
       {
         "internalType": "uint256",
         "name": "stakingDurationPeriod",
         "type": "uint256"
       },
-      { "internalType": "uint256", "name": "claimDuration", "type": "uint256" },
+      {
+        "internalType": "uint256",
+        "name": "claimDuration",
+        "type": "uint256"
+      },
       {
         "internalType": "uint256",
         "name": "minStakeAmount",
@@ -857,10 +1252,26 @@
             "name": "cancellationFees",
             "type": "uint256"
           },
-          { "internalType": "bool", "name": "isUnstakable", "type": "bool" },
-          { "internalType": "bool", "name": "isLP", "type": "bool" },
-          { "internalType": "bool", "name": "isActive", "type": "bool" },
-          { "internalType": "bool", "name": "showOnCenther", "type": "bool" }
+          {
+            "internalType": "bool",
+            "name": "isUnstakable",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "isLP",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "isActive",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "showOnCenther",
+            "type": "bool"
+          }
         ],
         "internalType": "struct ICentherStaking.PoolSetting",
         "name": "setting",
@@ -876,9 +1287,21 @@
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
     "name": "refDetails",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
@@ -897,8 +1320,16 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_poolId", "type": "uint256" },
-      { "internalType": "uint256[]", "name": "_stakeIds", "type": "uint256[]" }
+      {
+        "internalType": "uint256",
+        "name": "_poolId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "_stakeIds",
+        "type": "uint256[]"
+      }
     ],
     "name": "restakeByIds",
     "outputs": [],
@@ -907,9 +1338,21 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_poolId", "type": "uint256" },
-      { "internalType": "address", "name": "_user", "type": "address" },
-      { "internalType": "address", "name": "_referrer", "type": "address" }
+      {
+        "internalType": "uint256",
+        "name": "_poolId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_user",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_referrer",
+        "type": "address"
+      }
     ],
     "name": "restakeByRef",
     "outputs": [],
@@ -918,19 +1361,43 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_poolId", "type": "uint256" },
+      {
+        "internalType": "uint256",
+        "name": "_poolId",
+        "type": "uint256"
+      },
       {
         "components": [
-          { "internalType": "uint256", "name": "levelOne", "type": "uint256" },
-          { "internalType": "uint256", "name": "levelTwo", "type": "uint256" },
+          {
+            "internalType": "uint256",
+            "name": "levelOne",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "levelTwo",
+            "type": "uint256"
+          },
           {
             "internalType": "uint256",
             "name": "levelThree",
             "type": "uint256"
           },
-          { "internalType": "uint256", "name": "levelFour", "type": "uint256" },
-          { "internalType": "uint256", "name": "levelFive", "type": "uint256" },
-          { "internalType": "uint256", "name": "levelSix", "type": "uint256" }
+          {
+            "internalType": "uint256",
+            "name": "levelFour",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "levelFive",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "levelSix",
+            "type": "uint256"
+          }
         ],
         "internalType": "struct ICentherStaking.AffiliateSettingInput",
         "name": "_setting",
@@ -944,9 +1411,21 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_poolId", "type": "uint256" },
-      { "internalType": "uint256", "name": "_amount", "type": "uint256" },
-      { "internalType": "address", "name": "referrer", "type": "address" }
+      {
+        "internalType": "uint256",
+        "name": "_poolId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "referrer",
+        "type": "address"
+      }
     ],
     "name": "stake",
     "outputs": [],
@@ -955,8 +1434,16 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_poolId", "type": "uint256" },
-      { "internalType": "bool", "name": "_newStatus", "type": "bool" }
+      {
+        "internalType": "uint256",
+        "name": "_poolId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "_newStatus",
+        "type": "bool"
+      }
     ],
     "name": "togglePoolNonRefundable",
     "outputs": [],
@@ -965,8 +1452,16 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_poolId", "type": "uint256" },
-      { "internalType": "bool", "name": "_newState", "type": "bool" }
+      {
+        "internalType": "uint256",
+        "name": "_poolId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "_newState",
+        "type": "bool"
+      }
     ],
     "name": "togglePoolState",
     "outputs": [],
@@ -975,8 +1470,16 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_poolId", "type": "uint256" },
-      { "internalType": "uint256[]", "name": "_stakeIds", "type": "uint256[]" }
+      {
+        "internalType": "uint256",
+        "name": "_poolId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "_stakeIds",
+        "type": "uint256[]"
+      }
     ],
     "name": "unstake",
     "outputs": [],
@@ -985,7 +1488,11 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_newExecutor", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "_newExecutor",
+        "type": "address"
+      }
     ],
     "name": "updateExecutor",
     "outputs": [],
@@ -994,19 +1501,45 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "", "type": "uint256" },
-      { "internalType": "address", "name": "", "type": "address" }
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
     ],
     "name": "userReferrer",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "", "type": "uint256" },
-      { "internalType": "address", "name": "", "type": "address" },
-      { "internalType": "uint256", "name": "", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
     ],
     "name": "userStakes",
     "outputs": [
@@ -1015,14 +1548,26 @@
         "name": "stakingDuration",
         "type": "uint256"
       },
-      { "internalType": "uint256", "name": "stakedAmount", "type": "uint256" },
-      { "internalType": "uint256", "name": "stakedTime", "type": "uint256" },
+      {
+        "internalType": "uint256",
+        "name": "stakedAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "stakedTime",
+        "type": "uint256"
+      },
       {
         "internalType": "uint256",
         "name": "lastRewardClaimed",
         "type": "uint256"
       },
-      { "internalType": "uint256", "name": "claimedReward", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "claimedReward",
+        "type": "uint256"
+      }
     ],
     "stateMutability": "view",
     "type": "function"
