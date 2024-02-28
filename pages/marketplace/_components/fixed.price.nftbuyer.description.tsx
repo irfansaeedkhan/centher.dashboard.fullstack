@@ -100,9 +100,10 @@ export const FixedPriceNFTBuyerDescription: React.FC<Props> = ({
 
     try {
       const balance = await signer.getBalance();
-      if (balance && balance.lt(`${nft.listInfo.price}`)) {
+      if (balance && balance.lt(nft.listInfo.price)) {
         response.success = false;
         response.message = "Insufficient balance";
+        SuccessFunc(response.success, response.message);
         return;
       }
 
@@ -110,7 +111,7 @@ export const FixedPriceNFTBuyerDescription: React.FC<Props> = ({
         signer,
         nft.collection,
         +nft.tokenId,
-        +nft.listInfo.price
+        nft.listInfo.price
       );
 
       if (!!result) {
