@@ -8,6 +8,7 @@ interface PresaleDataProps extends PresaleDataType {
   token_name: string;
   token_symbol: string;
   website: string;
+  description: string;
   currentRound: number;
 }
 

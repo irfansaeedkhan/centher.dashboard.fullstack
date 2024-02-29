@@ -9,7 +9,12 @@ import {
 import { PresaleDataType } from "../../../_components/launchpad-card-data";
 
 interface Props {
-  metaData: { token_name: string; token_symbol: string; website: string };
+  metaData: {
+    token_name: string;
+    token_symbol: string;
+    website: string;
+    description: string;
+  };
   launchpadData: PresaleDataType;
 }
 
@@ -65,7 +70,11 @@ export const LaunchpadOverview: React.FC<Props> = ({
   return (
     <div className="flex flex-col gap-6 flg:flex-row">
       <div className="flex flex-grow flex-col gap-4">
-        <PresaleData {...launchpadData} {...metaData} />
+        <PresaleData
+          {...launchpadData}
+          {...metaData}
+          presaleActive={currentRound > 0 ? true : false}
+        />
         <BuyToken
           {...launchpadData}
           {...metaData}

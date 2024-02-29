@@ -20,7 +20,6 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
   currentRound,
 }) => {
   const router = useRouter();
-
   return (
     <div className="col-span-1 h-auto w-full rounded-3xl border border-gray-shade-3">
       <div className="flex h-[calc(100%-138px)] flex-col gap-4 bg-transparent p-5">
@@ -73,7 +72,7 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
             )}
           >
             <div
-              style={{ width: `${Number(soft_cap) / 1e18}%` }}
+              style={{ width: `${progress}%` }}
               className={clsx(
                 status === "live" && `bg-green-shade-1`,
                 status === "upcoming" && `bg-brand-primary`,

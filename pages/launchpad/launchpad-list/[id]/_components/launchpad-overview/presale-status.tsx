@@ -6,6 +6,7 @@ interface PresaleDataProps extends PresaleDataType {
   token_name: string;
   token_symbol: string;
   website: string;
+  description: string;
 }
 
 export const PresaleStatus: React.FC<PresaleDataProps> = ({

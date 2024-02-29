@@ -13,16 +13,20 @@ interface PresaleDataProps extends PresaleDataType {
   token_name: string;
   token_symbol: string;
   website: string;
+  description: string;
+  presaleActive: boolean;
 }
 
 export const PresaleData: React.FC<PresaleDataProps> = ({
   token_name,
   token_symbol,
+  description,
   token,
   roundInfos,
   maxTokensToSell,
   minTokensToSell,
   releaseMonth,
+  presaleActive,
 }) => {
   return (
     <div className="flex h-auto w-full flex-col gap-6 rounded-xl bg-black-shade-9 p-4 fxm:p-6">
@@ -32,15 +36,13 @@ export const PresaleData: React.FC<PresaleDataProps> = ({
         </h2>
         <span className="rounded-10px bg-brand-primary/[0.16] px-3 text-xs font-semibold leading-6 text-brand-primary">
           {/* Upcoming  */}{" "}
-          {Number(roundInfos[0].startTime) < Number(new Date())
+          {/* {Number(roundInfos[0].startTime) < Number(new Date())
             ? "Active"
-            : "Upcoming"}
+            : "Upcoming"} */}
+          {presaleActive ? "Active" : "Upcoming"}
         </span>
       </div>
-      <p className="text-sm font-medium text-gray-shade-14">
-        At Dexagon we want to open the gates to the Virtual Life on the
-        metaverse, revealing a new way of approaching the virtual world.
-      </p>
+      <p className="text-sm font-medium text-gray-shade-14">{description}</p>
       <div className="flex flex-col gap-4">
         <div className={mainDiv}>
           <div className={textLeft}>Token Name</div>

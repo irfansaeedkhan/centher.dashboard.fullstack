@@ -21,6 +21,7 @@ const LaunchpadListDetails: NextPageWithLayout = () => {
     token_name: string;
     token_symbol: string;
     website: string;
+    description: string;
   }>();
 
   const loadSdk = useCallback(async () => {
@@ -44,6 +45,7 @@ const LaunchpadListDetails: NextPageWithLayout = () => {
         token_name: metaData.data.token_name,
         token_symbol: metaData.data.token_symbol,
         website: metaData.data.website_url,
+        description: metaData.data.description,
       });
       setLoading(false);
     } catch (err) {
