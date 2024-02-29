@@ -188,10 +188,10 @@ const CreateLaunchpad: NextPageWithLayout = () => {
     try {
       setProgressModel(true);
       setModalTitle(CreateLaunchpadStepsEnum.metadata);
-      await uploadMetadataToIPFS(formState.add_additional_info).then((res) => {
-        setIpfsResponse(res);
-      });
+      const res = await uploadMetadataToIPFS(formState.add_additional_info);
+      setIpfsResponse(res);
       setProgressModel(false);
+      return res.ipfs_url;
     } catch (error: any) {
       let errorMessage = "Metadata not Uploaded to IPFS";
       setProgressModel(false);
@@ -233,7 +233,7 @@ const CreateLaunchpad: NextPageWithLayout = () => {
     }
   };
 
-  const createPresaleOnLaunchpad = async () => {
+  const createPresaleOnLaunchpad = async (ipfsMetadataUrl: string) => {
     if (!signer) return;
 
     setProgressModel(true);
@@ -260,7 +260,7 @@ const CreateLaunchpad: NextPageWithLayout = () => {
             ? true
             : false,
         fundType: formState.verify_token.currency === "BNB" ? 0 : 1,
-        metadata: ipfsResponse.ipfs_url,
+        metadata: ipfsMetadataUrl,
       };
 
       presaleInfoParams.coinFeeRate =
@@ -298,11 +298,6 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       presaleInfoParams.maxTokensToSell = parseEther(
         totalPresaleSellingAmount.toString()
       ).toString();
-
-      console.log(
-        "formState.verify_token.release_month: ",
-        formState.verify_token.release_month
-      );
 
       if (signer == null) return;
 
@@ -373,7 +368,7 @@ const CreateLaunchpad: NextPageWithLayout = () => {
     try {
       if (signer == null) return;
       if (!sdk) return;
-      await uploadMetaData();
+      const ipfsUrl = await uploadMetaData();
       if (!isApproved) {
         await getApproval();
       }
@@ -383,7 +378,7 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       );
 
       if (!isAlreadyExist) {
-        await createPresaleOnLaunchpad();
+        await createPresaleOnLaunchpad(ipfsUrl);
       }
 
       if (

@@ -20,6 +20,7 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
   currentRound,
 }) => {
   const router = useRouter();
+
   return (
     <div className="col-span-1 h-auto w-full rounded-3xl border border-gray-shade-3">
       <div className="flex h-[calc(100%-138px)] flex-col gap-4 bg-transparent p-5">
@@ -60,7 +61,7 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
               </span>
             </p>
             <p className="text-sm leading-6 text-gray-shade-14">
-              Progress {`${progress} %`}
+              Progress {`${Number(progress).toFixed(2)} %`}
             </p>
           </div>
           <div
@@ -84,7 +85,7 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
           <div className="mt-1">
             <div className="flex items-center justify-between gap-3 text-sm leading-6 text-gray-shade-14">
               <p>
-                {Number(currentPurchasesValue) / 1e18} {fundType}
+                {Math.floor(Number(currentPurchasesValue) / 1e18)} {fundType}
               </p>
               <p>
                 {Number(soft_cap) / 1e18} {fundType}

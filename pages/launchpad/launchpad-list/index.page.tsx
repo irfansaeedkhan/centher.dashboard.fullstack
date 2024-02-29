@@ -14,6 +14,8 @@ import { LaunchpadCard } from "./_components/launchpad-card";
 import { set } from "lodash";
 import Image from "next/image";
 import { EmptyLaunchpad } from "@/assets/svgs/launchpad-v2";
+import { BigNumber } from "ethers";
+import { parseEther } from "ethers/lib/utils";
 
 const LaunchpadList: NextPageWithLayout = () => {
   const router = useRouter();
@@ -109,12 +111,14 @@ const LaunchpadList: NextPageWithLayout = () => {
       }
 
       let softcapInQuoteToken = 0;
+      let anotherSoftVal = 0;
 
       for (let i = 0; i < Number(item.roundDeep); i++) {
-        softcapInQuoteToken +=
-          (Number(item.roundInfos[i].tokensToSell) *
-            Number(item.roundInfos[i].pricePerToken)) /
-          1e18;
+        const tokensToSell = BigNumber.from(item.roundInfos[i].tokensToSell);
+        const pricePerToken = BigNumber.from(item.roundInfos[i].pricePerToken);
+        softcapInQuoteToken += Number(
+          tokensToSell.mul(pricePerToken).div(parseEther("1"))
+        );
       }
 
       const progress =
