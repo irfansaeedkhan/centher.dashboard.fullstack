@@ -38,7 +38,7 @@ export const ReferralRewards: React.FC<Props> = ({
 
       const result = await sdk.getRefRewards(id.toString(), user._id);
 
-      let rewardTokenType = result[0].fundType;
+      let rewardTokenType = launchpadData.fundType;
 
       for (let i = 0; i < result.length; i++) {
         claimableAmount += Number(result[i].amount);
@@ -70,7 +70,7 @@ export const ReferralRewards: React.FC<Props> = ({
     } catch (err) {
       customLog(["development", "staging"], err);
     }
-  }, [id, sdk, user]);
+  }, [id, sdk, user, launchpadData.fundType]);
 
   useEffect(() => {
     loadData();

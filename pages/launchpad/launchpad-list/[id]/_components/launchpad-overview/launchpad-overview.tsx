@@ -37,6 +37,7 @@ export const LaunchpadOverview: React.FC<Props> = ({
       currentRound = 1; // in round 1
     }
   }
+
   if (roundInfos[0] && roundInfos[1]) {
     if (
       nowTime >= Number(roundInfos[0].endTime) &&

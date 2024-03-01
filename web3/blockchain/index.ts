@@ -2200,7 +2200,7 @@ export class BlockchainWrite {
       } else {
         await presaleContract.callStatic.tokenPurchaseWithBNB(
           presaleTokenAddress,
-          { value: amount }
+          { value: purchaseAmount }
         );
         tx = await presaleContract.functions.tokenPurchaseWithBNB(
           presaleTokenAddress,

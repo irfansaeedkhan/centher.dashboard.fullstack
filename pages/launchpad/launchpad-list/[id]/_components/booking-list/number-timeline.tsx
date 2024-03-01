@@ -32,6 +32,7 @@ interface Props {
   roundNumber: number;
   tokenSymbol: string;
   token: string;
+  percentPerMonth: string;
 }
 
 export const NumberTimeline: React.FC<Props> = ({
@@ -43,8 +44,10 @@ export const NumberTimeline: React.FC<Props> = ({
   tokenSymbol,
   token,
   roundNumber,
+  percentPerMonth,
 }) => {
   const { getSigner } = useWallet();
+
   const handleClaim = async () => {
     const signer = getSigner();
     if (!signer) return;
@@ -55,6 +58,7 @@ export const NumberTimeline: React.FC<Props> = ({
       console.log(e);
     }
   };
+
   return (
     <div className="relative flex w-full items-center gap-4">
       <div
@@ -75,7 +79,7 @@ export const NumberTimeline: React.FC<Props> = ({
         <div className="min-w-[260px]">
           <p className="text-sm text-gray-shade-7">Amount</p>
           <h4 className="mt-[6px] text-sm font-semibold text-white">
-            {claimablePerMonth} {tokenSymbol} (10%)
+            {claimablePerMonth} {tokenSymbol} ({percentPerMonth}%)
           </h4>
         </div>
         <Countdown

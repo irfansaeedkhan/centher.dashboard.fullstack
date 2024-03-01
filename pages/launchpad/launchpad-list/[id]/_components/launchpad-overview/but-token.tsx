@@ -169,24 +169,25 @@ export const BuyToken: React.FC<Props> = ({
   };
 
   return (
-    <div className="flex h-auto w-full flex-col gap-6 rounded-xl bg-black-shade-9 p-4 fxm:p-6">
-      {!alreadyPurchased ? (
-        <div className="flex w-full flex-shrink-0 flex-col">
-          <p className="font-small ml-1 text-sm text-gray-shade-14">Pay</p>
+    <>
+      {!alreadyPurchased && currentRound >= 0 && (
+        <div className="flex h-auto w-full flex-col gap-6 rounded-xl bg-black-shade-9 p-4 fxm:p-6">
+          <div className="flex w-full flex-shrink-0 flex-col">
+            <p className="font-small ml-1 text-sm text-gray-shade-14">Pay</p>
 
-          <div className="flex w-full flex-row gap-2">
-            <div className="col-span-2 w-full text-sm font-medium text-white md:col-span-2">
-              <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
-                <CustomNumberInput
-                  value={payAmount === 0 ? "" : payAmount}
-                  placeholder="0"
-                  onChange={(e) => handleReceiveAmount(e)}
-                  className="block w-full rounded-lg border-0 bg-transparent px-5 py-3 text-2xl placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
-                />
+            <div className="flex w-full flex-row gap-2">
+              <div className="col-span-2 w-full text-sm font-medium text-white md:col-span-2">
+                <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
+                  <CustomNumberInput
+                    value={payAmount === 0 ? "" : payAmount}
+                    placeholder="0"
+                    onChange={(e) => handleReceiveAmount(e)}
+                    className="block w-full rounded-lg border-0 bg-transparent px-5 py-3 text-2xl placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
+                  />
+                </div>
               </div>
-            </div>
-            <div className="mx-1 mt-2 block w-2/6 appearance-none rounded-lg border-0 text-sm">
-              {/* <DropdownSwapForm
+              <div className="mx-1 mt-2 block w-2/6 appearance-none rounded-lg border-0 text-sm">
+                {/* <DropdownSwapForm
              placeholder="Token"
              options={dropDownTokens?.base ?? []}
              selectedValue={baseToken ? baseToken : tokens.base[0]}
@@ -194,27 +195,29 @@ export const BuyToken: React.FC<Props> = ({
                setBaseToken(value);
              }}
            /> */}
-            </div>
-          </div>
-          <p className="my-4 ml-1 text-sm font-medium text-gray-shade-14">
-            Balance {formatEther(BigInt(tokenBalance))}
-          </p>
-          <div className="mb-5 mt-2 border-b-2 border-gray-shade-3"></div>
-          <p className="font-small ml-1 text-sm text-gray-shade-14">Receive</p>
-
-          <div className="flex w-full flex-row gap-2">
-            <div className="col-span-2 w-full text-sm font-medium text-white md:col-span-2">
-              <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
-                <CustomNumberInput
-                  value={receivedAmount === 0 ? "" : receivedAmount}
-                  // onChange={(e) => setReceivedAmount(Number(e.target.value))}
-                  placeholder="0"
-                  className="block w-full rounded-lg border-0 bg-transparent px-5 py-3 text-2xl placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
-                />
               </div>
             </div>
-            <div className="mx-1 mt-2 block w-2/6 appearance-none rounded-lg border-0 text-sm">
-              {/* <DropdownSwapForm
+            <p className="my-4 ml-1 text-sm font-medium text-gray-shade-14">
+              Balance {formatEther(BigInt(tokenBalance))}
+            </p>
+            <div className="mb-5 mt-2 border-b-2 border-gray-shade-3"></div>
+            <p className="font-small ml-1 text-sm text-gray-shade-14">
+              Receive
+            </p>
+
+            <div className="flex w-full flex-row gap-2">
+              <div className="col-span-2 w-full text-sm font-medium text-white md:col-span-2">
+                <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
+                  <CustomNumberInput
+                    value={receivedAmount === 0 ? "" : receivedAmount}
+                    // onChange={(e) => setReceivedAmount(Number(e.target.value))}
+                    placeholder="0"
+                    className="block w-full rounded-lg border-0 bg-transparent px-5 py-3 text-2xl placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
+                  />
+                </div>
+              </div>
+              <div className="mx-1 mt-2 block w-2/6 appearance-none rounded-lg border-0 text-sm">
+                {/* <DropdownSwapForm
              placeholder="Token"
              options={dropDownTokens?.quote ?? []}
              selectedValue={quoteToken ? quoteToken : tokens.quote[0]}
@@ -222,27 +225,22 @@ export const BuyToken: React.FC<Props> = ({
                setQuoteToken(value);
              }}
            /> */}
+              </div>
             </div>
-          </div>
-          <p className="font-small my-4 ml-1 text-sm text-gray-shade-14">
-            {token_symbol}
-          </p>
+            <p className="font-small my-4 ml-1 text-sm text-gray-shade-14">
+              {token_symbol}
+            </p>
 
-          <Button
-            title={"Buy"}
-            // disabled={isSwapping}
-            onClick={() => doPurchase()}
-            variant="primary"
-            className="mt-4 w-full flex-shrink-0 rounded-[10px] text-sm fsm:text-base"
-          />
-        </div>
-      ) : (
-        <div>
-          <p className="font-small ml-1 text-sm text-gray-shade-14">
-            You have Already Purchases in this Round, Wait for the next round.
-          </p>
+            <Button
+              title={"Buy"}
+              // disabled={isSwapping}
+              onClick={() => doPurchase()}
+              variant="primary"
+              className="mt-4 w-full flex-shrink-0 rounded-[10px] text-sm fsm:text-base"
+            />
+          </div>
         </div>
       )}
-    </div>
+    </>
   );
 };

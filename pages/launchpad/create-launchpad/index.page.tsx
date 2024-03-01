@@ -380,7 +380,6 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       if (!isAlreadyExist) {
         await createPresaleOnLaunchpad(ipfsUrl);
       }
-
       if (
         formState.verify_token.multilevel_reward === "recurring_return" &&
         !presaleDetails.isActive

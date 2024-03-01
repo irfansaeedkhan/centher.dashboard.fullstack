@@ -23,6 +23,12 @@ export const MainTimeline: React.FC<Props> = ({
     useGetContributionInfoForLaunchpad(user?._id, token, roundNumber - 1);
 
   if (!contributionInfo) return;
+  const eachMonthAmount =
+    Number(contributionInfo.totalClaimableToken) / Number(releaseMonth);
+  const percentPerMonth = (
+    (eachMonthAmount / Number(contributionInfo.totalClaimableToken)) *
+    100
+  ).toFixed(2);
 
   // const monthInEpoch = 2592000; // production
   const monthInEpoch = 1800; //testnet
@@ -31,7 +37,7 @@ export const MainTimeline: React.FC<Props> = ({
     <div className="flex flex-col gap-3">
       <FirstLastTimeline
         title={`${lockMonths} months Lock Period will End in`}
-        para={`${tokenSymbol} tokens will be released 12,5% monthly.`}
+        para={`${tokenSymbol} tokens will be released ${percentPerMonth}% monthly.`}
         endTime={
           new Date(
             (contributionInfo.purchaseTime + lockMonths * monthInEpoch) * 1000
@@ -83,13 +89,14 @@ export const MainTimeline: React.FC<Props> = ({
                 tokenSymbol={tokenSymbol}
                 token={token}
                 roundNumber={roundNumber}
+                percentPerMonth={percentPerMonth}
               />
             );
           }
         )}
       </div>
       <FirstLastTimeline
-        title={`Total ${contributionInfo.contributedFund} ${tokenSymbol} will be released in`}
+        title={`Total ${contributionInfo.totalClaimableToken} ${tokenSymbol} will be released in`}
         para={`Calculated on the total ${tokenSymbol} tokens that is expected to be released within the given time frame.`}
         endTime={
           new Date(
