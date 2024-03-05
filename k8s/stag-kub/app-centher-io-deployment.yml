@@ -18,5 +18,8 @@ spec:
           image: {IMAGE_TAG}
           ports:
             - containerPort: 3000
+          resources:
+            limits:
+              memory: "500Mi"
       imagePullSecrets:
         - name: stag-kub-app-centh-pull-secret
