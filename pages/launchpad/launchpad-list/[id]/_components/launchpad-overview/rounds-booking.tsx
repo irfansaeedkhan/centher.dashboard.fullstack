@@ -18,14 +18,31 @@ export const RoundsBooking: React.FC<PresaleDataProps> = ({
   roundDeep,
   currentRound,
   maxTokensToSell,
-
   totalPurchasesInBuyingToken,
+  fundType,
 }) => {
-  let totalSoldOutInPresaleToken =
-    Number(Number(totalPurchasesInBuyingToken) * 1e18) /
-    Number(maxTokensToSell);
+  // let totalSoldOutInFundType =
+  //   (Number(Number(totalPurchasesInBuyingToken) * 1e18) /
+  //     Number(maxTokensToSell)) *
+  //   100;
 
-  totalSoldOutInPresaleToken = Number(totalSoldOutInPresaleToken) / 1e18;
+  // totalSoldOutInFundType = Number(totalSoldOutInFundType) / 1e18;
+
+  const purchaseThrough = fundType === 0 ? "BNB" : "USDT";
+
+  // console.log(
+  //   "totalSoldOutInPresaleToken: ",
+  //   totalSoldOutInFundType,
+  //   Number(totalPurchasesInBuyingToken),
+  //   Number(maxTokensToSell)
+  // );
+
+  let percentSoldOut =
+    (Number(Number(totalPurchasesInBuyingToken) * 1e18) /
+      Number(maxTokensToSell)) *
+    100;
+
+  percentSoldOut = Number(percentSoldOut) / 1e18;
 
   const currentTime = Number((Date.now() / 1000).toFixed());
   let timeToShow;
@@ -120,7 +137,7 @@ export const RoundsBooking: React.FC<PresaleDataProps> = ({
             )}
           >
             <div
-              style={{ width: `20%` }}
+              style={{ width: `${percentSoldOut}%` }}
               className={clsx(
                 `absolute top-0 z-50 h-3 rounded-3xl`,
                 // status === "live" &&
@@ -131,8 +148,13 @@ export const RoundsBooking: React.FC<PresaleDataProps> = ({
             ></div>
           </div>
           <div className="flex items-center justify-between gap-3 text-xs font-medium text-gray-shade-14">
-            <p>0 {token_symbol}</p>
-            <p>100 {token_symbol}</p>
+            <p>
+              {(Number(totalPurchasesInBuyingToken) / 1e18).toFixed(4)}{" "}
+              {purchaseThrough}
+            </p>
+            <p>
+              {(Number(maxTokensToSell) / 1e18).toFixed(4)} {purchaseThrough}
+            </p>
           </div>
         </div>
       </div>

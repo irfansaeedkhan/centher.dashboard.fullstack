@@ -9,6 +9,11 @@ export enum CreateLaunchpadStepsEnum {
   network_confirmation = "Waiting for network confirmation",
 }
 
+export enum LaunchpadListEnum {
+  referrer_claim = "Claiming referrer rewards",
+  claim_amounts = "Claiming Amounts",
+}
+
 export enum ProgressStatus {
   pending,
   inProgress,

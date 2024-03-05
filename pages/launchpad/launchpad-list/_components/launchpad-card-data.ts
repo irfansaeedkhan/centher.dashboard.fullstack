@@ -202,6 +202,9 @@ export type PresaleDataType = {
   refundAmount: string;
   metadata: string;
   isActive: boolean;
+  round0Bookings: string;
+  round1Bookings: string;
+  round2Bookings: string;
   totalPurchasesInBuyingToken: string;
   roundDeep: string;
   roundInfos: {

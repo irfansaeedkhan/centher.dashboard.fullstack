@@ -168,7 +168,7 @@ const CreateLaunchpad: NextPageWithLayout = () => {
   }, [formState.verify_token.token_address, signer, totalPresaleSellingAmount]);
 
   useEffect(() => {
-    if (formState.verify_token.token_address == "") return;
+    if (formState.verify_token.token_address === "") return;
     (async () => {
       try {
         if (sdk) {
@@ -308,7 +308,7 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       );
 
       setProgressModel(false);
-      setSuccessModal("Token Presale created successfully");
+      // setSuccessModal("Token Presale created successfully");
       setFormState(initialFormState);
     } catch (error: any) {
       setProgressModel(false);
@@ -348,7 +348,7 @@ const CreateLaunchpad: NextPageWithLayout = () => {
         percents
       );
       setProgressModel(false);
-      setSuccessModal("Presale referrer settings updated successfully");
+      // setSuccessModal("Presale referrer settings updated successfully");
       setFormState(initialFormState);
     } catch (error: any) {
       setProgressModel(false);
@@ -380,13 +380,15 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       if (!isAlreadyExist) {
         await createPresaleOnLaunchpad(ipfsUrl);
       }
+
       if (
         formState.verify_token.multilevel_reward === "recurring_return" &&
         !presaleDetails.isActive
-        // || (presaleDetails.isRefSupport && !presaleDetails.isActive)
       ) {
         await setRefSettings();
       }
+
+      setSuccessModal("Token Presale created successfully");
     } catch (error: any) {
       setErrorModal(error?.message ?? "Something went wrong!");
     }

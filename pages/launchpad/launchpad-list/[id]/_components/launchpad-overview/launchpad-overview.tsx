@@ -88,7 +88,11 @@ export const LaunchpadOverview: React.FC<Props> = ({
           {...metaData}
           currentRound={currentRound}
         />
-        <PresaleStatus {...launchpadData} {...metaData} />
+        <PresaleStatus
+          {...launchpadData}
+          {...metaData}
+          currentRound={currentRound}
+        />
         <ReferralsProgram {...launchpadData} />
       </div>
     </div>

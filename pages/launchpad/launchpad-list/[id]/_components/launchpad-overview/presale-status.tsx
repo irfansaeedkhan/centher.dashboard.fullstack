@@ -7,34 +7,52 @@ interface PresaleDataProps extends PresaleDataType {
   token_symbol: string;
   website: string;
   description: string;
+  currentRound: number;
 }
 
 export const PresaleStatus: React.FC<PresaleDataProps> = ({
   minTokensToSell,
   maxTokensToSell,
   token_symbol,
+  roundInfos,
+  fundType,
+  currentRound,
 }) => {
+  const purchasesThrough = fundType === 0 ? "BNB" : "USDT";
+
+  const roundDetails = roundInfos[currentRound];
+
   return (
-    <div className="col-span-1 h-auto w-full rounded-xl bg-black-shade-9 p-4 fxm:p-6">
-      <div className="flex flex-col gap-4">
-        <div className={mainDiv}>
-          <div className={textLeft}>Presale Status</div>
-          <div className={textRight}>Live</div>
-        </div>
-        <div className={mainDiv}>
-          <div className={textLeft}>Minimum Buy</div>
-          <div className={textRight}>
-            {formatUnits(BigInt(minTokensToSell), 18)} {token_symbol}
+    <>
+      {" "}
+      {currentRound >= 0 ? (
+        <div className="col-span-1 h-auto w-full rounded-xl bg-black-shade-9 p-4 fxm:p-6">
+          <div className="flex flex-col gap-4">
+            <div className={mainDiv}>
+              <div className={textLeft}>Presale Status</div>
+              <div className={textRight}>
+                {" "}
+                {currentRound >= 0 ? "Live" : "Upcoming"}
+              </div>
+            </div>
+            <div className={mainDiv}>
+              <div className={textLeft}>Minimum Buy</div>
+              <div className={textRight}>
+                {formatUnits(BigInt(roundDetails.minContribution), 18)}{" "}
+                {purchasesThrough}
+              </div>
+            </div>
+            <div className={mainDiv}>
+              <div className={textLeft}>Maximum Buy</div>
+              <div className={textRight}>
+                {formatUnits(BigInt(roundDetails.maxContribution), 18)}{" "}
+                {purchasesThrough}
+              </div>
+            </div>
           </div>
         </div>
-        <div className={mainDiv}>
-          <div className={textLeft}>Maximum Buy</div>
-          <div className={textRight}>
-            {formatUnits(BigInt(maxTokensToSell), 18)} {token_symbol}
-          </div>
-        </div>
-      </div>
-    </div>
+      ) : null}
+    </>
   );
 };
 

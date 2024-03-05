@@ -36,6 +36,9 @@ const queries: Queries = {
       refundAmount
       metadata
       isActive
+      round0Bookings
+      round1Bookings
+      round2Bookings
       totalPurchasesInBuyingToken
       roundDeep
       roundInfos {token, startTime, endTime, lockMonths, minContribution, maxContribution, tokensToSell, pricePerToken}
@@ -68,6 +71,9 @@ const queries: Queries = {
       refundAmount
       metadata
       isActive
+      round0Bookings
+      round1Bookings
+      round2Bookings
       totalPurchasesInBuyingToken
       roundDeep
       roundInfos {token, startTime, endTime, lockMonths, minContribution, maxContribution, tokensToSell, pricePerToken}

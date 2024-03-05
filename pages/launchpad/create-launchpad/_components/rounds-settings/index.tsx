@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import clsx from "clsx";
 import toast from "react-hot-toast";
-import { BNBIcon } from "@/assets/svgs";
+import { BNBIcon, USDTIcon } from "@/assets/svgs";
 import { DateInputField } from "@/components/shared";
 import { CustomNumberInput } from "@/components/custom-number-input";
 import { FormStateProps } from "../shared-types";
@@ -13,7 +13,7 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
 }) => {
   const [currentRound, setCurrentRound] = useState(1);
 
-  let currentDate = new Date();
+  // let currentDate = new Date();
 
   const handleChangeEvent = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -304,14 +304,24 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
               onChange={handleChangeEvent}
             />
           </div>
-          <p className="text-gradient flex w-fit gap-0.5 pb-2 pt-1 text-xs font-medium">
-            <span className="flex h-3.5 w-3.5 flex-shrink-0">
-              <BNBIcon />
-            </span>
-            <span>00 BNB</span>
-            <span> = </span>
-            <span>00 Token</span>
-          </p>
+          {formState.rounds_settings.round[currentRound - 1].token_price !==
+          "" ? (
+            <p className="text-gradient flex w-fit gap-0.5 pb-2 pt-1 text-xs font-medium">
+              <span className="flex h-3.5 w-3.5 flex-shrink-0">
+                {formState.verify_token.currency === "BNB" ? (
+                  <BNBIcon />
+                ) : (
+                  <USDTIcon />
+                )}
+              </span>
+              <span>
+                {formState.rounds_settings.round[currentRound - 1].token_price}{" "}
+                {formState.verify_token.currency}
+              </span>
+              <span> = </span>
+              <span>1 Token</span>
+            </p>
+          ) : null}
         </div>
         <div className={gradientBorderInputMain}>
           <label htmlFor="total_selling_amount" className={label}>
