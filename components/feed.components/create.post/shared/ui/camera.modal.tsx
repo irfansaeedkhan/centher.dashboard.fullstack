@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useShallow } from "zustand/react/shallow";
 import { toast } from "react-hot-toast";
 import { MdOutlineCameraswitch } from "react-icons/md";
 import Image from "next/image";
@@ -12,7 +13,9 @@ interface Props {
 }
 
 const CameraModal = ({ onClose }: Props) => {
-  const { addSelectedFiles, closeModal } = useNewPostStore();
+  const { addSelectedFiles } = useNewPostStore(
+    useShallow((state) => state.actions)
+  );
   const [cameraSource, setCameraSource] = useState<"user" | "environment">(
     "user"
   );

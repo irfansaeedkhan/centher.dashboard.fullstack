@@ -1,6 +1,7 @@
-import { useNewPostStore } from "@/store/new.post.store";
 import React from "react";
+import { useShallow } from "zustand/react/shallow";
 import { IoClose } from "react-icons/io5";
+import { useNewPostStore } from "@/store/new.post.store";
 
 interface Props {
   title: string;
@@ -8,7 +9,11 @@ interface Props {
 }
 
 const PostModalHeader: React.FC<Props> = ({ title, onClickClose }) => {
-  const { isPostModalLoading } = useNewPostStore();
+  const { isPostModalLoading } = useNewPostStore(
+    useShallow((state) => ({
+      isPostModalLoading: state.isPostModalLoading,
+    }))
+  );
   return (
     <div
       className={`flex items-center border-b-2 border-gray-shade-3 border-opacity-40 p-3`}

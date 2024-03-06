@@ -16,6 +16,7 @@ const Launchpad: NextPageWithLayout = () => {
     ? Number(router.query.round?.toString())
     : undefined;
   const { roundsInfo } = useGetRoundsInfo();
+
   if (!round_number) return null;
 
   return roundsInfo[round_number - 1] ? (

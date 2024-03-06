@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef } from "react";
+import { useShallow } from "zustand/react/shallow";
 import createEmojiPlugin from "@draft-js-plugins/emoji";
 import createHashtagPlugin from "@draft-js-plugins/hashtag";
 import createMentionPlugin from "@draft-js-plugins/mention";
@@ -16,7 +17,13 @@ interface Props {
 export const PostModal: React.FC<Props> = ({ modalTitle }) => {
   const { user } = useUser();
   const scrollRef = useRef<HTMLTextAreaElement>(null);
-  const { closeModal, isModalOpen, posts } = useNewPostStore();
+  const { isModalOpen, posts } = useNewPostStore(
+    useShallow((state) => ({
+      isModalOpen: state.isModalOpen,
+      posts: state.posts,
+    }))
+  );
+  const { closeModal } = useNewPostStore(useShallow((state) => state.actions));
 
   const lastPost = useMemo(() => {
     return posts.at(-1);

@@ -1,19 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
-import { IoClose } from "react-icons/io5";
 import Image from "next/image";
-import { useEventListener, useOnClickOutside } from "usehooks-ts";
+import { useOnClickOutside } from "usehooks-ts";
+import { IoClose } from "react-icons/io5";
 import { CgSpinner } from "react-icons/cg";
-import cn from "@/utils/cn";
+import Button from "@/components/button";
 import { ModalPortal } from "@/components/modal/modal.portal";
 import { ConnectWalletComp } from "@/components/connect.wallet";
 import { CitizenShipType, useCitizenStore } from "@/store/citizen.store";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
-import { formatEther2Number } from "@/utils/format.address";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
-import Button from "@/components/button";
-import { CitizenShipSuccessModal } from "@/components/modal/buy-citizenship-modal/success-modal";
-import { CitizenShipFailureModal } from "@/components/modal/buy-citizenship-modal/failure-modal";
 import { useWallet } from "@/web3/hooks/use.wallet";
+import { formatEther2Number } from "@/utils/format.address";
+import cn from "@/utils/cn";
+import { CitizenShipSuccessModal } from "./success-modal";
+import { CitizenShipFailureModal } from "./failure-modal";
 
 interface CustomModalProps {
   isOpen: boolean;
@@ -66,20 +66,9 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
     }
   }, [getSigner, updatePrices]);
 
-  const htmlBodyRef = useRef<HTMLBodyElement>(document.body as HTMLBodyElement);
   const PassportModalRef = useRef<HTMLDivElement>(null);
   const [tab, setTab] = useState<CitizenShipType>(
     CitizenShipType.annualMemberShipPrice
-  );
-
-  useEventListener(
-    "keydown",
-    (event: KeyboardEvent) => {
-      if (event.key === "Escape" && !showMsg && !buyCitizenShipLoading) {
-        onClickClose();
-      }
-    },
-    htmlBodyRef
   );
 
   useOnClickOutside(PassportModalRef, () => {

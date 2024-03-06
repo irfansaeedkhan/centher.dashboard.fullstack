@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { useShallow } from "zustand/react/shallow";
 import { useInView } from "react-intersection-observer";
 import { useFeedStore } from "@/store/feed.store";
 import { useProfileCardStore } from "@/store/profile.card.store";
-import { useNewPostStore } from "@/store/new.post.store";
+import { usePostEditorStore } from "@/store/post-editor-store";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { FeedPagesWrapper } from "@/components/feed.components";
 import {
@@ -12,7 +13,7 @@ import {
   deletePost,
   createPostView,
 } from "@/components/feed.components";
-import { CreatePostCard } from "@/components/feed.components/create.post/create.post.card";
+import { CreatePostCard } from "@/components/post-editor/create-post-card";
 import { PostModal } from "@/components/feed.components/create.post/post.modal";
 import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
 import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
@@ -33,7 +34,9 @@ const Feed: NextPageWithLayout = () => {
   const { user } = useUser();
   const router = useRouter();
   const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
-  const openPostModal = useNewPostStore((state) => state.openModal);
+  const { openModal: openPostModal } = usePostEditorStore(
+    useShallow((state) => state.actions)
+  );
   const {
     posts,
     fetchPosts,
@@ -102,15 +105,13 @@ const Feed: NextPageWithLayout = () => {
 
   return (
     <>
-      {((loading === "loaded" && posts.length === 0) || posts.length > 0) && (
-        <CreatePostCard />
-      )}
+      {((loading === "loaded" && posts.length === 0) || posts.length > 0) &&
+        user && <CreatePostCard user={user} />}
 
       {posts.map((post, index) => {
         return (
-          <>
+          <div key={post._id}>
             <div
-              key={post._id}
               onClick={() => {
                 router.push({
                   pathname: AppRoutes.feed.single_post,
@@ -201,7 +202,7 @@ const Feed: NextPageWithLayout = () => {
             {(index + 1) % 10 === 0 && (
               <SuggestedCardMobile className={`block f2xl:hidden`} />
             )}
-          </>
+          </div>
         );
       })}
 

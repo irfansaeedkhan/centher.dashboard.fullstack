@@ -13,6 +13,7 @@ import { useNFTImageSrc } from "@/hooks/use-nft-image-src";
 const lockOptions = [
   { label: "0 Day", value: "0" },
   { label: "30 Days", value: "2592000" },
+  { label: "90 Days", value: "7776000" },
   { label: "120 Days", value: "10368000" },
   { label: "180 Days", value: "15552000" },
   { label: "270 Days", value: "23328000" },

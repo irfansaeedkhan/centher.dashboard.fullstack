@@ -7,7 +7,9 @@ import React, {
   useState,
 } from "react";
 import Image from "next/image";
+import { useShallow } from "zustand/react/shallow";
 import clsx from "clsx";
+import { GrEmoji } from "react-icons/gr";
 import { EditorState } from "draft-js";
 import createMentionPlugin, {
   defaultSuggestionsFilter,
@@ -30,20 +32,21 @@ import cn from "@/utils/cn";
 import mentionsStyles from "./mentions-styles.module.css";
 import PostPreview from "../post.preview";
 import { FilesPreview } from "../files.preview";
-import { GrEmoji } from "react-icons/gr";
 
 export const PostEditor: React.FC = () => {
   const { user } = useUser();
   const scrollRef = useRef<HTMLInputElement>(null);
   const editorRef = useRef<Editor>(null);
-  const {
-    posts,
-    setPostText,
-    removePost,
-    nonCitizenUserPostText,
-    editorState,
-    setEditorState,
-  } = useNewPostStore();
+  const { posts, nonCitizenUserPostText, editorState } = useNewPostStore(
+    useShallow((state) => ({
+      posts: state.posts,
+      nonCitizenUserPostText: state.nonCitizenUserPostText,
+      editorState: state.editorState,
+    }))
+  );
+  const { setPostText, removePost, setEditorState } = useNewPostStore(
+    useShallow((state) => state.actions)
+  );
 
   const [mentions, setMentions] = useState<MentionData[]>([]);
   const [showBuyCitizenshipModal, setShowBuyCitizenshipModal] = useState(false);

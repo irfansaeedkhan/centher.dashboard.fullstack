@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import { useShallow } from "zustand/react/shallow";
 import clsx from "clsx";
 import { IoClose, IoCrop } from "react-icons/io5";
 import { INewPost, useNewPostStore } from "@/store/new.post.store";
@@ -14,13 +15,14 @@ interface Props {
 }
 
 export const FilesPreview: React.FC<Props> = ({ media }) => {
-  const {
-    modalType,
-    removeSelectedFile,
-    setSelectedFiles,
-    removeEditPostFile,
-    isPostModalLoading,
-  } = useNewPostStore();
+  const { modalType, isPostModalLoading } = useNewPostStore(
+    useShallow((state) => ({
+      modalType: state.modalType,
+      isPostModalLoading: state.isPostModalLoading,
+    }))
+  );
+  const { removeSelectedFile, setSelectedFiles, removeEditPostFile } =
+    useNewPostStore(useShallow((state) => state.actions));
   const [cropImageSrc, setCropImageSrc] = useState<PostImageCropperData>({
     preview: "",
     fileID: "",

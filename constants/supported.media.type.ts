@@ -1,6 +1,3 @@
-// Video format allowed to upload on server
-export const SUPPORTED_VIDEO_TYPES = ".webm,.mp4,.m4v,.mov,.ogv,.mkv";
-
 export const SUPPORTED_VIDEO_MIME_TYPES = [
   "video/webm", // Supported
   "video/mp4", // Supported
@@ -11,14 +8,12 @@ export const SUPPORTED_VIDEO_MIME_TYPES = [
 ];
 
 // Image format allowed to upload on server
-export const SUPPORTED_IMAGE_TYPES = [
-  "image/gif",
+export const SUPPORTED_IMAGE_MIME_TYPES = [
+  "image/jpg",
   "image/jpeg",
   "image/png",
-  "image/jpg",
-  "image/jfif",
-  "image/pjpeg",
-  "image/pjp",
+  "image/webp",
+  "image/gif",
 ];
 
 // Maximum 5 file images in post

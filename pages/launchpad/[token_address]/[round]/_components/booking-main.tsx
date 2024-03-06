@@ -211,6 +211,7 @@ const BookingMain: React.FC<Props> = ({
             signer={signer}
             contributionInfo={contributionInfo}
             refetchContributionInfo={refreshContributionInfo}
+            roundNo={roundNo}
           />
         </div>
       ) : (

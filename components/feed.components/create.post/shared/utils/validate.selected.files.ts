@@ -3,7 +3,7 @@ import { SelectedFile, useNewPostStore } from "@/store/new.post.store";
 import {
   MAX_IMAGE_SIZE,
   MAX_VIDEO_SIZE,
-  SUPPORTED_IMAGE_TYPES,
+  SUPPORTED_IMAGE_MIME_TYPES,
   SUPPORTED_VIDEO_MIME_TYPES,
 } from "@/constants/supported.media.type";
 
@@ -30,7 +30,8 @@ export const validateSelectedFiles = (
       validateFile(event.target.files[i], fileType);
     }
 
-    const { addSelectedFiles, getLastPost } = useNewPostStore.getState();
+    const { addSelectedFiles, getLastPost } =
+      useNewPostStore.getState().actions;
 
     const lastPost = getLastPost();
 
@@ -78,7 +79,7 @@ export const validateFile = (file: File, fileType: FileType) => {
 
   const supportedFileTypes =
     fileType === "image"
-      ? SUPPORTED_IMAGE_TYPES
+      ? SUPPORTED_IMAGE_MIME_TYPES
       : fileType === "video"
       ? SUPPORTED_VIDEO_MIME_TYPES
       : [];
