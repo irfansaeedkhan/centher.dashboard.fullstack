@@ -86,50 +86,50 @@ export type EarnedDataType = {
 //   // },
 // ];
 
-// export const EarnedData: EarnedDataType[] = [
-//   {
-//     user_address: "0x123abc",
-//     earned_reward_amount: 10,
-//     earned_reward_amount_coin: "ABC",
-//     date_received: new Date("2023-02-01T10:30:00Z"),
-//     status: "Claimed",
-//   },
-//   // {
-//   //   user_address: "0x456def",
-//   //   earned_reward_amount: 20,
-//   //   earned_reward_amount_coin: "ABC",
-//   //   date_received: new Date("2023-03-01T14:20:00Z"),
-//   //   status: "Unclaimed",
-//   // },
-//   // {
-//   //   user_address: "0x789ghi",
-//   //   earned_reward_amount: 30,
-//   //   earned_reward_amount_coin: "ABC",
-//   //   date_received: new Date("2023-04-01T17:10:00Z"),
-//   //   status: "Unclaimed",
-//   // },
-//   // {
-//   //   user_address: "0xabc456",
-//   //   earned_reward_amount: 15,
-//   //   earned_reward_amount_coin: "ABC",
-//   //   date_received: new Date("2023-05-01T08:15:00Z"),
-//   //   status: "Claimed",
-//   // },
-//   // {
-//   //   user_address: "0xdef789",
-//   //   earned_reward_amount: 25,
-//   //   earned_reward_amount_coin: "ABC",
-//   //   date_received: new Date("2023-06-01T13:00:00Z"),
-//   //   status: "Unclaimed",
-//   // },
-//   // {
-//   //   user_address: "0xghi123",
-//   //   earned_reward_amount: 35,
-//   //   earned_reward_amount_coin: "ABC",
-//   //   date_received: new Date("2023-07-01T18:30:00Z"),
-//   //   status: "Unclaimed",
-//   // },
-// ];
+export const EarnedData: EarnedDataType[] = [
+  {
+    user_address: "0x123abc",
+    earned_reward_amount: 10,
+    earned_reward_amount_coin: "ABC",
+    date_received: new Date("2023-02-01T10:30:00Z"),
+    status: "Claimed",
+  },
+  // {
+  //   user_address: "0x456def",
+  //   earned_reward_amount: 20,
+  //   earned_reward_amount_coin: "ABC",
+  //   date_received: new Date("2023-03-01T14:20:00Z"),
+  //   status: "Unclaimed",
+  // },
+  // {
+  //   user_address: "0x789ghi",
+  //   earned_reward_amount: 30,
+  //   earned_reward_amount_coin: "ABC",
+  //   date_received: new Date("2023-04-01T17:10:00Z"),
+  //   status: "Unclaimed",
+  // },
+  // {
+  //   user_address: "0xabc456",
+  //   earned_reward_amount: 15,
+  //   earned_reward_amount_coin: "ABC",
+  //   date_received: new Date("2023-05-01T08:15:00Z"),
+  //   status: "Claimed",
+  // },
+  // {
+  //   user_address: "0xdef789",
+  //   earned_reward_amount: 25,
+  //   earned_reward_amount_coin: "ABC",
+  //   date_received: new Date("2023-06-01T13:00:00Z"),
+  //   status: "Unclaimed",
+  // },
+  // {
+  //   user_address: "0xghi123",
+  //   earned_reward_amount: 35,
+  //   earned_reward_amount_coin: "ABC",
+  //   date_received: new Date("2023-07-01T18:30:00Z"),
+  //   status: "Unclaimed",
+  // },
+];
 
 // export const ClaimedData: ClaimedDataType[] = [
 //   {
