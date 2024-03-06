@@ -145,10 +145,11 @@ const CollectionPreview: React.FC<Props> = ({
                 <h4 className={detailsCardTitle}>Floor Price</h4>
                 <h5 className={detailsCardValue}>--</h5>
               </div>
-              <div className="text-left fmd:text-center">
+              {/* FIXME: Not Sure what to show here! */}
+              {/* <div className="text-left fmd:text-center">
                 <h4 className={detailsCardTitle}>Market Price</h4>
                 <h5 className={detailsCardValue}>--</h5>
-              </div>
+              </div> */}
               <div className="text-left fmd:text-center">
                 <h4 className={detailsCardTitle}>Total Volume</h4>
                 <h5 className={detailsCardValue}>--</h5>

@@ -942,7 +942,7 @@ export class BlockchainWrite {
     signer: JsonRpcSigner,
     collection: string,
     tokenId: number,
-    price: number
+    price: string
   ): Promise<string> {
     try {
       const marketplaceContract = SmartContractProvider.getContract(
@@ -953,7 +953,9 @@ export class BlockchainWrite {
       await marketplaceContract.callStatic.buyForListedItem(
         collection,
         tokenId,
-        { value: price }
+        {
+          value: price,
+        }
       );
 
       const tx = await marketplaceContract.functions.buyForListedItem(

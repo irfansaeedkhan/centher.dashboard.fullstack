@@ -121,7 +121,7 @@ export const NonNFTBuyerDescription: React.FC<Props> = ({
         signer,
         nft.collection,
         +nft.tokenId,
-        +nft.listInfo.price
+        nft.listInfo.price
       );
 
       if (!!result) {
