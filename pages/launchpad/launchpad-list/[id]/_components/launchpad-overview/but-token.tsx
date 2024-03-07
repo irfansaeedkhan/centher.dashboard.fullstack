@@ -11,6 +11,9 @@ import { formatEther } from "viem";
 import { PresaleRoundDetails } from "@/web3/blockchain/types";
 import { SmartContractProvider } from "@/web3/blockchain/providers/smart.contract.provider";
 import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.enum";
+import { LaunchpadListEnum } from "@/pages/launchpad/create-launchpad/_components/shared-enum";
+import { StandardModal } from "@/components/modal/standard.modal";
+import { ProgressModalShared } from "@/components/shared";
 
 interface Props extends PresaleDataType {
   token_name: string;
@@ -32,10 +35,16 @@ export const BuyToken: React.FC<Props> = ({
   const { getSigner, getProvider } = useWallet();
   const [payAmount, setPayAmount] = useState(0);
   const [receivedAmount, setReceivedAmount] = useState(0);
+  const [purchased, setPurchased] = useState(false);
 
   const [tokenBalance, setTokenBalance] = useState(0);
   const [roundPrice, setroundPrice] = useState(-1);
   const [allowance, setAllowance] = useState(false);
+
+  const [modalTitle, setModalTitle] = useState("");
+  const [progressModel, setProgressModel] = useState(false);
+  const [errorModal, setErrorModal] = useState<false | string>(false);
+  const [successModal, setSuccessModal] = useState<false | string>(false);
 
   const [alreadyPurchased, setAlreadyPurchased] = useState<boolean>(false);
 
@@ -141,6 +150,8 @@ export const BuyToken: React.FC<Props> = ({
   }, [checkAllowance]);
 
   const doPurchase = async () => {
+    setProgressModel(true);
+    setModalTitle(LaunchpadListEnum.buy_tokens);
     const signer = getSigner();
     if (!signer) return;
 
@@ -154,8 +165,19 @@ export const BuyToken: React.FC<Props> = ({
 
         await BlockchainWrite.buyPresaleToken(false, token, payAmount, signer);
       }
-    } catch (e) {
-      console.log(e);
+      setPurchased(true);
+      setProgressModel(false);
+    } catch (error: any) {
+      setProgressModel(false);
+      let errorMessage = "Approval tx failed";
+      if (error.reason?.toLowerCase().includes("user rejected")) {
+        errorMessage = "User rejected the transaction";
+      } else if (error.reason) {
+        errorMessage = error.reason;
+      } else {
+        errorMessage = error?.message ?? errorMessage;
+      }
+      setErrorModal(errorMessage ?? "Something went wrong!");
     }
   };
 
@@ -170,7 +192,32 @@ export const BuyToken: React.FC<Props> = ({
 
   return (
     <>
-      {!alreadyPurchased && currentRound >= 0 && (
+      {progressModel && <ProgressModalShared title={modalTitle} />}
+      {errorModal && (
+        <StandardModal
+          confirmButtonText="OK"
+          isOpen={errorModal ? true : false}
+          title="Transaction Failed"
+          subtitle="Transaction Failed"
+          bodyText={errorModal ? errorModal : ""}
+          status="error"
+          onClickClose={() => setErrorModal(false)}
+          onClickConfirm={() => setErrorModal(false)}
+        />
+      )}
+      {successModal && (
+        <StandardModal
+          confirmButtonText="OK"
+          isOpen={successModal ? true : false}
+          title="Transaction Successful"
+          subtitle="Transaction Successful"
+          bodyText={successModal ? successModal : ""}
+          status="success"
+          onClickClose={() => setSuccessModal(false)}
+          onClickConfirm={() => setSuccessModal(false)}
+        />
+      )}
+      {!alreadyPurchased && currentRound >= 0 && !purchased && (
         <div className="flex h-auto w-full flex-col gap-6 rounded-xl bg-black-shade-9 p-4 fxm:p-6">
           <div className="flex w-full flex-shrink-0 flex-col">
             <p className="font-small ml-1 text-sm text-gray-shade-14">Pay</p>

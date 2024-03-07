@@ -21,21 +21,7 @@ export const RoundsBooking: React.FC<PresaleDataProps> = ({
   totalPurchasesInBuyingToken,
   fundType,
 }) => {
-  // let totalSoldOutInFundType =
-  //   (Number(Number(totalPurchasesInBuyingToken) * 1e18) /
-  //     Number(maxTokensToSell)) *
-  //   100;
-
-  // totalSoldOutInFundType = Number(totalSoldOutInFundType) / 1e18;
-
   const purchaseThrough = fundType === 0 ? "BNB" : "USDT";
-
-  // console.log(
-  //   "totalSoldOutInPresaleToken: ",
-  //   totalSoldOutInFundType,
-  //   Number(totalPurchasesInBuyingToken),
-  //   Number(maxTokensToSell)
-  // );
 
   let percentSoldOut =
     (Number(Number(totalPurchasesInBuyingToken) * 1e18) /
