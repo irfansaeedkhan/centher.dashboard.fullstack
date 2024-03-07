@@ -647,6 +647,24 @@ export class BlockchainRead {
     }
   }
 
+  static async launchpadPresaleDetails(
+    signer: JsonRpcSigner | JsonRpcProvider,
+    presaleToken: string
+  ): Promise<any> {
+    try {
+      const launchpadContract = SmartContractProvider.getContract(
+        SmartContractName.LAUNCHPAD,
+        signer
+      );
+
+      const presaleDetails = await launchpadContract.presaleInfo(presaleToken);
+
+      return presaleDetails;
+    } catch (error: any) {
+      logger(error, "launchpadPresaleDetails");
+    }
+  }
+
   static async presaleAlreadyCreated(
     token: string,
     signer?: JsonRpcSigner

@@ -45,7 +45,7 @@ const CreateLaunchpad: NextPageWithLayout = () => {
   >(null);
   const [formState, setFormState] = useState<FormState>(initialFormState);
 
-  const [presaleDetails, setPresaleDetails] = useState<any>([]);
+  // const [presaleDetails, setPresaleDetails] = useState<any>(null);
 
   const { sdk } = useLaunchpad();
 
@@ -54,6 +54,28 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       return prev + Number(current.total_selling_amount);
     }, 0);
   }, [formState.rounds_settings.round]);
+
+  const getPresaleDetail = useCallback(async () => {
+    if (formState.verify_token.token_address === "") return;
+    if (!signer) return;
+    try {
+      const isCreated = await BlockchainRead.presaleAlreadyCreated(
+        formState.verify_token.token_address,
+        signer
+      );
+      if (isCreated) {
+        const data = await BlockchainRead.launchpadPresaleDetails(
+          signer,
+          formState.verify_token.token_address
+        );
+
+        // setPresaleDetails(data);
+        return data;
+      }
+    } catch (e) {
+      customLog(["development", "staging"], e);
+    }
+  }, [formState.verify_token.token_address, signer]);
 
   const getAllowance = useCallback(
     async (flag = true) => {
@@ -167,22 +189,26 @@ const CreateLaunchpad: NextPageWithLayout = () => {
     })();
   }, [formState.verify_token.token_address, signer, totalPresaleSellingAmount]);
 
-  useEffect(() => {
-    if (formState.verify_token.token_address === "") return;
-    (async () => {
-      try {
-        if (sdk) {
-          let result = await sdk.getPresale(
-            formState.verify_token.token_address
-          );
+  // useEffect(() => {
+  //   if (formState.verify_token.token_address === "") return;
+  //   (async () => {
+  //     try {
+  //       if (sdk) {
+  //         let result = await sdk.getPresale(
+  //           formState.verify_token.token_address
+  //         );
 
-          setPresaleDetails(result);
-        }
-      } catch (e) {
-        customLog(["development", "staging"], e);
-      }
-    })();
-  }, [formState.verify_token.token_address, sdk]);
+  //         setPresaleDetails(result);
+  //       }
+  //     } catch (e) {
+  //       customLog(["development", "staging"], e);
+  //     }
+  //   })();
+  // }, [formState.verify_token.token_address, sdk]);
+
+  // useEffect(() => {
+  //   getPresaleDetail();
+  // }, [getPresaleDetail]);
 
   const uploadMetaData = async () => {
     try {
@@ -381,9 +407,11 @@ const CreateLaunchpad: NextPageWithLayout = () => {
         await createPresaleOnLaunchpad(ipfsUrl);
       }
 
+      const presaleData = await getPresaleDetail();
+
       if (
         formState.verify_token.multilevel_reward === "recurring_return" &&
-        !presaleDetails.isActive
+        Number(presaleData.affiliateSetup) !== 2
       ) {
         await setRefSettings();
       }
