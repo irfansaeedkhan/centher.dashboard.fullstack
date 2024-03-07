@@ -51,10 +51,14 @@ export const BuyToken: React.FC<Props> = ({
   currentRound = currentRound - 1;
 
   const checkBalance = useCallback(async () => {
-    const provider = getProvider();
-    if (!user || !provider) return;
+    // const provider = getProvider();
+    const signer = getSigner();
+
+    if (!user || !signer) return;
     try {
       if (fundType === 0) {
+        const token = await BlockchainRead.getWalletBalance(signer);
+        setTokenBalance(Number(token));
       } else {
         const token =
           process.env.NEXT_PUBLIC_APP_ENV === "production"
@@ -64,7 +68,7 @@ export const BuyToken: React.FC<Props> = ({
         const balance = await BlockchainRead.getERC20Balance(
           user._id,
           token,
-          provider
+          signer
         );
 
         setTokenBalance(Number(balance));
@@ -72,7 +76,7 @@ export const BuyToken: React.FC<Props> = ({
     } catch (err) {
       customLog(["development", "staging"], err);
     }
-  }, [fundType, getProvider, user]);
+  }, [user, getSigner, fundType]);
 
   const loadRoundDetails = useCallback(async () => {
     if (currentRound < 0) return;
