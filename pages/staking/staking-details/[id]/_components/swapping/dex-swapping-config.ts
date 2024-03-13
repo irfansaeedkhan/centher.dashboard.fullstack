@@ -1,6 +1,6 @@
 import { ChainId, V3_SUBGRAPHS } from "@pancakeswap/chains";
 import { GraphQLClient } from "graphql-request";
-import { bsc, goerli } from "viem/chains";
+import { bsc, goerli, sepolia } from "viem/chains";
 import { createPublicClient, http } from "viem";
 import {
   OnChainProvider,
@@ -20,17 +20,17 @@ export const dexSwappingConfig: IDexConfig = {
   chainId:
     process.env.NEXT_PUBLIC_APP_ENV === "production"
       ? ChainId.BSC
-      : ChainId.GOERLI,
+      : ChainId.SEPOLIA,
   goerliTokens: [
     {
       address: "0x0000000000000000000000000000000000000000",
       icon: "bnb-icon.svg",
       is_native: true,
-      name: "Goerli",
+      name: "Sepolia",
       symbol: "ETH",
       decimal: 18,
-      projectLink: "https://goerli.etherscan.io/",
-      ChainId: ChainId.GOERLI,
+      projectLink: "https://sepolia.etherscan.io/",
+      ChainId: ChainId.SEPOLIA,
     },
     {
       address: "0xabf0295bEaa3e69bf09b3e20634463E2439A2B3A",
@@ -87,12 +87,14 @@ export const dexSwappingConfig: IDexConfig = {
   ],
 };
 
-export const SUPPORTED_CHAINS = [ChainId.BSC, ChainId.GOERLI] as const;
+export const SUPPORTED_CHAINS = [ChainId.BSC, ChainId.SEPOLIA] as const;
 
 export type SupportedChainId = (typeof SUPPORTED_CHAINS)[number];
 
 export const v3SubgraphClients: Record<SupportedChainId, GraphQLClient> = {
-  [ChainId.GOERLI]: new GraphQLClient(V3_SUBGRAPHS[ChainId.GOERLI], { fetch }),
+  [ChainId.SEPOLIA]: new GraphQLClient(V3_SUBGRAPHS[ChainId.SEPOLIA], {
+    fetch,
+  }),
   [ChainId.BSC]: new GraphQLClient(V3_SUBGRAPHS[ChainId.BSC], { fetch }),
 } as const;
 
@@ -101,10 +103,10 @@ const bscClient = createPublicClient({
   transport: http("https://bsc-dataseed1.binance.org"),
 });
 
-const goerliClient = createPublicClient({
-  chain: goerli,
+const sepoliaClient = createPublicClient({
+  chain: sepolia,
   transport: http(
-    "https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
+    "https://sepolia.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
   ),
 });
 
@@ -117,8 +119,8 @@ export const viemProviders: OnChainProvider = ({
   switch (chainId) {
     case ChainId.BSC:
       return bscClient;
-    case ChainId.GOERLI:
-      return goerliClient;
+    case ChainId.SEPOLIA:
+      return sepoliaClient;
     default:
       return bscClient;
   }

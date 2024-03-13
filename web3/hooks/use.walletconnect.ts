@@ -19,7 +19,7 @@ export const useWalletConnectService = () => {
   const { showModal, hideModal } = useGlobalModalContext();
 
   const supportedChainId = useMemo(() => {
-    return process.env.NEXT_PUBLIC_APP_ENV == "production" ? 56 : 5; // 56 >> BSC , 5 >> GOERLI
+    return process.env.NEXT_PUBLIC_APP_ENV == "production" ? 56 : 11155111; // 56 >> BSC , 11155111 >> SEPOLIA
   }, []);
 
   const showModalMethod = useCallback(() => {

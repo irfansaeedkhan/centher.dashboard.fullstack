@@ -21,83 +21,97 @@ import { BigNumber } from "ethers";
 export const BlockchainConfig: IBlockchainConfig = {
   supportedNetworks: {
     [Networks.BSC]: true,
-    [Networks.GOERLI]: true,
+    [Networks.SEPOLIA]: true,
   },
   contracts: {
     CENTHER_TOKEN: {
       // CENTHER Token Contract Address
       56: "0x0000000000000000000000000000000000000000",
-      5: "0x2b6526F243a5cF6fBe25a3a1C15aEBa94Cfb0Ff0",
+      // 5: "0x2b6526F243a5cF6fBe25a3a1C15aEBa94Cfb0Ff0",
+      11155111: "0x0000000000000000000000000000000000000000",
     },
     REGISTRATION: {
       // Register Contract Address
       56: "0x31fEeD5619fBF3a870E1dD0bCc6465512FBD0381",
-      5: "0x538584360a8ec67338Ce73721585aC386d7a4e6E",
+      // 5: "0x538584360a8ec67338Ce73721585aC386d7a4e6E",
+      11155111: "0xE90352E7166f8Ed132b629EC6D3aCA4d14816404",
     },
     PRESALE: {
       // Presale Contract Address
       56: "0x01F0f48596c4Abae49418210385b7aF882A3cb4e",
-      // 5: "0x1Ee9fD67ceA1E5Ea130a6ceAAe51EA8c7BF65Ec8", // "0x2E4BcE6cD74133a68FADb5855AcA92EAE77BE303",
-      5: "0x5Eaf2D08FA62220AC064Df5e47521cB7cc16F964",
+      // 5: "0x5Eaf2D08FA62220AC064Df5e47521cB7cc16F964", // 5: "0x1Ee9fD67ceA1E5Ea130a6ceAAe51EA8c7BF65Ec8", // "0x2E4BcE6cD74133a68FADb5855AcA92EAE77BE303",
+      11155111: "0x6DeB9F277B02bC26781a3AD5A0551f46ee36D9e1",
     },
     MARKETPALCE: {
       56: "0x08c4153B3fDa5215cd284c58e7Cb641df0f54d29",
-      5: "0x05901C4ef5742D2dE298a7970C38b0de4412BfD9",
+      // 5: "0x05901C4ef5742D2dE298a7970C38b0de4412BfD9",
+      11155111: "0x92b2C5eFd3F8c7988Afd8aeb3BCe6ac69823a929",
     },
     OLD_MARKETPALCE: {
       56: "0x761135A25bB3b5e4Cad435073735a54B6E624Ea6",
-      5: "0xc7E952Ae4C3Ad5Dc8Aa0E615De9d9780305a3437",
+      // 5: "0xc7E952Ae4C3Ad5Dc8Aa0E615De9d9780305a3437",
+      11155111: "0x0000000000000000000000000000000000000000",
     },
     MULTICALL: {
       // Multicall Contract Address
       56: "0x0000000000000000000000000000000000000000",
-      5: "0xd753294Cc2F2be848C1cfAAffceEB2F4d7899B1f",
+      // 5: "0xd753294Cc2F2be848C1cfAAffceEB2F4d7899B1f",
+      11155111: "0x0000000000000000000000000000000000000000",
     },
     PANCAKE_ROUTER: {
       56: "0x0000000000000000000000000000000000000000",
-      5: "0xd753294Cc2F2be848C1cfAAffceEB2F4d7899B1f",
+      // 5: "0xd753294Cc2F2be848C1cfAAffceEB2F4d7899B1f",
+      11155111: "0x0000000000000000000000000000000000000000",
     },
     WBNB: {
       56: "0x0000000000000000000000000000000000000000",
-      5: "0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6",
+      // 5: "0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6",
+      11155111: "0x0000000000000000000000000000000000000000",
     },
     BUSD: {
       56: "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56",
-      5: "0x143c4546F845d3883B16dd2D90CfA371A2bB3EB9", // "0x60194b3eDF9b95A6087FE1940275AE7036641dd8",
+      // 5: "0x143c4546F845d3883B16dd2D90CfA371A2bB3EB9", // "0x60194b3eDF9b95A6087FE1940275AE7036641dd8",
+      11155111: "0x37D6Eb070d29B503e4fc882F6Dc47F2DD201E016",
     },
     USDT: {
       56: "0x55d398326f99059fF775485246999027B3197955",
-      5: "0x1B855BF0e0eDBF394cB8F74D906d8d93A1C2D6e0",
+      // 5: "0x1B855BF0e0eDBF394cB8F74D906d8d93A1C2D6e0",
+      11155111: "0x37D6Eb070d29B503e4fc882F6Dc47F2DD201E016",
     },
     NTR: {
       56: "0x8182ac1C5512EB67756A89C40fadB2311757bD32",
-      5: "0x82844F286e6f441827610D9f06E6831635bE252c", // "0x4fF5719EF59e28aA5fd86c50Af2a3563cC01905B",
+      // 5: "0x82844F286e6f441827610D9f06E6831635bE252c", // "0x4fF5719EF59e28aA5fd86c50Af2a3563cC01905B",
+      11155111: "0x37D6Eb070d29B503e4fc882F6Dc47F2DD201E016",
     },
     NATIVE_COLLECTION: {
       56: "0x67d19ebb78a0c4610f9a51a95b41868e39864d04",
-      5: "0x0fb63a3666bf6078d0beb546ea82cb39d85a3b55",
+      // 5: "0x0fb63a3666bf6078d0beb546ea82cb39d85a3b55",
+      11155111: "0x0000000000000000000000000000000000000000",
     },
     DXC: {
       56: "0xEcb4c542DE0d7AF3aA294c5c4Ae0BefE8E93bD9c", //"0x1981D10B9Bb0990A4637126b4bdFA0e8e0bA903A"
-      5: "0xBA6FF371D403A7710335BB426A4889773f8FAD1e",
+      // 5: "0xBA6FF371D403A7710335BB426A4889773f8FAD1e",
+      11155111: "0x38d5bfEB6A7F1b755217dB6D1E713BEeF2A6fdAb",
     },
     NFT_ADAPTER: {
       56: "0x8B2825469a27980462E6cf05117aC967eb50b6bA",
-      5: "0xC8DA70cF9625C710D34b97927a5b3a80EF298a1d",
+      // 5: "0xC8DA70cF9625C710D34b97927a5b3a80EF298a1d",
+      11155111: "0x0000000000000000000000000000000000000000",
     },
     STAKING: {
       56: "0xb2328A1Cd08F72B17ED32B17f76FcDfa383Bbd32",
-      5: "0xef326CdAdA59D3A740A76bB5f4F88Fb2f1076164",
+      // 5: "0xef326CdAdA59D3A740A76bB5f4F88Fb2f1076164",
+      11155111: "0xe70D117CB035923E96B5b16F7c69D3b7Da873Ec3",
     },
   },
   network:
     process.env.NEXT_PUBLIC_APP_ENV === "production"
       ? Networks.BSC
-      : Networks.GOERLI,
+      : Networks.SEPOLIA,
   rpcProvider:
     process.env.NEXT_PUBLIC_APP_ENV === "production"
       ? "https://bsc-dataseed1.binance.org"
-      : "https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
+      : "https://sepolia.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
   abis: {
     CENTHER_TOKEN: centherAbi,
     REGISTRATION: registrationAbi,
@@ -158,7 +172,7 @@ export const BlockchainConfig: IBlockchainConfig = {
     url:
       process.env.NEXT_PUBLIC_APP_ENV === "production"
         ? "https://bscscan.com"
-        : "https://goerli.etherscan.io",
+        : "https://sepolia.etherscan.io",
   },
   ipfsUrl:
     process.env.NEXT_PUBLIC_IPFS_GATEWAY_URL ||
@@ -166,7 +180,7 @@ export const BlockchainConfig: IBlockchainConfig = {
   subgraphUrl:
     process.env.NEXT_PUBLIC_APP_ENV === "production"
       ? "https://api.thegraph.com/subgraphs/name/sasimraza/centher-production"
-      : "https://api.thegraph.com/subgraphs/name/sasimraza/centher-launchpad-v1", // "https://api.thegraph.com/subgraphs/name/rezahssini/citizen-collection"
+      : "https://api.thegraph.com/subgraphs/name/sasimraza/centher-production-sepolia",
 };
 
 export const SwapCollection =
