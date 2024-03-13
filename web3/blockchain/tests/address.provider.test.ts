@@ -16,13 +16,13 @@ describe("address provider", () => {
     const name = SmartContractName.MARKETPALCE;
     const { abi, address } =
       AddressFactory.getContractInitializationDependencies(name);
-    expect(address).toEqual(BlockchainConfig.contracts[name]["5"]);
+    expect(address).toEqual(BlockchainConfig.contracts[name]["11155111"]);
   });
 
   it("should return address", () => {
     const name = SmartContractName.MARKETPALCE;
     const address = AddressFactory.getContractAddress(name);
-    expect(address).toEqual(BlockchainConfig.contracts[name]["5"]);
+    expect(address).toEqual(BlockchainConfig.contracts[name]["11155111"]);
   });
 
   it("should throw error", () => {

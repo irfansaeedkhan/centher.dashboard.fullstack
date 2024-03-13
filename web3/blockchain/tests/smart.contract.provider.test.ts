@@ -21,7 +21,7 @@ describe("Smart contract provider", () => {
     const name = SmartContractName.MARKETPALCE;
     const spy = jest.spyOn(SmartContractProvider, "getContractInstance");
     const abi = BlockchainConfig.abis[name];
-    const address = BlockchainConfig.contracts[name]["5"];
+    const address = BlockchainConfig.contracts[name]["11155111"];
     const result = SmartContractProvider.getContract(name);
 
     expect(spy).toBeCalledWith(abi, address, undefined);
