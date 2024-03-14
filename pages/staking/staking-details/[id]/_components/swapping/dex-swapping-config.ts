@@ -20,7 +20,7 @@ export const dexSwappingConfig: IDexConfig = {
   chainId:
     process.env.NEXT_PUBLIC_APP_ENV === "production"
       ? ChainId.BSC
-      : ChainId.SEPOLIA,
+      : ChainId.GOERLI,
   goerliTokens: [
     {
       address: "0x0000000000000000000000000000000000000000",
@@ -30,7 +30,7 @@ export const dexSwappingConfig: IDexConfig = {
       symbol: "ETH",
       decimal: 18,
       projectLink: "https://sepolia.etherscan.io/",
-      ChainId: ChainId.SEPOLIA,
+      ChainId: ChainId.GOERLI,
     },
     {
       address: "0xabf0295bEaa3e69bf09b3e20634463E2439A2B3A",
@@ -87,12 +87,12 @@ export const dexSwappingConfig: IDexConfig = {
   ],
 };
 
-export const SUPPORTED_CHAINS = [ChainId.BSC, ChainId.SEPOLIA] as const;
+export const SUPPORTED_CHAINS = [ChainId.BSC, ChainId.GOERLI] as const;
 
 export type SupportedChainId = (typeof SUPPORTED_CHAINS)[number];
 
 export const v3SubgraphClients: Record<SupportedChainId, GraphQLClient> = {
-  [ChainId.SEPOLIA]: new GraphQLClient(V3_SUBGRAPHS[ChainId.SEPOLIA], {
+  [ChainId.GOERLI]: new GraphQLClient(V3_SUBGRAPHS[ChainId.GOERLI], {
     fetch,
   }),
   [ChainId.BSC]: new GraphQLClient(V3_SUBGRAPHS[ChainId.BSC], { fetch }),
@@ -106,7 +106,8 @@ const bscClient = createPublicClient({
 const sepoliaClient = createPublicClient({
   chain: sepolia,
   transport: http(
-    "https://sepolia.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
+    "https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
+    // "https://sepolia.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
   ),
 });
 
@@ -119,7 +120,7 @@ export const viemProviders: OnChainProvider = ({
   switch (chainId) {
     case ChainId.BSC:
       return bscClient;
-    case ChainId.SEPOLIA:
+    case ChainId.GOERLI:
       return sepoliaClient;
     default:
       return bscClient;
