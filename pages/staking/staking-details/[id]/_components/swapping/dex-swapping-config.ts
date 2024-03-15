@@ -26,10 +26,10 @@ export const dexSwappingConfig: IDexConfig = {
       address: "0x0000000000000000000000000000000000000000",
       icon: "bnb-icon.svg",
       is_native: true,
-      name: "Sepolia",
+      name: "Goerli",
       symbol: "ETH",
       decimal: 18,
-      projectLink: "https://sepolia.etherscan.io/",
+      projectLink: "https://goerli.etherscan.io/",
       ChainId: ChainId.GOERLI,
     },
     {
@@ -103,11 +103,11 @@ const bscClient = createPublicClient({
   transport: http("https://bsc-dataseed1.binance.org"),
 });
 
-const sepoliaClient = createPublicClient({
-  chain: sepolia,
+const goerliClient = createPublicClient({
+  chain: goerli,
   transport: http(
     "https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
-    // "https://sepolia.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
+    // "https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
   ),
 });
 
@@ -121,7 +121,7 @@ export const viemProviders: OnChainProvider = ({
     case ChainId.BSC:
       return bscClient;
     case ChainId.GOERLI:
-      return sepoliaClient;
+      return goerliClient;
     default:
       return bscClient;
   }
