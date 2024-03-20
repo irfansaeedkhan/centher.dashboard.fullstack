@@ -47,21 +47,21 @@ export const NFTImageCard: React.FC<NFTImageCardProps> = ({ data }) => {
     seconds: 0,
   });
 
-  useEffect(() => {
-    const setSwapHistory = async () => {
-      const provider = getProvider();
-      if (data && provider) {
-        const isSwaped = await BlockchainRead.isTokenSwaped(
-          provider,
-          data.collection,
-          +data.tokenId
-        );
-        setSwapedBefore(isSwaped);
-      }
-    };
+  // useEffect(() => {
+  //   const setSwapHistory = async () => {
+  //     const provider = getProvider();
+  //     if (data && provider) {
+  //       const isSwaped = await BlockchainRead.isTokenSwaped(
+  //         provider,
+  //         data.collection,
+  //         +data.tokenId
+  //       );
+  //       setSwapedBefore(isSwaped);
+  //     }
+  //   };
 
-    setSwapHistory();
-  }, [data, getProvider]);
+  //   setSwapHistory();
+  // }, [data, getProvider]);
 
   useEffect(() => {
     if (+data.endTime === 0) {

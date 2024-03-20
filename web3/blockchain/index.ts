@@ -1050,6 +1050,7 @@ export class BlockchainWrite {
       );
 
       const castedFee = ethers.utils.parseEther(fee.toString());
+
       await marketplaceContract.callStatic.createCollection(
         name,
         symbol,
