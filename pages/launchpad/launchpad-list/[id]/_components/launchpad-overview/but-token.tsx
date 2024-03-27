@@ -63,7 +63,7 @@ export const BuyToken: React.FC<Props> = ({
         const token =
           process.env.NEXT_PUBLIC_APP_ENV === "production"
             ? BlockchainConfig.contracts.USDT[56]
-            : BlockchainConfig.contracts.USDT[5];
+            : BlockchainConfig.contracts.USDT[11155111];
 
         const balance = await BlockchainRead.getERC20Balance(
           user._id,
