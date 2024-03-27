@@ -17,12 +17,12 @@ const mainnet = {
   rpcUrl: "https://bsc-dataseed1.binance.org",
 };
 
-const goerli = {
-  chainId: 5,
-  name: "GOERLI",
+const sepolia = {
+  chainId: 11155111,
+  name: "SEPOLIA",
   currency: "ETH",
-  explorerUrl: "https://goerli.etherscan.io/",
-  rpcUrl: "https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
+  explorerUrl: "https://sepolia.etherscan.io/",
+  rpcUrl: "https://sepolia.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
 };
 
 // 3. Create modal
@@ -42,7 +42,7 @@ createWeb3Modal({
     rpcUrl: BlockchainConfig.rpcProvider,
   }),
   chains:
-    process.env.NEXT_PUBLIC_APP_ENV == "production" ? [mainnet] : [goerli],
+    process.env.NEXT_PUBLIC_APP_ENV == "production" ? [mainnet] : [sepolia],
   projectId,
 });
 

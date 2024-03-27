@@ -9,7 +9,7 @@ export const MONTH = 60 * 5; // DAY * 30;
 
 export const supportedNetworksList: SupportedNetworksList = {
   [Networks.BSC]: true,
-  [Networks.GOERLI]: true,
+  [Networks.SEPOLIA]: true,
 };
 
 export const MaxUint256 = ethers.constants.MaxUint256;

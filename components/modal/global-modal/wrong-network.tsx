@@ -6,12 +6,12 @@ import { MetaMaskInpageProvider } from "@metamask/providers";
 import { BlockchainConfig } from "@/web3/blockchain/config";
 
 const Networks = {
-  "0x5": {
-    chainName: "Goerli",
+  "0xaa36a7": {
+    chainName: "Sepolia",
     rpc: BlockchainConfig.rpcProvider,
     nativeCurrency: {
-      name: "GoerliETH",
-      symbol: "GoerliETH",
+      name: "SepoliaETH",
+      symbol: "SepoliaETH",
       decimals: 18,
     },
     blockExplorerUrls: BlockchainConfig.scanner.url,
@@ -31,7 +31,9 @@ export const WrongNetworkModal = () => {
   const { hideModal, MODAL_TYPES } = useGlobalModalContext();
 
   const supportedChainId = useMemo(() => {
-    return process.env.NEXT_PUBLIC_APP_ENV == "production" ? "0x38" : "0x5"; // 0x38 >> BSC , 0x5 >> GOERLI
+    return process.env.NEXT_PUBLIC_APP_ENV == "production"
+      ? "0x38"
+      : "0xaa36a7"; // 0x38 >> BSC , 0xaa36a7 >> Sepolia
   }, []);
 
   const addNetwork = () => {
