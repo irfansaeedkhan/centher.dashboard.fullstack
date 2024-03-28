@@ -13,7 +13,7 @@ const sortOptions = [
     value: "1",
   },
   {
-    label: "a-z",
+    label: "Z-A",
     value: "2",
   },
 ];

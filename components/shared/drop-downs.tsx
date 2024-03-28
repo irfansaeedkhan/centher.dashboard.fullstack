@@ -35,6 +35,12 @@ export const Dropdowns: React.FC<DropdownProps> = ({
     setIsOpen(false);
   });
 
+  const selectedOption = options.find(
+    (option) => option.value === selectedValue
+  );
+
+  const selectedLabel = selectedOption ? selectedOption.label : "";
+
   return (
     <div
       ref={ref}
@@ -51,7 +57,11 @@ export const Dropdowns: React.FC<DropdownProps> = ({
         onClick={() => setIsOpen(!isOpen)}
       >
         <div className="flex w-full items-center justify-between">
-          {placeholder && <span>{placeholder}</span>}
+          {selectedValue === "" ? (
+            <span>{placeholder}</span>
+          ) : (
+            <span>{selectedLabel}</span>
+          )}
           {isOpen ? (
             <span className="flex flex-shrink-0">
               <ArrowUpGradient />
