@@ -19,7 +19,7 @@ import { parseEther } from "ethers/lib/utils";
 
 const LaunchpadList: NextPageWithLayout = () => {
   const router = useRouter();
-  const { list_type } = router.query;
+  const { list_type, sort } = router.query;
   const { sdk } = useLaunchpad();
 
   const [projects, setProjects] = useState<LaunchpadDataType[]>([]);
@@ -145,22 +145,53 @@ const LaunchpadList: NextPageWithLayout = () => {
     });
 
     if (list_type === "all") {
-      setProjects(filtered);
+      if (sort === "asc") {
+        setProjects(
+          filtered.sort((a, b) => (a.token_name < b.token_name ? -1 : 1))
+        );
+      } else if (sort === "dsc") {
+        setProjects(
+          filtered.sort((a, b) => (a.token_name < b.token_name ? 1 : -1))
+        );
+      } else {
+        setProjects(filtered);
+      }
     }
 
     if (list_type === "live") {
       const liveFilter = filtered.filter((item) => item.status === "live");
-      setProjects(liveFilter);
+      if (sort === "asc") {
+        setProjects(
+          liveFilter.sort((a, b) => (a.token_name < b.token_name ? -1 : 1))
+        );
+      } else if (sort === "dsc") {
+        setProjects(
+          liveFilter.sort((a, b) => (a.token_name < b.token_name ? 1 : -1))
+        );
+      } else {
+        setProjects(liveFilter);
+      }
     }
 
     if (list_type === "upcoming") {
       const upcomingFilter = filtered.filter(
         (item) => item.status === "upcoming"
       );
-      setProjects(upcomingFilter);
+
+      if (sort === "asc") {
+        setProjects(
+          upcomingFilter.sort((a, b) => (a.token_name < b.token_name ? -1 : 1))
+        );
+      } else if (sort === "dsc") {
+        setProjects(
+          upcomingFilter.sort((a, b) => (a.token_name < b.token_name ? 1 : -1))
+        );
+      } else {
+        setProjects(upcomingFilter);
+      }
     }
     setIsLoading(false);
-  }, [list_type, sdk]);
+  }, [list_type, sdk, sort]);
 
   useEffect(() => {
     loadSdk();

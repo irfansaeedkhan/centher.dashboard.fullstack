@@ -28,7 +28,7 @@ export const TabsWrapper: React.FC<Props> = ({ children }) => {
         <div className="scrollSetLight2 flex w-full max-w-[420px] flex-shrink-0 items-center gap-4 overflow-x-auto py-2">
           <div
             onClick={() => {
-              router.push("/launchpad/launchpad-list/?list_type=all");
+              router.push("/launchpad/launchpad-list/?list_type=all?sort=asc");
             }}
             className={clsx(
               router.query.list_type === "all" && "myBox font-medium",
