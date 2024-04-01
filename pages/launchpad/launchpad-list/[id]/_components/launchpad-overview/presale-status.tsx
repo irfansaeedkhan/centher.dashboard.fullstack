@@ -20,7 +20,7 @@ export const PresaleStatus: React.FC<PresaleDataProps> = ({
 }) => {
   const purchasesThrough = fundType === 0 ? "BNB" : "USDT";
 
-  const roundDetails = roundInfos[currentRound];
+  const roundDetails = roundInfos[currentRound - 1];
 
   return (
     <>
