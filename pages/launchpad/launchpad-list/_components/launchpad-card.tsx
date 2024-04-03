@@ -98,7 +98,7 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
             <p className="text-sm font-medium text-white">{liquidity}%</p>
           </div> */}
           <div className="flex w-full items-center justify-between gap-3">
-            <p className="text-sm text-gray-shade-14">Lockup Time %:</p>
+            <p className="text-sm text-gray-shade-14">Lockup Time:</p>
             <p className="text-sm font-medium text-white">
               {Number(lockup_time) * 30} days
             </p>
