@@ -13,8 +13,6 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
 }) => {
   const [currentRound, setCurrentRound] = useState(1);
 
-  // let currentDate = new Date();
-
   const handleChangeEvent = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormState((prev) => {
@@ -39,9 +37,10 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
 
   const handleStartDateChangeEvent = (value: Date | null) => {
     if (currentRound === 1 && value !== null) {
-      const currentDate = new Date();
-      const oneMinuteEarlier = new Date(currentDate);
-      oneMinuteEarlier.setMinutes(currentDate.getMinutes() - 1);
+      // const currentDate = new Date();
+      const oneMinuteEarlier = new Date(Date.now() - 10 * 60 * 60 * 1000);
+      // thirtyMinuteLater.setMinutes(currentDate.getMinutes() - 1);
+
       if (value < oneMinuteEarlier) {
         toast.error("Start time must be greater than todays date");
         setFormState((prev) => {
