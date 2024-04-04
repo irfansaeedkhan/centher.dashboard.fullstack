@@ -38,7 +38,7 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
   const handleStartDateChangeEvent = (value: Date | null) => {
     if (currentRound === 1 && value !== null) {
       // const currentDate = new Date();
-      const oneMinuteEarlier = new Date(Date.now() - 10 * 60 * 60 * 1000);
+      const oneMinuteEarlier = new Date(Date.now() - 1 * 60 * 1000);
       // thirtyMinuteLater.setMinutes(currentDate.getMinutes() - 1);
 
       if (value < oneMinuteEarlier) {
