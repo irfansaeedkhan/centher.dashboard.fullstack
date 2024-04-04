@@ -18,6 +18,7 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
   fundType,
   progress,
   currentRound,
+  minTokensToSell,
 }) => {
   const router = useRouter();
   return (
@@ -56,7 +57,7 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
                 {fundType === "BNB" ? <BNBIcon /> : <USDTIcon />}
               </span>
               <span>
-                {Number(soft_cap) / 1e18} {fundType}
+                {Number(minTokensToSell) / 1e18} {fundType}
               </span>
             </p>
             <p className="text-sm leading-6 text-gray-shade-14">

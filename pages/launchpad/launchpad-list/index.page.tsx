@@ -119,18 +119,19 @@ const LaunchpadList: NextPageWithLayout = () => {
         softcapInQuoteToken += Number(
           tokensToSell.mul(pricePerToken).div(parseEther("1"))
         );
+
+        anotherSoftVal += Number(item.roundInfos[i].tokensToSell);
       }
 
       const progress =
-        (Number(item.totalPurchasesInBuyingToken) /
-          Number(softcapInQuoteToken)) *
+        (Number(item.totalPurchasesInBuyingToken) / Number(anotherSoftVal)) *
         100;
 
       return {
         id: item.id,
         token_name: tokenDetails[i].token_name,
         token_symbol: tokenDetails[i].token_symbol,
-        soft_cap: softcapInQuoteToken,
+        soft_cap: anotherSoftVal,
         lockup_time: item.roundInfos[0].lockMonths,
         liquidity: item.maxTokensToSell,
         launchpad_title: item.id,
@@ -141,6 +142,9 @@ const LaunchpadList: NextPageWithLayout = () => {
         fundType: item.fundType === 0 ? "BNB" : "BUSD",
         progress: progress !== 0 ? progress.toFixed(4).toString() : "0",
         currentRound: currentRound,
+        totalRounds: item.roundInfos.length,
+        minTokensToSell: item.minTokensToSell,
+        maxTokensToSell: item.maxTokensToSell,
       };
     });
 
