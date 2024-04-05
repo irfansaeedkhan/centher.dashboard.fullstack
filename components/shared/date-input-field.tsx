@@ -2,7 +2,7 @@ import React from "react";
 import clsx from "clsx";
 import { BiCalendar } from "react-icons/bi";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
-import { Datepicker } from "@aliakbarazizi/headless-datepicker";
+import { Datepicker } from "headless-datetimepicker";
 import cn from "@/utils/cn";
 import Button from "@/components/button";
 
@@ -21,13 +21,17 @@ export const DateInputField: React.FC<Props> = ({
 }) => {
   return (
     <div className={gradientBorderInputMain}>
-      <label htmlFor="start_time" className={label}>
+      <label htmlFor={title.trim()} className={label}>
         {title}
         <span className={labelSpan}>*</span>
       </label>
       <div className={gradientBorderInputParent}>
-        <Datepicker onChange={handleChangeEvent} value={value}>
+        <Datepicker
+          onChange={(value) => handleChangeEvent(value)}
+          value={value}
+        >
           <Datepicker.Input
+            min={Date.now()}
             format={
               type === "date"
                 ? "dd-MMM-yyyy"
@@ -48,7 +52,7 @@ export const DateInputField: React.FC<Props> = ({
           >
             {({ monthName, hour, minute, year }) => (
               <>
-                <div className="flex h-14 w-full items-center justify-between gap-3 border-b border-gray-shade-3 px-2 pb-2 pt-4 rtl:space-x-reverse fsm:gap-6 flg:px-4">
+                <div className="flex h-14 w-full items-center justify-between gap-3 border-b border-gray-shade-3 px-2 pb-2 pt-4 fsm:gap-6 flg:px-4 rtl:space-x-reverse">
                   <Datepicker.Button
                     action="prev"
                     className="flex h-5 w-5 flex-shrink-0 items-center rounded-full hover:text-white fsm:hover:bg-gray-700"
@@ -228,5 +232,5 @@ const gradientBorderInput =
   "relative block w-full appearance-none rounded-lg border-0 bg-gray-shade-24 px-5 py-3 text-sm placeholder:font-semibold placeholder:text-gray-shade-17 focus:outline-none focus:ring-0";
 const gradientBorderInputMain =
   "col-span-full mb-6 text-sm font-medium text-white fmd:mb-0 fmd:col-span-1";
-const label = "block font-normal tracking-wide";
+const label = "block font-normal tracking-wide w-fit";
 const labelSpan = "text-gradient ml-[2px]";
