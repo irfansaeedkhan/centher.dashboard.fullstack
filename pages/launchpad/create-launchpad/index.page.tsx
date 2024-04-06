@@ -49,6 +49,12 @@ const CreateLaunchpad: NextPageWithLayout = () => {
 
   const { sdk } = useLaunchpad();
 
+  const atleastPresaleSellingAmount = useMemo(() => {
+    return formState.rounds_settings.round.reduce((prev, current) => {
+      return prev + Number(current.soft_cap_busd);
+    }, 0);
+  }, [formState.rounds_settings.round]);
+
   const totalPresaleSellingAmount = useMemo(() => {
     return formState.rounds_settings.round.reduce((prev, current) => {
       return prev + Number(current.total_selling_amount);
@@ -320,6 +326,10 @@ const CreateLaunchpad: NextPageWithLayout = () => {
         };
         roundParams.push(roundData);
       }
+
+      presaleInfoParams.minTokensToSell = parseEther(
+        atleastPresaleSellingAmount.toString()
+      ).toString();
 
       presaleInfoParams.maxTokensToSell = parseEther(
         totalPresaleSellingAmount.toString()

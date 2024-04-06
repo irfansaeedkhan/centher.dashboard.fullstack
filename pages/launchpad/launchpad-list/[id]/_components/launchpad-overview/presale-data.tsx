@@ -37,8 +37,6 @@ export const PresaleData: React.FC<PresaleDataProps> = ({
       Number(roundInfos[i].pricePerToken);
   }
 
-  console.log(fundType);
-
   return (
     <div className="flex h-auto w-full flex-col gap-6 rounded-xl bg-black-shade-9 p-4 fxm:p-6">
       <div className="flex w-full items-center justify-between gap-4">
