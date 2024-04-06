@@ -122,7 +122,7 @@ export const NumberTimeline: React.FC<Props> = ({
           <div className="min-w-[260px]">
             <p className="text-sm text-gray-shade-7">Amount</p>
             <h4 className="mt-[6px] text-sm font-semibold text-white">
-              {claimablePerMonth} {tokenSymbol} ({percentPerMonth}%)
+              {claimablePerMonth?.toFixed(3)} {tokenSymbol} ({percentPerMonth}%)
             </h4>
           </div>
           <Countdown

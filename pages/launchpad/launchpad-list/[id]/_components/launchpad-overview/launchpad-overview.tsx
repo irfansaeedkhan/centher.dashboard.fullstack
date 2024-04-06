@@ -16,11 +16,13 @@ interface Props {
     description: string;
   };
   launchpadData: PresaleDataType;
+  loadSdk: () => void;
 }
 
 export const LaunchpadOverview: React.FC<Props> = ({
   metaData,
   launchpadData,
+  loadSdk,
 }) => {
   let currentRound = -1;
   const nowTime = Number((Date.now() / 1000).toFixed());
@@ -79,6 +81,7 @@ export const LaunchpadOverview: React.FC<Props> = ({
         <BuyToken
           {...launchpadData}
           {...metaData}
+          loadSdk={loadSdk}
           currentRound={currentRound}
         />
       </div>
