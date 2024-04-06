@@ -38,10 +38,8 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
   const handleStartDateChangeEvent = (value: Date | null) => {
     if (value === null) return;
     if (currentRound === 1) {
-      // const currentDate = new Date();
-      console.log("value", value);
       const oneMinuteEarlier = new Date(Date.now() - 1 * 60 * 1000);
-      if (value < oneMinuteEarlier) {
+      if (new Date(value) < oneMinuteEarlier) {
         toast.error("Start time must be greater than todays date");
         setFormState((prev) => {
           return {
@@ -62,6 +60,25 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
           };
         });
         return;
+      } else {
+        setFormState((prev) => {
+          return {
+            ...prev,
+            rounds_settings: {
+              ...prev.rounds_settings,
+              round: prev.rounds_settings.round.map((round) => {
+                if (round.round_no === currentRound) {
+                  return {
+                    ...round,
+                    start_time: value,
+                  };
+                } else {
+                  return round;
+                }
+              }),
+            },
+          };
+        });
       }
     } else if (currentRound === 2) {
       if (
@@ -95,6 +112,25 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
           });
           return;
         }
+      } else {
+        setFormState((prev) => {
+          return {
+            ...prev,
+            rounds_settings: {
+              ...prev.rounds_settings,
+              round: prev.rounds_settings.round.map((round) => {
+                if (round.round_no === currentRound) {
+                  return {
+                    ...round,
+                    start_time: value,
+                  };
+                } else {
+                  return round;
+                }
+              }),
+            },
+          };
+        });
       }
     } else if (currentRound === 3) {
       if (
@@ -128,26 +164,26 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
           });
           return;
         }
+      } else {
+        setFormState((prev) => {
+          return {
+            ...prev,
+            rounds_settings: {
+              ...prev.rounds_settings,
+              round: prev.rounds_settings.round.map((round) => {
+                if (round.round_no === currentRound) {
+                  return {
+                    ...round,
+                    start_time: value,
+                  };
+                } else {
+                  return round;
+                }
+              }),
+            },
+          };
+        });
       }
-    } else {
-      setFormState((prev) => {
-        return {
-          ...prev,
-          rounds_settings: {
-            ...prev.rounds_settings,
-            round: prev.rounds_settings.round.map((round) => {
-              if (round.round_no === currentRound) {
-                return {
-                  ...round,
-                  start_time: value,
-                };
-              } else {
-                return round;
-              }
-            }),
-          },
-        };
-      });
     }
   };
 
