@@ -8,6 +8,7 @@ import { GradientCopy } from "@/assets/svgs";
 import dayjs from "dayjs";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { formatUnits } from "ethers/lib/utils";
+import { BigNumber } from "ethers";
 
 interface PresaleDataProps extends PresaleDataType {
   token_name: string;
@@ -27,7 +28,15 @@ export const PresaleData: React.FC<PresaleDataProps> = ({
   minTokensToSell,
   releaseMonth,
   presaleActive,
+  fundType,
 }) => {
+  let totalSupplyForSell = 0;
+  for (let i = 0; i < roundInfos.length; i++) {
+    totalSupplyForSell +=
+      (Number(roundInfos[i].tokensToSell) * 1e18) /
+      Number(roundInfos[i].pricePerToken);
+  }
+
   return (
     <div className="flex h-auto w-full flex-col gap-6 rounded-xl bg-black-shade-9 p-4 fxm:p-6">
       <div className="flex w-full items-center justify-between gap-4">
@@ -70,19 +79,23 @@ export const PresaleData: React.FC<PresaleDataProps> = ({
         <div className={mainDiv}>
           <div className={textLeft}>Total supply</div>
           <div className={textRight}>
-            {normalizeValue(formatUnits(maxTokensToSell, 18))}
+            {Number(normalizeValue(totalSupplyForSell / 1e18)).toFixed(0)}
           </div>
         </div>
         <div className={mainDiv}>
           <div className={textLeft}>Soft cap</div>
           <div className={textRight}>
-            {normalizeValue(formatUnits(minTokensToSell, 18))}
+            {Number(normalizeValue(formatUnits(minTokensToSell, 18))).toFixed(
+              fundType === 0 ? 4 : 0
+            )}
           </div>
         </div>
         <div className={mainDiv}>
           <div className={textLeft}>Hard cap</div>
           <div className={textRight}>
-            {normalizeValue(formatUnits(maxTokensToSell, 18))}
+            {Number(normalizeValue(formatUnits(maxTokensToSell, 18))).toFixed(
+              fundType === 0 ? 4 : 0
+            )}
           </div>
         </div>
         <div className={mainDiv}>
@@ -104,15 +117,16 @@ export const PresaleData: React.FC<PresaleDataProps> = ({
         <div className={mainDiv}>
           <div className={textLeft}>Vesting Period</div>
           <div className={textRight}>
-            {releaseMonth} {releaseMonth === "1" ? "Month" : "Months"}
-          </div>
-        </div>
-        <div className={mainDiv}>
-          <div className={textLeft}>Lock Period</div>
-          <div className={textRight}>
             {roundInfos[0].lockMonths}{" "}
             {roundInfos[0].lockMonths === "1" ? "Month" : "Months"}
           </div>
+        </div>
+        <div className={mainDiv}>
+          {/* <div className={textLeft}>Lock Period</div>
+          <div className={textRight}>
+            {roundInfos[0].lockMonths}{" "}
+            {roundInfos[0].lockMonths === "1" ? "Month" : "Months"}
+          </div> */}
         </div>
       </div>
     </div>

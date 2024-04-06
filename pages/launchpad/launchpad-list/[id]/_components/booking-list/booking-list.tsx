@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import clsx from "clsx";
 import useUser from "@/hooks/use.user";
 import { MainTimeline, MyBookingsTable } from "./";
@@ -14,13 +14,12 @@ interface Props extends PresaleDataType {
 }
 
 export const BookingList: React.FC<Props> = (props) => {
+  const { user } = useUser();
   const [roundNumber, setRoundNumber] = useState<number>(0);
   const [purchaseTime, setPurchaseTime] = useState<number>(0);
   const [bookingsTab, setBookingsTab] = useState<
     "my-bookings" | "recent-bookings"
   >("my-bookings");
-
-  const { user } = useUser();
 
   let bookings: TokenPurchaseWithBNB[] | TokenPurchaseWithBUSD[];
   let myBookings: TokenPurchaseWithBNB[] | TokenPurchaseWithBUSD[] = [];

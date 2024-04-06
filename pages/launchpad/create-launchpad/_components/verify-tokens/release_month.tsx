@@ -26,6 +26,18 @@ const ReleaseMonth: React.FC<FormStateProps> = ({
       <div className="flex flex-wrap items-center gap-4">
         <RadioButtonComponent
           selectedValue={formState.verify_token.release_month}
+          value={1}
+          additionalValue={"Months"}
+          handleClick={(value) => handleClick(value as number)}
+        />
+        <RadioButtonComponent
+          selectedValue={formState.verify_token.release_month}
+          value={2}
+          additionalValue={"Months"}
+          handleClick={(value) => handleClick(value as number)}
+        />
+        <RadioButtonComponent
+          selectedValue={formState.verify_token.release_month}
           value={3}
           additionalValue={"Months"}
           handleClick={(value) => handleClick(value as number)}

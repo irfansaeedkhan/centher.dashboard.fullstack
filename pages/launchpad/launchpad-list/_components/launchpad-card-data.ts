@@ -139,6 +139,8 @@ export type LaunchpadDataType = {
   fundType: string;
   progress: string;
   currentRound: number;
+  minTokensToSell: string;
+  maxTokensToSell: string;
 };
 
 export type TokenPurchaseWithBNB = {

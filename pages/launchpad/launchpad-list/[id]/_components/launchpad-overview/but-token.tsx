@@ -21,6 +21,7 @@ interface Props extends PresaleDataType {
   website: string;
   description: string;
   currentRound: number;
+  loadSdk: () => void;
 }
 
 export const BuyToken: React.FC<Props> = ({
@@ -30,6 +31,7 @@ export const BuyToken: React.FC<Props> = ({
   currentRound,
   tokenPurchaseWithBNB,
   tokenPurchaseWithBUSD,
+  loadSdk,
 }) => {
   const { user } = useUser();
   const { getSigner, getProvider } = useWallet();
@@ -170,6 +172,7 @@ export const BuyToken: React.FC<Props> = ({
         await BlockchainWrite.buyPresaleToken(false, token, payAmount, signer);
       }
       setPurchased(true);
+      loadSdk();
       setProgressModel(false);
     } catch (error: any) {
       setProgressModel(false);
@@ -249,7 +252,7 @@ export const BuyToken: React.FC<Props> = ({
               </div>
             </div>
             <p className="my-4 ml-1 text-sm font-medium text-gray-shade-14">
-              Balance {formatEther(BigInt(tokenBalance))}
+              Balance {Number(formatEther(BigInt(tokenBalance))).toFixed(2)}
             </p>
             <div className="mb-5 mt-2 border-b-2 border-gray-shade-3"></div>
             <p className="font-small ml-1 text-sm text-gray-shade-14">
@@ -260,8 +263,8 @@ export const BuyToken: React.FC<Props> = ({
               <div className="col-span-2 w-full text-sm font-medium text-white md:col-span-2">
                 <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
                   <CustomNumberInput
+                    readOnly
                     value={receivedAmount === 0 ? "" : receivedAmount}
-                    // onChange={(e) => setReceivedAmount(Number(e.target.value))}
                     placeholder="0"
                     className="block w-full rounded-lg border-0 bg-transparent px-5 py-3 text-2xl placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
                   />

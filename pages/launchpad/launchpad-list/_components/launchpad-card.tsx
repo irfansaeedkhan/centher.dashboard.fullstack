@@ -18,6 +18,7 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
   fundType,
   progress,
   currentRound,
+  minTokensToSell,
 }) => {
   const router = useRouter();
   return (
@@ -34,7 +35,7 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
           </div>
           <div
             className={clsx(
-              "flex h-[30px] items-center justify-center rounded-[10px] px-3 py-[3px] text-xs font-semibold",
+              "flex h-[30px] flex-shrink-0 items-center justify-center rounded-[10px] px-3 py-[3px] text-xs font-semibold",
               status === "live" && "bg-green-shade-1/[0.16] text-green-shade-1",
               status === "ended" && "bg-red-shade-1/[0.16] text-red-shade-1",
               status === "upcoming" &&
@@ -56,7 +57,7 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
                 {fundType === "BNB" ? <BNBIcon /> : <USDTIcon />}
               </span>
               <span>
-                {Number(soft_cap) / 1e18} {fundType}
+                {Number(minTokensToSell) / 1e18} {fundType}
               </span>
             </p>
             <p className="text-sm leading-6 text-gray-shade-14">
@@ -98,7 +99,7 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
             <p className="text-sm font-medium text-white">{liquidity}%</p>
           </div> */}
           <div className="flex w-full items-center justify-between gap-3">
-            <p className="text-sm text-gray-shade-14">Lockup Time %:</p>
+            <p className="text-sm text-gray-shade-14">Lockup Time:</p>
             <p className="text-sm font-medium text-white">
               {Number(lockup_time) * 30} days
             </p>

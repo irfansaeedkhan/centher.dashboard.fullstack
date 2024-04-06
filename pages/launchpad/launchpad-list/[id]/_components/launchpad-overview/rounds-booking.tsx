@@ -135,11 +135,16 @@ export const RoundsBooking: React.FC<PresaleDataProps> = ({
           </div>
           <div className="flex items-center justify-between gap-3 text-xs font-medium text-gray-shade-14">
             <p>
-              {(Number(totalPurchasesInBuyingToken) / 1e18).toFixed(4)}{" "}
+              {(Number(totalPurchasesInBuyingToken) / 1e18).toFixed(
+                purchaseThrough === "BNB" ? 4 : 0
+              )}{" "}
               {purchaseThrough}
             </p>
             <p>
-              {(Number(maxTokensToSell) / 1e18).toFixed(4)} {purchaseThrough}
+              {(Number(maxTokensToSell) / 1e18).toFixed(
+                purchaseThrough === "BNB" ? 4 : 0
+              )}{" "}
+              {purchaseThrough}
             </p>
           </div>
         </div>

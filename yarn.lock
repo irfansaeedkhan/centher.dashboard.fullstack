@@ -7572,6 +7572,14 @@ hasown@^2.0.0:
   dependencies:
     function-bind "^1.1.2"
 
+headless-datetimepicker@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/headless-datetimepicker/-/headless-datetimepicker-3.0.2.tgz#6d982367f6953b3f02f36b729ae9335f097ccd23"
+  integrity sha512-nYWTpOszEzSI0+JfyQJLuS1aihX5ANajXBXCf5ZGXoDhoO+pxauXc9S0Hz3RaomleYWpY9Rok9zVG5jyulSILA==
+  dependencies:
+    "@floating-ui/react-dom" "^2.0.1"
+    date-fns "^2.30.0"
+
 hey-listen@^1.0.8:
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/hey-listen/-/hey-listen-1.0.8.tgz#8e59561ff724908de1aa924ed6ecc84a56a9aa68"
