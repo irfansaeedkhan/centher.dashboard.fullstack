@@ -36,6 +36,7 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
   };
 
   const handleStartDateChangeEvent = (value: Date | null) => {
+    console.log(currentRound);
     if (value === null) return;
     if (currentRound === 1) {
       const oneMinuteEarlier = new Date(Date.now() - 1 * 60 * 1000);
@@ -111,26 +112,26 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
             };
           });
           return;
+        } else {
+          setFormState((prev) => {
+            return {
+              ...prev,
+              rounds_settings: {
+                ...prev.rounds_settings,
+                round: prev.rounds_settings.round.map((round) => {
+                  if (round.round_no === currentRound) {
+                    return {
+                      ...round,
+                      start_time: value,
+                    };
+                  } else {
+                    return round;
+                  }
+                }),
+              },
+            };
+          });
         }
-      } else {
-        setFormState((prev) => {
-          return {
-            ...prev,
-            rounds_settings: {
-              ...prev.rounds_settings,
-              round: prev.rounds_settings.round.map((round) => {
-                if (round.round_no === currentRound) {
-                  return {
-                    ...round,
-                    start_time: value,
-                  };
-                } else {
-                  return round;
-                }
-              }),
-            },
-          };
-        });
       }
     } else if (currentRound === 3) {
       if (
@@ -163,26 +164,26 @@ export const RoundsSettingsForm: React.FC<FormStateProps> = ({
             };
           });
           return;
+        } else {
+          setFormState((prev) => {
+            return {
+              ...prev,
+              rounds_settings: {
+                ...prev.rounds_settings,
+                round: prev.rounds_settings.round.map((round) => {
+                  if (round.round_no === currentRound) {
+                    return {
+                      ...round,
+                      start_time: value,
+                    };
+                  } else {
+                    return round;
+                  }
+                }),
+              },
+            };
+          });
         }
-      } else {
-        setFormState((prev) => {
-          return {
-            ...prev,
-            rounds_settings: {
-              ...prev.rounds_settings,
-              round: prev.rounds_settings.round.map((round) => {
-                if (round.round_no === currentRound) {
-                  return {
-                    ...round,
-                    start_time: value,
-                  };
-                } else {
-                  return round;
-                }
-              }),
-            },
-          };
-        });
       }
     }
   };
