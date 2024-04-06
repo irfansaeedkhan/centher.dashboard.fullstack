@@ -90,6 +90,7 @@ export const MainTimeline: React.FC<Props> = ({
                 token={token}
                 roundNumber={roundNumber}
                 percentPerMonth={percentPerMonth}
+                refreshContributionInfo={refreshContributionInfo}
               />
             );
           }

@@ -35,7 +35,7 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
           </div>
           <div
             className={clsx(
-              "flex h-[30px] items-center justify-center rounded-[10px] px-3 py-[3px] text-xs font-semibold",
+              "flex h-[30px] flex-shrink-0 items-center justify-center rounded-[10px] px-3 py-[3px] text-xs font-semibold",
               status === "live" && "bg-green-shade-1/[0.16] text-green-shade-1",
               status === "ended" && "bg-red-shade-1/[0.16] text-red-shade-1",
               status === "upcoming" &&

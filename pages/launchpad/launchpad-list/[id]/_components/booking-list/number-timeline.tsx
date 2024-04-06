@@ -36,6 +36,7 @@ interface Props {
   tokenSymbol: string;
   token: string;
   percentPerMonth: string;
+  refreshContributionInfo: () => void;
 }
 
 export const NumberTimeline: React.FC<Props> = ({
@@ -48,6 +49,7 @@ export const NumberTimeline: React.FC<Props> = ({
   token,
   roundNumber,
   percentPerMonth,
+  refreshContributionInfo,
 }) => {
   const { getSigner } = useWallet();
   const [progressModel, setProgressModel] = useState(false);
@@ -64,7 +66,9 @@ export const NumberTimeline: React.FC<Props> = ({
     try {
       await BlockchainWrite.claimPresaleToken(token, roundNumber - 1, signer);
 
+      refreshContributionInfo();
       setProgressModel(false);
+
       setSuccessModal("Amount Claimed!");
     } catch (error: any) {
       // console.log(e);
