@@ -131,7 +131,7 @@ const LaunchpadList: NextPageWithLayout = () => {
         id: item.id,
         token_name: tokenDetails[i].token_name,
         token_symbol: tokenDetails[i].token_symbol,
-        soft_cap: anotherSoftVal,
+        soft_cap: softcapInQuoteToken,
         lockup_time: item.roundInfos[0].lockMonths,
         liquidity: item.maxTokensToSell,
         launchpad_title: item.id,

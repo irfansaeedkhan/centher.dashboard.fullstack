@@ -3,6 +3,8 @@ import clsx from "clsx";
 import Countdown, { CountdownRendererFn } from "react-countdown";
 import { PresaleDataType } from "../../../_components/launchpad-card-data";
 import Image from "next/image";
+import { BigNumber } from "ethers";
+import { parseEther } from "viem";
 
 interface PresaleDataProps extends PresaleDataType {
   token_name: string;
@@ -29,6 +31,12 @@ export const RoundsBooking: React.FC<PresaleDataProps> = ({
     100;
 
   percentSoldOut = Number(percentSoldOut) / 1e18;
+
+  const maxSellInQuote = Number(
+    BigNumber.from(maxTokensToSell)
+      .mul(BigNumber.from(roundInfos[currentRound - 1].pricePerToken))
+      .div(parseEther("1"))
+  );
 
   const currentTime = Number((Date.now() / 1000).toFixed());
   let timeToShow;
@@ -141,7 +149,7 @@ export const RoundsBooking: React.FC<PresaleDataProps> = ({
               {purchaseThrough}
             </p>
             <p>
-              {(Number(maxTokensToSell) / 1e18).toFixed(
+              {Number(maxSellInQuote / 1e18).toFixed(
                 purchaseThrough === "BNB" ? 4 : 0
               )}{" "}
               {purchaseThrough}
