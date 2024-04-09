@@ -20,7 +20,7 @@ const V2: NextPageWithLayout = () => {
             We are in the process of releasing Launchpad 2.0. Stay tuned for more exciting projects to come on 
           </div>
           <Link
-            href={AppRoutes.marketplace.explore}
+            href={AppRoutes.auth.login}
             className="w-[137px] text-center text-sm"
           >
             <Button
