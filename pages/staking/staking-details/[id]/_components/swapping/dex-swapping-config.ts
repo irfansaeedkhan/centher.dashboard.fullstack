@@ -1,6 +1,6 @@
 import { ChainId, V3_SUBGRAPHS } from "@pancakeswap/chains";
 import { GraphQLClient } from "graphql-request";
-import { bsc, goerli } from "viem/chains";
+import { bsc, goerli, sepolia } from "viem/chains";
 import { createPublicClient, http } from "viem";
 import {
   OnChainProvider,
@@ -92,7 +92,9 @@ export const SUPPORTED_CHAINS = [ChainId.BSC, ChainId.GOERLI] as const;
 export type SupportedChainId = (typeof SUPPORTED_CHAINS)[number];
 
 export const v3SubgraphClients: Record<SupportedChainId, GraphQLClient> = {
-  [ChainId.GOERLI]: new GraphQLClient(V3_SUBGRAPHS[ChainId.GOERLI], { fetch }),
+  [ChainId.GOERLI]: new GraphQLClient(V3_SUBGRAPHS[ChainId.GOERLI], {
+    fetch,
+  }),
   [ChainId.BSC]: new GraphQLClient(V3_SUBGRAPHS[ChainId.BSC], { fetch }),
 } as const;
 

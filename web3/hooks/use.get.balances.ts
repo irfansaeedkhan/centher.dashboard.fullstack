@@ -76,7 +76,7 @@ export const useGetBNBBalance = (address: string | null | undefined) => {
     (async () => {
       try {
         const provider = ethers.getDefaultProvider(
-          process.env.NEXT_PUBLIC_APP_ENV === "production" ? "bsc" : "goerli"
+          process.env.NEXT_PUBLIC_APP_ENV === "production" ? "bsc" : "sepolia"
         );
         const bnbBalance = ethers.utils.formatEther(
           await provider.getBalance(address)
