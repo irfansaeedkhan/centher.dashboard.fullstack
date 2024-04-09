@@ -38,29 +38,10 @@ export const sidebarData: SidebarData = {
       },
       {
         label: "Launchpad",
-        url: `/launchpad/${AddressFactory.getContractAddress(
-          SmartContractName.DXC
-        )}/3`,
+        url: AppRoutes.coming_soon_v2,
         icon: Launchpad,
         available_for: "all",
-        activeList: [AppRoutes.launchpad.index],
-      },
-      {
-        label: "Create Launchpad",
-        url: AppRoutes.launchpad.create_launchpad,
-        icon: CreateLaunchpad,
-        available_for: "all",
-        activeList: [AppRoutes.launchpad.create_launchpad],
-      },
-      {
-        label: "Launchpad List",
-        url: "/launchpad/launchpad-list/?list_type=all",
-        icon: CreateLaunchpad,
-        available_for: "all",
-        activeList: [
-          AppRoutes.launchpad.launchpad_list.index,
-          AppRoutes.launchpad.launchpad_list.launchpad_list_details,
-        ],
+        activeList: [AppRoutes.coming_soon_v2],
       },
     ],
   },
