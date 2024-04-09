@@ -17,15 +17,14 @@ const V2: NextPageWithLayout = () => {
             COMING SOON
           </div>
           <div className="max-w-[300px] text-center text-sm text-gray-shade-7 md:max-w-[534px] ">
-            More interesting things are coming soon to our platform, in the
-            meantime you can explore for great things with us.
+            We are in the process of releasing Launchpad 2.0. Stay tuned for more exciting projects to come on 
           </div>
           <Link
             href={AppRoutes.marketplace.explore}
             className="w-[137px] text-center text-sm"
           >
             <Button
-              title={"Explore NFT"}
+              title={"Centher.io!"}
               variant="primary"
               className="w-full py-3 font-bold"
             />

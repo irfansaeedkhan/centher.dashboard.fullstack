@@ -35,15 +35,13 @@ export const sidebarData: SidebarData = {
         available_for: "all",
         badge: "citizen",
       },
-      // {
-      //   label: "Launchpad",
-      //   url: `/launchpad/${AddressFactory.getContractAddress(
-      //     SmartContractName.DXC
-      //   )}/3`,
-      //   icon: Launchpad,
-      //   available_for: "all",
-      //   activeList: [AppRoutes.launchpad],
-      // },
+      {
+        label: "Launchpad",
+        url: AppRoutes.coming_soon_v2,
+        icon: Launchpad,
+        available_for: "all",
+        activeList: [AppRoutes.coming_soon_v2],
+      },
     ],
   },
 };
