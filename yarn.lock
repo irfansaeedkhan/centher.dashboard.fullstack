@@ -2949,6 +2949,11 @@
   resolved "https://registry.yarnpkg.com/@pancakeswap/chains/-/chains-0.3.0.tgz#e509dfd9c8387f76b893e3a0a5b835331752b32c"
   integrity sha512-a4U8pzfxQsnS0nUpvi8qL2X6l2C/IUTFJcmt3UNAQv2L2CPUSryt1rLarG91O1Bb/UMfv90UCPrXJcHWpaYSMg==
 
+"@pancakeswap/chains@0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@pancakeswap/chains/-/chains-0.4.0.tgz#60d73e334052fda635fe6bf2b9ff7c1858db2c2b"
+  integrity sha512-xPx+KFZiXJ1b+JAbnDB1WhSVE2TLtIzDi/IOjuyylYxiiEpnt0oXzjaTpuJe6dkttfW74UqUMpHiODs529gWVw==
+
 "@pancakeswap/multicall@3.3.2":
   version "3.3.2"
   resolved "https://registry.yarnpkg.com/@pancakeswap/multicall/-/multicall-3.3.2.tgz#deaf60cfa0c25b76fbbd0c38333cee5b0110849a"

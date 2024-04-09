@@ -37,12 +37,10 @@ export const sidebarData: SidebarData = {
       },
       {
         label: "Launchpad",
-        url: `/launchpad/${AddressFactory.getContractAddress(
-          SmartContractName.DXC
-        )}/3`,
+        url: AppRoutes.coming_soon_v2,
         icon: Launchpad,
         available_for: "all",
-        activeList: [AppRoutes.launchpad],
+        activeList: [AppRoutes.coming_soon_v2],
       },
     ],
   },

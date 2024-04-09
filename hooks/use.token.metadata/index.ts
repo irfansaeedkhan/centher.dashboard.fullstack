@@ -14,7 +14,7 @@ export const fetchTokenMetadata = async (addresses: string[]) => {
       chain:
         process.env.NEXT_PUBLIC_APP_ENV == "production"
           ? EvmChain.BSC
-          : EvmChain.GOERLI,
+          : EvmChain.SEPOLIA,
     });
     return metadata;
   } catch (error: any) {
