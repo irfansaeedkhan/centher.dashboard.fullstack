@@ -199,7 +199,7 @@ export const NonNFTBuyerDescription: React.FC<Props> = ({
         <SuccessMessageModal
           heading={
             <h2 className="mt-2 text-base font-semibold text-white f2xl:text-lg">
-              {txStatus ? "Success!" : "Failed!"}
+              {txStatus ? "Success!" : "Failed"}
             </h2>
           }
           subHeading={
@@ -213,6 +213,7 @@ export const NonNFTBuyerDescription: React.FC<Props> = ({
             </p>
           }
           txStatus={txStatus}
+          msg={msg}
           dismissModal={() => {
             modal.dismissModal();
           }}
