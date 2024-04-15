@@ -7,6 +7,7 @@ interface SMMProps {
   heading: React.ReactNode;
   subHeading: React.ReactNode;
   txStatus: boolean;
+  msg?: string;
   dismissModal: () => void;
   proceedFunc: () => void;
 }
@@ -17,6 +18,7 @@ const SuccessMessageModal: React.FC<SMMProps> = ({
   txStatus,
   dismissModal,
   proceedFunc,
+  msg,
 }) => {
   return (
     <div className="mt-4 flex w-full flex-col pt-4 text-center">
@@ -27,7 +29,7 @@ const SuccessMessageModal: React.FC<SMMProps> = ({
       {txStatus && subHeading}
       {!txStatus && (
         <p className="text-14px font-normal leading-6 text-gray-shade-2">
-          Transaction Failed.
+          Transaction Failed: {msg}
         </p>
       )}
       <div className="mt-4 flex flex-col-reverse gap-2 pt-4 fsm:flex-row">
