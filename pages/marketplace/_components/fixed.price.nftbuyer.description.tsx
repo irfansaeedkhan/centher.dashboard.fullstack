@@ -190,7 +190,7 @@ export const FixedPriceNFTBuyerDescription: React.FC<Props> = ({
         <SuccessMessageModal
           heading={
             <h2 className="text-base font-semibold text-white fmd:text-lg">
-              {txStatus ? "Purchased" : "Failed!"}
+              {txStatus ? "Purchased" : "Failed"}
             </h2>
           }
           subHeading={
@@ -204,6 +204,7 @@ export const FixedPriceNFTBuyerDescription: React.FC<Props> = ({
             </p>
           }
           txStatus={txStatus}
+          msg={msg}
           dismissModal={() => {
             modal.dismissModal();
           }}
