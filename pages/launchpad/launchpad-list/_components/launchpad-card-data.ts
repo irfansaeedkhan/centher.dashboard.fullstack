@@ -124,6 +124,8 @@
 //   },
 // ];
 
+import { BigNumber } from "ethers";
+
 export type LaunchpadDataType = {
   id: string;
   token_name: string;
@@ -134,13 +136,14 @@ export type LaunchpadDataType = {
   launchpad_title: string;
   liquidity: string;
   lockup_time: string;
-  soft_cap: number;
+  soft_cap: BigNumber;
   currentPurchasesValue: string;
   fundType: string;
   progress: string;
   currentRound: number;
-  minTokensToSell: string;
-  maxTokensToSell: string;
+  totalRounds: number;
+  minTokensToSell: BigNumber;
+  maxTokensToSell: BigNumber;
 };
 
 export type TokenPurchaseWithBNB = {

@@ -19,24 +19,44 @@ export const RoundsBooking: React.FC<PresaleDataProps> = ({
   roundInfos,
   roundDeep,
   currentRound,
-  maxTokensToSell,
-  totalPurchasesInBuyingToken,
+  // maxTokensToSell,
+  // totalPurchasesInBuyingToken,
+  tokenPurchaseWithBNB,
+  tokenPurchaseWithBUSD,
   fundType,
 }) => {
   const purchaseThrough = fundType === 0 ? "BNB" : "USDT";
 
+  let allPurchases;
+  let totalPurchaseInQuote = 0;
+
+  if (purchaseThrough === "BNB") {
+    allPurchases = tokenPurchaseWithBNB;
+  } else {
+    allPurchases = tokenPurchaseWithBUSD;
+  }
+
+  for (let i = 0; i < allPurchases.length; i++) {
+    totalPurchaseInQuote += Number(allPurchases[i].amount);
+  }
+
+  const tokenSellForThisRound =
+    (Number(roundInfos[currentRound - 1].tokensToSell) *
+      Number(roundInfos[currentRound - 1].pricePerToken)) /
+    1e18;
+
   let percentSoldOut =
-    (Number(Number(totalPurchasesInBuyingToken) * 1e18) /
-      Number(maxTokensToSell)) *
+    (Number(Number(totalPurchaseInQuote) * 1e18) /
+      Number(tokenSellForThisRound)) *
     100;
 
   percentSoldOut = Number(percentSoldOut) / 1e18;
 
-  const maxSellInQuote = Number(
-    BigNumber.from(maxTokensToSell)
-      .mul(BigNumber.from(roundInfos[currentRound - 1].pricePerToken))
-      .div(parseEther("1"))
-  );
+  // const maxSellInQuote = Number(
+  //   BigNumber.from(maxTokensToSell)
+  //     .mul(BigNumber.from(roundInfos[currentRound - 1].pricePerToken))
+  //     .div(parseEther("1"))
+  // );
 
   const currentTime = Number((Date.now() / 1000).toFixed());
   let timeToShow;
@@ -143,13 +163,13 @@ export const RoundsBooking: React.FC<PresaleDataProps> = ({
           </div>
           <div className="flex items-center justify-between gap-3 text-xs font-medium text-gray-shade-14">
             <p>
-              {(Number(totalPurchasesInBuyingToken) / 1e18).toFixed(
+              {(Number(totalPurchaseInQuote) / 1e18).toFixed(
                 purchaseThrough === "BNB" ? 4 : 0
               )}{" "}
               {purchaseThrough}
             </p>
             <p>
-              {Number(maxSellInQuote / 1e18).toFixed(
+              {Number(tokenSellForThisRound / 1e18).toFixed(
                 purchaseThrough === "BNB" ? 4 : 0
               )}{" "}
               {purchaseThrough}

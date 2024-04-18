@@ -110,28 +110,44 @@ const LaunchpadList: NextPageWithLayout = () => {
         saleStatus = "ended";
       }
 
-      let softcapInQuoteToken = 0;
-      let anotherSoftVal = 0;
+      // let anotherSoftVal = 0;
+
+      // for (let i = 0; i < Number(item.roundDeep); i++) {
+      //   const tokensToSell = BigNumber.from(item.roundInfos[i].tokensToSell);
+      //   const pricePerToken = BigNumber.from(item.roundInfos[i].pricePerToken);
+      //   softcapInQuoteToken += Number(
+      //     tokensToSell.mul(pricePerToken).div(parseEther("1"))
+      //   );
+
+      //   anotherSoftVal += Number(item.roundInfos[i].tokensToSell);
+      // }
+
+      let avgPrice = BigNumber.from(0);
 
       for (let i = 0; i < Number(item.roundDeep); i++) {
-        const tokensToSell = BigNumber.from(item.roundInfos[i].tokensToSell);
         const pricePerToken = BigNumber.from(item.roundInfos[i].pricePerToken);
-        softcapInQuoteToken += Number(
-          tokensToSell.mul(pricePerToken).div(parseEther("1"))
-        );
-
-        anotherSoftVal += Number(item.roundInfos[i].tokensToSell);
+        avgPrice = pricePerToken.add(BigNumber.from(avgPrice));
       }
 
+      avgPrice = avgPrice.div(BigNumber.from(item.roundDeep));
+
+      const minTokensSellInQuote = avgPrice
+        .mul(item.minTokensToSell)
+        .div(BigNumber.from(parseEther("1")));
+      const maxTokensSellInQuote = avgPrice
+        .mul(item.maxTokensToSell)
+        .div(BigNumber.from(parseEther("1")));
+
       const progress =
-        (Number(item.totalPurchasesInBuyingToken) / Number(anotherSoftVal)) *
+        (Number(item.totalPurchasesInBuyingToken) /
+          Number(maxTokensSellInQuote)) *
         100;
 
       return {
         id: item.id,
         token_name: tokenDetails[i].token_name,
         token_symbol: tokenDetails[i].token_symbol,
-        soft_cap: softcapInQuoteToken,
+        soft_cap: maxTokensSellInQuote,
         lockup_time: item.roundInfos[0].lockMonths,
         liquidity: item.maxTokensToSell,
         launchpad_title: item.id,
@@ -143,8 +159,8 @@ const LaunchpadList: NextPageWithLayout = () => {
         progress: progress !== 0 ? progress.toFixed(4).toString() : "0",
         currentRound: currentRound,
         totalRounds: item.roundInfos.length,
-        minTokensToSell: item.minTokensToSell,
-        maxTokensToSell: item.maxTokensToSell,
+        minTokensToSell: minTokensSellInQuote,
+        maxTokensToSell: maxTokensSellInQuote,
       };
     });
 
