@@ -67,11 +67,12 @@ export const Section: React.FC<SectionProps> = (props) => {
                     />
                   </div>
                   <div
-                    className={
+                    className={clsx(
                       item.activeList.indexOf(router.pathname) !== -1
                         ? `text-sm font-medium text-white`
-                        : `text-sm font-medium text-gray-shade-7 group-hover:text-white`
-                    }
+                        : `text-sm font-medium text-gray-shade-7 group-hover:text-white`,
+                      item.label === "Launchpad List" && "!text-xs"
+                    )}
                   >
                     <span>{item.label}</span>
                   </div>
@@ -81,7 +82,7 @@ export const Section: React.FC<SectionProps> = (props) => {
                     {count}
                   </span>
                 )}
-                {item.label === "Launchpad" && (
+                {item.label === "Launchpad List" && (
                   <span className="mr-2 flex h-5 w-[52px] flex-shrink-0 items-center justify-center rounded-lg bg-red-shade-1/[0.16] text-[10px] font-semibold leading-3 text-red-shade-1">
                     Hot 🔥
                   </span>

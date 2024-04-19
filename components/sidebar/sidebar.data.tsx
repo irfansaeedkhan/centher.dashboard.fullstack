@@ -37,13 +37,14 @@ export const sidebarData: SidebarData = {
         badge: "citizen",
       },
       {
-        label: "Launchpad",
-        url: `/launchpad/${AddressFactory.getContractAddress(
-          SmartContractName.DXC
-        )}/3`,
+        label: "Launchpad List",
+        url: "/launchpad/launchpad-list/?list_type=all",
         icon: Launchpad,
         available_for: "all",
-        activeList: [AppRoutes.launchpad.index],
+        activeList: [
+          AppRoutes.launchpad.launchpad_list.index,
+          AppRoutes.launchpad.launchpad_list.launchpad_list_details,
+        ],
       },
       {
         label: "Create Launchpad",
@@ -51,16 +52,6 @@ export const sidebarData: SidebarData = {
         icon: CreateLaunchpad,
         available_for: "all",
         activeList: [AppRoutes.launchpad.create_launchpad],
-      },
-      {
-        label: "Launchpad List",
-        url: "/launchpad/launchpad-list/?list_type=all",
-        icon: CreateLaunchpad,
-        available_for: "all",
-        activeList: [
-          AppRoutes.launchpad.launchpad_list.index,
-          AppRoutes.launchpad.launchpad_list.launchpad_list_details,
-        ],
       },
     ],
   },
