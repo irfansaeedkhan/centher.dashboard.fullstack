@@ -106,7 +106,7 @@ export const VerifyTokenForm: React.FC<Props> = ({
       )}
       <SaleRounds formState={formState} setFormState={setFormState} />
       <Currency formState={formState} setFormState={setFormState} />
-      <FeeOptions formState={formState} setFormState={setFormState} />
+      {/* <FeeOptions formState={formState} setFormState={setFormState} />
       {formState.verify_token.fee_option === "Other" && (
         <div className={gradientBorderInputMain}>
           <label
@@ -142,9 +142,45 @@ export const VerifyTokenForm: React.FC<Props> = ({
             />
           </div>
         </div>
-      )}
+      )} */}
       <LiquidityLockups formState={formState} setFormState={setFormState} />
       <ReleaseMonth formState={formState} setFormState={setFormState} />
+      {formState.verify_token.release_month === "Other" && (
+        <div className={gradientBorderInputMain}>
+          <label
+            htmlFor="add_release_month"
+            className={clsx(label, "text-gray-shade-14")}
+          >
+            Add Release Month
+          </label>
+          <div className={gradientBorderInputParent}>
+            <CustomNumberInput
+              min={0}
+              max={24}
+              id="add_release_month"
+              name="add_release_month"
+              placeholder="1"
+              className={gradientBorderInput}
+              value={
+                formState.verify_token.add_release_month === 0
+                  ? ""
+                  : formState.verify_token.add_release_month
+              }
+              onChange={(e) =>
+                setFormState((prev) => {
+                  return {
+                    ...prev,
+                    verify_token: {
+                      ...prev.verify_token,
+                      add_release_month: Number(e.target.value),
+                    },
+                  };
+                })
+              }
+            />
+          </div>
+        </div>
+      )}
       <NoteDisclamer />
     </div>
   );

@@ -4,11 +4,13 @@ import clsx from "clsx";
 import { sliceAccountAddress } from "@/utils/user.helpers";
 import { copyText } from "@/utils/copy.text";
 import toast from "react-hot-toast";
+import { MdOutlineInfo } from "react-icons/md";
 import { GradientCopy } from "@/assets/svgs";
 import dayjs from "dayjs";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { formatUnits } from "ethers/lib/utils";
 import { BigNumber } from "ethers";
+import Button from "@/components/button";
 
 interface PresaleDataProps extends PresaleDataType {
   token_name: string;
@@ -53,7 +55,7 @@ export const PresaleData: React.FC<PresaleDataProps> = ({
         </span>
       </div>
       <p className="text-sm font-medium text-gray-shade-14">{description}</p>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 pb-4">
         <div className={mainDiv}>
           <div className={textLeft}>Token Name</div>
           <div className={textRight}>{token_name}</div>
@@ -124,11 +126,23 @@ export const PresaleData: React.FC<PresaleDataProps> = ({
           </div>
         </div>
         <div className={mainDiv}>
-          {/* <div className={textLeft}>Lock Period</div>
+          <div className={textLeft}>Lock Period</div>
           <div className={textRight}>
             {roundInfos[0].lockMonths}{" "}
             {roundInfos[0].lockMonths === "1" ? "Month" : "Months"}
-          </div> */}
+          </div>
+        </div>
+        <div className={mainDiv}>
+          <p className="flex items-center gap-1 text-sm font-medium text-gray-shade-14">
+            <MdOutlineInfo className="flex size-5 flex-shrink-0 " />
+            <span className="text-danger">Note: </span>
+            The Launchpad did not reach the soft cap for the presale.{" "}
+          </p>
+          <Button
+            title="Get Refund"
+            className="flex h-9 w-full max-w-[132px] items-center justify-center text-sm font-medium "
+            borderRounded="10px"
+          />
         </div>
       </div>
     </div>

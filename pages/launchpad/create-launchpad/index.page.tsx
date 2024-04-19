@@ -278,15 +278,14 @@ const CreateLaunchpad: NextPageWithLayout = () => {
         minTokensToSell: parseEther("1").toString(),
         maxTokensToSell: parseEther("1").toString(),
         roundDeep: formState.verify_token.sale_rounds,
-        coinFeeRate:
-          formState.verify_token.fee_option === "Other"
-            ? formState.verify_token.add_fee
-            : formState.verify_token.fee_option,
-        tokenFeeRate:
-          formState.verify_token.fee_option === "Other"
-            ? formState.verify_token.add_fee
-            : formState.verify_token.fee_option,
-        releaseMonth: formState.verify_token.release_month,
+        coinFeeRate: 0,
+        // formState.verify_token.fee_option  === "Other" ? formState.verify_token.add_fee: formState.verify_token.fee_option,
+        tokenFeeRate: 0,
+        // formState.verify_token.fee_option  === "Other"? formState.verify_token.add_fee            : formState.verify_token.fee_option,
+        releaseMonth:
+          formState.verify_token.release_month === "Other"
+            ? formState.verify_token.add_release_month
+            : formState.verify_token.release_month,
         isRefSupport:
           formState.verify_token.multilevel_reward === "recurring_return"
             ? true
