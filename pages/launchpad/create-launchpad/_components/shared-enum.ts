@@ -13,6 +13,7 @@ export enum LaunchpadListEnum {
   referrer_claim = "Claiming referrer rewards",
   claim_amounts = "Claiming Amounts",
   buy_tokens = "Buying Presale Token",
+  refund_tokens = "Refund Contributed Tokens",
 }
 
 export enum ProgressStatus {

@@ -25,6 +25,8 @@ export const RoundsBooking: React.FC<PresaleDataProps> = ({
   tokenPurchaseWithBUSD,
   fundType,
 }) => {
+  const thisRound =
+    currentRound > -1 ? currentRound - 1 : Number(roundDeep) - 1;
   const purchaseThrough = fundType === 0 ? "BNB" : "USDT";
 
   let allPurchases;
@@ -41,8 +43,8 @@ export const RoundsBooking: React.FC<PresaleDataProps> = ({
   }
 
   const tokenSellForThisRound =
-    (Number(roundInfos[currentRound - 1].tokensToSell) *
-      Number(roundInfos[currentRound - 1].pricePerToken)) /
+    (Number(roundInfos[thisRound].tokensToSell) *
+      Number(roundInfos[thisRound].pricePerToken)) /
     1e18;
 
   let percentSoldOut =
