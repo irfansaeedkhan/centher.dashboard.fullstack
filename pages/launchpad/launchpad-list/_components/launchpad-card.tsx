@@ -5,6 +5,8 @@ import Countdown, { CountdownRendererFn } from "react-countdown";
 import { BNBIcon, USDTIcon } from "@/assets/svgs";
 import { LaunchpadDataType } from "./launchpad-card-data";
 import { AppRoutes } from "@/constants/app.routes";
+import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
+import { parseEther } from "ethers/lib/utils";
 export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
   id,
   token_name,
@@ -57,7 +59,7 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
                 {fundType === "BNB" ? <BNBIcon /> : <USDTIcon />}
               </span>
               <span>
-                {Number(minTokensToSell) / 1e18} {fundType}
+                {minTokensToSell.div(parseEther("1")).toString()} {fundType}
               </span>
             </p>
             <p className="text-sm leading-6 text-gray-shade-14">

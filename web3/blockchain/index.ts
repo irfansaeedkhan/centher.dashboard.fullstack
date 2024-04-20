@@ -2278,4 +2278,27 @@ export class BlockchainWrite {
       throw error;
     }
   }
+
+  static async getRefund(
+    signer: JsonRpcSigner,
+    tokenAddress: string
+  ): Promise<string> {
+    try {
+      const launchpadContract = SmartContractProvider.getContract(
+        SmartContractName.LAUNCHPAD,
+        signer
+      );
+
+      await launchpadContract.callStatic.refund(tokenAddress);
+
+      let tx = await launchpadContract.functions.refund(tokenAddress);
+
+      await tx.wait();
+
+      return "Done";
+    } catch (error: any) {
+      logger(error, "getRefund");
+      throw error;
+    }
+  }
 }

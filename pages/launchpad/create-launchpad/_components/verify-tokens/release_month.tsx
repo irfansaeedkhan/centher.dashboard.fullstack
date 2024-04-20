@@ -32,12 +32,6 @@ const ReleaseMonth: React.FC<FormStateProps> = ({
         />
         <RadioButtonComponent
           selectedValue={formState.verify_token.release_month}
-          value={2}
-          additionalValue={"Months"}
-          handleClick={(value) => handleClick(value as number)}
-        />
-        <RadioButtonComponent
-          selectedValue={formState.verify_token.release_month}
           value={3}
           additionalValue={"Months"}
           handleClick={(value) => handleClick(value as number)}
@@ -50,15 +44,25 @@ const ReleaseMonth: React.FC<FormStateProps> = ({
         />
         <RadioButtonComponent
           selectedValue={formState.verify_token.release_month}
-          value={9}
+          value={12}
           additionalValue={"Months"}
           handleClick={(value) => handleClick(value as number)}
         />
         <RadioButtonComponent
           selectedValue={formState.verify_token.release_month}
-          value={12}
-          additionalValue={"Months"}
-          handleClick={(value) => handleClick(value as number)}
+          value={"Other"}
+          handleClick={(value) =>
+            setFormState((prev) => {
+              return {
+                ...prev,
+                verify_token: {
+                  ...prev.verify_token,
+                  release_month: value as string,
+                  add_release_month: 1,
+                },
+              };
+            })
+          }
         />
       </div>
     </div>

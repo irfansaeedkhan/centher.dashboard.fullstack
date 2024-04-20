@@ -36,8 +36,9 @@ export type FormState = {
     currency: "BNB" | "USDT";
     fee_option: number | string;
     liquidity_lockup: number;
-    release_month: number;
+    release_month: number | string;
     add_fee?: number;
+    add_release_month?: number;
     multilevel_reward: string;
     multilevel_reward_system: {
       level: string;
