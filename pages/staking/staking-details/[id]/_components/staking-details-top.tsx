@@ -13,6 +13,7 @@ import StakeNow, { StakingStat } from "./stake-now";
 import SuccessModalContent from "./success-modal-content";
 import FailedModalContent from "./failed-modal-content";
 import { eqAddress } from "@/live/utils/address.utils";
+import { BlockchainRead } from "@/web3/blockchain";
 
 const oneYearInSec = 31449600;
 
@@ -167,6 +168,19 @@ const StakingDetailsTop: React.FC<{
             return;
           }
         }
+        const userErc20Balance = await BlockchainRead.getERC20Balance(
+          connectedAddress,
+          stakingPool?.token_address,
+          getSigner()!
+        );
+
+        if (+amount > Number(userErc20Balance)) {
+          modal.createModal(ModalType.failedFuncModal, {
+            message: "ERC20: transfer amount exceeds balance.",
+            title: "New Stake Failed",
+          });
+          return;
+        }
 
         setStakeLoader(true);
         await sdk.stake(
@@ -205,6 +219,13 @@ const StakingDetailsTop: React.FC<{
         message.includes("rejected transaction")
       ) {
         message = "Transaction rejected.";
+      }
+
+      if (
+        typeof message == "string" &&
+        message.includes("transfer amount exceeds balance")
+      ) {
+        message = "ERC20: transfer amount exceeds balance.";
       }
 
       setStakeLoader(false);
