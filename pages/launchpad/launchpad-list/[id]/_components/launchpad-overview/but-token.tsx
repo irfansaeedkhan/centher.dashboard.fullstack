@@ -14,6 +14,7 @@ import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.en
 import { LaunchpadListEnum } from "@/pages/launchpad/create-launchpad/_components/shared-enum";
 import { StandardModal } from "@/components/modal/standard.modal";
 import { ProgressModalShared } from "@/components/shared";
+import { BigNumber } from "ethers";
 
 interface Props extends PresaleDataType {
   token_name: string;
@@ -53,13 +54,13 @@ export const BuyToken: React.FC<Props> = ({
   currentRound = currentRound - 1;
 
   const checkBalance = useCallback(async () => {
-    // const provider = getProvider();
     const signer = getSigner();
 
     if (!user || !signer) return;
     try {
       if (fundType === 0) {
         const token = await BlockchainRead.getWalletBalance(signer);
+
         setTokenBalance(Number(token));
       } else {
         const token =
@@ -73,7 +74,7 @@ export const BuyToken: React.FC<Props> = ({
           signer
         );
 
-        setTokenBalance(Number(balance));
+        setTokenBalance(Number(balance) / 1e18);
       }
     } catch (err) {
       customLog(["development", "staging"], err);
@@ -252,7 +253,7 @@ export const BuyToken: React.FC<Props> = ({
               </div>
             </div>
             <p className="my-4 ml-1 text-sm font-medium text-gray-shade-14">
-              Balance {Number(formatEther(BigInt(tokenBalance))).toFixed(2)}
+              Balance {tokenBalance}
             </p>
             <div className="mb-5 mt-2 border-b-2 border-gray-shade-3"></div>
             <p className="font-small ml-1 text-sm text-gray-shade-14">
