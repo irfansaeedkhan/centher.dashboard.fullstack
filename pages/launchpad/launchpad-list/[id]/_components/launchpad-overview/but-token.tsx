@@ -40,7 +40,7 @@ export const BuyToken: React.FC<Props> = ({
   const [receivedAmount, setReceivedAmount] = useState(0);
   const [purchased, setPurchased] = useState(false);
 
-  const [tokenBalance, setTokenBalance] = useState(0);
+  const [tokenBalance, setTokenBalance] = useState("0");
   const [roundPrice, setroundPrice] = useState(-1);
   const [allowance, setAllowance] = useState(false);
 
@@ -61,7 +61,7 @@ export const BuyToken: React.FC<Props> = ({
       if (fundType === 0) {
         const token = await BlockchainRead.getWalletBalance(signer);
 
-        setTokenBalance(Number(token));
+        setTokenBalance(token);
       } else {
         const token =
           process.env.NEXT_PUBLIC_APP_ENV === "production"
@@ -74,7 +74,9 @@ export const BuyToken: React.FC<Props> = ({
           signer
         );
 
-        setTokenBalance(Number(balance) / 1e18);
+        console.log("balance: ", balance);
+
+        setTokenBalance(balance);
       }
     } catch (err) {
       customLog(["development", "staging"], err);
