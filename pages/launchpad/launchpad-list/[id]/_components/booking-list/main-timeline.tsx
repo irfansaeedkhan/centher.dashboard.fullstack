@@ -30,8 +30,8 @@ export const MainTimeline: React.FC<Props> = ({
     100
   ).toFixed(2);
 
-  // const monthInEpoch = 2592000; // production
-  const monthInEpoch = 1800; //testnet
+  const monthInEpoch =
+    process.env.NEXT_PUBLIC_APP_ENV === "production" ? 2592000 : 1800;
 
   return (
     <div className="flex flex-col gap-3">
