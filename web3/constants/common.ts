@@ -11,3 +11,5 @@ export const supportedNetworksList: SupportedNetworksList = {
   [Networks.BSC]: true,
   [Networks.SEPOLIA]: true,
 };
+
+export const MaxUint256 = ethers.constants.MaxUint256;

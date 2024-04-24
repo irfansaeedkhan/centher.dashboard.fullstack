@@ -11,6 +11,8 @@ import {
 import { AppRoutes } from "@/constants/app.routes";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
+import { AddressFactory } from "@/web3/blockchain/providers/address.provider";
+import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.enum";
 import cn from "@/utils/cn";
 
 interface SingleNotificationProps {
@@ -233,12 +235,16 @@ const getNotificationUrl = (
       };
     case "presale_booking":
       return {
-        pathname: AppRoutes.launchpad,
+        pathname: `/launchpad/${AddressFactory.getContractAddress(
+          SmartContractName.DXC
+        )}/3`,
         query: { tab: "my-bookings" },
       };
     case "presale_booking_referral":
       return {
-        pathname: AppRoutes.launchpad,
+        pathname: `/launchpad/${AddressFactory.getContractAddress(
+          SmartContractName.DXC
+        )}/3`,
         query: { tab: "my-rewards" },
       };
     case "mention_in_post":
@@ -275,12 +281,16 @@ const getNotificationImageUrl = (
       };
     case "presale_booking":
       return {
-        pathname: AppRoutes.launchpad,
+        pathname: `/launchpad/${AddressFactory.getContractAddress(
+          SmartContractName.DXC
+        )}/3`,
         query: { tab: "my-bookings" },
       };
     case "presale_booking_referral":
       return {
-        pathname: AppRoutes.launchpad,
+        pathname: `/launchpad/${AddressFactory.getContractAddress(
+          SmartContractName.DXC
+        )}/3`,
         query: { tab: "my-rewards" },
       };
     default:

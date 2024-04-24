@@ -15,6 +15,7 @@ import routerAbi from "../abis/router.json";
 import ERC721Abi from "../abis/erc721.json";
 import nftadapter from "../abis/nftadapter.json";
 import stakingAbi from "../abis/staking.json";
+import launchpadAbi from "../abis/launchpad.json";
 
 import { BigNumber } from "ethers";
 
@@ -90,6 +91,10 @@ export const BlockchainConfig: IBlockchainConfig = {
       56: "0xb2328A1Cd08F72B17ED32B17f76FcDfa383Bbd32",
       11155111: "0x16E3C12d07D1Da9c33a323E3A43912Da5A569eBC",
     },
+    LAUNCHPAD: {
+      56: "0xDC06432919e7F67d0735fE440e02189ea2d58573",
+      11155111: "0x8544884E25fC204272B19C193F9E3d37Eb5b672b",
+    },
   },
   network:
     process.env.NEXT_PUBLIC_APP_ENV === "production"
@@ -116,6 +121,7 @@ export const BlockchainConfig: IBlockchainConfig = {
     USDT: usdtAbi,
     NFT_ADAPTER: nftadapter,
     STAKING: stakingAbi,
+    LAUNCHPAD: launchpadAbi,
   },
   toastErrors: false,
   maxSupply: BigNumber.from("260000"),

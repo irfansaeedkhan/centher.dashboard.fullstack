@@ -57,7 +57,11 @@ const StakingDropdown: React.FC<DropdownProps> = ({
         onClick={() => setIsOpen(!isOpen)}
       >
         <div className="flex w-full items-center justify-between">
-          {placeholder && <span>{placeholder}</span>}
+          {selectedValue === "" ? (
+            <span>{placeholder}</span>
+          ) : (
+            <span>{selectedLabel}</span>
+          )}
           {isOpen ? (
             <SlArrowUp className="h-2 w-2 fill-gray-400  fsm:h-3 fsm:w-3" />
           ) : (

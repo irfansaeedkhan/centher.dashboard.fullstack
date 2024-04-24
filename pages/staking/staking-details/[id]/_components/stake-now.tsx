@@ -98,7 +98,7 @@ const Booking: React.FC<Props> = ({
                 )?.symbol
               }
               placeholder="00"
-              className="bg-gray-shade-24 block w-full appearance-none rounded-lg border-0 bg-transparent px-5 py-3 text-sm placeholder:font-semibold placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
+              className="block w-full appearance-none rounded-lg border-0 bg-gray-shade-24 bg-transparent px-5 py-3 text-sm placeholder:font-semibold placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
               value={amount === 0 ? "" : amount}
               min={0}
               onChange={(e) => {

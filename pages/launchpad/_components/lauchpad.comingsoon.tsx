@@ -3,8 +3,9 @@ import Link from "next/link";
 import { IoMdLock } from "react-icons/io";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import { AppRoutes } from "@/constants/app.routes";
 import Button from "@/components/button";
+import { AddressFactory } from "@/web3/blockchain/providers/address.provider";
+import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.enum";
 
 const LaunchpadComingSoon: NextPageWithLayout = () => {
   return (
@@ -27,7 +28,12 @@ const LaunchpadComingSoon: NextPageWithLayout = () => {
             Our First Token Is About To Be Launched! Don&apos;t Miss The First
             Rounds Of Pre Sale!
           </h3>
-          <Link href={AppRoutes.launchpad} className="block w-fit">
+          <Link
+            href={`/launchpad/${AddressFactory.getContractAddress(
+              SmartContractName.DXC
+            )}/3`}
+            className="block w-fit"
+          >
             <Button
               className="w-fit rounded-lg px-4 py-2 text-sm font-semibold"
               title="Book Now"

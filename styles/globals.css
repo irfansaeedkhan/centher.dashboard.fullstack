@@ -453,6 +453,21 @@
     background-origin: border-box;
     background-clip: content-box, border-box;
   }
+  .gradient-border-5 {
+    border: 2px transparent;
+    border-radius: 100%;
+    background-image: linear-gradient(#0b0b0b, #0b0b0b),
+      radial-gradient(
+        circle at top right,
+        #5691ff -9.34%,
+        #72f6d1 17.09%,
+        #76e268 48.54%,
+        #ffd505 78.11%,
+        #ff5e52 107.63%
+      );
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+  }
 
   @keyframes animate {
     0% {
@@ -1019,6 +1034,56 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
+
+  .staking-text-gradient-unstakable {
+    background: linear-gradient(91deg, #76e268 0%, #ffd505 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .background-gradient-color {
+    background: linear-gradient(
+      270deg,
+      #5691ff -9.34%,
+      #72f6d1 17.09%,
+      #76e268 48.54%,
+      #ffd505 78.11%,
+      #ff5e52 107.63%
+    );
+  }
+  .text-gradient-1 {
+    animation: animate 2s linear infinite;
+    background: linear-gradient(
+      267deg,
+      #1363ff -1.38%,
+      #35ffc6 27.36%,
+      #57f243 52.83%,
+      #ffd637 74.34%,
+      #ff4a3d 93.01%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    width: fit-content;
+  }
+  .gradient-borders-2 {
+    border: 1px solid transparent;
+    background-image: linear-gradient(#1b1c22, #1b1c22),
+      radial-gradient(
+        circle at top right,
+        #1363ff 10%,
+        #35ffc6 60%,
+        #57f243 30%,
+        #ffd637 70%,
+        #ff4a3d 92%
+      );
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+  }
+  .bg-white-gradient {
+    background: linear-gradient(180deg, #fff 0%, #ccc 100%);
+    backdrop-filter: blur(20px);
+  }
   .staking-text-gradient-staked {
     background: linear-gradient(
       91deg,
@@ -1063,6 +1128,14 @@
   }
   .items-inherit {
     align-items: inherit;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
   }
 }
 
