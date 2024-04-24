@@ -2130,18 +2130,18 @@ export class BlockchainWrite {
 
       await launchpadContract.callStatic.createPresale(
         presaleData,
-        roundInfoData,
-        {
-          value: parseUnits("0.001", "ether"),
-        }
+        roundInfoData
+        // {
+        //   value: parseUnits("0.001", "ether"), //disabled fees
+        // }
       );
 
       let tx = await launchpadContract.functions.createPresale(
         presaleData,
-        roundInfoData,
-        {
-          value: parseUnits("0.001", "ether"),
-        }
+        roundInfoData
+        // {
+        //   value: parseUnits("0.001", "ether"), //disabled fees
+        // }
       );
 
       await tx.wait();
