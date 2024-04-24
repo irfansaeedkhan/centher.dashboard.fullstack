@@ -36,16 +36,7 @@ export const ReferralClaimableCard: React.FC<ClaimableDataType> = ({
           </span>
         </div>
       </div>
-      {/* <div className={mainDiv}>
-        <div className={textLeft}>Booked Amount</div>
-        <div className={textRight}>
-          <span className="flex h-4 w-4 flex-shrink-0">
-            <BNBIcon />
-          </span>
-          <span>{Number(formatEther(item.booking_amount)).toFixed(3)}</span>
-          <span>{item.booking_amount_coin}</span>
-        </div>
-      </div> */}
+
       <div className={mainDiv}>
         <div className={textLeft}>Booking Round</div>
         <div className={textRight}>

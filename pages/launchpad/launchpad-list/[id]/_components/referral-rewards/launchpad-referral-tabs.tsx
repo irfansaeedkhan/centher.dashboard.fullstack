@@ -49,20 +49,7 @@ export const LaunchpadReferralTabs: React.FC<Props> = ({
         metaData={metaData}
         claimableRefData={claimableRefData}
       />
-      {/* <HistoryMainTabs
-        isOpen={isReward}
-        onClose={() => {
-          setIsClaimable(false);
-          setIsClaimed(false);
-          setIsStakingToken(false);
-          setIsReward(!isReward);
-        }}
-        buttons={batchActions}
-        title="Earned Rewards History"
-        loader={batchLoading}
-        actionAreaLoading={false}
-      />
-      <LaunchpadReferralsEarned open={isReward} /> */}
+
       <HistoryMainTabs
         isOpen={isClaimed}
         onClose={() => {

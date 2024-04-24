@@ -45,14 +45,10 @@ export const MainTimeline: React.FC<Props> = ({
         }
       />
       <div className="flex flex-col gap-1">
-        {/* {dummyDataArray.map((data, index) => (
-          <NumberTimeline key={index} {...data} />
-        ))} */}
-
         {Array.from({ length: Number(releaseMonth) }, (_, index) => index).map(
           (index: number) => {
             const nowTime = Math.floor(Date.now() / 1000);
-            // const claimable = contributionInfo.totalClaimableToken;
+
             const startTime = contributionInfo.purchaseTime;
             const endTime =
               startTime +

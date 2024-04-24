@@ -50,7 +50,6 @@ export const PresaleData: React.FC<PresaleDataProps> = ({
 
   let totalSupplyForSell = 0;
   for (let i = 0; i < roundInfos.length; i++) {
-    // console.log(roundInfos[i].tokensToSell, roundInfos[i].pricePerToken);
     totalSupplyForSell +=
       (Number(roundInfos[i].tokensToSell) * 1e18) /
       Number(roundInfos[i].pricePerToken);

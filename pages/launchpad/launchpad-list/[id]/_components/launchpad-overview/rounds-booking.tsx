@@ -19,8 +19,6 @@ export const RoundsBooking: React.FC<PresaleDataProps> = ({
   roundInfos,
   roundDeep,
   currentRound,
-  // maxTokensToSell,
-  // totalPurchasesInBuyingToken,
   tokenPurchaseWithBNB,
   tokenPurchaseWithBUSD,
   fundType,
@@ -53,12 +51,6 @@ export const RoundsBooking: React.FC<PresaleDataProps> = ({
     100;
 
   percentSoldOut = Number(percentSoldOut) / 1e18;
-
-  // const maxSellInQuote = Number(
-  //   BigNumber.from(maxTokensToSell)
-  //     .mul(BigNumber.from(roundInfos[currentRound - 1].pricePerToken))
-  //     .div(parseEther("1"))
-  // );
 
   const currentTime = Number((Date.now() / 1000).toFixed());
   let timeToShow;
@@ -128,17 +120,10 @@ export const RoundsBooking: React.FC<PresaleDataProps> = ({
             The presale will {currentTime > timeToShow ? "start" : "end"} in
           </p>
           <Countdown
-            // date={
-            //   new Date().getTime() + 1000 * 60 * 60 * 24 * 2 + 1000 * 30 * 60
-            // }
             date={new Date(timeToShow * 1000)}
             renderer={countdownRenderer}
           />
         </div>
-        {/* <Countdown
-          date={new Date().getTime() + 1000 * 60 * 60 * 24 * 2 + 1000 * 30 * 60}
-          renderer={countdownRenderer}
-        /> */}
       </div>
       <div className="flex flex-col gap-4">
         <h2 className="text-sm font-medium leading-6 text-white">Bookings</h2>

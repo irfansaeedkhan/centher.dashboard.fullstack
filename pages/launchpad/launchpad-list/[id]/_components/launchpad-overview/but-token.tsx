@@ -74,8 +74,6 @@ export const BuyToken: React.FC<Props> = ({
           signer
         );
 
-        console.log("balance: ", balance);
-
         setTokenBalance(balance);
       }
     } catch (err) {
