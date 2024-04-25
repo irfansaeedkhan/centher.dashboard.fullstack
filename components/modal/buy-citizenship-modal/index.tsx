@@ -112,7 +112,7 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
       >
         <div
           className={`flex h-full w-full max-w-[422px] flex-col overflow-auto border border-solid  border-[#2a2d3c]   bg-black-shade-8 p-6 fsm:mx-2 fsm:h-auto fsm:max-h-[90%] fsm:rounded-3xl md:mx-0`}
-          ref={PassportModalRef}
+          // ref={PassportModalRef}
         >
           {showMsg ? (
             showMsg
