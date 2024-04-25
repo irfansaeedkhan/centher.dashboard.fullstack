@@ -7,6 +7,7 @@ import { customLog } from "@/utils/custom.log";
 import { TokenName } from "../blockchain/types";
 import {
   ContributionInfo,
+  LaunchpadContributionInfo,
   RoundInfo,
   RoundNumber,
   RoundState,
@@ -237,6 +238,67 @@ export const useGetContributionInfo = (
   useEffect(() => {
     if (account && roundInfo) fetchContributionInfo(account);
   }, [account, fetchContributionInfo, roundInfo]);
+
+  const refreshContributionInfo = useCallback(async () => {
+    if (account) fetchContributionInfo(account);
+  }, [account, fetchContributionInfo]);
+
+  return { contributionInfo, refreshContributionInfo, loadingState };
+};
+
+export const useGetContributionInfoForLaunchpad = (
+  account: string | undefined | null,
+  token: string,
+  // roundInfo: RoundInfo,
+  round_number: number
+) => {
+  const [loadingState, setLoadingState] = useState(false);
+  const [contributionInfo, setPurchasedInfo] =
+    useState<LaunchpadContributionInfo | null>(null);
+
+  const launchpadContract = useMemo(
+    () => SmartContractProvider.getContract(SmartContractName.LAUNCHPAD),
+    []
+  );
+
+  //account should add here
+  const fetchContributionInfo = useCallback(
+    async (account: string) => {
+      setLoadingState(true);
+      const contributionInfoRes =
+        await launchpadContract.getRoundUserContribution(
+          account,
+          token,
+          round_number
+        );
+
+      const claimedToken = Number(
+        ethers.utils.formatUnits(contributionInfoRes["claimedToken"])
+      );
+
+      const totalClaimableToken = Number(
+        ethers.utils.formatUnits(contributionInfoRes["totalClaimableToken"])
+      );
+
+      const _contributionInfo: LaunchpadContributionInfo = {
+        contributedFund: Number(
+          ethers.utils.formatUnits(contributionInfoRes["contributedFund"])
+        ),
+        purchaseTime: Number(contributionInfoRes["purchaseTime"]),
+        claimedToken,
+        totalClaimableToken,
+        lastClaimedTime: Number(contributionInfoRes["lastClaimedTime"]),
+      };
+
+      setPurchasedInfo(_contributionInfo);
+      setLoadingState(false);
+    },
+    [token, launchpadContract, round_number]
+  );
+
+  useEffect(() => {
+    if (account) fetchContributionInfo(account);
+  }, [account, fetchContributionInfo]);
 
   const refreshContributionInfo = useCallback(async () => {
     if (account) fetchContributionInfo(account);

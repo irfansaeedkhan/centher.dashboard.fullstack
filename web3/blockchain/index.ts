@@ -1,7 +1,6 @@
 import { QueryNames } from "./enum/query.names.enum";
 import { ApolloProvider } from "./providers/apollo.provider";
 import { BigNumber, ethers } from "ethers";
-import { parseEther } from "ethers/lib/utils";
 import { JsonRpcProvider, JsonRpcSigner } from "@ethersproject/providers";
 import { CitizenShipType } from "@/store/citizen.store";
 import { InsufficientFundError } from "@/staking/errors/params.error";
@@ -9,6 +8,7 @@ import {
   AddAffiliateSettingsInput,
   MappedCreatePoolInput,
 } from "@/staking/types";
+
 import {
   ClaimCentherFrom,
   SignerOrProvider,
@@ -18,11 +18,10 @@ import {
 import { SmartContractProvider } from "./providers/smart.contract.provider";
 import { SmartContractName } from "./enum/smart.contract.name.enum";
 import { logger } from "./helpers/alert.helper";
-import { getSigner, simpleRpcProvider } from "./helpers/provider.helper";
 import { normalizeValue } from "./helpers/math.helper";
 import { AddressFactory } from "./providers/address.provider";
 import { BlockchainConfig } from "./config";
-import { ZeroAddress } from "../constants/common";
+import { MaxUint256, ZeroAddress } from "../constants/common";
 
 export class BlockchainRead {
   static async getERC20Allowance(
@@ -593,7 +592,111 @@ export class BlockchainRead {
     }
     return "0";
   }
+
+  static async launchpadCreateFee(signer: JsonRpcSigner): Promise<string> {
+    try {
+      const launchpadContract = SmartContractProvider.getContract(
+        SmartContractName.LAUNCHPAD,
+        signer
+      );
+
+      const createFee = await launchpadContract.createFee();
+
+      return createFee.toString();
+    } catch (error: any) {
+      logger(error, "launchpadCreateFee");
+    }
+    return "0";
+  }
+
+  static async launchpadActiveRound(
+    signer: JsonRpcProvider,
+    token: string
+  ): Promise<string> {
+    try {
+      const launchpadContract = SmartContractProvider.getContract(
+        SmartContractName.LAUNCHPAD,
+        signer
+      );
+
+      const getRound = await launchpadContract.getRound(token);
+
+      return getRound.toString();
+    } catch (error: any) {
+      logger(error, "launchpadActiveRound");
+    }
+    return "0";
+  }
+
+  static async launchpadPresaleRoundDetails(
+    signer: JsonRpcProvider,
+    presaleToken: string
+  ): Promise<any> {
+    try {
+      const launchpadContract = SmartContractProvider.getContract(
+        SmartContractName.LAUNCHPAD,
+        signer
+      );
+
+      const roundDetails = await launchpadContract.getRoundInfo(presaleToken);
+
+      return roundDetails;
+    } catch (error: any) {
+      logger(error, "launchpadPresaleRoundDetails");
+    }
+  }
+
+  static async launchpadPresaleDetails(
+    signer: JsonRpcSigner | JsonRpcProvider,
+    presaleToken: string
+  ): Promise<any> {
+    try {
+      const launchpadContract = SmartContractProvider.getContract(
+        SmartContractName.LAUNCHPAD,
+        signer
+      );
+
+      const presaleDetails = await launchpadContract.presaleInfo(presaleToken);
+
+      return presaleDetails;
+    } catch (error: any) {
+      logger(error, "launchpadPresaleDetails");
+    }
+  }
+
+  static async presaleAlreadyCreated(
+    token: string,
+    signer?: JsonRpcSigner
+  ): Promise<boolean> {
+    try {
+      const launchpadContract = SmartContractProvider.getContract(
+        SmartContractName.LAUNCHPAD,
+        signer
+      );
+
+      const createdPresale = await launchpadContract.createdPresale(token);
+
+      return createdPresale;
+    } catch (error: any) {
+      logger(error, "presaleAlreadyCreated");
+    }
+    return false;
+  }
+
+  static async checkAddress(
+    address: string,
+    signer?: JsonRpcSigner
+  ): Promise<boolean> {
+    const bytecode = await signer?.provider.getCode(address);
+
+    if (bytecode === "0x") {
+      return false;
+    } else {
+      return true;
+    }
+  }
 }
+
 export class BlockchainWrite {
   static async transferERC20(
     account: string,
@@ -1657,6 +1760,7 @@ export class BlockchainWrite {
       throw error;
     }
   }
+
   static async adminCallUpdateRoundInfo(
     signer: JsonRpcSigner,
     roundIndex: number,
@@ -1845,6 +1949,37 @@ export class BlockchainWrite {
       throw error;
     }
   }
+  static async getTokenApprovalForLaunchpad(
+    tokenName: TokenName,
+    signer: JsonRpcSigner
+  ): Promise<string> {
+    try {
+      const launchpadAddress = AddressFactory.getContractAddress(
+        SmartContractName.LAUNCHPAD
+      );
+
+      const tokenContract = SmartContractProvider.getTokenContract(
+        tokenName,
+        signer
+      );
+
+      // const amount = ethers.utils.parseUnits(
+      //   BlockchainConfig.maxSupply.toString()
+      // );
+
+      await tokenContract.callStatic.approve(launchpadAddress, MaxUint256);
+      const tx = await tokenContract.functions.approve(
+        launchpadAddress,
+        MaxUint256
+      );
+      await tx.wait();
+
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "getTokenApprovalForLaunchpad");
+      throw error;
+    }
+  }
   static async callClaimNTRForReferral(signer: JsonRpcSigner): Promise<string> {
     try {
       const presaleContract = SmartContractProvider.getContract(
@@ -1977,6 +2112,191 @@ export class BlockchainWrite {
       return tx.hash;
     } catch (error: any) {
       logger(error, "adminChangeCoreTeamAddress");
+      throw error;
+    }
+  }
+
+  static async createLaunchpad(
+    signer: JsonRpcSigner,
+    presaleData: any,
+    roundInfoData: any
+  ): Promise<string> {
+    try {
+      const launchpadContract = SmartContractProvider.getContract(
+        SmartContractName.LAUNCHPAD,
+        signer
+      );
+
+      await launchpadContract.callStatic.createPresale(
+        presaleData,
+        roundInfoData
+        // {
+        //   value: parseUnits("0.001", "ether"), //disabled fees
+        // }
+      );
+
+      let tx = await launchpadContract.functions.createPresale(
+        presaleData,
+        roundInfoData
+        // {
+        //   value: parseUnits("0.001", "ether"), //disabled fees
+        // }
+      );
+
+      await tx.wait();
+
+      return "Done";
+    } catch (error: any) {
+      logger(error, "createLaunchpad");
+      throw error;
+    }
+  }
+
+  static async setAffiliateSetting(
+    signer: JsonRpcSigner,
+    tokenAddress: string,
+    levels: any
+  ): Promise<string> {
+    try {
+      const launchpadContract = SmartContractProvider.getContract(
+        SmartContractName.LAUNCHPAD,
+        signer
+      );
+
+      await launchpadContract.callStatic.setAffiliateSetting(
+        tokenAddress,
+        levels
+      );
+
+      let tx = await launchpadContract.functions.setAffiliateSetting(
+        tokenAddress,
+        levels
+      );
+
+      await tx.wait();
+
+      return "Done";
+    } catch (error: any) {
+      logger(error, "setAffiliateSetting");
+      throw error;
+    }
+  }
+
+  //launchpadV2
+  static async buyPresaleToken(
+    isBNB: boolean,
+    presaleTokenAddress: String,
+    amount: number,
+    signer: JsonRpcSigner
+  ): Promise<string> {
+    try {
+      const presaleContract = SmartContractProvider.getContract(
+        SmartContractName.LAUNCHPAD,
+        signer
+      );
+
+      // let tokenPurchase;
+      let tx;
+      const purchaseAmount = ethers.utils.parseUnits(amount.toString(), 18);
+
+      if (!isBNB) {
+        await presaleContract.callStatic.tokenPurchaseWithBUSD(
+          presaleTokenAddress,
+          purchaseAmount
+        );
+        tx = await await presaleContract.functions.tokenPurchaseWithBUSD(
+          presaleTokenAddress,
+          purchaseAmount
+        );
+        await tx.wait();
+      } else {
+        await presaleContract.callStatic.tokenPurchaseWithBNB(
+          presaleTokenAddress,
+          { value: purchaseAmount }
+        );
+        tx = await presaleContract.functions.tokenPurchaseWithBNB(
+          presaleTokenAddress,
+          {
+            value: purchaseAmount,
+          }
+        );
+        await tx.wait();
+      }
+
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "buyPresaleToken");
+      throw error;
+    }
+  }
+
+  static async claimPresaleToken(
+    presaleTokenAddress: String,
+    round: number,
+    signer: JsonRpcSigner
+  ): Promise<string> {
+    try {
+      const presaleContract = SmartContractProvider.getContract(
+        SmartContractName.LAUNCHPAD,
+        signer
+      );
+
+      await presaleContract.callStatic.claimTokens(presaleTokenAddress, round);
+      let tx = await await presaleContract.functions.claimTokens(
+        presaleTokenAddress,
+        round
+      );
+      await tx.wait();
+
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "claimPresaleToken");
+      throw error;
+    }
+  }
+
+  static async claimAllRefRewards(
+    presaleTokenAddress: String,
+    signer: JsonRpcSigner
+  ): Promise<string> {
+    try {
+      const presaleContract = SmartContractProvider.getContract(
+        SmartContractName.LAUNCHPAD,
+        signer
+      );
+
+      await presaleContract.callStatic.claimRefReward(presaleTokenAddress);
+      let tx = await await presaleContract.functions.claimRefReward(
+        presaleTokenAddress
+      );
+      await tx.wait();
+
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "claimPresaleToken");
+      throw error;
+    }
+  }
+
+  static async getRefund(
+    signer: JsonRpcSigner,
+    tokenAddress: string
+  ): Promise<string> {
+    try {
+      const launchpadContract = SmartContractProvider.getContract(
+        SmartContractName.LAUNCHPAD,
+        signer
+      );
+
+      await launchpadContract.callStatic.refund(tokenAddress);
+
+      let tx = await launchpadContract.functions.refund(tokenAddress);
+
+      await tx.wait();
+
+      return "Done";
+    } catch (error: any) {
+      logger(error, "getRefund");
       throw error;
     }
   }

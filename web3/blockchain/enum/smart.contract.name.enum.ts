@@ -14,4 +14,5 @@ export enum SmartContractName {
   DXC = "DXC",
   NFT_ADAPTER = "NFT_ADAPTER",
   STAKING = "STAKING",
+  LAUNCHPAD = "LAUNCHPAD",
 }

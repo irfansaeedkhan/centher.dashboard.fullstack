@@ -2,6 +2,7 @@ import { Explore, Launchpad, Staking } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 import { AddressFactory } from "@/web3/blockchain/providers/address.provider";
 import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.enum";
+import { CreateLaunchpad } from "@/assets/svgs/launchpad-v2";
 import { SidebarData } from "./shared";
 
 export const sidebarData: SidebarData = {
@@ -36,11 +37,21 @@ export const sidebarData: SidebarData = {
         badge: "citizen",
       },
       {
-        label: "Launchpad",
-        url: AppRoutes.coming_soon_v2,
+        label: "Launchpad List",
+        url: "/launchpad/launchpad-list/?list_type=all",
         icon: Launchpad,
         available_for: "all",
-        activeList: [AppRoutes.coming_soon_v2],
+        activeList: [
+          AppRoutes.launchpad.launchpad_list.index,
+          AppRoutes.launchpad.launchpad_list.launchpad_list_details,
+        ],
+      },
+      {
+        label: "Create Launchpad",
+        url: AppRoutes.launchpad.create_launchpad,
+        icon: CreateLaunchpad,
+        available_for: "all",
+        activeList: [AppRoutes.launchpad.create_launchpad],
       },
     ],
   },

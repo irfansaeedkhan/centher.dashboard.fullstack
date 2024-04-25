@@ -14,6 +14,7 @@ import {
   allPurchasesHistoryByUser,
   purchaseWithNtrHistoryByUser,
 } from "@/subgraph/querys";
+
 import { QueryNames } from "../enum/query.names.enum";
 import { IQueryStorage } from "../types";
 
