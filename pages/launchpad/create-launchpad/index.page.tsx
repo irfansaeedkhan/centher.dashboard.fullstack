@@ -20,8 +20,15 @@ import {
 import { CreateLaunchpadStepsEnum } from "./_components/shared-enum";
 import { MainComp } from "./_components/main-comp";
 import { useLaunchpad } from "@/hooks/launchpad";
+import useUser from "@/hooks/use.user";
+import { useRouter } from "next/router";
+import { BuyCitizenshipModal } from "@/components/modal/buy-citizenship-modal";
+import { AppRoutes } from "@/constants/app.routes";
 
 const CreateLaunchpad: NextPageWithLayout = () => {
+  const { user } = useUser();
+  const router = useRouter();
+  const [showBuyCitizenshipModal, setShowBuyCitizenshipModal] = useState(false);
   const { getSigner, connectedAddress } = useWallet();
   const signer = getSigner();
   const launchpadContract = SmartContractProvider.getContract(
@@ -122,7 +129,17 @@ const CreateLaunchpad: NextPageWithLayout = () => {
     ]
   );
 
+  const handleShowBuyCitizenshipModal = useCallback(() => {
+    if (user?.membership.status === "citizen") {
+      router.push(AppRoutes.launchpad.create_launchpad);
+      return;
+    } else {
+      setShowBuyCitizenshipModal(true);
+    }
+  }, [router, user]);
+
   useEffect(() => {
+    handleShowBuyCitizenshipModal();
     (async () => {
       try {
         if (!signer) return;
@@ -132,7 +149,7 @@ const CreateLaunchpad: NextPageWithLayout = () => {
         customLog(["development", "staging"], e);
       }
     })();
-  }, [signer]);
+  }, [signer, handleShowBuyCitizenshipModal]);
 
   useEffect(() => {
     getAllowance();
@@ -194,27 +211,6 @@ const CreateLaunchpad: NextPageWithLayout = () => {
       }
     })();
   }, [formState.verify_token.token_address, signer, totalPresaleSellingAmount]);
-
-  // useEffect(() => {
-  //   if (formState.verify_token.token_address === "") return;
-  //   (async () => {
-  //     try {
-  //       if (sdk) {
-  //         let result = await sdk.getPresale(
-  //           formState.verify_token.token_address
-  //         );
-
-  //         setPresaleDetails(result);
-  //       }
-  //     } catch (e) {
-  //       customLog(["development", "staging"], e);
-  //     }
-  //   })();
-  // }, [formState.verify_token.token_address, sdk]);
-
-  // useEffect(() => {
-  //   getPresaleDetail();
-  // }, [getPresaleDetail]);
 
   const uploadMetaData = async () => {
     try {
@@ -431,7 +427,12 @@ const CreateLaunchpad: NextPageWithLayout = () => {
     }
   };
 
-  return (
+  return showBuyCitizenshipModal ? (
+    <BuyCitizenshipModal
+      isOpen={showBuyCitizenshipModal}
+      onClickClose={() => setShowBuyCitizenshipModal(false)}
+    />
+  ) : (
     <>
       <MainComp
         handleOnSubmit={handleOnSubmit}
