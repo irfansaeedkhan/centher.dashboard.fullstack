@@ -15,9 +15,13 @@ import Image from "next/image";
 import { EmptyLaunchpad } from "@/assets/svgs/launchpad-v2";
 import { BigNumber } from "ethers";
 import { parseEther } from "ethers/lib/utils";
+import useUser from "@/hooks/use.user";
+import { BuyCitizenshipModal } from "@/components/modal/buy-citizenship-modal";
 
 const LaunchpadList: NextPageWithLayout = () => {
+  const { user } = useUser();
   const router = useRouter();
+  const [showBuyCitizenshipModal, setShowBuyCitizenshipModal] = useState(false);
   const { list_type, sort } = router.query;
   const { sdk } = useLaunchpad();
 
@@ -200,9 +204,19 @@ const LaunchpadList: NextPageWithLayout = () => {
     setIsLoading(false);
   }, [list_type, sdk, sort]);
 
+  const handleShowBuyCitizenshipModal = useCallback(() => {
+    if (user?.membership.status === "citizen") {
+      router.push("/launchpad/launchpad-list/?list_type=all");
+      return;
+    } else {
+      setShowBuyCitizenshipModal(true);
+    }
+  }, [router, user]);
+
   useEffect(() => {
+    handleShowBuyCitizenshipModal();
     loadSdk();
-  }, [loadSdk]); //sdk, list_type
+  }, [loadSdk, handleShowBuyCitizenshipModal]); //sdk, list_type
 
   if (!projects) return;
 
@@ -220,7 +234,12 @@ const LaunchpadList: NextPageWithLayout = () => {
     );
   }
 
-  return (
+  return showBuyCitizenshipModal ? (
+    <BuyCitizenshipModal
+      isOpen={showBuyCitizenshipModal}
+      onClickClose={() => setShowBuyCitizenshipModal(false)}
+    />
+  ) : (
     <div
       className={`gap-5 ${
         projects.length === 0
