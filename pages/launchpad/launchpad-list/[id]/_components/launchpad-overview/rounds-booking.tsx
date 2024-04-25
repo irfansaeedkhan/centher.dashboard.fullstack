@@ -3,8 +3,6 @@ import clsx from "clsx";
 import Countdown, { CountdownRendererFn } from "react-countdown";
 import { PresaleDataType } from "../../../_components/launchpad-card-data";
 import Image from "next/image";
-import { BigNumber } from "ethers";
-import { parseEther } from "viem";
 
 interface PresaleDataProps extends PresaleDataType {
   token_name: string;
@@ -15,7 +13,6 @@ interface PresaleDataProps extends PresaleDataType {
 }
 
 export const RoundsBooking: React.FC<PresaleDataProps> = ({
-  token_symbol,
   roundInfos,
   roundDeep,
   currentRound,
@@ -131,20 +128,26 @@ export const RoundsBooking: React.FC<PresaleDataProps> = ({
           <div
             className={clsx(
               "relative h-3 w-full overflow-hidden rounded-3xl",
-              // status === "live" &&
-              `bg-green-shade-1/[0.16]`
-              // status === "upcoming" && `bg-brand-primary/[0.16]`,
-              // status === "ended" && `bg-red-shade-1/[0.16]`
+              percentSoldOut >= 0 &&
+                percentSoldOut <= 75 &&
+                `bg-green-shade-1/[0.16]`,
+              percentSoldOut > 75 &&
+                percentSoldOut <= 90 &&
+                `bg-yellow-shade-1/[0.16]`,
+              percentSoldOut > 90 && `bg-red-shade-1/[0.16]`
             )}
           >
             <div
               style={{ width: `${percentSoldOut}%` }}
               className={clsx(
                 `absolute top-0 z-50 h-3 rounded-3xl`,
-                // status === "live" &&
-                `bg-green-shade-1`
-                // status === "upcoming" && `bg-brand-primary`,
-                // status === "ended" && `bg-red-shade-1`
+                percentSoldOut >= 0 &&
+                  percentSoldOut <= 75 &&
+                  `bg-green-shade-1`,
+                percentSoldOut > 75 &&
+                  percentSoldOut <= 90 &&
+                  `bg-yellow-shade-1`,
+                percentSoldOut > 90 && `bg-red-shade-1`
               )}
             ></div>
           </div>

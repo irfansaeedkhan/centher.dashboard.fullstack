@@ -61,24 +61,3 @@ const mainDiv = "flex w-full items-center justify-between gap-3";
 const textLeft = "text-sm font-medium text-gray-shade-14";
 const textRight =
   "text-sm font-medium text-white flex flex-shrink-0 items-center gap-1";
-
-//   <div className={mainDiv}>
-//   <div className={textLeft}>Level 2</div>
-//   <div className={textRight}>2%</div>
-// </div>
-// <div className={mainDiv}>
-//   <div className={textLeft}>Level 3</div>
-//   <div className={textRight}>3%</div>
-// </div>
-// <div className={mainDiv}>
-//   <div className={textLeft}>Level 4</div>
-//   <div className={textRight}>4%</div>
-// </div>
-// <div className={mainDiv}>
-//   <div className={textLeft}>Level 5</div>
-//   <div className={textRight}>2%</div>
-// </div>
-// <div className={mainDiv}>
-//   <div className={textLeft}>Level 6</div>
-//   <div className={textRight}>3%</div>
-// </div>

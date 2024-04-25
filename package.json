@@ -26,7 +26,6 @@
     ]
   },
   "dependencies": {
-    "@aliakbarazizi/headless-datepicker": "^2.0.2",
     "@apollo/client": "^3.8.6",
     "@draft-js-plugins/editor": "^4.1.4",
     "@draft-js-plugins/emoji": "^4.6.7",

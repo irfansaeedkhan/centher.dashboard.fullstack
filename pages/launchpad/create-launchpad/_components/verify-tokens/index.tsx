@@ -6,7 +6,6 @@ import CustomDropdownAll from "@/components/shared/custom-dropdown";
 import { BNBIcon } from "@/assets/svgs";
 import SaleRounds from "./sale-rounds";
 import Currency from "./currency";
-import FeeOptions from "./fee-options";
 import ReleaseMonth from "./release_month";
 import MultilevelRewardSystem from "./multilevel-reward-system";
 import LiquidityLockups from "./liquidity-lockups";
@@ -106,43 +105,6 @@ export const VerifyTokenForm: React.FC<Props> = ({
       )}
       <SaleRounds formState={formState} setFormState={setFormState} />
       <Currency formState={formState} setFormState={setFormState} />
-      {/* <FeeOptions formState={formState} setFormState={setFormState} />
-      {formState.verify_token.fee_option === "Other" && (
-        <div className={gradientBorderInputMain}>
-          <label
-            htmlFor="add_fee"
-            className={clsx(label, "text-gray-shade-14")}
-          >
-            Add Fee %
-          </label>
-          <div className={gradientBorderInputParent}>
-            <CustomNumberInput
-              min={0}
-              max={100}
-              id="add_fee"
-              name="add_fee"
-              placeholder="3"
-              className={gradientBorderInput}
-              value={
-                formState.verify_token.add_fee === 0
-                  ? ""
-                  : formState.verify_token.add_fee
-              }
-              onChange={(e) =>
-                setFormState((prev) => {
-                  return {
-                    ...prev,
-                    verify_token: {
-                      ...prev.verify_token,
-                      add_fee: Number(e.target.value),
-                    },
-                  };
-                })
-              }
-            />
-          </div>
-        </div>
-      )} */}
       <LiquidityLockups formState={formState} setFormState={setFormState} />
       <ReleaseMonth formState={formState} setFormState={setFormState} />
       {formState.verify_token.release_month === "Other" && (

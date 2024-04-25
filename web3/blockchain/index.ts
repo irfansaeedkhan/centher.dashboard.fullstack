@@ -1,7 +1,6 @@
 import { QueryNames } from "./enum/query.names.enum";
 import { ApolloProvider } from "./providers/apollo.provider";
 import { BigNumber, ethers } from "ethers";
-import { parseUnits } from "ethers/lib/utils";
 import { JsonRpcProvider, JsonRpcSigner } from "@ethersproject/providers";
 import { CitizenShipType } from "@/store/citizen.store";
 import { InsufficientFundError } from "@/staking/errors/params.error";
