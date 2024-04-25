@@ -1,10 +1,9 @@
+import React, { useRef, useState } from "react";
 import Button from "@/components/button";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { useWallet } from "@/web3/hooks/use.wallet";
 import clsx from "clsx";
 import { useRouter } from "next/router";
-import React, { useRef, useState } from "react";
-import { CgSpinner } from "react-icons/cg";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { ClaimedDataType } from "../data";
 import { PresaleDataType } from "../../../_components/launchpad-card-data";
@@ -29,10 +28,6 @@ export const HistoryMainTabs: React.FC<Props> = ({
   isOpen,
   onClose,
   title,
-  buttons,
-  loader,
-  actionAreaLoading,
-  records,
   claimedRefData,
   launchpadData,
 }) => {
@@ -66,8 +61,6 @@ export const HistoryMainTabs: React.FC<Props> = ({
       setSuccessModal("Reward claimed successfully");
     } catch (error: any) {
       setProgressModel(false);
-      // console.log(e);
-      // throw new Error(error.message);
       setErrorModal(error?.message ?? "Something went wrong!");
     }
   };
@@ -128,7 +121,6 @@ export const HistoryMainTabs: React.FC<Props> = ({
         {title === "Claimable Rewards History" && (
           <>
             <Button
-              // key={i}
               className="hidden w-full max-w-[150px] text-sm fmd:flex"
               title="Claim All"
               borderRounded="10px"
@@ -137,7 +129,6 @@ export const HistoryMainTabs: React.FC<Props> = ({
                 claimedRefData.length > 0 || currentTime < presaleEndTime
               }
             />
-
             <div className="relative flex flex-shrink-0 fmd:hidden" ref={ref}>
               <span onClick={() => setButtonPopup(!buttonPopup)}>
                 <BsThreeDots className="size-6 cursor-pointer text-gray-shade-14 hover:text-white" />
@@ -161,7 +152,7 @@ export const HistoryMainTabs: React.FC<Props> = ({
             </div>
           </>
         )}
-      </div>{" "}
+      </div>
     </>
   );
 };
