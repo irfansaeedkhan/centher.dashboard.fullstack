@@ -190,13 +190,13 @@ export const PresaleData: React.FC<PresaleDataProps> = ({
               {releaseMonth} {releaseMonth === "1" ? "Month" : "Months"}
             </div>
           </div>
-          <div className={mainDiv}>
+          {/* <div className={mainDiv}>
             <div className={textLeft}>Lock Period</div>
             <div className={textRight}>
               {roundInfos[0].lockMonths}{" "}
               {roundInfos[0].lockMonths === "1" ? "Month" : "Months"}
             </div>
-          </div>
+          </div> */}
           {!refund &&
           Number(minTokensToSell) > 0 &&
           Date.now() / 1000 > endOfPresale ? (

@@ -23,7 +23,6 @@ import { useLaunchpad } from "@/hooks/launchpad";
 import useUser from "@/hooks/use.user";
 import { useRouter } from "next/router";
 import { BuyCitizenshipModal } from "@/components/modal/buy-citizenship-modal";
-import { AppRoutes } from "@/constants/app.routes";
 
 const CreateLaunchpad: NextPageWithLayout = () => {
   const { user } = useUser();
@@ -51,8 +50,6 @@ const CreateLaunchpad: NextPageWithLayout = () => {
     number | string | null
   >(null);
   const [formState, setFormState] = useState<FormState>(initialFormState);
-
-  // const [presaleDetails, setPresaleDetails] = useState<any>(null);
 
   const { sdk } = useLaunchpad();
 
@@ -129,17 +126,15 @@ const CreateLaunchpad: NextPageWithLayout = () => {
     ]
   );
 
-  const handleShowBuyCitizenshipModal = useCallback(() => {
+  useEffect(() => {
     if (user?.membership.status === "citizen") {
-      router.push(AppRoutes.launchpad.create_launchpad);
+      setShowBuyCitizenshipModal(false);
       return;
-    } else {
-      setShowBuyCitizenshipModal(true);
     }
+    setShowBuyCitizenshipModal(true);
   }, [router, user]);
 
   useEffect(() => {
-    handleShowBuyCitizenshipModal();
     (async () => {
       try {
         if (!signer) return;
@@ -149,7 +144,7 @@ const CreateLaunchpad: NextPageWithLayout = () => {
         customLog(["development", "staging"], e);
       }
     })();
-  }, [signer, handleShowBuyCitizenshipModal]);
+  }, [signer]);
 
   useEffect(() => {
     getAllowance();
