@@ -127,11 +127,13 @@ const CreateLaunchpad: NextPageWithLayout = () => {
   );
 
   useEffect(() => {
-    if (user?.membership.status === "citizen") {
-      setShowBuyCitizenshipModal(false);
-      return;
+    if (user) {
+      if (user.membership.status === "citizen") {
+        setShowBuyCitizenshipModal(false);
+      } else {
+        setShowBuyCitizenshipModal(true);
+      }
     }
-    setShowBuyCitizenshipModal(true);
   }, [router, user]);
 
   useEffect(() => {
