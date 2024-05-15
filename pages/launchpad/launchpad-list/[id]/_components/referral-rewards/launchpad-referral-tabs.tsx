@@ -43,12 +43,19 @@ export const LaunchpadReferralTabs: React.FC<Props> = ({
         claimedRefData={claimedRefData}
         launchpadData={launchpadData}
       />
-      <LaunchpadReferralsClaimable
-        open={isClaimable}
-        launchpadData={launchpadData}
-        metaData={metaData}
-        claimableRefData={claimableRefData}
-      />
+      {isClaimable && !claimableRefData?.length ? (
+        <div className=" my-10 w-full text-center text-white">
+          {" "}
+          No rewards to show yet{" "}
+        </div>
+      ) : (
+        <LaunchpadReferralsClaimable
+          open={isClaimable}
+          launchpadData={launchpadData}
+          metaData={metaData}
+          claimableRefData={claimableRefData}
+        />
+      )}
 
       <HistoryMainTabs
         isOpen={isClaimed}
@@ -65,10 +72,15 @@ export const LaunchpadReferralTabs: React.FC<Props> = ({
         claimedRefData={claimedRefData}
         launchpadData={launchpadData}
       />
-      <LaunchpadReferralsClaimed
-        open={isClaimed}
-        claimedRefData={claimedRefData}
-      />
+
+      {isClaimed && !claimedRefData?.length ? (
+        <div className=" my-10 w-full text-center text-white"> No rewards </div>
+      ) : (
+        <LaunchpadReferralsClaimed
+          open={isClaimed}
+          claimedRefData={claimedRefData}
+        />
+      )}
     </div>
   );
 };
