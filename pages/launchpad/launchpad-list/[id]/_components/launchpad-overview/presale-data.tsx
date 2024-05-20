@@ -1,11 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { PresaleDataType } from "../../../_components/launchpad-card-data";
 import clsx from "clsx";
 import { sliceAccountAddress } from "@/utils/user.helpers";
 import { copyText } from "@/utils/copy.text";
 import toast from "react-hot-toast";
 import { MdOutlineInfo } from "react-icons/md";
-import { GradientCopy } from "@/assets/svgs";
+import {
+  GradientCopy,
+  NewDiscordIcon,
+  WebsiteIcon,
+  XLogo,
+} from "@/assets/svgs";
 import dayjs from "dayjs";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { formatUnits } from "ethers/lib/utils";
@@ -16,6 +21,10 @@ import { BlockchainWrite } from "@/web3/blockchain";
 import { useWallet } from "@/web3/hooks/use.wallet";
 import { StandardModal } from "@/components/modal/standard.modal";
 import { ProgressModalShared } from "@/components/shared";
+import Link from "next/link";
+import { formatIPFSUrl } from "@/utils/format.address";
+import axios from "axios";
+import { TelegramIcon } from "react-share";
 
 interface PresaleDataProps extends PresaleDataType {
   token_name: string;
@@ -37,6 +46,7 @@ export const PresaleData: React.FC<PresaleDataProps> = ({
   presaleActive,
   fundType,
   roundDeep,
+  metadata,
 }) => {
   const { getSigner } = useWallet();
   const [modalTitle, setModalTitle] = useState("");
@@ -44,9 +54,42 @@ export const PresaleData: React.FC<PresaleDataProps> = ({
   const [errorModal, setErrorModal] = useState<false | string>(false);
   const [successModal, setSuccessModal] = useState<false | string>(false);
 
+  const [socials, setSocials] = useState<{
+    token_name: string;
+    token_symbol: string;
+    logo_url: string;
+    website_url: string;
+    facebook: string;
+    twitter: string;
+    github: string;
+    telegram: string;
+    instagram: string;
+    discord: string;
+    reddit: string;
+    description: string;
+  }>({
+    token_name: "",
+    token_symbol: "",
+    logo_url: "",
+    website_url: "",
+    facebook: "",
+    twitter: "",
+    github: "",
+    telegram: "",
+    instagram: "",
+    discord: "",
+    reddit: "",
+    description: "",
+  });
+
   const [refund, setRefund] = useState(false);
 
   const endOfPresale = Number(roundInfos[Number(roundDeep) - 1].endTime);
+
+  const StaticTokenData = {
+    symbol: "ECOPAW",
+    whitepaper_url: "https://ecopaw.io/files/ecopaw-whitepaper.pdf",
+  };
 
   let totalSupplyForSell = 0;
   for (let i = 0; i < roundInfos.length; i++) {
@@ -54,6 +97,30 @@ export const PresaleData: React.FC<PresaleDataProps> = ({
       (Number(roundInfos[i].tokensToSell) * 1e18) /
       Number(roundInfos[i].pricePerToken);
   }
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const result = await axios.get(formatIPFSUrl(metadata));
+        setSocials({
+          token_name: result.data.token_name,
+          token_symbol: result.data.token_symbol,
+          logo_url: result.data.logo_url,
+          website_url: result.data.website_url,
+          facebook: result.data.facebook,
+          twitter: result.data.twitter,
+          github: result.data.github,
+          telegram: result.data.telegram,
+          instagram: result.data.instagram,
+          discord: result.data.discord,
+          reddit: result.data.reddit,
+          description: result.data.description,
+        });
+      } catch (e) {
+        console.log(e);
+      }
+    })();
+  }, [metadata]);
 
   const doRefund = async () => {
     setProgressModel(true);
@@ -197,6 +264,99 @@ export const PresaleData: React.FC<PresaleDataProps> = ({
               {roundInfos[0].lockMonths === "1" ? "Month" : "Months"}
             </div>
           </div> */}
+
+          {StaticTokenData.symbol === token_symbol ? (
+            <div className={mainDiv}>
+              <div className={textLeft}>Whitepaper</div>
+              <div className={textRight}>
+                <Link
+                  className="flex items-center"
+                  href={StaticTokenData.whitepaper_url}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  <XLogo className="h-5 w-5 fill-white" />
+                  <span className="ml-2">{StaticTokenData.whitepaper_url}</span>
+                </Link>
+              </div>
+            </div>
+          ) : null}
+
+          <div className={mainDiv}>
+            <div className={textLeft}>Socials</div>
+            <div className={textRight}>
+              <Link
+                className="flex items-center"
+                href={
+                  socials.twitter.includes("https://")
+                    ? socials.twitter
+                    : `https//${socials.twitter}`
+                }
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <XLogo className="h-5 w-5 fill-white" />
+                <span className="ml-2">{socials.twitter}</span>
+              </Link>
+            </div>
+          </div>
+
+          <div className={mainDiv}>
+            <div className={textLeft}></div>
+            <div className={textRight}>
+              <Link
+                className="flex items-center"
+                href={
+                  socials.telegram.includes("https://")
+                    ? socials.telegram
+                    : `https//${socials.telegram}`
+                }
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <TelegramIcon className="h-5 w-5 fill-white" />
+                <span className="ml-2">{socials.telegram}</span>
+              </Link>
+            </div>
+          </div>
+
+          <div className={mainDiv}>
+            <div className={textLeft}></div>
+            <div className={textRight}>
+              <Link
+                className="flex items-center"
+                href={
+                  socials.discord.includes("https://")
+                    ? socials.discord
+                    : `https//${socials.discord}`
+                }
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <NewDiscordIcon className="h-5 w-5 " />
+                <span className="ml-2">{socials.discord}</span>
+              </Link>
+            </div>
+          </div>
+
+          <div className={mainDiv}>
+            <div className={textLeft}>Listing on</div>
+            <div className={textRight}>
+              <Link
+                className="flex items-center"
+                href={
+                  socials.twitter.includes("https://")
+                    ? socials.twitter
+                    : `https//${socials.website_url}`
+                }
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <WebsiteIcon className="h-5 w-5" />
+                <span className="ml-2">{socials.website_url}</span>
+              </Link>
+            </div>
+          </div>
           {!refund &&
           Number(minTokensToSell) > 0 &&
           Date.now() / 1000 > endOfPresale ? (
