@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { AppRoutes } from "@/constants/app.routes";
-import Button from "@/components/button";
 import useUser from "@/hooks/use.user";
 import { BuyCitizenshipModal } from "@/components/modal/buy-citizenship-modal";
 

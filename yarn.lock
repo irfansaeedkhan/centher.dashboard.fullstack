@@ -17,14 +17,6 @@
   resolved "https://registry.yarnpkg.com/@adraffy/ens-normalize/-/ens-normalize-1.10.0.tgz#d2a39395c587e092d77cbbc80acf956a54f38bf7"
   integrity sha512-nA9XHtlAkYfJxY7bce8DcN7eKxWWCWkU+1GR9d+U6MbNpfwQp8TI7vqOsBsMcHoT4mBu2kypKoSKnghEzOOq5Q==
 
-"@aliakbarazizi/headless-datepicker@^2.0.2":
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/@aliakbarazizi/headless-datepicker/-/headless-datepicker-2.0.2.tgz#2a571d9ed840a4938788cdac8986d83872ac4702"
-  integrity sha512-xlr/do5ANhr424TSJmWnnhL2B46oSYHirkO6lR7cno0DvaECtyM3huUjoPAxxMSdqz6k8xmxdaa6PVucB9k0YQ==
-  dependencies:
-    "@floating-ui/react-dom" "^2.0.1"
-    date-fns "^2.30.0"
-
 "@alloc/quick-lru@^5.2.0":
   version "5.2.0"
   resolved "https://registry.npmjs.org/@alloc/quick-lru/-/quick-lru-5.2.0.tgz"

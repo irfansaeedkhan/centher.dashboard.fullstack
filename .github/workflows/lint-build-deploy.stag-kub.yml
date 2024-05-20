@@ -143,22 +143,24 @@ jobs:
       - name: Delete existing image pull secret
         run: |
           export KUBECONFIG=${HOME}/.kube/config
-          if kubectl get secret stag-kub-app-centh-pull-secret &> /dev/null; then
-            kubectl delete secret stag-kub-app-centh-pull-secret
-            echo "Deleted image pull secret"
-          else
-            echo "Image pull secret does not exist. Nothing to delete."
-          fi
-
+          kubectl delete secret kubectl delete secret stag-kub-app-centh-pull-secret -n centher-io-nsp
+        continue-on-error: true
+      
       - name: Create image pull secret from dockerhub
         run: |
-          kubectl create secret docker-registry stag-kub-app-centh-pull-secret \
+          kubectl create secret docker-registry stag-kub-app-centh-pull-secret -n centher-io-nsp \
             --docker-username=${{ secrets.DOCKERHUB_USERNAME_STAGING }} \
             --docker-password=${{ secrets.DOCKERHUB_TOKEN_STAGING }}
 
       - name: Changed tag name
         run: |
-          sed -i "s#{IMAGE_TAG}#${{ steps.image-name.outputs.tagged_image }}#g" ./k8s/stag-kub/app-centher-io-deployment.yml
+          sed -i "s#{ IMAGE_TAG }#${{ steps.image-name.outputs.tagged_image }}#g" ./k8s/stag-kub/app-centher-io-deployment.yml
+
+      - name: Check kubernetes file before deployment
+        run: |
+          export KUBECONFIG=${HOME}/.kube/config
+          kubectl apply --dry-run=client --validate=true -f ./k8s/stag-kub/app-centher-io-deployment.yml
+          kubectl apply --dry-run=client --validate=true -f ./k8s/stag-kub/app-centher-io-service.yml
 
       - name: Deploy to stag-kub kubernetes cluster
         run: |
@@ -168,3 +170,12 @@ jobs:
 
       - name: Wait for deployment to complete
         run: kubectl rollout status deploy/app-centher-io-deployment -n centher-io-nsp --timeout=300s
+      
+      - name: Delete existing image pull secret
+        run: |
+          export KUBECONFIG=${HOME}/.kube/config
+          kubectl delete secret stag-kub-app-centh-pull-secret -n centher-io-nsp
+      
+      - name: Remove config file
+        run: |
+          rm ${HOME}/.kube/config

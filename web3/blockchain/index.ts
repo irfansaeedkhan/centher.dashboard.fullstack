@@ -1,7 +1,6 @@
 import { QueryNames } from "./enum/query.names.enum";
 import { ApolloProvider } from "./providers/apollo.provider";
 import { BigNumber, ethers } from "ethers";
-import { parseUnits } from "ethers/lib/utils";
 import { JsonRpcProvider, JsonRpcSigner } from "@ethersproject/providers";
 import { CitizenShipType } from "@/store/citizen.store";
 import { InsufficientFundError } from "@/staking/errors/params.error";
@@ -2130,18 +2129,18 @@ export class BlockchainWrite {
 
       await launchpadContract.callStatic.createPresale(
         presaleData,
-        roundInfoData,
-        {
-          value: parseUnits("0.001", "ether"),
-        }
+        roundInfoData
+        // {
+        //   value: parseUnits("0.001", "ether"), //disabled fees
+        // }
       );
 
       let tx = await launchpadContract.functions.createPresale(
         presaleData,
-        roundInfoData,
-        {
-          value: parseUnits("0.001", "ether"),
-        }
+        roundInfoData
+        // {
+        //   value: parseUnits("0.001", "ether"), //disabled fees
+        // }
       );
 
       await tx.wait();

@@ -3,8 +3,6 @@ import clsx from "clsx";
 import Countdown, { CountdownRendererFn } from "react-countdown";
 import { PresaleDataType } from "../../../_components/launchpad-card-data";
 import Image from "next/image";
-import { BigNumber } from "ethers";
-import { parseEther } from "viem";
 
 interface PresaleDataProps extends PresaleDataType {
   token_name: string;
@@ -15,12 +13,9 @@ interface PresaleDataProps extends PresaleDataType {
 }
 
 export const RoundsBooking: React.FC<PresaleDataProps> = ({
-  token_symbol,
   roundInfos,
   roundDeep,
   currentRound,
-  // maxTokensToSell,
-  // totalPurchasesInBuyingToken,
   tokenPurchaseWithBNB,
   tokenPurchaseWithBUSD,
   fundType,
@@ -53,12 +48,6 @@ export const RoundsBooking: React.FC<PresaleDataProps> = ({
     100;
 
   percentSoldOut = Number(percentSoldOut) / 1e18;
-
-  // const maxSellInQuote = Number(
-  //   BigNumber.from(maxTokensToSell)
-  //     .mul(BigNumber.from(roundInfos[currentRound - 1].pricePerToken))
-  //     .div(parseEther("1"))
-  // );
 
   const currentTime = Number((Date.now() / 1000).toFixed());
   let timeToShow;
@@ -128,17 +117,10 @@ export const RoundsBooking: React.FC<PresaleDataProps> = ({
             The presale will {currentTime > timeToShow ? "start" : "end"} in
           </p>
           <Countdown
-            // date={
-            //   new Date().getTime() + 1000 * 60 * 60 * 24 * 2 + 1000 * 30 * 60
-            // }
             date={new Date(timeToShow * 1000)}
             renderer={countdownRenderer}
           />
         </div>
-        {/* <Countdown
-          date={new Date().getTime() + 1000 * 60 * 60 * 24 * 2 + 1000 * 30 * 60}
-          renderer={countdownRenderer}
-        /> */}
       </div>
       <div className="flex flex-col gap-4">
         <h2 className="text-sm font-medium leading-6 text-white">Bookings</h2>
@@ -146,20 +128,26 @@ export const RoundsBooking: React.FC<PresaleDataProps> = ({
           <div
             className={clsx(
               "relative h-3 w-full overflow-hidden rounded-3xl",
-              // status === "live" &&
-              `bg-green-shade-1/[0.16]`
-              // status === "upcoming" && `bg-brand-primary/[0.16]`,
-              // status === "ended" && `bg-red-shade-1/[0.16]`
+              percentSoldOut >= 0 &&
+                percentSoldOut <= 75 &&
+                `bg-green-shade-1/[0.16]`,
+              percentSoldOut > 75 &&
+                percentSoldOut <= 90 &&
+                `bg-yellow-shade-1/[0.16]`,
+              percentSoldOut > 90 && `bg-red-shade-1/[0.16]`
             )}
           >
             <div
               style={{ width: `${percentSoldOut}%` }}
               className={clsx(
                 `absolute top-0 z-50 h-3 rounded-3xl`,
-                // status === "live" &&
-                `bg-green-shade-1`
-                // status === "upcoming" && `bg-brand-primary`,
-                // status === "ended" && `bg-red-shade-1`
+                percentSoldOut >= 0 &&
+                  percentSoldOut <= 75 &&
+                  `bg-green-shade-1`,
+                percentSoldOut > 75 &&
+                  percentSoldOut <= 90 &&
+                  `bg-yellow-shade-1`,
+                percentSoldOut > 90 && `bg-red-shade-1`
               )}
             ></div>
           </div>

@@ -7,14 +7,12 @@ import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
 import useUser from "@/hooks/use.user";
 import { useWallet } from "@/web3/hooks/use.wallet";
 import { BlockchainConfig } from "@/web3/blockchain/config";
-import { formatEther } from "viem";
 import { PresaleRoundDetails } from "@/web3/blockchain/types";
 import { SmartContractProvider } from "@/web3/blockchain/providers/smart.contract.provider";
 import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.enum";
 import { LaunchpadListEnum } from "@/pages/launchpad/create-launchpad/_components/shared-enum";
 import { StandardModal } from "@/components/modal/standard.modal";
 import { ProgressModalShared } from "@/components/shared";
-import { BigNumber } from "ethers";
 
 interface Props extends PresaleDataType {
   token_name: string;
@@ -73,8 +71,6 @@ export const BuyToken: React.FC<Props> = ({
           token,
           signer
         );
-
-        console.log("balance: ", balance);
 
         setTokenBalance(balance);
       }
@@ -243,16 +239,7 @@ export const BuyToken: React.FC<Props> = ({
                   />
                 </div>
               </div>
-              <div className="mx-1 mt-2 block w-2/6 appearance-none rounded-lg border-0 text-sm">
-                {/* <DropdownSwapForm
-             placeholder="Token"
-             options={dropDownTokens?.base ?? []}
-             selectedValue={baseToken ? baseToken : tokens.base[0]}
-             onSelect={(value) => {
-               setBaseToken(value);
-             }}
-           /> */}
-              </div>
+              <div className="mx-1 mt-2 block w-2/6 appearance-none rounded-lg border-0 text-sm"></div>
             </div>
             <p className="my-4 ml-1 text-sm font-medium text-gray-shade-14">
               Balance {tokenBalance}
@@ -273,16 +260,7 @@ export const BuyToken: React.FC<Props> = ({
                   />
                 </div>
               </div>
-              <div className="mx-1 mt-2 block w-2/6 appearance-none rounded-lg border-0 text-sm">
-                {/* <DropdownSwapForm
-             placeholder="Token"
-             options={dropDownTokens?.quote ?? []}
-             selectedValue={quoteToken ? quoteToken : tokens.quote[0]}
-             onSelect={(value) => {
-               setQuoteToken(value);
-             }}
-           /> */}
-              </div>
+              <div className="mx-1 mt-2 block w-2/6 appearance-none rounded-lg border-0 text-sm"></div>
             </div>
             <p className="font-small my-4 ml-1 text-sm text-gray-shade-14">
               {token_symbol}
@@ -290,7 +268,7 @@ export const BuyToken: React.FC<Props> = ({
 
             <Button
               title={"Buy"}
-              // disabled={isSwapping}
+              disabled={progressModel}
               onClick={() => doPurchase()}
               variant="primary"
               className="mt-4 w-full flex-shrink-0 rounded-[10px] text-sm fsm:text-base"

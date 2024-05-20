@@ -50,7 +50,6 @@ export const PresaleData: React.FC<PresaleDataProps> = ({
 
   let totalSupplyForSell = 0;
   for (let i = 0; i < roundInfos.length; i++) {
-    // console.log(roundInfos[i].tokensToSell, roundInfos[i].pricePerToken);
     totalSupplyForSell +=
       (Number(roundInfos[i].tokensToSell) * 1e18) /
       Number(roundInfos[i].pricePerToken);
@@ -191,13 +190,13 @@ export const PresaleData: React.FC<PresaleDataProps> = ({
               {releaseMonth} {releaseMonth === "1" ? "Month" : "Months"}
             </div>
           </div>
-          <div className={mainDiv}>
+          {/* <div className={mainDiv}>
             <div className={textLeft}>Lock Period</div>
             <div className={textRight}>
               {roundInfos[0].lockMonths}{" "}
               {roundInfos[0].lockMonths === "1" ? "Month" : "Months"}
             </div>
-          </div>
+          </div> */}
           {!refund &&
           Number(minTokensToSell) > 0 &&
           Date.now() / 1000 > endOfPresale ? (

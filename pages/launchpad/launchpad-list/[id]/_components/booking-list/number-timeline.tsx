@@ -7,20 +7,6 @@ import clsx from "clsx";
 import React, { useState } from "react";
 import Countdown, { CountdownRendererFn } from "react-countdown";
 
-// interface Props {
-//   id_no: number;
-//   amount: string;
-//   endTime: Date;
-//   claimed: number;
-//   claimable: number;
-// }
-
-// id_no,
-// amount,
-// endTime,
-// claimed,
-// claimable,
-
 interface Props {
   index: number;
   nowTime: number;
@@ -71,7 +57,6 @@ export const NumberTimeline: React.FC<Props> = ({
 
       setSuccessModal("Amount Claimed!");
     } catch (error: any) {
-      // console.log(e);
       setProgressModel(false);
       setErrorModal(error?.message ?? "Something went wrong!");
     }

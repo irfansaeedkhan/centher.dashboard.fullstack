@@ -1,4 +1,4 @@
-import React, { use, useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
@@ -11,7 +11,6 @@ import {
   PresaleDataType,
 } from "./_components/launchpad-card-data";
 import { LaunchpadCard } from "./_components/launchpad-card";
-import { set } from "lodash";
 import Image from "next/image";
 import { EmptyLaunchpad } from "@/assets/svgs/launchpad-v2";
 import { BigNumber } from "ethers";
@@ -109,18 +108,6 @@ const LaunchpadList: NextPageWithLayout = () => {
       } else {
         saleStatus = "ended";
       }
-
-      // let anotherSoftVal = 0;
-
-      // for (let i = 0; i < Number(item.roundDeep); i++) {
-      //   const tokensToSell = BigNumber.from(item.roundInfos[i].tokensToSell);
-      //   const pricePerToken = BigNumber.from(item.roundInfos[i].pricePerToken);
-      //   softcapInQuoteToken += Number(
-      //     tokensToSell.mul(pricePerToken).div(parseEther("1"))
-      //   );
-
-      //   anotherSoftVal += Number(item.roundInfos[i].tokensToSell);
-      // }
 
       let avgPrice = BigNumber.from(0);
 

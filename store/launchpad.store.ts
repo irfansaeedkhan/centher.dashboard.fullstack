@@ -8,11 +8,6 @@ export interface CentherLaunchpadStore {
   setSdk: (instance: CentherLaunchpad) => void;
 }
 
-// export interface CentherLaunchpadPoolsStore {
-//   pools: OptionalType<StakingProject[]>;
-//   setPools: (pools: OptionalType<StakingProject[]>) => void;
-// }
-
 export const useCentherLaunchpad = create<CentherLaunchpadStore>()(
   devtools(
     (set) => ({
@@ -25,13 +20,3 @@ export const useCentherLaunchpad = create<CentherLaunchpadStore>()(
     }
   )
 );
-
-// export const useCentherLaunchpadPools = create<CentherLaunchpadPoolsStore>()(
-//   devtools(
-//     (set) => ({
-//       pools: null,
-//       setPools: (pools: OptionalType<StakingProject[]>) => set({ pools }),
-//     }),
-//     { name: "CentherLaunchpadStore" }
-//   )
-// );
