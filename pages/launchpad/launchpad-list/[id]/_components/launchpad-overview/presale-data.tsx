@@ -8,7 +8,10 @@ import { MdOutlineInfo } from "react-icons/md";
 import {
   GradientCopy,
   NewDiscordIcon,
+  NewTelegramIcon,
   WebsiteIcon,
+  Whitepaper,
+  Whitepaper2,
   XLogo,
 } from "@/assets/svgs";
 import dayjs from "dayjs";
@@ -275,8 +278,8 @@ export const PresaleData: React.FC<PresaleDataProps> = ({
                   rel="noopener noreferrer"
                   target="_blank"
                 >
-                  <XLogo className="h-5 w-5 fill-white" />
-                  <span className="ml-2">{StaticTokenData.whitepaper_url}</span>
+                  <Whitepaper2 className="h-5 w-5" />
+                  <span className="ml-2">Whitepaper</span>
                 </Link>
               </div>
             </div>
@@ -284,57 +287,42 @@ export const PresaleData: React.FC<PresaleDataProps> = ({
 
           <div className={mainDiv}>
             <div className={textLeft}>Socials</div>
-            <div className={textRight}>
+            <div className="flex items-center gap-3">
               <Link
                 className="flex items-center"
                 href={
                   socials.twitter.includes("https://")
                     ? socials.twitter
-                    : `https//${socials.twitter}`
+                    : `https://${socials.twitter}`
                 }
                 rel="noopener noreferrer"
                 target="_blank"
               >
                 <XLogo className="h-5 w-5 fill-white" />
-                <span className="ml-2">{socials.twitter}</span>
               </Link>
-            </div>
-          </div>
-
-          <div className={mainDiv}>
-            <div className={textLeft}></div>
-            <div className={textRight}>
               <Link
                 className="flex items-center"
                 href={
                   socials.telegram.includes("https://")
                     ? socials.telegram
-                    : `https//${socials.telegram}`
+                    : `https://${socials.telegram}`
                 }
                 rel="noopener noreferrer"
                 target="_blank"
               >
-                <TelegramIcon className="h-5 w-5 fill-white" />
-                <span className="ml-2">{socials.telegram}</span>
+                <NewTelegramIcon className="h-5 w-5 fill-[#e5e7eb]" />
               </Link>
-            </div>
-          </div>
-
-          <div className={mainDiv}>
-            <div className={textLeft}></div>
-            <div className={textRight}>
               <Link
                 className="flex items-center"
                 href={
                   socials.discord.includes("https://")
                     ? socials.discord
-                    : `https//${socials.discord}`
+                    : `https://${socials.discord}`
                 }
                 rel="noopener noreferrer"
                 target="_blank"
               >
-                <NewDiscordIcon className="h-5 w-5 " />
-                <span className="ml-2">{socials.discord}</span>
+                <NewDiscordIcon className="h-5 w-5 fill-[#e5e7eb]" />
               </Link>
             </div>
           </div>
@@ -345,15 +333,15 @@ export const PresaleData: React.FC<PresaleDataProps> = ({
               <Link
                 className="flex items-center"
                 href={
-                  socials.twitter.includes("https://")
-                    ? socials.twitter
-                    : `https//${socials.website_url}`
+                  socials.website_url.includes("https://")
+                    ? socials.website_url
+                    : `https://${socials.website_url}`
                 }
                 rel="noopener noreferrer"
                 target="_blank"
               >
-                <WebsiteIcon className="h-5 w-5" />
-                <span className="ml-2">{socials.website_url}</span>
+                <WebsiteIcon className="h-5 w-5 min-w-6 pr-2" />
+                <span className="textGradient">{socials.website_url}</span>
               </Link>
             </div>
           </div>
