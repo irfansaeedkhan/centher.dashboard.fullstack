@@ -46,6 +46,7 @@ const StakingDetailsTop: React.FC<{
   const [stakedAmount, setStakedAmount] = useState<string>("0");
   const [restakedAmount, setRestakedAmount] = useState<string>("0");
   const [stakeLoader, setStakeLoader] = useState<boolean>(false);
+  const signer = getSigner();
 
   useEffect(() => {
     if (router.pathname.includes("rewards")) {
@@ -119,10 +120,9 @@ const StakingDetailsTop: React.FC<{
 
   const stakeSubmit = async (referrer: string) => {
     try {
-      if (!getSigner() || !connectedAddress?.length) {
+      if (!signer || !connectedAddress?.length) {
         throw new Error("Connect wallet");
       }
-
       const amount = parseEther(normalizeValue(stakingValue) + "").toString();
       const minAmount = stakingPool?.min_staking_amount || "0";
       const maxAmount = stakingPool?.max_staking_amount || "0";
@@ -171,12 +171,11 @@ const StakingDetailsTop: React.FC<{
         const userErc20Balance = await BlockchainRead.getERC20Balance(
           connectedAddress,
           stakingPool?.token_address,
-          getSigner()!
+          signer!
         );
-
-        if (+amount > Number(userErc20Balance)) {
+        if (+stakingValue > Number(userErc20Balance)) {
           modal.createModal(ModalType.failedFuncModal, {
-            message: "ERC20: transfer amount exceeds balance.",
+            message: "You don't have enough balance to stake.",
             title: "New Stake Failed",
           });
           return;
@@ -184,7 +183,7 @@ const StakingDetailsTop: React.FC<{
 
         setStakeLoader(true);
         await sdk.stake(
-          getSigner()!,
+          signer!,
           +stakingPool.id,
           connectedAddress,
           amount,
@@ -269,7 +268,7 @@ const StakingDetailsTop: React.FC<{
               stakingLoader={stakeLoader}
               connectedAddress={connectedAddress}
               walletModal={() => setConnectWalletModal(true)}
-              signer={getSigner()}
+              signer={signer}
               amount={stakingValue}
             />
           )}
