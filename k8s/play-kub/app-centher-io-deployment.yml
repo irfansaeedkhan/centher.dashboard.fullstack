@@ -15,11 +15,8 @@ spec:
     spec:
       containers:
         - name: app-centher-io-container
-          image: {IMAGE_TAG}
+          image: { IMAGE_TAG }
           ports:
             - containerPort: 3000
-          resources:
-            limits:
-              memory: "500Mi"
       imagePullSecrets:
         - name: play-kub-app-centh-pull-secret
