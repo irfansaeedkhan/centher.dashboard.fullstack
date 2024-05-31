@@ -131,6 +131,7 @@ export { default as GifNew } from "./gif.new.svg";
 export { default as GifNewWhite } from "./gif-new-white.svg";
 export { default as LinkNewIcon } from "./link.new.svg";
 export { default as Whitepaper } from "./whitepaper.svg";
+export { default as Whitepaper2 } from "./white-paper.svg";
 export { default as NewTelegramIcon } from "./telegram.new.svg";
 export { default as CookiesIcon } from "./cookies.svg";
 export { default as Pending } from "./pending.svg";
