@@ -173,7 +173,7 @@ export const BlockchainConfig: IBlockchainConfig = {
   subgraphUrl:
     process.env.NEXT_PUBLIC_APP_ENV === "production"
       ? "https://api.thegraph.com/subgraphs/name/sasimraza/centher-production"
-      : "https://api.thegraph.com/subgraphs/name/sasimraza/centher-production-sepolia",
+      : "https://api.studio.thegraph.com/query/82021/centher-multi/version/latest",
 };
 
 export const SwapCollection =
