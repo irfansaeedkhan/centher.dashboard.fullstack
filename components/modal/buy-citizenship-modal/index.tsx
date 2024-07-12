@@ -129,7 +129,7 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
                     Breaking the limit
                   </h5>
                 </div>
-                <button className="block sm:hidden" onClick={onClickClose}>
+                <button className="block" onClick={onClickClose}>
                   <IoClose className="h-5 w-5 fill-white" />
                 </button>
               </div>

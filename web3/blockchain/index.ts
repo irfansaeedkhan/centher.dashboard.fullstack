@@ -1562,22 +1562,34 @@ export class BlockchainWrite {
     spenderAddress: string
   ): Promise<string> {
     try {
+      const owner_address = await signer.getAddress();
+      const allowance = await BlockchainRead.getERC20Allowance(
+        signer,
+        tokenAddress,
+        owner_address,
+        spenderAddress
+      );
+
+      const need_allowence = allowance.lt(BigNumber.from(amount));
+
       const stakingContract = SmartContractProvider.getContract(
         SmartContractName.STAKING,
         signer
       );
 
-      const tokenContract = SmartContractProvider.getErc20Contract(
-        tokenAddress,
-        signer
-      );
+      if (need_allowence) {
+        const tokenContract = SmartContractProvider.getErc20Contract(
+          tokenAddress,
+          signer
+        );
 
-      const approvalTx = await tokenContract.functions.approve(
-        spenderAddress,
-        amount
-      );
+        const approvalTx = await tokenContract.functions.approve(
+          spenderAddress,
+          amount
+        );
 
-      await approvalTx.wait(2);
+        await approvalTx.wait(2);
+      }
 
       const tx = await stakingContract.functions.stake(
         poolId,

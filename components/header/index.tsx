@@ -59,15 +59,15 @@ const Header = () => {
         className="flex items-center gap-4 sm:min-w-[22px] md:min-w-[166px]"
       >
         <Image
-          src="/images/centher.logo.png"
-          alt="Centher Logo"
+          src="/images/369x.logo.png"
+          alt="369x Logo"
           width={154}
           height={32}
           className="hidden md:block"
         />
         <Image
-          src="/images/centher.logo.favicon.png"
-          alt="Centher Logo"
+          src="/images/369x.logo.favicon.png"
+          alt="369x Logo"
           width={32}
           height={32}
           className="block md:hidden"

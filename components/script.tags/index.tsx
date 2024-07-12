@@ -35,7 +35,7 @@ const ScriptTags = () => {
         <meta
           property="og:image"
           itemProp="image"
-          content="/images/centher.logo.bg.550.420.png"
+          content="/images/369x.logo.bg.550.420.png"
         />
         <meta property="og:image:width" content="550" />
         <meta property="og:image:height" content="420" />
@@ -48,7 +48,7 @@ const ScriptTags = () => {
         <meta name="twitter:title" content="Centher.io" />
         <meta
           name="twitter:image"
-          content="/images/centher.logo.bg.550.420.png"
+          content="/images/369x.logo.bg.550.420.png"
         />
 
         {/* TODO: Shivam - Need google site verification content */}
@@ -60,33 +60,33 @@ const ScriptTags = () => {
         <link
           rel="apple-touch-icon"
           sizes="180x180"
-          href="/favicons/apple-touch-icon.png"
+          href="/favicons/apple-touch-icon-180x180-new.png"
         />
         <link
           rel="icon"
           type="image/png"
           sizes="32x32"
-          href="/favicons/favicon-32x32.png"
+          href="/favicons/favicon-32x32-new.png"
         />
         <link
           rel="icon"
           type="image/png"
           sizes="16x16"
-          href="/favicons/favicon-16x16.png"
+          href="/favicons/favicon-16x16-new.png"
         />
         <link
           rel="mask-icon"
-          href="/favicons/safari-pinned-tab.svg"
-          color="#141416"
+          href="/favicons/maskable-icon.png"
+          color="#000000"
         />
-        <link rel="shortcut icon" href="/favicons/favicon.ico" />
-        <meta name="msapplication-TileColor" content="#141416" />
+        <link rel="shortcut icon" href="/favicons/favicon-new.ico" />
+        <meta name="msapplication-TileColor" content="#000000" />
         <meta
           name="msapplication-config"
-          content="/favicons/browserconfig.xml"
+          content="/favicons/browserconfig-new.xml"
         />
-        <meta name="theme-color" content="#141416" />
-        <link rel="manifest" href="/favicons/site.webmanifest" />
+        <meta name="theme-color" content="#000000" />
+        <link rel="manifest" href="/favicons/site-new.webmanifest" />
       </Head>
 
       {/* Google Tag Manager */}
