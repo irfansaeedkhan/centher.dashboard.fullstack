@@ -54,5 +54,5 @@ export default Register;
 const signupLeftData = {
   title: "Register to 369x",
   content:
-    "Create an account to take advantage of the whole Centher SocialFi world",
+    "Create an account to take advantage of the whole 369x SocialFi world",
 };
