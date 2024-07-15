@@ -32,7 +32,7 @@ export const AuthLeft: React.FC<SignupProps> = (props) => {
             <Image
               src="/images/369x.logo.favicon.png"
               alt="logo"
-              width={310}
+              width={340}
               height={310}
             />
           </div>
