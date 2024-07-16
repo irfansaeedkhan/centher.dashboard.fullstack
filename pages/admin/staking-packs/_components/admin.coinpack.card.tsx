@@ -16,8 +16,8 @@ export const StakingPackCard: React.FC<StakingPackCardProps> = ({
       <div className={StackCardTop}>
         <div className="flex items-center gap-2">
           <h3 className={CardTitle}>Staking Pack</h3>
-          <div className="rounded-lg bg-[#76E268] bg-opacity-[20%] px-2 py-1">
-            <span className="text-[#76E268]">Active</span>
+          <div className="rounded-lg bg-[#21BF7F] bg-opacity-[20%] px-2 py-1">
+            <span className="text-[#21BF7F]">Active</span>
           </div>
         </div>
         <div className="max-w-[70px] rounded-lg bg-gray-shade-3 p-2">

@@ -108,7 +108,7 @@ export const ActionButtons: React.FC<Props> = ({
       </CustomLabel>
       <CustomLabel
         className={cn(
-          `hover:border-[#76E268]/30 hover:bg-[#76E268]/20`,
+          `hover:border-[#21BF7F]/30 hover:bg-[#21BF7F]/20`,
           activeMedia !== "image" &&
             activeMedia !== null &&
             "pointer-events-none"
@@ -124,7 +124,7 @@ export const ActionButtons: React.FC<Props> = ({
         }}
       >
         <CameraIcon2
-          className={cn("size-5 group-hover:[&>*]:stroke-[#76E268]")}
+          className={cn("size-5 group-hover:[&>*]:stroke-[#21BF7F]")}
         />
         <span className={cn(placement === "in-modal" && "hidden fsm:block")}>
           Camera
@@ -185,7 +185,7 @@ const CustomLabel: React.FC<CustomLabelProps> = ({
           "hover:text-white/75": variant === "primary",
           "hover:text-[#5F97FF]": variant === "blue",
           "hover:text-[#00BF96]": variant === "green",
-          "hover:text-[#76E268]": variant === "light_green",
+          "hover:text-[#21BF7F]": variant === "light_green",
         },
         {
           "gap-3 text-[13px]": placement === "create-post-card",
