@@ -219,8 +219,8 @@ const CreateNFT: NextPageWithLayout = () => {
             <p className="mt-2 text-sm font-normal leading-6 text-gray-shade-2">
               Congratulations! You have successfully created{" "}
               <span className="word-break text-white">{nftData?.name} </span>{" "}
-              NFT on <b> Centher </b> NFT platform, Click view on profile to
-              view your NFT.
+              NFT on <b> 369x </b> NFT platform, Click view on profile to view
+              your NFT.
             </p>
           }
           txStatus={txStatus}

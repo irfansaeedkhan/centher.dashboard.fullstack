@@ -27,8 +27,8 @@ const sepolia = {
 
 // 3. Create modal
 const metadata = {
-  name: "Centher",
-  description: "Centher",
+  name: "369x",
+  description: "369x",
   url: "https://app.centher.io",
   icons: ["https://app.centher.io/images/centher-new-logo.png"],
 };

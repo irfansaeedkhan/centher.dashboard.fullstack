@@ -40,7 +40,7 @@ const initialFeeModalState: FeeModalState = {
 
 const ButtonsText = {
   connect_metamask: "Connect to Metamask",
-  connect_wallet: "Connect To Centher Wallet",
+  connect_wallet: "Connect To 369x Wallet",
 };
 
 export const RegisterForm: React.FC = () => {
@@ -213,7 +213,7 @@ export const RegisterForm: React.FC = () => {
           />
 
           <p className="text-sm text-white">
-            I have read and agree to Centher{" "}
+            I have read and agree to 369x{" "}
             <Link href={AppRoutes.terms}>
               <span className="cursor-pointer font-semibold underline">
                 Terms & Condition

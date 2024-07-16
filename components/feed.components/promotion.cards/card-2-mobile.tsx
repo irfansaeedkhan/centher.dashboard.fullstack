@@ -22,7 +22,7 @@ export const PromotionCard2Mobile: React.FC<Props> = ({
         <p
           className={`w-full max-w-[220px] text-center text-sm font-medium uppercase leading-[17.07px] text-white`}
         >
-          Buy and stake DXC coin on Centher
+          Buy and stake DXC coin on 369x
         </p>
       </div>
       <Link

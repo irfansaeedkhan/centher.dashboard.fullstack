@@ -28,7 +28,7 @@ export const CitizenShipSuccessModal: React.FC<CustomModalProps> = () => {
               </h2>
               <p className="text-sm font-medium text-gray-shade-14">
                 Congratulations! you have successfully subscribed to{" "}
-                <span className="text-gradient"> Centher CITIZEN Passport</span>{" "}
+                <span className="text-gradient"> 369x CITIZEN Passport</span>{" "}
                 Membership. Enjoy the best experience with us.
               </p>
             </div>
