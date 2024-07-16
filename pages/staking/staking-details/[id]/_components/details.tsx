@@ -148,7 +148,7 @@ const Details: React.FC<{ data: OptionalType<ListCardDataOBj> }> = ({
                 <span className="h-5 w-5 flex-shrink-0">
                   <CentherIcon />
                 </span>
-                <span>Centher</span>
+                <span>369x</span>
               </a>
             ) : null}
           </div>
