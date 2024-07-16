@@ -39,8 +39,8 @@ const BotTradingComingSoon: NextPageWithLayout = () => {
             </ul>
           </div>
           <div className="max-w-[300px] text-center text-sm text-gray-shade-7 md:max-w-[534px]">
-            Only for Centher Citizens. You {"haven't"} gotten your Centher
-            Passport yet?{" "}
+            Only for 369x Citizens. You {"haven't"} gotten your 369x Passport
+            yet?{" "}
             <Link href={AppRoutes.citizenship} className="text-gradient">
               Click Here
             </Link>{" "}

@@ -56,21 +56,14 @@ const Header = () => {
     >
       <Link
         href={AppRoutes.home}
-        className="flex items-center gap-4 sm:min-w-[22px] md:min-w-[166px]"
+        className="flex items-center justify-start gap-4"
       >
         <Image
-          src="/images/centher.logo.png"
-          alt="Centher Logo"
-          width={154}
-          height={32}
-          className="hidden md:block"
-        />
-        <Image
-          src="/images/centher.logo.favicon.png"
-          alt="Centher Logo"
-          width={32}
-          height={32}
-          className="block md:hidden"
+          src="/images/369x.logo.png"
+          alt="369x Logo"
+          width={75}
+          height={39}
+          className="w-18"
         />
       </Link>
 

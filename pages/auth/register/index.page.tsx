@@ -22,13 +22,14 @@ Register.getLayout = (page) => {
         content={signupLeftData.content}
       />
       <AuthRight>
-        <div className="mb-8 w-fit sm:flex md:hidden">
+        <div className="mb-10 w-fit sm:flex md:hidden">
           <Link href={AppRoutes.home}>
             <Image
-              src="/images/centher.logo.png"
-              alt="Centher Logo"
-              width={154}
-              height={32}
+              src="/images/369x.logo.png"
+              alt="369x Logo"
+              width={75}
+              height={39}
+              className="w-18"
             />
           </Link>
         </div>
@@ -52,7 +53,7 @@ Register.getLayout = (page) => {
 export default Register;
 
 const signupLeftData = {
-  title: "Register to Centher",
+  title: "Register to 369x",
   content:
-    "Create an account to take advantage of the whole Centher SocialFi world",
+    "Create an account to take advantage of the whole 369x SocialFi world",
 };
