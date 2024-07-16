@@ -22,13 +22,14 @@ Login.getLayout = (page) => {
         content={signupLeftData.content}
       />
       <AuthRight>
-        <div className="mb-8 flex w-fit md:hidden">
+        <div className="mb-10 flex w-fit md:hidden">
           <Link href={AppRoutes.home}>
             <Image
               src="/images/369x.logo.png"
               alt="369x Logo"
-              width={154}
-              height={32}
+              width={75}
+              height={39}
+              className="w-18"
             />
           </Link>
         </div>
