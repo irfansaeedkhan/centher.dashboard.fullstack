@@ -319,7 +319,7 @@ export const FixedPriceNFTDescription: React.FC<Props> = ({
                 {nft.ipfs_metadata.name}
               </span>{" "}
               on
-              <b> Centher </b> NFT platform.
+              <b> 369x </b> NFT platform.
             </p>
           }
           txStatus={txStatus}

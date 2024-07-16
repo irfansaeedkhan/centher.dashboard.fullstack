@@ -1595,14 +1595,14 @@ const CreateStaking: NextPageWithLayout = () => {
                     htmlFor="show_on_centher"
                     className="block font-normal tracking-wide"
                   >
-                    Show on Centher
+                    Show on 369x
                   </label>
                   <div className="mt-2 flex w-full appearance-none items-center justify-between rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-0">
                     <label
                       htmlFor="show_on_centher"
                       className="block font-normal tracking-wide"
                     >
-                      Show on Centher
+                      Show on 369x
                     </label>
                     <div className="flex gap-3 fmd:gap-5">
                       <div className="flex items-center">

@@ -39,8 +39,9 @@ export const LoggedInModal: React.FC<Props> = ({ isOpen, onClose }) => {
                 <Image
                   src="/images/369x.logo.png"
                   alt="369x Logo"
-                  width={154}
-                  height={32}
+                  width={75}
+                  height={39}
+                  className="w-18"
                 />
               </h3>
               <button onClick={onClose}>
@@ -51,7 +52,7 @@ export const LoggedInModal: React.FC<Props> = ({ isOpen, onClose }) => {
             <main className="py-2 fmd:p-4">
               <div className="mt-4 space-y-8 text-center">
                 <h3 className="text-2xl font-semibold text-white">
-                  Register or login to <b>Centher</b>
+                  Register or login to <b>369x</b>
                 </h3>
                 <div>
                   <Link href={AppRoutes.auth.login}>

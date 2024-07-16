@@ -198,7 +198,7 @@ export const CentherIcon: React.FC<IconProps> = (props) => {
     <img
       className={props.className}
       src={CentherIconImg.src}
-      alt="Centher Icon"
+      alt="369x Icon"
       sizes="256px"
       width={40}
       height={40}
@@ -211,7 +211,7 @@ export const CentherIconBG: React.FC<IconProps> = (props) => {
     <img
       className={props.className}
       src={CentherIconImgBg.src}
-      alt="Centher Icon BG"
+      alt="369x Icon BG"
       sizes="256px"
       width={40}
       height={40}

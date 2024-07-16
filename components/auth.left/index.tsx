@@ -19,30 +19,35 @@ export const AuthLeft: React.FC<SignupProps> = (props) => {
           <Link href={AppRoutes.home}>
             <Image
               src="/images/369x.logo.png"
-              alt="Centher Logo"
-              width={154}
-              height={32}
+              alt="369x Logo"
+              width={75}
+              height={39}
+              className="w-20"
             />
           </Link>
         </div>
-        <div
-          className={`flex flex-col items-center gap-16 md:px-10 lg:px-20 f2xl:px-32`}
-        >
-          <div className={`w-fit`}>
-            <Image
-              src="/images/369x.logo.favicon.png"
-              alt="logo"
-              width={340}
-              height={310}
-            />
-          </div>
-          <div className={`flex flex-col items-center gap-6`}>
-            <h1 className={`text-center text-2xl font-semibold text-white`}>
-              {props.title}
-            </h1>
-            <p className={`text-center text-sm font-medium text-gray-shade-4`}>
-              {props.content}
-            </p>
+        <div className="flex h-full w-full">
+          <div
+            className={`flex flex-col items-center justify-center md:px-10 lg:px-20 f2xl:px-32`}
+          >
+            <div className={`w-fit`}>
+              <Image
+                src="/images/369x.logo.favicon.png"
+                alt="logo"
+                width={201}
+                height={56}
+              />
+            </div>
+            <div className={`flex flex-col items-center gap-6`}>
+              <h1 className={`text-center text-2xl font-semibold text-white`}>
+                {props.title}
+              </h1>
+              <p
+                className={`text-center text-sm font-medium text-gray-shade-4`}
+              >
+                {props.content}
+              </p>
+            </div>
           </div>
         </div>
       </section>

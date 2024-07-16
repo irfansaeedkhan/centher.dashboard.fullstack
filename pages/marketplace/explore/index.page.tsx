@@ -15,9 +15,7 @@ const ExplorePage: NextPageWithLayout = () => {
 };
 
 ExplorePage.getLayout = (page) => {
-  return (
-    <AllPagesWrapper pageTitle="Explore - Centher">{page}</AllPagesWrapper>
-  );
+  return <AllPagesWrapper pageTitle="Explore - 369x">{page}</AllPagesWrapper>;
 };
 
 export default ExplorePage;

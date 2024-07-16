@@ -36,14 +36,14 @@ const Citizenship: NextPageWithLayout = () => {
             />
           </div>
           <div className="text-center text-[16px] font-medium tracking-[8px] text-white sm:text-[20px] md:text-[28px] md:tracking-[10px]">
-            Centher Citizenship
+            369x Citizenship
           </div>
           <div className="text-center text-[16px] font-medium tracking-[8px] text-white sm:text-[18px] md:text-[25px] md:tracking-[8px]">
             (Business Account)
           </div>
           <div className="max-w-[300px] text-center text-sm text-gray-shade-7 md:max-w-[534px]">
-            At Centher we are building an environment in which users who want to
-            open a business account will get Centher Citizenship with Passport.
+            At 369x we are building an environment in which users who want to
+            open a business account will get 369x Citizenship with Passport.
           </div>
           <div className="max-w-[300px] text-center text-sm text-gray-shade-7 md:max-w-[534px]">
             This Passport will grant the users access to premium features like{" "}
@@ -62,7 +62,7 @@ const Citizenship: NextPageWithLayout = () => {
           {loggedInUser?.membership.status !== "citizen" && (
             <div className="max-w-[300px] text-center text-sm text-gray-shade-7 md:max-w-[534px]">
               Get your Passport now and become a{" "}
-              <span className="text-gradient">Centher Citizen</span> to power up
+              <span className="text-gradient">369x Citizen</span> to power up
               your business!
             </div>
           )}
@@ -91,9 +91,7 @@ const Citizenship: NextPageWithLayout = () => {
 };
 
 Citizenship.getLayout = (page) => {
-  return (
-    <AllPagesWrapper pageTitle="Centher Citizenship">{page}</AllPagesWrapper>
-  );
+  return <AllPagesWrapper pageTitle="369x Citizenship">{page}</AllPagesWrapper>;
 };
 
 export default Citizenship;
