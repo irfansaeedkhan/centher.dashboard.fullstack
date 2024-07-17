@@ -44,9 +44,9 @@ const Terms: NextPage = () => {
           </h3>
           <div className="mt-4 px-4 pb-8 text-sm font-normal text-white flg:px-8">
             <p>
-              <strong>369x</strong> is a De.Fi. platform; therefore, it is
-              not governed by any centralized entity, be it a company or a group
-              of individuals.
+              <strong>369x</strong> is a De.Fi. platform; therefore, it is not
+              governed by any centralized entity, be it a company or a group of
+              individuals.
             </p>
             <br />
             <p>
@@ -83,10 +83,10 @@ const Terms: NextPage = () => {
             <br />
             <p>
               All forms of capital raising activities in fiat currencies (real
-              world currencies) are prohibited on <strong>369x</strong> and
-              the assets traded on <strong>369x</strong> are Utility Tokens
-              only. Payment Tokens and Security Tokens are therefore strictly
-              excluded as objects of speculation on <strong>369x</strong>.
+              world currencies) are prohibited on <strong>369x</strong> and the
+              assets traded on <strong>369x</strong> are Utility Tokens only.
+              Payment Tokens and Security Tokens are therefore strictly excluded
+              as objects of speculation on <strong>369x</strong>.
             </p>
           </div>
         </div>
@@ -114,8 +114,8 @@ const Terms: NextPage = () => {
             <p>
               The user declares to be willing to lose the tokens or
               cryptocurrencies he/she has decided to invest in{" "}
-              <strong>369x</strong> given the unregulated market conditions
-              and the highly speculative nature of decentralized markets.
+              <strong>369x</strong> given the unregulated market conditions and
+              the highly speculative nature of decentralized markets.
             </p>
           </div>
         </div>
@@ -126,16 +126,16 @@ const Terms: NextPage = () => {
           </h3>
           <div className=" mt-4 px-4 pb-8 text-sm font-normal text-white flg:px-8">
             <p>
-              <strong>369x</strong> is a fully decentralized NFT Marketplace
-              so by accepting our terms and conditions you agree to release us
-              from any legal liability for copyright infringement by other users
-              or organizations
+              <strong>369x</strong> is a fully decentralized NFT Marketplace so
+              by accepting our terms and conditions you agree to release us from
+              any legal liability for copyright infringement by other users or
+              organizations
             </p>
             <br />
             <p>
               Both creators and buyers by accepting our terms and conditions
-              agree to indemnify <strong>369x</strong> from any damage or
-              loss received from the purchase of NFT on the platform.
+              agree to indemnify <strong>369x</strong> from any damage or loss
+              received from the purchase of NFT on the platform.
             </p>
           </div>
         </div>
@@ -154,10 +154,10 @@ const Terms: NextPage = () => {
             </p>
             <br />
             <p>
-              Each user who participates in <strong>369x</strong> activities,
-              by accepting our Terms and Conditions, agrees to release his or
-              her Sponsor from any liability related to his or her own use of
-              the platform and from any damage or loss.
+              Each user who participates in <strong>369x</strong> activities, by
+              accepting our Terms and Conditions, agrees to release his or her
+              Sponsor from any liability related to his or her own use of the
+              platform and from any damage or loss.
             </p>
           </div>
         </div>
@@ -200,10 +200,10 @@ const Terms: NextPage = () => {
               By accepting this agreement and its terms and conditions, you
               agree to release and discharge any other users, developers,
               employees, contractors, and organizations connected with{" "}
-              <strong>369x</strong> decentralized platform from any liability
-              to you and to waive any claim for loss or damage by reason of
-              injury to person or property or serious or permanent injury to
-              you, for any cause whatsoever.
+              <strong>369x</strong> decentralized platform from any liability to
+              you and to waive any claim for loss or damage by reason of injury
+              to person or property or serious or permanent injury to you, for
+              any cause whatsoever.
             </p>
           </div>
         </div>

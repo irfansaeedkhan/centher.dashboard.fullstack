@@ -209,7 +209,7 @@ export const AuctionNFTBuyerDescription: React.FC<Props> = ({
               <span className="word-break text-white">
                 {nft.ipfs_metadata.name}{" "}
               </span>{" "}
-              NFT on <b> Centher </b>
+              NFT on <b> 369x </b>
               platform.
             </p>
           }

@@ -19,7 +19,7 @@ export const AuthLeft: React.FC<SignupProps> = (props) => {
           <Link href={AppRoutes.home}>
             <Image
               src="/images/369x.logo.png"
-              alt="Centher Logo"
+              alt="369x Logo"
               width={75}
               height={39}
               className="w-20"

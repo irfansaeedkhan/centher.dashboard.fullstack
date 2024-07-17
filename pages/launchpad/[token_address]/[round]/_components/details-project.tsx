@@ -88,7 +88,7 @@ const DetailsProject = () => {
               <span className="h-5 w-5 flex-shrink-0">
                 <CentherIcon />
               </span>
-              <span>Centher</span>
+              <span>369x</span>
             </a>
           </div>
         </div>
