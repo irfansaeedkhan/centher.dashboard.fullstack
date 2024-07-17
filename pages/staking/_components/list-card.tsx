@@ -83,7 +83,7 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins, sdk }) => {
             <div
               className={clsx(
                 "mt-1.5 w-fit text-xs font-medium",
-                card.is_active ? "text-[#76E268]" : "textGradient"
+                card.is_active ? "text-[#21BF7F]" : "textGradient"
               )}
             >
               {card.is_active ? "Active" : "Unbalanced"}
