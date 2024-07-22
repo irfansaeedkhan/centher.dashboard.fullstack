@@ -17,18 +17,18 @@ const ScriptTags = () => {
 
         <meta
           name="description"
-          content="Centher.io is worlds best and reliable Web3 token and NFT Marketplace"
+          content="369x.io is worlds best and reliable Web3 token and NFT Marketplace"
         />
-        <meta name="keywords" content="Centher,Centher.io,login,sign up" />
-        <meta name="author" content="Centher.io" />
+        <meta name="keywords" content="369x,369x.io,login,sign up" />
+        <meta name="author" content="369x.io" />
         <meta name="robots" content="all,follow" />
         <meta name="google" content="notranslate" />
 
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="Centher.io" />
+        <meta property="og:title" content="369x.io" />
         <meta
           property="og:description"
-          content="Centher.io is worlds best and reliable Web3 token and NFT Marketplace"
+          content="369x.io is worlds best and reliable Web3 token and NFT Marketplace"
         />
         <meta property="og:url" content="https://app.centher.io/" />
         <meta property="og:site_name" content="Centher.io" />
@@ -43,13 +43,10 @@ const ScriptTags = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta
           name="twitter:description"
-          content="Centher.io is worlds best and reliable Web3 token and NFT Marketplace"
+          content="369x.io is worlds best and reliable Web3 token and NFT Marketplace"
         />
         <meta name="twitter:title" content="Centher.io" />
-        <meta
-          name="twitter:image"
-          content="/images/369x.logo.bg.550.420.png"
-        />
+        <meta name="twitter:image" content="/images/369x.logo.bg.550.420.png" />
 
         {/* TODO: Shivam - Need google site verification content */}
         <meta

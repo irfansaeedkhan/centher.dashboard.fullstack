@@ -13,7 +13,7 @@ import { ConnectWalletComp } from "@/components/connect.wallet";
 const ButtonsText = {
   connect_metamask: "Connect to Metamask",
   login_metamask: "Continue",
-  connect_wallet: "Connect To Centher Wallet",
+  connect_wallet: "Connect To 369x Wallet",
   loading: "Continue...",
 };
 

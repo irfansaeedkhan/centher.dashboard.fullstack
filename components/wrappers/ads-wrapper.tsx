@@ -19,9 +19,7 @@ const AdsWrapper: React.FC<Props> = ({ children }) => {
           />
         </div>
         <div className="mb-2">
-          <p className="text-sm font-semibold text-white">
-            Centher Advertising
-          </p>
+          <p className="text-sm font-semibold text-white">369x Advertising</p>
           <p className="gradient-border-3 mt-1 flex h-6 w-[100px] items-center justify-center rounded-xl p-[0.5px]">
             <span className="textGradient text-xs">Sponsorized</span>
           </p>
