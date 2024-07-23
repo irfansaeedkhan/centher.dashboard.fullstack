@@ -2,6 +2,7 @@ export class OldMarketplaceCollectionBlackList {
   private static blackList: string[] =
     process.env.NEXT_PUBLIC_APP_ENV === "production"
       ? [
+          "0xd6f6e6134282262960c7998366d9319f76292cb7",
           "0x2a6c77a2731bc076409c9c702783a4e69fe85b96",
           "0x33893bccc931c06fcb1fbd2774537efa40ef8fc1",
           "0x3cd5c3aa51e77f452b4ba30d6e9860197ad787ba",
