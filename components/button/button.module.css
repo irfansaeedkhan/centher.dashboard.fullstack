@@ -3,14 +3,7 @@ button.primary-gradient-btn {
   border-radius: var(--border-rounded) !important;
   transition: all 0.2s linear !important;
   border: none;
-  background-image: linear-gradient(
-    270.23deg,
-    #5691ff -9.34%,
-    #72f6d1 17.09%,
-    #76e268 48.54%,
-    #ffd505 78.11%,
-    #ff5e52 107.63%
-  );
+  background-image: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
 }
 
 button.primary-gradient-btn::before {
@@ -26,14 +19,7 @@ button.primary-gradient-btn::before {
 button.primary-gradient-btn:after {
   content: "";
   animation: primary-button-animation 2s linear infinite;
-  background-image: linear-gradient(
-    to left,
-    #faa49e,
-    #fed365,
-    #a0ed8d,
-    #72f6d1,
-    #a9cdff
-  );
+  background-image: linear-gradient(to left, #21bf7f, #115dcb);
   position: absolute;
   top: 0;
   left: 0;
@@ -63,14 +49,7 @@ button.primary-gradient-btn:after {
 
 button.primary-gradient-btn:hover {
   animation: primary-button-animation 2s linear infinite;
-  background-image: linear-gradient(
-    to left,
-    #faa49e,
-    #fed365,
-    #a0ed8d,
-    #72f6d1,
-    #a9cdff
-  );
+  background-image: linear-gradient(to left, #21bf7f, #115dcb);
   background-size: 300%;
   color: #fefefe;
 }
@@ -78,14 +57,7 @@ button.primary-gradient-btn:hover {
 button.primary-gradient-btn:hover span {
   cursor: pointer;
   animation: primary-button-animation 2s linear infinite;
-  background-image: linear-gradient(
-    to left,
-    #faa49e,
-    #fed365,
-    #a0ed8d,
-    #72f6d1,
-    #a9cdff
-  );
+  background-image: linear-gradient(to left, #21bf7f, #115dcb);
   background-size: 300%;
   color: #fefefe;
 }

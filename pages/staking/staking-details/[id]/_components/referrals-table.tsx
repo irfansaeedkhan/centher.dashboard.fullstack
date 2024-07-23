@@ -48,7 +48,7 @@ const ReferralsTable: React.FC<{
           claimable={claimable}
         />
       </div>
-      <div className="block flg:hidden">
+      <div className="mt-3 block flg:hidden">
         <SmallScreenReferralTable
           isClaiming={isClaiming}
           rewards={rewards}

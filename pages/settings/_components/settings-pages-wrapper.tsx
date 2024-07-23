@@ -48,7 +48,7 @@ export const SettingsPagesWrapper: React.FC<Props> = ({ children }) => {
       <span className="hidden flg:block">
         <SettingsSidebar sidebarData={filteredSidebarData} />
       </span>
-      <span className="block flg:hidden">
+      <span className="mt-3 block flg:hidden">
         <SettingsTopBar sidebarData={filteredSidebarData} />
       </span>
       <div className="w-full max-w-[640px] px-3 pt-1.5 fsm:px-5 fmd:px-0">

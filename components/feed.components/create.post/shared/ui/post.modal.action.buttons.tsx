@@ -140,7 +140,7 @@ export const PostModalActionButtons: React.FC<Props> = ({
       </label>
       <label
         className={clsx(
-          `group select-none rounded-md border border-transparent px-[5px] py-[5px] text-[#A0A4BB] transition-all duration-200 hover:border-[#76E268]/30 hover:bg-[#76E268]/20`,
+          `group select-none rounded-md border border-transparent px-[5px] py-[5px] text-[#A0A4BB] transition-all duration-200 hover:border-[#21BF7F]/30 hover:bg-[#21BF7F]/20`,
           buttonVariants({ color: "light_green", placement })
         )}
         onClick={() => {
@@ -155,7 +155,7 @@ export const PostModalActionButtons: React.FC<Props> = ({
           className={clsx(
             placement === "in-modal" && iconClassesInModal,
             placement === "create-post-card" && iconClassesCreatePostCard,
-            " group-hover:[&>*]:stroke-[#76E268]"
+            " group-hover:[&>*]:stroke-[#21BF7F]"
           )}
         />
         <span className={clsx(placement === "in-modal" && "hidden fsm:block")}>
@@ -257,7 +257,7 @@ const buttonVariants = cva("flex items-center font-medium cursor-pointer", {
       primary: "hover:text-white/75",
       blue: "hover:text-[#5F97FF]",
       green: "hover:text-[#00BF96]",
-      light_green: "hover:text-[#76E268]",
+      light_green: "hover:text-[#21BF7F]",
     },
     placement: {
       "create-post-card": "gap-3 text-[13px]",

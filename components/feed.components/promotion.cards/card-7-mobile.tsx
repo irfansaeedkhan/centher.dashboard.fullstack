@@ -24,8 +24,8 @@ export const PromotionCard7Mobile = () => {
           3.75% Monthly Rewards
         </p>
         <p className="px-1 text-center text-[10px] font-medium uppercase text-white">
-          Revolutionize Your Finances: Prospera’s Staking Innovation – 3.75%
-          Monthly Rewards, Automatic and Limitless Potential!
+          Revolutionize Your Finances: Prospera&apos;s Staking Innovation –
+          3.75% Monthly Rewards, Automatic and Limitless Potential!
         </p>
         <Link
           href={AppRoutes.staking.index}
