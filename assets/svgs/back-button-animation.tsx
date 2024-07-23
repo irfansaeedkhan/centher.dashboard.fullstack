@@ -174,7 +174,7 @@ export const BackButtonAnimated: React.FC<IconProps> = ({ className }) => {
         >
           <stop stopColor="#70A2FF" />
           <stop offset="0.21875" stopColor="#72F6D1" />
-          <stop offset="0.479167" stopColor="#76E268" />
+          <stop offset="0.479167" stopColor="#21BF7F" />
           <stop offset="0.723958" stopColor="#FFD505" />
           <stop offset="1" stopColor="#F76E64" />
         </linearGradient>

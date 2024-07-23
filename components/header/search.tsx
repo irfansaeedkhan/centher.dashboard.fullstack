@@ -153,6 +153,7 @@ const SearchBar: React.FC = () => {
         ref={ref}
         className="focus-within:gradient-border-3 !rounded-lg p-[1px]"
       >
+        {/* <div className="h-10 w-10 bg-green-shade-1"></div> */}
         <div className="flex items-center gap-2 rounded-xl bg-[#1E212B] px-3 py-2 ">
           <input
             type="text"

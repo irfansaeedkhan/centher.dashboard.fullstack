@@ -55,14 +55,7 @@
   /* Handle */
   .rainbow-scroll::-webkit-scrollbar-thumb {
     border: 0 !important;
-    background: linear-gradient(
-      270.23deg,
-      #5691ff -9.34%,
-      #72f6d1 17.09%,
-      #76e268 48.54%,
-      #ffd505 78.11%,
-      #ff5e52 107.63%
-    );
+    background: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
   }
 
   /* Firefox */
@@ -241,7 +234,7 @@
     top: 0;
     width: 20px;
     height: 20px;
-    border: 1.5px solid #76e268;
+    border: 1.5px solid #21bf7f;
     border-radius: 50%;
     background: transparent;
     transition: all 0.2s ease;
@@ -255,9 +248,9 @@
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    border: 1.5px solid #76e268;
-    outline: #76e268;
-    background: #76e268;
+    border: 1.5px solid #21bf7f;
+    outline: #21bf7f;
+    background: #21bf7f;
     transform: scale(0);
     transition: all 0.2s ease;
   }
@@ -351,14 +344,7 @@
 
   .textGradient {
     animation: animate 2s linear infinite;
-    background: linear-gradient(
-      270.23deg,
-      #5691ff -9.34%,
-      #72f6d1 17.09%,
-      #76e268 48.54%,
-      #ffd505 78.11%,
-      #ff5e52 107.63%
-    );
+    background: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -368,14 +354,7 @@
     width: fit-content;
   }
   .text-gradient-hover:hover {
-    background: linear-gradient(
-      270.23deg,
-      #5691ff -9.34%,
-      #72f6d1 17.09%,
-      #76e268 48.54%,
-      #ffd505 78.11%,
-      #ff5e52 107.63%
-    );
+    background: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -384,14 +363,7 @@
 
   .animationTextHeading {
     animation: animate 2s linear infinite;
-    background-image: linear-gradient(
-      to left,
-      #faa49e,
-      #fed365,
-      #a0ed8d,
-      #72f6d1,
-      #a9cdff
-    ) !important;
+    background-image: linear-gradient(to left, #21bf7f, #115dcb) !important;
     background-size: 300%;
     background-clip: text;
     -webkit-background-clip: text;
@@ -401,14 +373,7 @@
   }
 
   .gradient-border {
-    background-image: linear-gradient(
-      270.23deg,
-      #5691ff -9.34%,
-      #72f6d1 17.09%,
-      #76e268 48.54%,
-      #ffd505 78.11%,
-      #ff5e52 107.63%
-    );
+    background-image: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
     padding: 2px;
     border-radius: 8px;
   }
@@ -417,14 +382,7 @@
     animation: animate 2s linear infinite;
     border: 1px transparent;
     background-image: linear-gradient(#1b1c22, #1b1c22),
-      radial-gradient(
-        circle at bottom left,
-        #76e268 2.54%,
-        #ffd505 17.11%,
-        #5691ff -9.34%,
-        #72f6d1 17.09%,
-        #ff5e52 107.63%
-      );
+      radial-gradient(circle at bottom left, #21bf7f 0%, #115dcb 100%);
     background-origin: border-box;
     background-clip: content-box, border-box;
   }
@@ -433,14 +391,7 @@
     border: 2px transparent;
     border-radius: 100%;
     background-image: linear-gradient(#1b1c22, #1b1c22),
-      radial-gradient(
-        circle at top right,
-        #5691ff -9.34%,
-        #72f6d1 17.09%,
-        #76e268 48.54%,
-        #ffd505 78.11%,
-        #ff5e52 107.63%
-      );
+      radial-gradient(circle at top right, #21bf7f 0%, #115dcb 100%);
     background-origin: border-box;
     background-clip: content-box, border-box;
   }
@@ -457,14 +408,7 @@
     border: 2px transparent;
     border-radius: 100%;
     background-image: linear-gradient(#0b0b0b, #0b0b0b),
-      radial-gradient(
-        circle at top right,
-        #5691ff -9.34%,
-        #72f6d1 17.09%,
-        #76e268 48.54%,
-        #ffd505 78.11%,
-        #ff5e52 107.63%
-      );
+      radial-gradient(circle at top right, #21bf7f 0%, #115dcb 100%);
     background-origin: border-box;
     background-clip: content-box, border-box;
   }
@@ -488,14 +432,7 @@
     border-radius: var(--border-rounded) !important;
     transition: all 0.2s linear !important;
     border: none;
-    background-image: linear-gradient(
-      270.23deg,
-      #5691ff -9.34%,
-      #72f6d1 17.09%,
-      #76e268 48.54%,
-      #ffd505 78.11%,
-      #ff5e52 107.63%
-    );
+    background-image: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
   }
 
   .primary-gradient-btn::before {
@@ -511,14 +448,7 @@
   .primary-gradient-btn:after {
     content: "";
     animation: primary-button-animation 2s linear infinite;
-    background-image: linear-gradient(
-      to left,
-      #faa49e,
-      #fed365,
-      #a0ed8d,
-      #72f6d1,
-      #a9cdff
-    );
+    background-image: linear-gradient(to left, #21bf7f, #115dcb);
     position: absolute;
     top: 0;
     left: 0;
@@ -547,14 +477,7 @@
 
   .primary-gradient-btn:hover {
     animation: primary-button-animation 2s linear infinite;
-    background-image: linear-gradient(
-      to left,
-      #faa49e,
-      #fed365,
-      #a0ed8d,
-      #72f6d1,
-      #a9cdff
-    );
+    background-image: linear-gradient(to left, #21bf7f, #115dcb);
     background-size: 300%;
     color: #fefefe;
   }
@@ -562,14 +485,7 @@
   .primary-gradient-btn:hover span {
     cursor: pointer;
     animation: primary-button-animation 2s linear infinite;
-    background-image: linear-gradient(
-      to left,
-      #faa49e,
-      #fed365,
-      #a0ed8d,
-      #72f6d1,
-      #a9cdff
-    );
+    background-image: linear-gradient(to left, #21bf7f, #115dcb);
     background-size: 300%;
     color: #fefefe;
   }
@@ -579,14 +495,7 @@
   }
 
   .primary-gradient-btn .primary-gradient-btn-text {
-    background: linear-gradient(
-      270.23deg,
-      #5691ff -9.34%,
-      #72f6d1 17.09%,
-      #76e268 48.54%,
-      #ffd505 78.11%,
-      #ff5e52 107.63%
-    );
+    background: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -597,14 +506,7 @@
 
   /* only text gradient */
   .text-gradient {
-    background: linear-gradient(
-      270.23deg,
-      #5691ff -9.34%,
-      #72f6d1 17.09%,
-      #76e268 48.54%,
-      #ffd505 78.11%,
-      #ff5e52 107.63%
-    );
+    background: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -613,26 +515,13 @@
   .text-gradient:hover {
     cursor: pointer;
     animation: primary-button-animation 2s linear infinite;
-    background-image: linear-gradient(
-      to left,
-      #faa49e,
-      #fed365,
-      #a0ed8d,
-      #72f6d1,
-      #a9cdff
-    );
+    background-image: linear-gradient(to left, #21bf7f, #115dcb);
     background-size: 300%;
     color: #fefefe;
+    -webkit-animation: primary-button-animation 2s linear infinite;
   }
   .primary-btn-text-gradient {
-    background: linear-gradient(
-      270.23deg,
-      #5691ff -9.34%,
-      #72f6d1 17.09%,
-      #76e268 48.54%,
-      #ffd505 78.11%,
-      #ff5e52 107.63%
-    );
+    background: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -655,14 +544,7 @@
     border-left: 0;
     border-right: 0;
     border-bottom: 0;
-    border-image-source: linear-gradient(
-      270.23deg,
-      #5691ff -9.34%,
-      #72f6d1 17.09%,
-      #76e268 48.54%,
-      #ffd505 78.11%,
-      #ff5e52 107.63%
-    );
+    border-image-source: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
   }
   .border-gradient-left {
     border: 1px solid;
@@ -671,14 +553,7 @@
     border-top: 0;
     border-right: 0;
     border-bottom: 0;
-    border-image-source: linear-gradient(
-      270.23deg,
-      #5691ff -9.34%,
-      #72f6d1 17.09%,
-      #76e268 48.54%,
-      #ffd505 78.11%,
-      #ff5e52 107.63%
-    );
+    border-image-source: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
   }
 
   .centher-social-button:hover span {
@@ -831,14 +706,7 @@
     left: -3px;
     right: -3px;
     bottom: -3px;
-    background: linear-gradient(
-      270.23deg,
-      #5691ff -9.34%,
-      #72f6d1 17.09%,
-      #76e268 48.54%,
-      #ffd505 78.11%,
-      #ff5e52 107.63%
-    );
+    background: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
     border-radius: 50%;
     z-index: -1;
     opacity: 0; /* Initially set to transparent */
@@ -865,14 +733,7 @@
     border-right: transparent;
 
     border-bottom: 3px solid transparent;
-    border-image: linear-gradient(
-      270.23deg,
-      #5691ff -9.34%,
-      #72f6d1 17.09%,
-      #76e268 48.54%,
-      #ffd505 78.11%,
-      #ff5e52 107.63%
-    );
+    border-image: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
     border-image-slice: 1;
     width: 100%;
   }
@@ -907,14 +768,7 @@
     border-left: 0;
     border-right: 0;
     border-bottom: 0;
-    border-image-source: linear-gradient(
-      270.23deg,
-      #5691ff -9.34%,
-      #72f6d1 17.09%,
-      #76e268 48.54%,
-      #ffd505 78.11%,
-      #ff5e52 107.63%
-    );
+    border-image-source: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
   }
   .border-gradient-left {
     border: 1px solid;
@@ -923,14 +777,7 @@
     border-top: 0;
     border-right: 0;
     border-bottom: 0;
-    border-image-source: linear-gradient(
-      270.23deg,
-      #5691ff -9.34%,
-      #72f6d1 17.09%,
-      #76e268 48.54%,
-      #ffd505 78.11%,
-      #ff5e52 107.63%
-    );
+    border-image-source: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
   }
 
   div.DraftEditor-root {
@@ -984,21 +831,14 @@
   }
 
   .text-gradient-orange {
-    background: linear-gradient(
-      270.23deg,
-      #70a2ff -85.42%,
-      #72f6d1 -48.05%,
-      #76e268 -3.57%,
-      #ffd505 38.24%,
-      #f76e64 85.39%
-    );
+    background: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     width: fit-content;
   }
   .text-gradient-blue {
-    background: linear-gradient(270deg, #5691ff 25%, #72f6d1, #76e268);
+    background: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -1008,7 +848,7 @@
     border: 2px transparent;
     border-radius: 100%;
     background-image: linear-gradient(#1b1c22, #1b1c22),
-      radial-gradient(circle at top right, #5691ff 30%, #72f6d1, #76e268);
+      radial-gradient(circle at top right, #21bf7f 0%, #115dcb 100%);
     background-origin: border-box;
     background-clip: content-box, border-box;
   }
@@ -1017,50 +857,29 @@
     border: 2px transparent;
     border-radius: 100%;
     background-image: linear-gradient(#1b1c22, #1b1c22),
-      radial-gradient(circle at top right, #76e268 30%, #ffd505, #f76e64);
+      radial-gradient(circle at top right, #21bf7f 0%, #115dcb 100%);
     background-origin: border-box;
     background-clip: content-box, border-box;
   }
   .staking-text-gradient-live {
-    background: linear-gradient(
-      91deg,
-      #a9cdff 0%,
-      #72f6d1 21.87%,
-      #a0ed8d 55.73%,
-      #fed365 81.77%,
-      #faa49e 100%
-    );
+    background: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
 
   .staking-text-gradient-unstakable {
-    background: linear-gradient(91deg, #76e268 0%, #ffd505 100%);
+    background: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
   .background-gradient-color {
-    background: linear-gradient(
-      270deg,
-      #5691ff -9.34%,
-      #72f6d1 17.09%,
-      #76e268 48.54%,
-      #ffd505 78.11%,
-      #ff5e52 107.63%
-    );
+    background: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
   }
   .text-gradient-1 {
     animation: animate 2s linear infinite;
-    background: linear-gradient(
-      267deg,
-      #1363ff -1.38%,
-      #35ffc6 27.36%,
-      #57f243 52.83%,
-      #ffd637 74.34%,
-      #ff4a3d 93.01%
-    );
+    background: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -1069,14 +888,7 @@
   .gradient-borders-2 {
     border: 1px solid transparent;
     background-image: linear-gradient(#1b1c22, #1b1c22),
-      radial-gradient(
-        circle at top right,
-        #1363ff 10%,
-        #35ffc6 60%,
-        #57f243 30%,
-        #ffd637 70%,
-        #ff4a3d 92%
-      );
+      radial-gradient(circle at top right, #21bf7f 0%, #115dcb 100%);
     background-origin: border-box;
     background-clip: content-box, border-box;
   }
@@ -1085,29 +897,19 @@
     backdrop-filter: blur(20px);
   }
   .staking-text-gradient-staked {
-    background: linear-gradient(
-      91deg,
-      #76e268 -15.45%,
-      #72bff6 50.29%,
-      #5691ff 99.04%
-    );
+    background: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
   .staking-text-gradient-unstaked {
-    background: linear-gradient(
-      90deg,
-      #ff4e4e 0%,
-      #ff8e26 51.09%,
-      #deff15 102.17%
-    );
+    background: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
   .staking-text-gradient-unstakable {
-    background: linear-gradient(91deg, #76e268 0%, #ffd505 100%);
+    background: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;

@@ -170,14 +170,14 @@ const Profile: NextPageWithLayout = () => {
               />
             </div>
             {(index + 1) / 4 === 1 && (
-              <div className="block flg:hidden">
+              <div className="mt-3 block flg:hidden">
                 <AdsWrapper>
                   <PromotionCard7Mobile />
                 </AdsWrapper>
               </div>
             )}
             {(index + 1) / 6 === 1 && (
-              <div className="block flg:hidden">
+              <div className="mt-3 block flg:hidden">
                 <AdsWrapper>
                   <PromotionCard2Mobile />
                 </AdsWrapper>

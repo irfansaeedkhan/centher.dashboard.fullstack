@@ -214,13 +214,13 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
             </div>
             <div
               className={clsx(
-                "relative mt-[22px] h-3 w-full overflow-hidden rounded-3xl bg-[#76e268]/[0.16]"
+                "relative mt-[22px] h-3 w-full overflow-hidden rounded-3xl bg-[#21BF7F]/[0.16]"
               )}
             >
               <div
                 style={{ width: `${receivableTokenCollectionPercentage}%` }}
                 className={clsx(
-                  `absolute top-0 z-50 h-3 rounded-3xl bg-[#76E268]`
+                  `absolute top-0 z-50 h-3 rounded-3xl bg-[#21BF7F]`
                 )}
               ></div>
             </div>
