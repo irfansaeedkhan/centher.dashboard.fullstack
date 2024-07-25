@@ -26,7 +26,6 @@ export type TokenPurchaseWithBNB = {
   beneficiary: string;
   round: string;
   amount: string;
-  amountForOwner: string;
   blockNumber: string;
   blockTimestamp: string;
   transactionHash: string;
@@ -40,7 +39,6 @@ export type TokenPurchaseWithBUSD = {
   beneficiary: string;
   round: string;
   amount: string;
-  amountForOwner: string;
   blockNumber: string;
   blockTimestamp: string;
   transactionHash: string;
@@ -81,9 +79,6 @@ export type PresaleDataType = {
   refundAmount: string;
   metadata: string;
   isActive: boolean;
-  round0Bookings: string;
-  round1Bookings: string;
-  round2Bookings: string;
   totalPurchasesInBuyingToken: string;
   roundDeep: string;
   roundInfos: {
@@ -102,7 +97,6 @@ export type PresaleDataType = {
     beneficiary: string;
     round: string;
     amount: string;
-    amountForOwner: string;
     blockNumber: string;
     blockTimestamp: string;
     transactionHash: string;
@@ -113,7 +107,6 @@ export type PresaleDataType = {
     beneficiary: string;
     round: string;
     amount: string;
-    amountForOwner: string;
     blockNumber: string;
     blockTimestamp: string;
     transactionHash: string;
