@@ -29,14 +29,12 @@ export const RoundsBooking: React.FC<PresaleDataProps> = ({
 
   if (purchaseThrough === "BNB") {
     allPurchases = tokenPurchaseWithBNB;
-    for (let i = 0; i < allPurchases.length; i++) {
-      totalPurchaseInQuote += Number(allPurchases[i].amount);
-    }
   } else {
     allPurchases = tokenPurchaseWithBUSD;
-    for (let i = 0; i < allPurchases.length; i++) {
-      totalPurchaseInQuote += Number(allPurchases[i].amount);
-    }
+  }
+
+  for (let i = 0; i < allPurchases.length; i++) {
+    totalPurchaseInQuote += Number(allPurchases[i].amount);
   }
 
   const tokenSellForThisRound =
