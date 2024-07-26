@@ -49,7 +49,22 @@ export class CentherLaunchpad {
       },
       fetchPolicy: "no-cache",
     });
-
+    if (result?.data.presales) {
+      const finalResult = result?.data.presales.map((presale: any) => {
+        return {
+          ...presale,
+          tokenPurchaseWithBNB: {
+            ...presale.tokenPurchaseWithBNB,
+            amount: presale.tokenPurchaseWithBNB.bnbAmount,
+          },
+          tokenPurchaseWithBUSD: {
+            ...presale.tokenPurchaseWithBUSD,
+            amount: presale.tokenPurchaseWithBUSD.busdAmount,
+          },
+        };
+      });
+      return finalResult[0];
+    }
     return result?.data.presales[0];
   }
 
