@@ -68,14 +68,11 @@ const queries: Queries = {
       refundAmount
       metadata
       isActive
-      round0Bookings
-      round1Bookings
-      round2Bookings
       totalPurchasesInBuyingToken
       roundDeep
       roundInfos {token, startTime, endTime, lockMonths, minContribution, maxContribution, tokensToSell, pricePerToken}
-      tokenPurchaseWithBNB {token,beneficiary, amount, amountForOwner, round, transactionHash, blockTimestamp}
-      tokenPurchaseWithBUSD {token, beneficiary, amount, amountForOwner, round, transactionHash, blockTimestamp}
+      tokenPurchaseWithBNB {token,beneficiary, bnbAmount, round, transactionHash, blockTimestamp}
+      tokenPurchaseWithBUSD {token, beneficiary, busdAmount, round, transactionHash, blockTimestamp}
       tokenClaim {token, beneficiary, tokenAmount}
       refRewardClaim {token, referrer, amount}
     }
