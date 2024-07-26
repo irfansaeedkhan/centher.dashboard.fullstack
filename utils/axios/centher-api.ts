@@ -5,9 +5,9 @@ import {
   registerAuthTokenResponseInterceptor,
 } from "./auth-tokens-interceptors";
 
-export const axiosApiCenther = axios.create({
+export const axiosApi369x = axios.create({
   baseURL: CAPIBaseURL,
 });
 
-registerAuthTokenRequestInterceptor(axiosApiCenther);
-registerAuthTokenResponseInterceptor(axiosApiCenther);
+registerAuthTokenRequestInterceptor(axiosApi369x);
+registerAuthTokenResponseInterceptor(axiosApi369x);

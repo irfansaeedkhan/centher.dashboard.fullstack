@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import useUser from "@/hooks/use.user";
 import { EyeOffFollow } from "@/assets/svgs";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
-import { axiosApiCenther } from "@/utils/axios";
+import { axiosApi369x } from "@/utils/axios";
 import { sliceAccountAddress } from "@/utils/user.helpers";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 import { AppRoutes } from "@/constants/app.routes";
@@ -29,7 +29,7 @@ const UserWithFollow = React.forwardRef<HTMLDivElement, SingleSearchUserProps>(
           is_followed_by_loggedin_user: !prev.is_followed_by_loggedin_user,
         }));
 
-        await axiosApiCenther.post("api/socials/followers", {
+        await axiosApi369x.post("api/socials/followers", {
           following_id,
         });
       } catch (error: any) {

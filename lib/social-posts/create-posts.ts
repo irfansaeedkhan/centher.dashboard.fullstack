@@ -1,6 +1,6 @@
 import { SerializedEditorState, SerializedLexicalNode } from "lexical";
 import axios from "axios";
-import { axiosApiCenther } from "@/utils/axios";
+import { axiosApi369x } from "@/utils/axios";
 import { AppError } from "@/utils/app-error";
 import { MediaFileNew } from "@/components/post-editor/shared/types";
 
@@ -56,7 +56,7 @@ export const createPosts = async ({
         )
         .flat();
 
-      const response = await axiosApiCenther.post(
+      const response = await axiosApi369x.post(
         `/api/socials/posts/media/presigned-urls`,
         {
           media_list: mediaList,
@@ -114,7 +114,7 @@ export const createPosts = async ({
     }
 
     // Create posts
-    const response = await axiosApiCenther.post(`/api/socials/posts`, {
+    const response = await axiosApi369x.post(`/api/socials/posts`, {
       replying_to,
       posts: postsToCreate,
     });
