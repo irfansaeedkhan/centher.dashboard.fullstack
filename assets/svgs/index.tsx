@@ -192,6 +192,7 @@ export { default as NewUnlockWalletIcon } from "./new-unlock-wallet-icon.svg";
 export { default as NewCalendarIcon } from "./new-calendar-icon.svg";
 export { default as CrownIcon } from "./crown-icon.svg";
 export { default as GiftIcon } from "./gift-icon.svg";
+export { default as X369XIcon } from "./369x.icon.svg";
 
 export const X369xIcon: React.FC<IconProps> = (props) => {
   return (
