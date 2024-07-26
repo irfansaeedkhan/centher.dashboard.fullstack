@@ -1,4 +1,4 @@
-import { axiosApiCenther } from "@/utils/axios";
+import { axiosApi369x } from "@/utils/axios";
 import { AppError } from "@/utils/app-error";
 
 export interface CreateRecentSearch {
@@ -25,7 +25,7 @@ export const createRecentSearch = async (
   data: CreateRecentSearchParams
 ): Promise<CreateRecentSearch> => {
   try {
-    const response = await axiosApiCenther.post("/api/search/recent", data);
+    const response = await axiosApi369x.post("/api/search/recent", data);
 
     return response.data;
   } catch (error: any) {

@@ -1,5 +1,5 @@
 import { User } from "@/models/user";
-import { axiosApiCenther } from "@/utils/axios";
+import { axiosApi369x } from "@/utils/axios";
 import { AppError } from "@/utils/app-error";
 
 export const searchMentions = async ({
@@ -12,7 +12,7 @@ export const searchMentions = async ({
   offset?: number;
 }): Promise<SearchMentionResult[]> => {
   try {
-    const response = await axiosApiCenther.get<{
+    const response = await axiosApi369x.get<{
       mention_users: SearchMentionResult[];
     }>(`/api/socials/posts/mention`, {
       params: {

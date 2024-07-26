@@ -127,7 +127,7 @@ const Booking: React.FC<Props> = ({
                   className="h-5 w-5 flex-shrink-0 object-cover"
                 />
               ) : (
-                <Staking className="h-5 w-5 group-hover:[&>*]:stroke-white" />
+                <Staking className="h-5 w-5 stroke-white group-hover:[&>*]:stroke-white" />
               )}
 
               <p className="text-xs font-semibold text-white">

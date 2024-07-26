@@ -9,7 +9,6 @@ import { AppRoutes } from "@/constants/app.routes";
 import ProfileDetailCardSkeleton from "@/components/loading.skeletons/profile.detail.card";
 import { ProfileDetailCard } from "./profile.detail.card";
 import {
-  PromotionCard2,
   PromotionCard4,
   PromotionCard5,
   PromotionCard7,
@@ -56,7 +55,6 @@ export const CardsContainerLeft: React.FC<Props> = ({
           {loggedInUser?.membership.status !== "citizen" && <PromotionCard5 />}
           <PromotionCard7 />
           <PromotionCard4 />
-          <PromotionCard2 />
         </>
       ) : (
         <ProfileDetailCardSkeleton />

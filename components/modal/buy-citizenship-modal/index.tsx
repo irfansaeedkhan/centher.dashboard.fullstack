@@ -123,7 +123,7 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
                   <h3
                     className={`animationTextHeading flex-grow text-left text-base font-semibold text-white fsm:text-xl`}
                   >
-                    Centher Passport
+                    369x Passport
                   </h3>
                   <h5 className="text-sm font-medium text-gray-shade-14 fsm:text-base">
                     Breaking the limit
@@ -143,8 +143,8 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
                   )}
                   onClick={() => setTab(CitizenShipType.annualMemberShipPrice)}
                 >
-                  <span className="primary-gradient-btn-text primary-btn-text-gradient relative py-1">
-                    Annualy
+                  <span className="primary-gradient-btn-text relative py-1">
+                    Annually
                   </span>
                   <div className="z-30 rounded-full bg-[#17171A] px-2 py-[2px]">
                     <div className="primary-gradient-btn-text block w-max min-w-max text-xs font-medium">

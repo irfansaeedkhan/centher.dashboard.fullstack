@@ -373,7 +373,7 @@
   }
 
   .gradient-border {
-    background-image: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
+    background-image: linear-gradient(90deg, #115dcb 0%, #21bf7f 100%);
     padding: 2px;
     border-radius: 8px;
   }
@@ -382,7 +382,7 @@
     animation: animate 2s linear infinite;
     border: 1px transparent;
     background-image: linear-gradient(#1b1c22, #1b1c22),
-      radial-gradient(circle at bottom left, #21bf7f 0%, #115dcb 100%);
+      radial-gradient(circle at bottom left, #115dcb 0%, #21bf7f 100%);
     background-origin: border-box;
     background-clip: content-box, border-box;
   }
@@ -391,7 +391,7 @@
     border: 2px transparent;
     border-radius: 100%;
     background-image: linear-gradient(#1b1c22, #1b1c22),
-      radial-gradient(circle at top right, #21bf7f 0%, #115dcb 100%);
+      radial-gradient(circle at top right, #115dcb 0%, #21bf7f 100%);
     background-origin: border-box;
     background-clip: content-box, border-box;
   }
@@ -400,7 +400,7 @@
     border: 2px transparent;
     border-radius: 100%;
     background-image: linear-gradient(#1b1c22, #1b1c22),
-      radial-gradient(circle at top left, #ff4e4e, #ff8e26, #deff15);
+      radial-gradient(circle at top right, #115dcb 0%, #21bf7f 100%);
     background-origin: border-box;
     background-clip: content-box, border-box;
   }
@@ -408,7 +408,7 @@
     border: 2px transparent;
     border-radius: 100%;
     background-image: linear-gradient(#0b0b0b, #0b0b0b),
-      radial-gradient(circle at top right, #21bf7f 0%, #115dcb 100%);
+      radial-gradient(circle at top right, #115dcb 0%, #21bf7f 100%);
     background-origin: border-box;
     background-clip: content-box, border-box;
   }
@@ -888,7 +888,7 @@
   .gradient-borders-2 {
     border: 1px solid transparent;
     background-image: linear-gradient(#1b1c22, #1b1c22),
-      radial-gradient(circle at top right, #21bf7f 0%, #115dcb 100%);
+      radial-gradient(circle at top right, #115dcb 0%, #21bf7f 100%);
     background-origin: border-box;
     background-clip: content-box, border-box;
   }

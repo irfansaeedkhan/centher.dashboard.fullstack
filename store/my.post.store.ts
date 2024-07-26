@@ -4,7 +4,7 @@ import { devtools } from "zustand/middleware";
 import { CompletedPost } from "@/models/post";
 import { LoadingState } from "@/models/common";
 import { likePost } from "@/components/feed.components";
-import { axiosApiCenther } from "@/utils/axios";
+import { axiosApi369x } from "@/utils/axios";
 import { customLog } from "@/utils/custom.log";
 
 import { useFeedStore } from "./feed.store";
@@ -63,7 +63,7 @@ export const useMyPostStore = create<MyPostStore>()(
             url += "/with-auth";
           }
           url = `${url}?offset=${offset}&limit=${limit}`;
-          const { data } = await axiosApiCenther.get(url);
+          const { data } = await axiosApi369x.get(url);
 
           set((state) => {
             const filteredPosts = state.posts.filter(

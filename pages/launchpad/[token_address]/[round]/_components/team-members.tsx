@@ -53,7 +53,7 @@ const TeamMembers: React.FC = () => {
               </span>
               <span className="verifiedIcon ml-1 inline-flex h-5 w-5 min-w-[1.25rem]">
                 <Image
-                  src={"/images/verified-icon.svg"}
+                  src={"/images/verified-icon.png"}
                   alt={"Verified"}
                   width={16}
                   height={16}

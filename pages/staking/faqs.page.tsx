@@ -16,11 +16,8 @@ const Faqs: NextPageWithLayout = () => {
       </h5>
       <div className="tracking-[1.4px] text-white">
         You haven&apos;t found what you were searching for? visit{" "}
-        <Link
-          className="text-gradient"
-          href={"https://centher.io/academy/centher-features"}
-        >
-          Centher Academy
+        <Link className="text-gradient" href={"#"}>
+          369x Academy
         </Link>{" "}
         to find out more about Staking and much else!
       </div>

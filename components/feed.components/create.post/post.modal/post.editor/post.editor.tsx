@@ -26,7 +26,7 @@ import useUser from "@/hooks/use.user";
 import { useNewPostStore } from "@/store/new.post.store";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 import { BuyCitizenshipModal } from "@/components/modal/buy-citizenship-modal";
-import { axiosApiCenther } from "@/utils/axios";
+import { axiosApi369x } from "@/utils/axios";
 import { customLog } from "@/utils/custom.log";
 import cn from "@/utils/cn";
 import mentionsStyles from "./mentions-styles.module.css";
@@ -78,7 +78,7 @@ export const PostEditor: React.FC = () => {
     }, []);
 
   const handleSearchQueryInput = async (value: string) => {
-    await axiosApiCenther
+    await axiosApi369x
       .get(`/api/socials/posts/mention?q=${value}&limit=5&offset=0`, {})
       .then((res) => {
         setMentions(res?.data?.mention_users);

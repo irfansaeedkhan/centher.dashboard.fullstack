@@ -4,7 +4,7 @@ import { devtools } from "zustand/middleware";
 import type { CompletedPost, Post } from "@/models/post";
 import type { LoadingState } from "@/models/common";
 import { likePost } from "@/components/feed.components";
-import { axiosApiCenther } from "@/utils/axios";
+import { axiosApi369x } from "@/utils/axios";
 import { customLog } from "@/utils/custom.log";
 
 import { useFeedStore } from "./feed.store";
@@ -88,8 +88,8 @@ export const useSinglePostStore = create<SinglePostStore>()(
           }
 
           const promises = [
-            axiosApiCenther.get(postUrl),
-            axiosApiCenther.get(repliesUrl),
+            axiosApi369x.get(postUrl),
+            axiosApi369x.get(repliesUrl),
           ];
 
           const [postRes, repliesRes] = await Promise.all(promises);
@@ -125,7 +125,7 @@ export const useSinglePostStore = create<SinglePostStore>()(
           const repliesLimit = 10;
           const repliesUrl = `/api/socials/posts/${postId}/replies?offset=${repliesOffset}&limit=${repliesLimit}`;
 
-          const { data } = await axiosApiCenther.get(repliesUrl);
+          const { data } = await axiosApi369x.get(repliesUrl);
 
           const _replies = data.posts;
 

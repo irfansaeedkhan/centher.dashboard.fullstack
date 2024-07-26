@@ -13,7 +13,7 @@ export const PromotionCard7 = () => {
       )}
     >
       <Image
-        src="/images/poster.png"
+        src="/images/poster-updated.png"
         alt="poster"
         width={175}
         height={181}

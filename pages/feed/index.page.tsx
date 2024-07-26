@@ -22,7 +22,6 @@ import { SuggestedCardMobile } from "@/components/feed.components/suggested-card
 import { PromotionCard6Mobile } from "@/components/feed.components/promotion.cards/card-6-mobile";
 import { PromotionCard5Mobile } from "@/components/feed.components/promotion.cards/card-5-mobile";
 import { PromotionCard3Mobile } from "@/components/feed.components/promotion.cards/card-3-mobile";
-import { PromotionCard2Mobile } from "@/components/feed.components/promotion.cards/card-2-mobile";
 import { PromotionCard7Mobile } from "@/components/feed.components/promotion.cards/card-7-mobile";
 import { PromotionCard8Mobile } from "@/components/feed.components/promotion.cards/card-8-mobile";
 import useUser from "@/hooks/use.user";
@@ -158,13 +157,7 @@ const Feed: NextPageWithLayout = () => {
                 </AdsWrapper>
               </div>
             )}
-            {(index + 1) / 6 === 1 && (
-              <div className="mt-3 block flg:hidden">
-                <AdsWrapper>
-                  <PromotionCard2Mobile />
-                </AdsWrapper>
-              </div>
-            )}
+
             {(index + 1) / 8 === 1 && (
               <>
                 {user?.membership.status !== "citizen" && (
@@ -233,11 +226,7 @@ const Feed: NextPageWithLayout = () => {
           <div className="mt-4">
             <SuggestedCardMobile className={`block f2xl:hidden`} />
           </div>
-          <div className={`mt-4 flex flg:hidden`}>
-            <AdsWrapper>
-              <PromotionCard2Mobile />
-            </AdsWrapper>
-          </div>
+
           <div className={`mt-4 flex flg:hidden`}>
             <AdsWrapper>
               <PromotionCard7Mobile />

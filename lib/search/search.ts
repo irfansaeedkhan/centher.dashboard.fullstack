@@ -1,4 +1,4 @@
-import { axiosApiCenther } from "@/utils/axios";
+import { axiosApi369x } from "@/utils/axios";
 import { AppError } from "@/utils/app-error";
 import {
   SearchResult,
@@ -10,7 +10,7 @@ export const search = async (
   query: string
 ): Promise<SearchResultWithType[]> => {
   try {
-    const response = await axiosApiCenther.get<{
+    const response = await axiosApi369x.get<{
       search_results: SearchResult[];
     }>(`/api/search?q=${query}&limit=5&offset=0`);
 

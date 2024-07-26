@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import moment from "moment";
 
-import { axiosApiCenther } from "@/utils/axios";
+import { axiosApi369x } from "@/utils/axios";
 import { LoadingState } from "@/models/common";
 import { Notification } from "@/assets/svgs";
 import { User } from "@/models/user";
@@ -42,7 +42,7 @@ export const useNotificationsStore = create<NotificationsStore>()(
 
           const url = `/api/notifications?offset=${offset}&limit=${limit}`;
 
-          const { data } = await axiosApiCenther.get(url);
+          const { data } = await axiosApi369x.get(url);
 
           set((state) => {
             const filteredNotifications = state.notifications.filter(
@@ -77,7 +77,7 @@ export const useNotificationsStore = create<NotificationsStore>()(
       fetchNewNotifications: async () => {
         try {
           const limit = get().limit;
-          const { data } = await axiosApiCenther.get(
+          const { data } = await axiosApi369x.get(
             `/api/notifications?limit=${limit}`
           );
 
@@ -119,7 +119,7 @@ export const useNotificationsStore = create<NotificationsStore>()(
 
       markAsRead: async (id) => {
         try {
-          await axiosApiCenther.patch(`/api/notifications/${id}`);
+          await axiosApi369x.patch(`/api/notifications/${id}`);
           set((state) => ({
             notifications: state.notifications.map((notification) =>
               notification._id === id
@@ -135,7 +135,7 @@ export const useNotificationsStore = create<NotificationsStore>()(
 
       markAllAsRead: async () => {
         try {
-          await axiosApiCenther.patch(`/api/notifications`);
+          await axiosApi369x.patch(`/api/notifications`);
         } catch (error) {
           process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
             console.error(error);
