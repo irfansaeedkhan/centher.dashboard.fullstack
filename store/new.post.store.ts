@@ -7,7 +7,7 @@ import { EditorState, convertToRaw } from "draft-js";
 import { extractHashtagsWithIndices } from "@draft-js-plugins/hashtag";
 import cloneDeep from "clone-deep";
 import { PostMedia } from "@/models/post";
-import { axiosApiCenther } from "@/utils/axios";
+import { axiosApi369x } from "@/utils/axios";
 import { customLog } from "@/utils/custom.log";
 import { getPostAndUpdateStores } from "@/utils/create.post";
 
@@ -373,7 +373,7 @@ export const useNewPostStore = create<NewPostStore>()(
               });
             });
 
-            const response = await axiosApiCenther.post(`/api/socials/posts`, {
+            const response = await axiosApi369x.post(`/api/socials/posts`, {
               replying_to: get().parentPostId,
               posts: postArray.map((post) => ({
                 uuid: post.uuid,
@@ -412,7 +412,7 @@ export const useNewPostStore = create<NewPostStore>()(
 
               const {
                 data: { presignedUrls },
-              } = await axiosApiCenther.post(
+              } = await axiosApi369x.post(
                 `/api/socials/posts/media/presigned-urls`,
                 {
                   media_list: mediaList,
@@ -656,7 +656,7 @@ export const useNewPostStore = create<NewPostStore>()(
 
             set({ isPostModalLoading: true });
 
-            await axiosApiCenther.patch(`/api/socials/posts/${postId}/edit`, {
+            await axiosApi369x.patch(`/api/socials/posts/${postId}/edit`, {
               text: post.post_text,
               deleted_media: post.media
                 .filter((file) => file.type === "edit" && file.isDeleted)

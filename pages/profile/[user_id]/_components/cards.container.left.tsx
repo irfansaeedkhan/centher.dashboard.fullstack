@@ -1,7 +1,6 @@
 import React from "react";
 import clsx from "clsx";
 import {
-  PromotionCard2,
   PromotionCard4,
   PromotionCard5,
   PromotionCard7,
@@ -32,7 +31,6 @@ export const CardsContainerLeft: React.FC<Props> = ({
           {loggedInUser?.membership.status !== "citizen" && <PromotionCard5 />}
           <PromotionCard7 />
           <PromotionCard4 />
-          <PromotionCard2 className="sticky top-[84px]" />
         </>
       ) : (
         <>

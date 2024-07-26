@@ -3,7 +3,7 @@ import { devtools } from "zustand/middleware";
 
 import { ArchivedPost } from "@/models/post";
 import { LoadingState } from "@/models/common";
-import { axiosApiCenther } from "@/utils/axios";
+import { axiosApi369x } from "@/utils/axios";
 import { customLog } from "@/utils/custom.log";
 
 export interface ArchivedPostsStore {
@@ -39,7 +39,7 @@ export const useArchivedPostsStore = create<ArchivedPostsStore>()(
 
           const url = `/api/socials/posts/archived?offset=${offset}&limit=${limit}`;
 
-          const { data } = await axiosApiCenther.get(url);
+          const { data } = await axiosApi369x.get(url);
 
           set((state) => {
             const filteredPosts = state.posts.filter(
