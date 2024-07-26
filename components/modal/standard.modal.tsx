@@ -4,7 +4,6 @@ import { IoClose } from "react-icons/io5";
 import { ModalPortal } from "./modal.portal";
 import {
   DeleteCrossIcon,
-  CentherIconBG,
   SpinIcon2,
   SuccessIcon,
   WarningIcon,
