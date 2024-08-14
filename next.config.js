@@ -16,6 +16,8 @@ const nextConfig = {
             "static.centher.io",
             "static.centher.io.s3.eu-west-3.amazonaws.com",
             "s3.eu-west-3.amazonaws.com",
+            "dapi.369x.io",
+            "static.369x.io"
           ]
         : [
             "localhost",
