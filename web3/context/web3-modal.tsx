@@ -29,8 +29,8 @@ const sepolia = {
 const metadata = {
   name: "369x",
   description: "369x",
-  url: "https://app.centher.io",
-  icons: ["https://app.centher.io/images/centher-new-logo.png"],
+  url: "https://dapp.396x.io",
+  icons: ["https://dapp.369x.io/images/369x.logo.favicon.png"],
 };
 
 createWeb3Modal({
