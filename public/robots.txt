@@ -3,4 +3,4 @@ Allow: /
 Allow: /feed/*
 Disallow: /admin/
 
-Sitemap: https://app.centher.io/sitemap.xml
+Sitemap: https://dapp.369x.io/sitemap.xml

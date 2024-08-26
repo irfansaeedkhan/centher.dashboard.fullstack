@@ -1,21 +1,21 @@
 version: "3"
 
 services:
-  app-centher-io-development:
-    container_name: app-centher-io
+  dapp-369x-io-development:
+    container_name: dapp-369x-io
     build:
       context: ../../
       dockerfile: docker/development/Dockerfile
-    image: app-centher-io-development
+    image: dapp-369x-io-development
     volumes:
       - ../../:/app
       - /app/node_modules
     ports:
       - "3000:3000"
     networks:
-      - centher-io
+      - 369x-io
 
 networks:
-  centher-io:
-    name: centher-io
+  369x-io:
+    name: 369x-io
     driver: bridge
