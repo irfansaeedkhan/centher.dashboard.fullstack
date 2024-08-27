@@ -225,7 +225,7 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                             ? URL.createObjectURL(data?.profile_image)
                             : ""
                         }
-                        alt="token-address-symbol"
+                        alt="profile image"
                         width={44}
                         height={44}
                         className="h-11 w-11 rounded-full object-cover"
@@ -255,7 +255,7 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                               eqAddress(data.token_address, e?.contractAddress)
                             )?.logo as string
                           }
-                          alt="token-address-symbol"
+                          alt="token logo"
                           width={20}
                           height={20}
                         />
@@ -345,7 +345,7 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                                 )
                               )?.logo as string
                             }
-                            alt="token-address-symbol"
+                            alt="token logo"
                             width={20}
                             height={20}
                           />
@@ -755,7 +755,7 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                               </span>
                               <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
                                 <Image
-                                  src={"/images/rainbow-last-frame.png"}
+                                  src={"/images/verified-icon.png"}
                                   alt={"Verified"}
                                   width={20}
                                   height={20}

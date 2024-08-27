@@ -54,7 +54,7 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins, sdk }) => {
               ? formatIPFSUrl(card.metadata.banner)
               : "/images/profile-header-cover.jpg"
           }
-          alt="token-address-symbol"
+          alt="profile-header-cover"
           width={1040}
           height={360}
           quality={100}
@@ -69,7 +69,7 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins, sdk }) => {
                 ? formatIPFSUrl(card.metadata.icon)
                 : "/images/profile-header-cover.jpg"
             }
-            alt="token-address-symbol"
+            alt="profile-header-cover"
             width={112}
             height={112}
             quality={100}
@@ -133,7 +133,7 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins, sdk }) => {
                     eqAddress(e?.contractAddress, card.token_address)
                   )?.logo as string
                 }
-                alt="token-address-symbol"
+                alt="coin logo"
                 width={20}
                 height={20}
               />

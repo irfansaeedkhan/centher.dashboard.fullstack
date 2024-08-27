@@ -6,7 +6,7 @@ const ScriptTags = () => {
   return (
     <>
       <Head>
-        <title>Centher.io</title>
+        <title>369x.io</title>
 
         <meta httpEquiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
@@ -30,12 +30,12 @@ const ScriptTags = () => {
           property="og:description"
           content="369x.io is worlds best and reliable Web3 token and NFT Marketplace"
         />
-        <meta property="og:url" content="https://app.centher.io/" />
-        <meta property="og:site_name" content="Centher.io" />
+        <meta property="og:url" content="https://app.369x.io/" />
+        <meta property="og:site_name" content="369x.io" />
         <meta
           property="og:image"
           itemProp="image"
-          content="/images/369x.logo.bg.550.420.png"
+          content="/images/logo.bg.550.420.png"
         />
         <meta property="og:image:width" content="550" />
         <meta property="og:image:height" content="420" />
@@ -45,14 +45,11 @@ const ScriptTags = () => {
           name="twitter:description"
           content="369x.io is worlds best and reliable Web3 token and NFT Marketplace"
         />
-        <meta name="twitter:title" content="Centher.io" />
-        <meta name="twitter:image" content="/images/369x.logo.bg.550.420.png" />
+        <meta name="twitter:title" content="369x.io" />
+        <meta name="twitter:image" content="/images/logo.bg.550.420.png" />
 
         {/* TODO: Shivam - Need google site verification content */}
-        <meta
-          name="google-site-verification"
-          content="cmqFPwe-1bs7Dscw6QxvdWPAQ52MuaUV2RrfhE17oo8"
-        />
+        <meta name="google-site-verification" content="" />
 
         <link
           rel="apple-touch-icon"

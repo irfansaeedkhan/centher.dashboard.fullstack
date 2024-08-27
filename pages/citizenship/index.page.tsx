@@ -28,7 +28,7 @@ const Citizenship: NextPageWithLayout = () => {
         <div className="flex flex-col items-center justify-center gap-5 pt-[13rem] fsm:mt-0">
           <div>
             <Image
-              src="/images/centher-citizenship.png"
+              src="/images/citizenship.png"
               alt="chat"
               width={300}
               height={300}
