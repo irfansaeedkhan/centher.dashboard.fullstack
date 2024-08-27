@@ -17,7 +17,7 @@ const Terms: NextPage = () => {
         </h3>
 
         <div className="mt-4 px-4 text-sm font-medium text-[#888DAA] flg:px-0">
-          Last updated on December 01, 2022
+          Last updated on August 26, 2024
         </div>
         <p className="mt-6 px-4 text-sm font-medium text-white fsm:text-lg flg:px-0">
           By registering and interacting on <strong>369x</strong> the user

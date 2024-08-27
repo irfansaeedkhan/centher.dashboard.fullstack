@@ -4,9 +4,9 @@ import { IoClose } from "react-icons/io5";
 import { ModalPortal } from "./modal.portal";
 import {
   DeleteCrossIcon,
-  SpinIcon2,
+  LoaderIcon,
   SuccessIcon,
-  WarningIcon,
+  WarningGradient,
   BUSDIconBG,
   NTRIconBG,
   DXCIconBG,
@@ -87,13 +87,13 @@ export const StandardModal: React.FC<ModalProps> = ({
           {/* Content */}
           <div className="space-y-4 p-4 text-center">
             {status === "progress" && (
-              <SpinIcon2 className="inline-block h-16 w-16 animate-spin" />
+              <LoaderIcon className="inline-block h-16 w-16 animate-spin" />
             )}
             {status === "success" && (
               <SuccessIcon className="inline-block h-16 w-16" />
             )}
             {status === "warning" && (
-              <WarningIcon className="inline-block h-16 w-16" />
+              <WarningGradient className="inline-block h-16 w-16" />
             )}
             {status === "error" && (
               <DeleteCrossIcon className="inline-block h-16 w-16" />
