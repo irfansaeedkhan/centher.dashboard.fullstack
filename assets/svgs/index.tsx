@@ -69,7 +69,7 @@ export { default as Users } from "./users.svg";
 export { default as PlusIconBtn } from "./plus.icon.btn.svg";
 export { default as DeleteIconBtnCoinPack } from "./delete.icon.btn.coin.pack.svg";
 export { default as LeftArrowIcon } from "./buy.cnether.arrow.icon.svg";
-export { default as SpinIcon2 } from "./spin.registeration.icon.svg";
+
 export { default as SpinIcon3 } from "./spin.login.icon.svg";
 export { default as Successfully } from "./successfully.registeration.icon.svg";
 export { default as YellowTick } from "./yellow.tick.icon.svg";
@@ -104,10 +104,10 @@ export { default as GreyTwitterIcon } from "./grey.twitter.icon.collection.svg";
 export { default as ShareBigIcon } from "./share.big.icon.svg";
 export { default as BNBIcon } from "./bnb.icon.svg";
 export { default as LoaderIcon } from "./loader.icon.svg";
+
 export { default as FacebookCircleIcon } from "./facebook.icon.collection.svg";
 export { default as DeleteCrossIcon } from "./delete.cross.icon.svg";
 export { default as SuccessIcon } from "./success.icon.svg";
-export { default as WarningIcon } from "./warning.icon.svg";
 export { default as MoreHorizental } from "./more.horizental.svg";
 export { default as NewMessageIcon } from "./new.message.icon.svg";
 export { default as IconMessage } from "./icon.message.svg";
