@@ -16,7 +16,7 @@ const Check_PreBooking_Form_TransactionHash = (booking: PurchaseHistory) => {
   } else if (booking.trx_hash.includes("Apex")) {
     return (
       <a
-        href={`https://app.centher.io/profile/0x571bc57d15e319b926b3b8fc67710c90a7591e63`}
+        href={`https://dapp.369x.io/profile/0x571bc57d15e319b926b3b8fc67710c90a7591e63`}
         target="_blank"
         rel="noreferrer noopener"
         className="hover:text-gradient"

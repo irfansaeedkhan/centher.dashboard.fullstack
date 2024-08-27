@@ -30,7 +30,7 @@ const ScriptTags = () => {
           property="og:description"
           content="369x.io is worlds best and reliable Web3 token and NFT Marketplace"
         />
-        <meta property="og:url" content="https://app.369x.io/" />
+        <meta property="og:url" content="https://dapp.369x.io/" />
         <meta property="og:site_name" content="369x.io" />
         <meta
           property="og:image"
@@ -46,7 +46,7 @@ const ScriptTags = () => {
           content="369x.io is worlds best and reliable Web3 token and NFT Marketplace"
         />
         <meta name="twitter:title" content="369x.io" />
-        <meta name="twitter:image" content="/images/logo.bg.550.420.png" />
+        <meta name="twitter:image" content="/images/369x.logo.bg.550.420.png" />
 
         {/* TODO: Shivam - Need google site verification content */}
         <meta name="google-site-verification" content="" />

@@ -5,22 +5,22 @@
   xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
   <!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
   <url>
-    <loc>https://app.centher.io/</loc>
+    <loc>https://dapp.369x.io/</loc>
     <lastmod>2022-12-28T00:00:00+00:00</lastmod>
     <priority>1.00</priority>
   </url>
   <url>
-    <loc>https://app.centher.io/auth/login</loc>
+    <loc>https://dapp.369x.io/auth/login</loc>
     <lastmod>2022-12-28T00:00:00+00:00</lastmod>
     <priority>0.80</priority>
   </url>
   <url>
-    <loc>https://app.centher.io/auth/register</loc>
+    <loc>https://dapp.369x.io/auth/register</loc>
     <lastmod>2022-12-28T00:00:00+00:00</lastmod>
     <priority>0.80</priority>
   </url>
   <url>
-    <loc>https://app.centher.io/feed</loc>
+    <loc>https://dapp.369x.io/feed</loc>
     <lastmod>2022-12-28T00:00:00+00:00</lastmod>
     <priority>0.80</priority>
   </url>
