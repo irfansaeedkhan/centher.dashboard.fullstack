@@ -9,7 +9,7 @@ import { FiArrowUpRight, FiCopy, FiGithub, FiInstagram } from "react-icons/fi";
 import { isAddress } from "ethers/lib/utils";
 import {
   LinkNewIcon,
-  CentherIcon,
+  X369XIcon,
   NewTelegramIcon,
   NewRedditIcon,
   NewDiscordIcon,
@@ -225,7 +225,7 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                             ? URL.createObjectURL(data?.profile_image)
                             : ""
                         }
-                        alt="token-address-symbol"
+                        alt="profile image"
                         width={44}
                         height={44}
                         className="h-11 w-11 rounded-full object-cover"
@@ -255,7 +255,7 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                               eqAddress(data.token_address, e?.contractAddress)
                             )?.logo as string
                           }
-                          alt="token-address-symbol"
+                          alt="token logo"
                           width={20}
                           height={20}
                         />
@@ -345,7 +345,7 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                                 )
                               )?.logo as string
                             }
-                            alt="token-address-symbol"
+                            alt="token logo"
                             width={20}
                             height={20}
                           />
@@ -606,10 +606,10 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                           href="will come from api"
                           target="_blank"
                           rel="noreferrer noopener"
-                          className="centher-social-button flex select-none items-center gap-2 rounded-[11px] bg-elevation-1 px-[10px] py-[6px] text-xs font-medium text-gray-shade-14"
+                          className="product-social-button flex select-none items-center gap-2 rounded-[11px] bg-elevation-1 px-[10px] py-[6px] text-xs font-medium text-gray-shade-14"
                         >
                           <span className="h-5 w-5 flex-shrink-0">
-                            <CentherIcon />
+                            <X369XIcon />
                           </span>
                           <span>Centher</span>
                         </a>
@@ -755,7 +755,7 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                               </span>
                               <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
                                 <Image
-                                  src={"/images/rainbow-last-frame.png"}
+                                  src={"/images/verified-icon.png"}
                                   alt={"Verified"}
                                   width={20}
                                   height={20}

@@ -10,7 +10,7 @@ import {
   SingleNotification,
   useMarkNotificationsPageAsSeen,
 } from "./_components";
-import { useCentherLive } from "@/hooks/chat";
+import { useProductLive } from "@/hooks/chat";
 import { Notify } from "@/live/types/notification";
 import { customLog } from "@/utils/custom.log";
 import { useWallet } from "@/web3/hooks/use.wallet";
@@ -19,7 +19,7 @@ import { BackButton } from "@/components/button/back-button";
 const Notifications: NextPageWithLayout = () => {
   // Mark notifications page as seen
   useMarkNotificationsPageAsSeen();
-  const { adapter } = useCentherLive();
+  const { adapter } = useProductLive();
   const [notifys, setNotifys] = useState<Notify[]>();
   const { connectedAddress } = useWallet();
   //TODO=> notifys is containes notifications, use it in UI, we can consider topic for notif type

@@ -59,7 +59,7 @@ const Header = () => {
         className="flex items-center justify-start gap-4"
       >
         <Image
-          src="/images/369x.logo.png"
+          src="/images/logo.png"
           alt="369x Logo"
           width={75}
           height={39}

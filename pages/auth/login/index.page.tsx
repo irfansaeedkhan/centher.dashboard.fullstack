@@ -25,7 +25,7 @@ Login.getLayout = (page) => {
         <div className="mb-10 flex w-fit md:hidden">
           <Link href={AppRoutes.home}>
             <Image
-              src="/images/369x.logo.png"
+              src="/images/logo.png"
               alt="369x Logo"
               width={75}
               height={39}

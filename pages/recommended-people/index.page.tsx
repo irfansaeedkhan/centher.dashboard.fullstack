@@ -6,7 +6,7 @@ import {
   getRecommendedPeople,
   RecommendedPeople,
 } from "@/lib/recommended-people";
-import { axiosApiCenther } from "@/utils/axios";
+import { axiosApi369x } from "@/utils/axios";
 import { LoadingState } from "@/models/common";
 import { NextPageWithLayout } from "../_app.page";
 import { RecommendedPageWrapper } from "./_components/recommended-page-wrapper";
@@ -44,7 +44,7 @@ const RecommendedPeople: NextPageWithLayout = () => {
         })
       );
 
-      await axiosApiCenther.post("api/socials/followers", {
+      await axiosApi369x.post("api/socials/followers", {
         following_id,
       });
     } catch (error: any) {

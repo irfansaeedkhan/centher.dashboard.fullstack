@@ -1,11 +1,11 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
-import { CentherLive } from "@/live";
+import { ProductLive } from "@/live";
 import { IConversation } from "@/live/types";
 
-export interface CentherLiveStore {
-  adapter: CentherLive | null;
-  setAdapter: (instance: CentherLive) => void;
+export interface ProductLiveStore {
+  adapter: ProductLive | null;
+  setAdapter: (instance: ProductLive) => void;
 }
 
 export interface ConversationStore {
@@ -13,14 +13,14 @@ export interface ConversationStore {
   setConversations: (conversations: IConversation[]) => void;
 }
 
-export const useCentherLiveStore = create<CentherLiveStore>()(
+export const useProductLiveStore = create<ProductLiveStore>()(
   devtools(
     (set) => ({
       adapter: null,
-      setAdapter: (adapter: CentherLive) => set({ adapter }),
+      setAdapter: (adapter: ProductLive) => set({ adapter }),
     }),
     {
-      name: "CentherLiveStore",
+      name: "ProductLiveStore",
       enabled: process.env.NEXT_PUBLIC_APP_ENV !== "production",
     }
   )

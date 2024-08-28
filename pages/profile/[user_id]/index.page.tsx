@@ -26,7 +26,6 @@ import { PostModal } from "@/components/feed.components/create.post/post.modal";
 import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
 import { CreatePostCard } from "@/components/post-editor/create-post-card";
 import { SuggestedCardMobile } from "@/components/feed.components/suggested-card-mobile";
-import { PromotionCard2Mobile } from "@/components/feed.components/promotion.cards/card-2-mobile";
 import { PromotionCard5Mobile } from "@/components/feed.components/promotion.cards/card-5-mobile";
 import { PromotionCard6Mobile } from "@/components/feed.components/promotion.cards/card-6-mobile";
 import { PromotionCard3Mobile } from "@/components/feed.components/promotion.cards/card-3-mobile";
@@ -176,13 +175,7 @@ const Profile: NextPageWithLayout = () => {
                 </AdsWrapper>
               </div>
             )}
-            {(index + 1) / 6 === 1 && (
-              <div className="mt-3 block flg:hidden">
-                <AdsWrapper>
-                  <PromotionCard2Mobile />
-                </AdsWrapper>
-              </div>
-            )}
+
             {(index + 1) / 8 === 1 && (
               <>
                 {loggedInUser?.membership.status !== "citizen" && (
@@ -252,11 +245,7 @@ const Profile: NextPageWithLayout = () => {
               <SuggestedCardMobile className={`block f2xl:hidden`} />
             )}
           </div>
-          <div className={`mt-4 flex flg:hidden`}>
-            <AdsWrapper>
-              <PromotionCard2Mobile />
-            </AdsWrapper>
-          </div>
+
           <div className={`mt-4 flex flg:hidden`}>
             <AdsWrapper>
               <PromotionCard7Mobile />

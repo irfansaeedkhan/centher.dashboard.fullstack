@@ -6,10 +6,10 @@ import clsx from "clsx";
 import { getUserByIdFromDB } from "@/lib/get-user-by-id";
 import Button from "@/components/button";
 import { ChatFriendListSkeleton } from "@/components/loading.skeletons/chat.skeletons";
-import { useCentherLive } from "@/hooks/chat";
+import { useProductLive } from "@/hooks/chat";
 import { eqAddress } from "@/live/utils/address.utils";
 import { IConversation } from "@/live/types";
-import { axiosApiCenther } from "@/utils/axios";
+import { axiosApi369x } from "@/utils/axios";
 import { customLog } from "@/utils/custom.log";
 import { User } from "@/models/user";
 import { AppRoutes } from "@/constants/app.routes";
@@ -27,7 +27,7 @@ export interface UsersDetails {
 
 const ChatSidebar = () => {
   const router = useRouter();
-  const { conversations, conversationLoading, adapter } = useCentherLive();
+  const { conversations, conversationLoading, adapter } = useProductLive();
   const [filteredConversations, setFilteredConversations] =
     useState<IConversation[]>(conversations);
   const [loading, setLoading] = useState<boolean>(false);
@@ -148,12 +148,8 @@ const ChatSidebar = () => {
       const followersUrl = `/api/socials/users/my-followers?offset=${offset}&limit=${limit}`;
       const followingUrl = `/api/socials/users/my-following?offset=${offset}&limit=${limit}`;
 
-      const { data: followersResponse } = await axiosApiCenther.get(
-        followersUrl
-      );
-      const { data: followingResponse } = await axiosApiCenther.get(
-        followingUrl
-      );
+      const { data: followersResponse } = await axiosApi369x.get(followersUrl);
+      const { data: followingResponse } = await axiosApi369x.get(followingUrl);
 
       const nonDuplicatedNetwork: any[] = [];
       [...followersResponse.followers, ...followingResponse.following].forEach(
@@ -253,9 +249,8 @@ const ChatSidebar = () => {
         router.pathname === AppRoutes.chat.single_chat && "hidden flg:block"
       )}
     >
-      <BackButton className="flg:hidden" />
-
       <div className="mb-6 flex items-center justify-between px-4 text-xl font-semibold text-white md:px-6">
+        <BackButton className="flg:hidden" />
         <h6>Chats</h6>
         <button
           onClick={() => {

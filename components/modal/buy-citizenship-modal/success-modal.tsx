@@ -16,7 +16,7 @@ export const CitizenShipSuccessModal: React.FC<CustomModalProps> = () => {
         >
           <div className="flex flex-col gap-8 text-center">
             <Image
-              src={"/images/success-centher.png"}
+              src={"/images/success-passport.png"}
               alt={"sucess image"}
               width={128}
               height={107}

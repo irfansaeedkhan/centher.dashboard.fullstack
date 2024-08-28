@@ -33,14 +33,14 @@ import { getUserImageUploadUrl, updateUserImage } from "@/lib/user";
 import ProfileModal from "@/components/modal/profile.modal";
 import Button from "@/components/button";
 import { useGetProfileCardDetails } from "@/components/feed.components/profile.detail.card/use.get.profile.card.details";
-import { axiosApiCenther } from "@/utils/axios";
+import { axiosApi369x } from "@/utils/axios";
 import { getUserImageUrl, sliceAccountAddress } from "@/utils/user.helpers";
 import { customLog } from "@/utils/custom.log";
 import { copyText } from "@/utils/copy.text";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 import cn from "@/utils/cn";
 import { BackButton } from "@/components/button/back-button";
-import { useCentherLive } from "@/hooks/chat";
+import { useProductLive } from "@/hooks/chat";
 import { AppRoutes } from "@/constants/app.routes";
 import { XLogo, ChatProfile, EyeOffFollow } from "@/assets/svgs";
 import FollowedComponent from "../community/_components/followed.component";
@@ -69,7 +69,7 @@ const ProfileHeader: React.FC<Props> = ({
   loggedInUser,
 }) => {
   const router = useRouter();
-  const { adapter } = useCentherLive();
+  const { adapter } = useProductLive();
   const profileCardDetails = useGetProfileCardDetails(user);
   const { incrementFollowersCount, decrementFollowersCount } =
     useProfileCardStore((state) => ({
@@ -132,7 +132,7 @@ const ProfileHeader: React.FC<Props> = ({
         ) {
           url += `/with-auth`;
         }
-        const { data } = await axiosApiCenther.get(url);
+        const { data } = await axiosApi369x.get(url);
         setFollow(data.is_followed);
       } catch (error: any) {
         customLog(["development"], error);
@@ -260,7 +260,7 @@ const ProfileHeader: React.FC<Props> = ({
   const followUser = async (following_id: string) => {
     try {
       setLoadingState(true);
-      const response = await axiosApiCenther.post("api/socials/followers", {
+      const response = await axiosApi369x.post("api/socials/followers", {
         following_id,
       });
       if (response.data.message == "follow_success") {

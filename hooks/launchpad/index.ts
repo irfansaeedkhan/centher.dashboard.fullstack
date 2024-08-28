@@ -1,17 +1,17 @@
 import { useEffect } from "react";
-import { useCentherLaunchpad } from "@/store/launchpad.store";
-import { CentherLaunchpad } from "@/launchpad";
+import { useProductLaunchpad } from "@/store/launchpad.store";
+import { ProductLaunchpad } from "@/launchpad";
 import { config } from "@/launchpad/config";
 
 export const useLaunchpad = () => {
-  const { sdk, setSdk } = useCentherLaunchpad((state) => ({
+  const { sdk, setSdk } = useProductLaunchpad((state) => ({
     sdk: state.sdk,
     setSdk: state.setSdk,
   }));
 
   useEffect(() => {
     if (!sdk && setSdk) {
-      setSdk(new CentherLaunchpad({ ...config }));
+      setSdk(new ProductLaunchpad({ ...config }));
     }
   }, [sdk, setSdk]);
 

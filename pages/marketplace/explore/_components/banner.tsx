@@ -60,7 +60,7 @@ export const Banner = () => {
         </div>
       </div>
       <Image
-        src="/images/bg-explore.png"
+        src="/images/bg-explore-updated.png"
         fill={true}
         alt="Explore"
         sizes="1920px"

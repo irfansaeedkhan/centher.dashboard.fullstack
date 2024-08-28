@@ -192,7 +192,7 @@
           }
         ],
         "indexed": false,
-        "internalType": "struct ICentherStaking.AffiliateSetting[]",
+        "internalType": "struct IProductStaking.AffiliateSetting[]",
         "name": "affiliateSetting",
         "type": "tuple[]"
       },
@@ -491,7 +491,7 @@
             "type": "uint256"
           },
           {
-            "internalType": "enum ICentherStaking.RefMode",
+            "internalType": "enum IProductStaking.RefMode",
             "name": "rewardModeForRef",
             "type": "uint8"
           },
@@ -533,13 +533,13 @@
                 "type": "bool"
               }
             ],
-            "internalType": "struct ICentherStaking.PoolSetting",
+            "internalType": "struct IProductStaking.PoolSetting",
             "name": "setting",
             "type": "tuple"
           }
         ],
         "indexed": false,
-        "internalType": "struct ICentherStaking.PoolInfoForEvent",
+        "internalType": "struct IProductStaking.PoolInfoForEvent",
         "name": "poolInfo",
         "type": "tuple"
       },
@@ -1046,7 +1046,7 @@
             "type": "uint256"
           }
         ],
-        "internalType": "struct ICentherStaking.PoolCreationInputs",
+        "internalType": "struct IProductStaking.PoolCreationInputs",
         "name": "_info",
         "type": "tuple"
       }
@@ -1231,7 +1231,7 @@
         "type": "uint256"
       },
       {
-        "internalType": "enum ICentherStaking.RefMode",
+        "internalType": "enum IProductStaking.RefMode",
         "name": "rewardModeForRef",
         "type": "uint8"
       },
@@ -1273,7 +1273,7 @@
             "type": "bool"
           }
         ],
-        "internalType": "struct ICentherStaking.PoolSetting",
+        "internalType": "struct IProductStaking.PoolSetting",
         "name": "setting",
         "type": "tuple"
       },
@@ -1399,7 +1399,7 @@
             "type": "uint256"
           }
         ],
-        "internalType": "struct ICentherStaking.AffiliateSettingInput",
+        "internalType": "struct IProductStaking.AffiliateSettingInput",
         "name": "_setting",
         "type": "tuple"
       }

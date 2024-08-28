@@ -15,7 +15,7 @@ import { eqAddress } from "@/live/utils/address.utils";
 import { ArrowDiagonal, GradientCopy, Staking } from "@/assets/svgs";
 import { BlockchainConfig } from "@/web3/blockchain/config";
 import Button from "@/components/button";
-import { CentherStaking } from "@/staking";
+import { ProductStaking } from "@/staking";
 import { OptionalType } from "@/staking/types";
 import { setupUiModels } from "@/staking/helpers/mappers.helper";
 import useUser from "@/hooks/use.user";
@@ -27,7 +27,7 @@ import StakedLiquidity from "./staked-liquidity";
 export interface ListCardProps {
   card: ListCardDataOBj;
   coins: Array<CoinDetails | undefined>;
-  sdk: OptionalType<CentherStaking>;
+  sdk: OptionalType<ProductStaking>;
 }
 
 const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins, sdk }) => {
@@ -54,7 +54,7 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins, sdk }) => {
               ? formatIPFSUrl(card.metadata.banner)
               : "/images/profile-header-cover.jpg"
           }
-          alt="token-address-symbol"
+          alt="profile-header-cover"
           width={1040}
           height={360}
           quality={100}
@@ -69,7 +69,7 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins, sdk }) => {
                 ? formatIPFSUrl(card.metadata.icon)
                 : "/images/profile-header-cover.jpg"
             }
-            alt="token-address-symbol"
+            alt="profile-header-cover"
             width={112}
             height={112}
             quality={100}
@@ -133,7 +133,7 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins, sdk }) => {
                     eqAddress(e?.contractAddress, card.token_address)
                   )?.logo as string
                 }
-                alt="token-address-symbol"
+                alt="coin logo"
                 width={20}
                 height={20}
               />

@@ -5,7 +5,7 @@ import { SiBinance } from "react-icons/si";
 import { isAddress } from "ethers/lib/utils";
 import {
   LinkNewIcon,
-  CentherIcon,
+  X369XIcon,
   NewTelegramIcon,
   Whitepaper,
   XIcon,
@@ -143,10 +143,10 @@ const Details: React.FC<{ data: OptionalType<ListCardDataOBj> }> = ({
                 href={findLink("centher")}
                 target="_blank"
                 rel="noreferrer noopener"
-                className="centher-social-button flex select-none items-center gap-2 rounded-[11px] bg-elevation-1 px-[10px] py-[6px] text-xs font-medium text-gray-shade-14"
+                className="product-social-button flex select-none items-center gap-2 rounded-[11px] bg-elevation-1 px-[10px] py-[6px] text-xs font-medium text-gray-shade-14"
               >
                 <span className="h-5 w-5 flex-shrink-0">
-                  <CentherIcon />
+                  <X369XIcon />
                 </span>
                 <span>369x</span>
               </a>

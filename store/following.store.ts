@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
-import { axiosApiCenther } from "@/utils/axios";
+import { axiosApi369x } from "@/utils/axios";
 import type { IUserWithFollow } from "@/components/user.with.follow/types";
 import { LoadingState } from "@/models/common";
 
@@ -36,7 +36,7 @@ export const useFollowingStore = create<FollowingStore>()(
 
           const url = `/api/socials/users/my-following?offset=${offset}&limit=${limit}`;
 
-          const { data } = await axiosApiCenther.get(url);
+          const { data } = await axiosApi369x.get(url);
 
           set((state) => {
             const filteredFollowing = state.following.filter(

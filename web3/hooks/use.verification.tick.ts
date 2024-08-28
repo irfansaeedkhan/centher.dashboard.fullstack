@@ -21,7 +21,7 @@ export const useVerificationTick = (
     }
 
     if (params.user.membership.status === "verified") {
-      setVerificationIcon("/images/verified-icon.svg");
+      setVerificationIcon("/images/verified-icon.png");
     } else if (params.user.membership.status === "citizen") {
       setVerificationIcon("/images/citizen-icon.svg");
     } else {

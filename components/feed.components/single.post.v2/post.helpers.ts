@@ -1,5 +1,5 @@
 import { Post } from "@/models/post";
-import { axiosApiCenther } from "@/utils/axios";
+import { axiosApi369x } from "@/utils/axios";
 
 export const getPost = async (postId: string, isAuthenticated: boolean) => {
   let url = `/api/socials/posts/${postId}`;
@@ -8,34 +8,34 @@ export const getPost = async (postId: string, isAuthenticated: boolean) => {
     url += "/with-auth";
   }
 
-  const { data } = await axiosApiCenther.get(`${url}?exact_post=true`);
+  const { data } = await axiosApi369x.get(`${url}?exact_post=true`);
   return data.posts[0] as Post;
 };
 
 export const archivePost = async (postId: string) => {
-  await axiosApiCenther.patch(`/api/socials/posts/${postId}/archive`);
+  await axiosApi369x.patch(`/api/socials/posts/${postId}/archive`);
 };
 
 export const unArchivePost = async (postId: string) => {
-  await axiosApiCenther.patch(`/api/socials/posts/${postId}/unarchive`);
+  await axiosApi369x.patch(`/api/socials/posts/${postId}/unarchive`);
 };
 
 export const deletePost = async (postId: string) => {
-  await axiosApiCenther.delete(`/api/socials/posts/${postId}`);
+  await axiosApi369x.delete(`/api/socials/posts/${postId}`);
 };
 
 export const likePost = async (
   postId: string,
   actionType: "like" | "unlike"
 ) => {
-  await axiosApiCenther.post("api/socials/analytics/likes", {
+  await axiosApi369x.post("api/socials/analytics/likes", {
     postId,
     actionType: actionType,
   });
 };
 
 export const createPostView = async (post_id: string) => {
-  await axiosApiCenther.post(`/api/socials/analytics/post-views`, {
+  await axiosApi369x.post(`/api/socials/analytics/post-views`, {
     post_id,
   });
 };

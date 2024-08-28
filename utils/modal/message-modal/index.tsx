@@ -1,6 +1,6 @@
 import React from "react";
 import Button from "@/components/button";
-import { WarningIcon } from "@/assets/svgs";
+import { WarningGradient } from "@/assets/svgs";
 
 interface MMProps {
   heading: string;
@@ -17,7 +17,7 @@ const MessageModal: React.FC<MMProps> = ({
 }) => {
   return (
     <div className="flex w-full flex-col gap-2 px-2 pt-2 text-center fmd:px-4 fmd:pt-4">
-      <WarningIcon className="mx-auto mb-4 mt-5" />
+      <WarningGradient className="mx-auto mb-4 mt-5" />
       <h3 className="mt-2 text-base font-semibold leading-6 text-white fmd:text-lg">
         {heading}
       </h3>

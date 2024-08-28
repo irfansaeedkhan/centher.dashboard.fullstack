@@ -1,4 +1,4 @@
-import { axiosApiCenther } from "@/utils/axios";
+import { axiosApi369x } from "@/utils/axios";
 import { AppError } from "@/utils/app-error";
 import {
   RecentSearchExtended,
@@ -10,7 +10,7 @@ export const getRecentSearch = async (): Promise<
   RecentSearchExtendedWithType[]
 > => {
   try {
-    const response = await axiosApiCenther.get<{
+    const response = await axiosApi369x.get<{
       recent_search: RecentSearchExtended[];
     }>("/api/search/recent");
 

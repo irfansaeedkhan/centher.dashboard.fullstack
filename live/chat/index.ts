@@ -12,7 +12,7 @@ import { IGetConversactionsActions } from "../types/get.conversations.actions";
 import { IUserActivityCreate } from "../types/create.user.activity.param";
 import { IConversationCreateParams } from "../types/create.conversation";
 import { IMessageSubscriptionHander } from "../types/message.subscription.handler";
-import { CentherLive } from "..";
+import { ProductLive } from "..";
 
 export class ChatHandler {
   private static _messageObserver: any;
@@ -93,7 +93,7 @@ export class ChatHandler {
     connection: IApolloProvider,
     filters: IGetConversactionsActions,
     handler: ConversationActionHandler,
-    sdk: CentherLive
+    sdk: ProductLive
   ): Promise<void> {
     try {
       if (this._conversationsObserver) {
@@ -224,7 +224,7 @@ export class ChatHandler {
     connection: IApolloProvider,
     filters: IGetMessageFilters,
     handler: IMessageSubscriptionHander,
-    sdk: CentherLive
+    sdk: ProductLive
   ): Promise<void> {
     try {
       if (this._messageObserver) {

@@ -5,7 +5,8 @@ import {
   registerAuthTokenResponseInterceptor,
 } from "./auth-tokens-interceptors";
 
-// CIS => Centher Identity Service
+// CIS => 369x Identity Service
+// TODO: Change CIS to IS
 export const axiosCIS = axios.create({
   baseURL: CISBaseURL,
 });

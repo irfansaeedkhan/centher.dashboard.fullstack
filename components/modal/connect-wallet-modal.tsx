@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { IoClose } from "react-icons/io5";
-import {
-  GradientArrowOutline,
-  CentherIcon,
-  NewWalletIcon,
-} from "@/assets/svgs";
+import { GradientArrowOutline, X369XIcon, NewWalletIcon } from "@/assets/svgs";
 import { WalletEnum } from "@/web3/hooks/use.wallet";
 import ModalContainer from "./modal-container";
 
@@ -105,7 +101,7 @@ const ConnectWalletModal: React.FC<Props> = ({
               className="flex w-full cursor-pointer items-center justify-between gap-10 !rounded-xl bg-popup-0 px-5 py-3"
             >
               <div className="flex items-center gap-3 fsm:gap-6">
-                <CentherIcon />
+                <X369XIcon />
                 <h3 className="text-sm font-semibold text-white fmd:text-base">
                   Wallet for Dummies
                 </h3>

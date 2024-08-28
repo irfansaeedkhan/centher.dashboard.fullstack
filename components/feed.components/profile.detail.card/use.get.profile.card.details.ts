@@ -4,7 +4,7 @@ import {
   useProfileCardStore,
 } from "@/store/profile.card.store";
 import { User } from "@/models/user";
-import { axiosApiCenther } from "@/utils/axios";
+import { axiosApi369x } from "@/utils/axios";
 import { customLog } from "@/utils/custom.log";
 import { getAllUserGenealogy } from "@/lib/get-user-genealogy";
 import useUser from "@/hooks/use.user";
@@ -44,6 +44,6 @@ const getProfileCardDetails = async (
     url += "/with-auth";
   }
 
-  const { data } = await axiosApiCenther.get(url);
+  const { data } = await axiosApi369x.get(url);
   return data;
 };

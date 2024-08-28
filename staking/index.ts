@@ -7,7 +7,7 @@ import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.en
 import { ZeroAddress } from "@/web3/constants/common";
 import { eqAddress } from "@/live/utils/address.utils";
 import { IApolloProvider } from "@/live/types/apollo.provider";
-import { ICentherStakingConfig } from "./types/config.interface";
+import { IProductStakingConfig } from "./types/config.interface";
 import {
   AddAffiliateSettingsInput,
   CreatePoolInput,
@@ -43,11 +43,11 @@ import { GetRefRewardInput, RefReward } from "./types/ref.rewards.interface";
 import { GetReferralsInput, Referral } from "./types/referrals.interface";
 import { cacheIsOn, staking_projects } from "./cache";
 
-export class CentherStaking {
+export class ProductStaking {
   private _connection: IApolloProvider = null;
-  private _config: OptionalType<ICentherStakingConfig> = null;
+  private _config: OptionalType<IProductStakingConfig> = null;
 
-  constructor(options?: ICentherStakingConfig) {
+  constructor(options?: IProductStakingConfig) {
     this.initConnection(options?.subgraphUrl as string);
     this._config = options;
   }

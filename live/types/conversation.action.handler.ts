@@ -1,7 +1,7 @@
-import { CentherLive } from "..";
+import { ProductLive } from "..";
 
 export type ConversationActionHandler = (
-  sdk: CentherLive,
+  sdk: ProductLive,
   params: any,
   account: string
 ) => void;

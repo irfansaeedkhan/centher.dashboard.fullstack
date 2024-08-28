@@ -1,10 +1,10 @@
-import { ICentherStakingConfig } from "./types/config.interface";
+import { IProductStakingConfig } from "./types/config.interface";
 
-export const config: ICentherStakingConfig = {
+export const config: IProductStakingConfig = {
   subgraphUrl:
     process.env.NEXT_PUBLIC_APP_ENV === "production"
-      ? "https://api.studio.thegraph.com/query/82021/centher-stacking/v0.0.2"
-      : "https://api.thegraph.com/subgraphs/name/sasimraza/centher-staking-sepolia",
+      ? "https://api.studio.thegraph.com/query/82021/centher-stacking/version/latest"
+      : "https://api.studio.thegraph.com/query/82021/centher-staking-sepolia/version/latest",
 };
 
 export const SwappingProjects: string[] =

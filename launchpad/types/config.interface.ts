@@ -1,3 +1,3 @@
-export interface ICentherLaunchpadConfig {
+export interface IProductLaunchpadConfig {
   subgraphUrl: string;
 }

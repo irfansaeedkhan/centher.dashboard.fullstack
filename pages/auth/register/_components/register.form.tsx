@@ -9,7 +9,7 @@ import { WalletEnum, useWallet } from "@/web3/hooks/use.wallet";
 import { sliceAccountAddress } from "@/utils/user.helpers";
 import { customLog } from "@/utils/custom.log";
 import {
-  SpinIcon2,
+  LoaderIcon,
   Successfully,
   WalletIconModal,
   MetamaskIcon,
@@ -255,7 +255,7 @@ export const RegisterForm: React.FC = () => {
               {feeModal.status === "start" ? (
                 <WalletIconModal />
               ) : feeModal.status === "progress" ? (
-                <SpinIcon2 className="animate-spin" />
+                <LoaderIcon className="animate-spin" />
               ) : (
                 feeModal.status === "end" && <Successfully />
               )}
