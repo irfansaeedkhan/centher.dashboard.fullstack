@@ -4,7 +4,7 @@ import { AddressFactory } from "@/web3/blockchain/providers/address.provider";
 import { OldMarketplaceCollectionBlackList } from "@/web3/blockchain/helpers/blacklist.helper";
 import { getCollectionListOfSingleCreator } from "@/lib/get-collection-list-of-single-creator";
 
-const CentherNativeCollection = {
+const ProductNativeCollection = {
   id: AddressFactory.getContractAddress(SmartContractName.NATIVE_COLLECTION),
   name: "CENTHER Native NFT",
   collection: AddressFactory.getContractAddress(
@@ -20,7 +20,7 @@ export interface IMyCollection {
 
 export const useGetMyCollections = (account: string | null | undefined) => {
   const [collections, setCollections] = useState<IMyCollection[]>([
-    CentherNativeCollection,
+    ProductNativeCollection,
   ]);
 
   useEffect(() => {
@@ -31,7 +31,7 @@ export const useGetMyCollections = (account: string | null | undefined) => {
         skip: 0,
       }).then((result) => {
         setCollections(
-          [CentherNativeCollection]
+          [ProductNativeCollection]
             .concat(
               result.map((item) => ({
                 id: item.id,

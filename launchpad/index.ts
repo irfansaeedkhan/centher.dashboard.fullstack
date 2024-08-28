@@ -1,15 +1,15 @@
 import { IApolloProvider } from "@/live/types/apollo.provider";
 import { QueryNames } from "./enum/query.name.enum";
 import { getConnection } from "./lib/connection";
-import { ICentherLaunchpadConfig } from "./types/config.interface";
+import { IProductLaunchpadConfig } from "./types/config.interface";
 import { OptionalType } from "./types/general";
 import { QueryFactory } from "./lib/query.factory";
 
-export class CentherLaunchpad {
+export class ProductLaunchpad {
   private _connection: IApolloProvider = null;
-  private _config: OptionalType<ICentherLaunchpadConfig> = null;
+  private _config: OptionalType<IProductLaunchpadConfig> = null;
 
-  constructor(options?: ICentherLaunchpadConfig) {
+  constructor(options?: IProductLaunchpadConfig) {
     this.initConnection(options?.subgraphUrl as string);
     this._config = options;
   }

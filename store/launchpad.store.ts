@@ -1,21 +1,21 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
-import { CentherLaunchpad } from "@/launchpad";
+import { ProductLaunchpad } from "@/launchpad";
 import { OptionalType } from "@/staking/types";
 
-export interface CentherLaunchpadStore {
-  sdk: OptionalType<CentherLaunchpad>;
-  setSdk: (instance: CentherLaunchpad) => void;
+export interface ProductLaunchpadStore {
+  sdk: OptionalType<ProductLaunchpad>;
+  setSdk: (instance: ProductLaunchpad) => void;
 }
 
-export const useCentherLaunchpad = create<CentherLaunchpadStore>()(
+export const useProductLaunchpad = create<ProductLaunchpadStore>()(
   devtools(
     (set) => ({
       sdk: null,
-      setSdk: (sdk: CentherLaunchpad) => set({ sdk }),
+      setSdk: (sdk: ProductLaunchpad) => set({ sdk }),
     }),
     {
-      name: "CentherLaunchpadStore",
+      name: "ProductLaunchpadStore",
       enabled: process.env.NEXT_PUBLIC_APP_ENV !== "production",
     }
   )

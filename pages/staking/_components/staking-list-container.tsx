@@ -5,7 +5,7 @@ import { AppRoutes } from "@/constants/app.routes";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
 import { BuyCitizenshipModal } from "@/components/modal/buy-citizenship-modal";
 import useUser from "@/hooks/use.user";
-import { CentherStaking } from "@/staking";
+import { ProductStaking } from "@/staking";
 import { OptionalType } from "@/staking/types";
 import { ListCardDataOBj } from "./list-card-data";
 import GridLayoutCard from "./list-card";
@@ -26,7 +26,7 @@ interface ComponentProp {
   pools: ListCardDataOBj[];
   fetchTime: number;
   coins: Array<CoinDetails | undefined>;
-  sdk: OptionalType<CentherStaking>;
+  sdk: OptionalType<ProductStaking>;
 }
 
 const StakingListContainer: FC<ComponentProp> = ({ pools, coins, sdk }) => {
