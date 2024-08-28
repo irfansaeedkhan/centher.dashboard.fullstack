@@ -1,17 +1,17 @@
 import { useEffect } from "react";
-import { useCentherStaking } from "@/store/staking.store";
-import { CentherStaking } from "@/staking";
+import { useProductStaking } from "@/store/staking.store";
+import { ProductStaking } from "@/staking";
 import { config } from "@/staking/config";
 
 export const useStaking = () => {
-  const { sdk, setSdk } = useCentherStaking((state) => ({
+  const { sdk, setSdk } = useProductStaking((state) => ({
     sdk: state.sdk,
     setSdk: state.setSdk,
   }));
 
   useEffect(() => {
     if (!sdk && setSdk) {
-      setSdk(new CentherStaking({ ...config }));
+      setSdk(new ProductStaking({ ...config }));
     }
   }, [sdk, setSdk]);
 

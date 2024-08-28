@@ -6,7 +6,7 @@ import { copyText } from "@/utils/copy.text";
 import Button from "@/components/button";
 import { sliceAccountAddress } from "@/utils/user.helpers";
 
-export const BuyCentherWrapper = () => {
+export const BuyProductWrapper = () => {
   const router = useRouter();
   const token_address = router.query.token_address?.toString();
   if (!token_address) return null;

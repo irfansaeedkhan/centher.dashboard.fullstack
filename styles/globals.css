@@ -556,10 +556,10 @@
     border-image-source: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
   }
 
-  .centher-social-button:hover span {
+  .product-social-button:hover span {
     color: white;
   }
-  .centher-social-button:hover svg g path {
+  .product-social-button:hover svg g path {
     fill: #ffffff;
   }
 

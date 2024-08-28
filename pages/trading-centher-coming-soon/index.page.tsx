@@ -6,7 +6,7 @@ import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { AppRoutes } from "@/constants/app.routes";
 import Button from "@/components/button";
 
-const TradingCentherComingSoon: NextPageWithLayout = () => {
+const TradingProductComingSoon: NextPageWithLayout = () => {
   return (
     <div className="flex min-h-[calc(100vh-60px-64px)] w-full items-center">
       <div className="relative flex h-full w-full items-center justify-center bg-[url('/images/comingsoon.png')] bg-top bg-no-repeat">
@@ -63,7 +63,7 @@ const TradingCentherComingSoon: NextPageWithLayout = () => {
   );
 };
 
-TradingCentherComingSoon.getLayout = (page) => {
+TradingProductComingSoon.getLayout = (page) => {
   return (
     <AllPagesWrapper pageTitle="Trading 369x Coming Soon">
       {page}
@@ -71,4 +71,4 @@ TradingCentherComingSoon.getLayout = (page) => {
   );
 };
 
-export default TradingCentherComingSoon;
+export default TradingProductComingSoon;

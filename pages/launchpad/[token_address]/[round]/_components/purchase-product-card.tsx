@@ -21,7 +21,7 @@ interface Props {
   connectedAddress: string | undefined | null;
 }
 
-export const PurchaseCentherCard: React.FC<Props> = ({
+export const PurchaseProductCard: React.FC<Props> = ({
   roundInfo,
   currentUserAddress,
   round_number,

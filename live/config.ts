@@ -1,7 +1,7 @@
 import { customLog } from "@/utils/custom.log";
-import { ICentherLiveOptions } from "./types/centher.live.options";
+import { IProductLiveOptions } from "./types/product.live.options";
 
-export const centherLiveoptions: ICentherLiveOptions = {
+export const productLiveoptions: IProductLiveOptions = {
   ackInterval: 10000,
   url: process.env.NEXT_PUBLIC_HASURA_URL
     ? process.env.NEXT_PUBLIC_HASURA_URL

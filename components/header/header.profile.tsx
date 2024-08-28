@@ -21,7 +21,7 @@ import {
   PopupUserIcon,
 } from "@/assets/svgs";
 import { BlockchainConfig } from "@/web3/blockchain/config";
-import { useCentherLive } from "@/hooks/chat";
+import { useProductLive } from "@/hooks/chat";
 import Button from "@/components/button";
 import { WalletEnum, useWallet } from "@/web3/hooks/use.wallet";
 
@@ -41,7 +41,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const { user: loggedInUser } = useUser();
-  const { unreadNotifications, unreadConversations } = useCentherLive();
+  const { unreadNotifications, unreadConversations } = useProductLive();
   const { connectedAddress, disconnectWallet, getWalletType, openWallet } =
     useWallet();
   const wallet_type = getWalletType();

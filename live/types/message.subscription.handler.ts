@@ -1,6 +1,6 @@
-import { CentherLive } from "..";
+import { ProductLive } from "..";
 
 export type IMessageSubscriptionHander = (
-  adapter: CentherLive,
+  adapter: ProductLive,
   args: any
 ) => void;

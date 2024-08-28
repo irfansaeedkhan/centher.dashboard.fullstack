@@ -1,6 +1,6 @@
 import { EventHandler } from "./event.handler";
 
-export interface ICentherLiveOptions {
+export interface IProductLiveOptions {
   ackInterval: number;
   url: string;
   eventHandlers: EventHandler;

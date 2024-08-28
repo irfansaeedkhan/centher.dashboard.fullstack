@@ -1,23 +1,23 @@
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/router";
-import { CentherLive } from "@/live";
-import { centherLiveoptions } from "@/live/config";
+import { ProductLive } from "@/live";
+import { productLiveoptions } from "@/live/config";
 import { IConversation } from "@/live/types";
-import { ICentherLiveOptions } from "@/live/types/centher.live.options";
+import { IProductLiveOptions } from "@/live/types/product.live.options";
 import { eqAddress } from "@/live/utils/address.utils";
 import {
-  useCentherLiveStore,
+  useProductLiveStore,
   useConversationsStore,
-} from "@/store/centher.live";
+} from "@/store/product.live";
 import { getAuthTokens } from "@/lib/auth";
 import { customLog } from "@/utils/custom.log";
 import useUser from "../use.user";
 
-export const useCentherLive = () => {
+export const useProductLive = () => {
   const { user } = useUser();
   const router = useRouter();
-  const { adapter, setAdapter } = useCentherLiveStore((state) => ({
+  const { adapter, setAdapter } = useProductLiveStore((state) => ({
     adapter: state.adapter,
     setAdapter: state.setAdapter,
   }));
@@ -38,7 +38,7 @@ export const useCentherLive = () => {
 
   const conversationSubscriptionHander = useCallback(
     async (
-      adapter: CentherLive,
+      adapter: ProductLive,
       updatedConversations: IConversation[],
       account: string
     ) => {
@@ -118,15 +118,15 @@ export const useCentherLive = () => {
 
   useEffect(() => {
     const subToConversations = async (
-      adapter: CentherLive,
-      handler: (sdk: CentherLive, args: any, account: string) => void
+      adapter: ProductLive,
+      handler: (sdk: ProductLive, args: any, account: string) => void
     ) => {
       await adapter.subToConversations(adapter, handler);
     };
 
     if (user && !adapter && token) {
-      const config: ICentherLiveOptions = {
-        ...centherLiveoptions,
+      const config: IProductLiveOptions = {
+        ...productLiveoptions,
         userAddress: user._id,
         userToken: token,
         eventHandlers: {
@@ -135,7 +135,7 @@ export const useCentherLive = () => {
         },
       };
 
-      const sdkInstance = new CentherLive(config);
+      const sdkInstance = new ProductLive(config);
       setAdapter(sdkInstance);
       setConversationLoading(true);
       subToConversations(sdkInstance, conversationSubscriptionHander).catch(

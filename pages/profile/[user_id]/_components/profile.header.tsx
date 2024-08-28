@@ -40,7 +40,7 @@ import { copyText } from "@/utils/copy.text";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 import cn from "@/utils/cn";
 import { BackButton } from "@/components/button/back-button";
-import { useCentherLive } from "@/hooks/chat";
+import { useProductLive } from "@/hooks/chat";
 import { AppRoutes } from "@/constants/app.routes";
 import { XLogo, ChatProfile, EyeOffFollow } from "@/assets/svgs";
 import FollowedComponent from "../community/_components/followed.component";
@@ -69,7 +69,7 @@ const ProfileHeader: React.FC<Props> = ({
   loggedInUser,
 }) => {
   const router = useRouter();
-  const { adapter } = useCentherLive();
+  const { adapter } = useProductLive();
   const profileCardDetails = useGetProfileCardDetails(user);
   const { incrementFollowersCount, decrementFollowersCount } =
     useProfileCardStore((state) => ({
