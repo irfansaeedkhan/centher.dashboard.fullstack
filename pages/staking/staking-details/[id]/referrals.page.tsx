@@ -103,12 +103,7 @@ const StakingReferrals: NextPageWithLayout = () => {
           e.claimableReward &&
           +e.claimableReward == 0
         ) {
-          console.log(
-            "create future reward:",
-            e.user,
-            e.nextTime,
-            e.claimableReward
-          );
+         
           e.claimableReward = calculateNextRefReward(
             mappedPool,
             e.stakedAmount,
@@ -248,7 +243,7 @@ const StakingReferrals: NextPageWithLayout = () => {
                 Total Claimable Rewards
               </p>
               <p className="mt-[6px] font-semibold text-white">
-                {Number(formatEther(BigInt(totalClaimable))).toFixed(3)} {}
+                {(+totalClaimable / 10**18).toFixed(3)} {}
                 {
                   coinsDetails.find((e) =>
                     eqAddress(
