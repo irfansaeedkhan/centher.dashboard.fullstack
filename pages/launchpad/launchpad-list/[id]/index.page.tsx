@@ -37,7 +37,6 @@ const LaunchpadListDetails: NextPageWithLayout = () => {
       }
 
       const result: PresaleDataType = await sdk.getPresale(id.toString());
-
       const metaData = await axios.get(formatIPFSUrl(result.metadata));
       setLaunchpadData(result);
 
