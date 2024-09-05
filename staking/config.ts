@@ -1,6 +1,6 @@
-import { ICentherStakingConfig } from "./types/config.interface";
+import { IProductStakingConfig } from "./types/config.interface";
 
-export const config: ICentherStakingConfig = {
+export const config: IProductStakingConfig = {
   subgraphUrl:
     process.env.NEXT_PUBLIC_APP_ENV === "production"
       ? "https://api.studio.thegraph.com/query/82021/centher-stacking/version/latest"

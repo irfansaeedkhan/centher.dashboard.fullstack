@@ -2,8 +2,8 @@ import React, { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useOnClickOutside } from "usehooks-ts";
-import { useCentherLive } from "@/hooks/chat";
-import { CentherLive } from "@/live";
+import { useProductLive } from "@/hooks/chat";
+import { ProductLive } from "@/live";
 import { eqAddress } from "@/live/utils/address.utils";
 import { findOnlineUsers } from "@/live/utils/tools";
 import {
@@ -25,7 +25,7 @@ const defaultChannelImage = "/images/chat-profile.png";
 const SingleChatHeader: React.FC<{ users: UsersDetails[] }> = ({ users }) => {
   const router = useRouter();
   const { user } = useUser();
-  const { adapter } = useCentherLive();
+  const { adapter } = useProductLive();
   const [header, setHeader] = useState<any>(null);
   const [status, setStatus] = useState<string>("");
   const [isPinned, setIsPinned] = useState<boolean>(false);
@@ -94,7 +94,7 @@ const SingleChatHeader: React.FC<{ users: UsersDetails[] }> = ({ users }) => {
 
   useEffect(() => {
     const subToConversation = async (
-      connection: CentherLive,
+      connection: ProductLive,
       conversationId: string
     ) => {
       await connection?.subToConversationDetails(

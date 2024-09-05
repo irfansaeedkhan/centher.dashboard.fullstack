@@ -5,10 +5,10 @@ import { BsEmojiSmile } from "react-icons/bs";
 import useSound from "use-sound";
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
-import { CentherLive } from "@/live";
+import { ProductLive } from "@/live";
 import { MessageTypeEnum } from "@/live/enums/message.type";
 import { findUnSeenMessages, mapMessages } from "@/live/utils/tools";
-import { useCentherLive } from "@/hooks/chat";
+import { useProductLive } from "@/hooks/chat";
 import { getUserByIdFromDB } from "@/lib/get-user-by-id";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { User } from "@/models/user";
@@ -38,7 +38,7 @@ const SingleChat: NextPageWithLayout = () => {
   const { user } = useUser();
   const emojiPickerRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { adapter } = useCentherLive();
+  const { adapter } = useProductLive();
   const [messages, setMessages] = useState<any[]>([]);
   const [newMessage, setNewMessage] = useState<string>("");
   const [usersDetails, setUsersDetails] = useState<any[]>([]);
@@ -61,7 +61,7 @@ const SingleChat: NextPageWithLayout = () => {
   }, [chatId]);
 
   const messageSubscriptionHandler = useCallback(
-    async (connection: CentherLive, args: any) => {
+    async (connection: ProductLive, args: any) => {
       if (!args) {
         router.push("/chat");
       }
@@ -94,7 +94,7 @@ const SingleChat: NextPageWithLayout = () => {
   );
 
   useEffect(() => {
-    const updateTyping = async (adapter: CentherLive, chatId: string) => {
+    const updateTyping = async (adapter: ProductLive, chatId: string) => {
       adapter?.updateIsTyping(chatId, typing);
     };
 
@@ -107,7 +107,7 @@ const SingleChat: NextPageWithLayout = () => {
 
   useEffect(() => {
     const getUsers = async (
-      connection: CentherLive,
+      connection: ProductLive,
       conversationId: string
     ) => {
       const usersIds = await connection?.getConversationUsers(conversationId);
@@ -140,7 +140,7 @@ const SingleChat: NextPageWithLayout = () => {
 
   useEffect(() => {
     const subToMessages = async (
-      connection: CentherLive,
+      connection: ProductLive,
       conversationId: string,
       itemsInPage: number
     ) => {

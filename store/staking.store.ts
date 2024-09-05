@@ -1,37 +1,37 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
-import { CentherStaking } from "@/staking";
+import { ProductStaking } from "@/staking";
 import { OptionalType } from "@/staking/types";
 
-export interface CentherStakingStore {
-  sdk: OptionalType<CentherStaking>;
-  setSdk: (instance: CentherStaking) => void;
+export interface ProductStakingStore {
+  sdk: OptionalType<ProductStaking>;
+  setSdk: (instance: ProductStaking) => void;
 }
 
-// export interface CentherStakingPoolsStore {
+// export interface ProductStakingPoolsStore {
 //   pools: OptionalType<StakingProject[]>;
 //   setPools: (pools: OptionalType<StakingProject[]>) => void;
 // }
 
-export const useCentherStaking = create<CentherStakingStore>()(
+export const useProductStaking = create<ProductStakingStore>()(
   devtools(
     (set) => ({
       sdk: null,
-      setSdk: (sdk: CentherStaking) => set({ sdk }),
+      setSdk: (sdk: ProductStaking) => set({ sdk }),
     }),
     {
-      name: "CentherStakingStore",
+      name: "ProductStakingStore",
       enabled: process.env.NEXT_PUBLIC_APP_ENV !== "production",
     }
   )
 );
 
-// export const useCentherStakingPools = create<CentherStakingPoolsStore>()(
+// export const useProductStakingPools = create<ProductStakingPoolsStore>()(
 //   devtools(
 //     (set) => ({
 //       pools: null,
 //       setPools: (pools: OptionalType<StakingProject[]>) => set({ pools }),
 //     }),
-//     { name: "CentherStakingStore" }
+//     { name: "ProductStakingStore" }
 //   )
 // );

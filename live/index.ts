@@ -1,7 +1,7 @@
 import { customLog } from "@/utils/custom.log";
 import { getConnection } from "./lib/connection";
 import { IApolloProvider } from "./types/apollo.provider";
-import { ICentherLiveOptions } from "./types/centher.live.options";
+import { IProductLiveOptions } from "./types/product.live.options";
 import { IConversation } from "./types/conversation";
 import { IGetMessageFilters } from "./types/get.messages.filter";
 import { IGetConversationsFilter } from "./types/gte.conversation.filters";
@@ -17,10 +17,10 @@ import { NotificationHandler } from "./notification";
 import { AvailabilityHandler } from "./availability";
 import { ChatHandler } from "./chat";
 
-export class CentherLive {
+export class ProductLive {
   private _connection: IApolloProvider = null;
   private _address: string = "";
-  constructor(options: ICentherLiveOptions) {
+  constructor(options: IProductLiveOptions) {
     try {
       this._address = options.userAddress.toLowerCase();
       this.initConnection(options.url, options.userToken);
@@ -40,7 +40,7 @@ export class CentherLive {
     }
   }
 
-  async registerListeners(options: ICentherLiveOptions): Promise<void> {
+  async registerListeners(options: IProductLiveOptions): Promise<void> {
     NotificationHandler.listenForNewNotification(
       this._connection,
       this._address,
@@ -63,7 +63,7 @@ export class CentherLive {
   }
 
   async subToConversations(
-    sdk: CentherLive,
+    sdk: ProductLive,
     handler: ConversationActionHandler,
     filters?: IGetConversactionsActions
   ): Promise<void> {
@@ -81,7 +81,7 @@ export class CentherLive {
   async subToMessages(
     filters: IGetMessageFilters,
     handler: IMessageSubscriptionHander,
-    sdk: CentherLive
+    sdk: ProductLive
   ): Promise<void> {
     return ChatHandler.subToMessages(this._connection, filters, handler, sdk);
   }

@@ -16,7 +16,11 @@ const Faqs: NextPageWithLayout = () => {
       </h5>
       <div className="tracking-[1.4px] text-white">
         You haven&apos;t found what you were searching for? visit{" "}
-        <Link className="text-gradient" href={"#"}>
+        <Link
+          className="text-gradient"
+          href={"https://369x.io/academy"}
+          target="_blank"
+        >
           369x Academy
         </Link>{" "}
         to find out more about Staking and much else!

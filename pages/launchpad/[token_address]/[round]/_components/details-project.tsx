@@ -83,7 +83,7 @@ const DetailsProject = () => {
               href="https://dapp.369x.io/profile/0xa638d0182d075278a9ea6480c1430c6e7fb490c9"
               target="_blank"
               rel="noreferrer noopener"
-              className="centher-social-button flex select-none items-center gap-2 rounded-[11px] bg-elevation-1 px-[10px] py-[6px] text-xs font-medium text-gray-shade-14"
+              className="product-social-button flex select-none items-center gap-2 rounded-[11px] bg-elevation-1 px-[10px] py-[6px] text-xs font-medium text-gray-shade-14"
             >
               <span className="h-5 w-5 flex-shrink-0">
                 <X369XIcon />

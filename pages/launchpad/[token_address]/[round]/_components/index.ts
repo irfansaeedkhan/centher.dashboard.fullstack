@@ -1,6 +1,6 @@
 export { RoundStats } from "./round-stats";
-export { BuyCentherWrapper } from "./buy-centher-wrapper";
-export { PurchaseCentherCard } from "./purchase-centher-card";
+export { BuyProductWrapper } from "./buy-product-wrapper";
+export { PurchaseProductCard } from "./purchase-product-card";
 export { PresaleCard } from "./presale-card";
 
 import { Reward } from "@/lib/get-pre-bookings-stats/types";

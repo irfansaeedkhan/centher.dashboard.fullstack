@@ -6,7 +6,7 @@ import clsx from "clsx";
 import { getUserByIdFromDB } from "@/lib/get-user-by-id";
 import Button from "@/components/button";
 import { ChatFriendListSkeleton } from "@/components/loading.skeletons/chat.skeletons";
-import { useCentherLive } from "@/hooks/chat";
+import { useProductLive } from "@/hooks/chat";
 import { eqAddress } from "@/live/utils/address.utils";
 import { IConversation } from "@/live/types";
 import { axiosApi369x } from "@/utils/axios";
@@ -27,7 +27,7 @@ export interface UsersDetails {
 
 const ChatSidebar = () => {
   const router = useRouter();
-  const { conversations, conversationLoading, adapter } = useCentherLive();
+  const { conversations, conversationLoading, adapter } = useProductLive();
   const [filteredConversations, setFilteredConversations] =
     useState<IConversation[]>(conversations);
   const [loading, setLoading] = useState<boolean>(false);
