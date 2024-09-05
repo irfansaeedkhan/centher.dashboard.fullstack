@@ -51,18 +51,29 @@ export class ProductLaunchpad {
     });
     if (result?.data.presales) {
       const finalResult = result?.data.presales.map((presale: any) => {
-        return {
+        const finalResult0 = {
           ...presale,
-          tokenPurchaseWithBNB: {
-            ...presale.tokenPurchaseWithBNB,
-            amount: presale.tokenPurchaseWithBNB.bnbAmount,
-          },
-          tokenPurchaseWithBUSD: {
-            ...presale.tokenPurchaseWithBUSD,
-            amount: presale.tokenPurchaseWithBUSD.busdAmount,
-          },
         };
+
+        finalResult0.tokenPurchaseWithBNB =
+          finalResult0.tokenPurchaseWithBNB.map((bnb: any) => {
+            return {
+              ...bnb,
+              amount: bnb.bnbAmount,
+            };
+          });
+
+        finalResult0.tokenPurchaseWithBUSD =
+          finalResult0.tokenPurchaseWithBUSD.map((busd: any) => {
+            return {
+              ...busd,
+              amount: busd.busdAmount,
+            };
+          });
+
+        return finalResult0;
       });
+
       return finalResult[0];
     }
     return result?.data.presales[0];
