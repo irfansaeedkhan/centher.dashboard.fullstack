@@ -496,10 +496,7 @@ export class BlockchainRead {
           user,
           currentRef
         );
-      console.log("get ref details for user :", user);
-      console.log("claimable reward:", result.claimableReward?.toString());
-      console.log("Next time:", result.nextTimeToClaim?.toString());
-      console.log("------------------------------------------");
+    
       return {
         nextTime: result.nextTimeToClaim?.toString(),
         claimableReward: result.claimableReward?.toString(),
