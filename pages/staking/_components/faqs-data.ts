@@ -2,8 +2,7 @@ export const faqsData: Faq[] = [
   {
     id: 1,
     question: "How to stake your Tokens?",
-    answer:
-      "On 369x, navigate to Staking page and choose the Staking Project you want to invest in, click on it to open the main project page and insert the amount of token you want to stake. All the details about your rewards and lock period can be found on the project details page. You can only stake tokens you have already purchased or received and have in your wallet.",
+    answer: `On ${process.env.NEXT_PUBLIC_BRAND_NAME}, navigate to Staking page and choose the Staking Project you want to invest in, click on it to open the main project page and insert the amount of token you want to stake. All the details about your rewards and lock period can be found on the project details page. You can only stake tokens you have already purchased or received and have in your wallet.`,
   },
   {
     id: 2,

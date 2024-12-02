@@ -16,8 +16,7 @@ const SuccessModalContent: React.FC<{ message?: string; title?: string }> = ({
       <p className="text-center text-sm font-normal leading-6 text-gray-shade-2">
         {message?.length
           ? message
-          : `Congratulations! you have successfully create your Staking Project on
-        369x platform.`}
+          : `Congratulations! you have successfully create your Staking Project on ${process.env.NEXT_PUBLIC_BRAND_NAME} platform.`}
       </p>
     </div>
   );

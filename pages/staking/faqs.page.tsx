@@ -21,7 +21,7 @@ const Faqs: NextPageWithLayout = () => {
           href={"https://369x.io/academy"}
           target="_blank"
         >
-          369x Academy
+          {process.env.NEXT_PUBLIC_BRAND_NAME} Academy
         </Link>{" "}
         to find out more about Staking and much else!
       </div>

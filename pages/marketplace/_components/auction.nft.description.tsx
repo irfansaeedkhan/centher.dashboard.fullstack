@@ -195,7 +195,7 @@ export const AuctionNftDescription: React.FC<Props> = ({ nft, refetchNFT }) => {
               <span className="word-break text-white">
                 {nft.ipfs_metadata.name}{" "}
               </span>{" "}
-              NFT on <b> 369x </b> platform.
+              NFT on <b> {process.env.NEXT_PUBLIC_BRAND_NAME} </b> platform.
             </p>
           }
           txStatus={txStatus}

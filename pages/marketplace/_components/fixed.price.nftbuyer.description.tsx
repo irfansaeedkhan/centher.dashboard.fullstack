@@ -199,7 +199,7 @@ export const FixedPriceNFTBuyerDescription: React.FC<Props> = ({
               <span className="word-break text-white">
                 {nft.ipfs_metadata.name}
               </span>{" "}
-              NFT on <b>369x</b>
+              NFT on <b>{process.env.NEXT_PUBLIC_BRAND_NAME}</b>
               platform.
             </p>
           }

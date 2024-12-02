@@ -26,7 +26,7 @@ Login.getLayout = (page) => {
           <Link href={AppRoutes.home}>
             <Image
               src="/images/logo.png"
-              alt="369x Logo"
+              alt="Flux Logo"
               width={75}
               height={39}
               className="w-18"
@@ -54,6 +54,5 @@ export default Login;
 
 const signupLeftData = {
   title: "Connect wallet",
-  content:
-    "Log into your account to take advantage of the whole 369x SocialFi world",
+  content: `Log into your account to take advantage of the whole ${process.env.NEXT_PUBLIC_BRAND_NAME} SocialFi world`,
 };

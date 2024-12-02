@@ -6,7 +6,7 @@ const ScriptTags = () => {
   return (
     <>
       <Head>
-        <title>369x.io</title>
+        <title>{process.env.NEXT_PUBLIC_BRAND_DOMAIN}</title>
 
         <meta httpEquiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
@@ -17,21 +17,30 @@ const ScriptTags = () => {
 
         <meta
           name="description"
-          content="369x.io is worlds best and reliable Web3 token and NFT Marketplace"
+          content={`${process.env.NEXT_PUBLIC_BRAND_DOMAIN} is worlds best and reliable Web3 token and NFT Marketplace`}
         />
-        <meta name="keywords" content="369x,369x.io,login,sign up" />
-        <meta name="author" content="369x.io" />
+        <meta
+          name="keywords"
+          content={`${process.env.NEXT_PUBLIC_BRAND_NAME},${process.env.NEXT_PUBLIC_BRAND_DOMAIN},login,sign up`}
+        />
+        <meta name="author" content={process.env.NEXT_PUBLIC_BRAND_DOMAIN} />
         <meta name="robots" content="all,follow" />
         <meta name="google" content="notranslate" />
 
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="369x.io" />
+        <meta
+          property="og:title"
+          content={process.env.NEXT_PUBLIC_BRAND_DOMAIN}
+        />
         <meta
           property="og:description"
-          content="369x.io is worlds best and reliable Web3 token and NFT Marketplace"
+          content={`${process.env.NEXT_PUBLIC_BRAND_DOMAIN} is worlds best and reliable Web3 token and NFT Marketplace`}
         />
         <meta property="og:url" content="https://dapp.369x.io/" />
-        <meta property="og:site_name" content="369x.io" />
+        <meta
+          property="og:site_name"
+          content={process.env.NEXT_PUBLIC_BRAND_DOMAIN}
+        />
         <meta
           property="og:image"
           itemProp="image"
@@ -43,9 +52,12 @@ const ScriptTags = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta
           name="twitter:description"
-          content="369x.io is worlds best and reliable Web3 token and NFT Marketplace"
+          content={`${process.env.NEXT_PUBLIC_BRAND_DOMAIN} is worlds best and reliable Web3 token and NFT Marketplace`}
         />
-        <meta name="twitter:title" content="369x.io" />
+        <meta
+          name="twitter:title"
+          content={process.env.NEXT_PUBLIC_BRAND_DOMAIN}
+        />
         <meta name="twitter:image" content="/images/369x.logo.bg.550.420.png" />
 
         {/* TODO: Shivam - Need google site verification content */}

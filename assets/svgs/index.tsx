@@ -199,7 +199,7 @@ export const X369xIcon: React.FC<IconProps> = (props) => {
     <img
       className={props.className}
       src={X369xIconImg.src}
-      alt="369x Icon"
+      alt="Flux Icon"
       sizes="256px"
       width={40}
       height={40}
@@ -212,7 +212,7 @@ export const X369xIconBG: React.FC<IconProps> = (props) => {
     <img
       className={props.className}
       src={X369xIconImgBg.src}
-      alt="369x Icon BG"
+      alt="Flux Icon BG"
       sizes="256px"
       width={40}
       height={40}

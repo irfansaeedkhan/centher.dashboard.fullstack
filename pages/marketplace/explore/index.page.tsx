@@ -15,7 +15,13 @@ const ExplorePage: NextPageWithLayout = () => {
 };
 
 ExplorePage.getLayout = (page) => {
-  return <AllPagesWrapper pageTitle="Explore - 369x">{page}</AllPagesWrapper>;
+  return (
+    <AllPagesWrapper
+      pageTitle={`Explore - ${process.env.NEXT_PUBLIC_BRAND_NAME}`}
+    >
+      {page}
+    </AllPagesWrapper>
+  );
 };
 
 export default ExplorePage;
