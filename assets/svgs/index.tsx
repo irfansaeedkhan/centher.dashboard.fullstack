@@ -193,6 +193,8 @@ export { default as NewCalendarIcon } from "./new-calendar-icon.svg";
 export { default as CrownIcon } from "./crown-icon.svg";
 export { default as GiftIcon } from "./gift-icon.svg";
 export { default as X369XIcon } from "./369x.icon.svg";
+export { default as VoispaceLiveIcon } from "./voispace.live.icon.svg";
+export { default as VoispaceGradientRing } from "./voispace.gradient.ring.svg";
 
 export const X369xIcon: React.FC<IconProps> = (props) => {
   return (
