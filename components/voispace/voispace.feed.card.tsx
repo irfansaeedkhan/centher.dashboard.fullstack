@@ -2,7 +2,7 @@ import React from "react";
 import clsx from "clsx";
 import Image from "next/image";
 import { VoispaceLiveIcon } from "@/assets/svgs";
-import { rooms } from "../../dummy.data/rooms.list";
+import { rooms } from "./dummy.data/rooms.list";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {}
 
