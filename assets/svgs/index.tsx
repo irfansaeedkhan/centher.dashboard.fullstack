@@ -195,6 +195,9 @@ export { default as GiftIcon } from "./gift-icon.svg";
 export { default as X369XIcon } from "./369x.icon.svg";
 export { default as VoispaceLiveIcon } from "./voispace.live.icon.svg";
 export { default as VoispaceGradientRing } from "./voispace.gradient.ring.svg";
+export { default as MicIcon } from "./mic.svg";
+export { default as VideoIcon2 } from "./video.svg";
+export { default as AmaLiveProfileIcon } from "./ama.live.svg";
 
 export const X369xIcon: React.FC<IconProps> = (props) => {
   return (

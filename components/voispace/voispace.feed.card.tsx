@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import clsx from "clsx";
 import Image from "next/image";
 import { VoispaceLiveIcon } from "@/assets/svgs";
 import { rooms } from "./dummy.data/rooms.list";
+import Button from "../button";
+import { VoispaceCreateChannelModal } from "./host/voispace.create.channel.modal";
+import { VoispaceExploreChannelsModal } from "./user/voispace.explore.channels.modal";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -10,6 +13,9 @@ export const VoiceSpaceFeedCard: React.FC<Props> = ({
   className,
   ...props
 }) => {
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isMoreModalOpen, setIsMoreModalOpen] = useState(false);
+
   return (
     <>
       <div
@@ -21,18 +27,20 @@ export const VoiceSpaceFeedCard: React.FC<Props> = ({
             <h5 className={`text-gradient-1 text-base font-semibold`}>
               VoiceSpace
             </h5>
-            <button
-              className={`gradient-borders-2 h-8 w-16 rounded-10px p-[1px] text-xs font-medium`}
-            >
-              <span className={`text-gradient-1`}>New</span>
-            </button>
+            <Button
+              title={"New"}
+              variant="primary"
+              onClick={() => setIsCreateModalOpen(true)}
+              borderRounded="10px"
+              className={` text-xs font-medium`}
+            />
           </div>
           <div
             className={`flex cursor-pointer items-center justify-center border-t-2 border-gray-shade-3 text-center`}
           ></div>
           <div className="mx-auto grid grid-cols-4 gap-4 px-4 py-4">
             {rooms.map((room, index) => (
-              <div className="relative" key={index}>
+              <div className="relative cursor-pointer" key={index}>
                 <Image
                   src="/images/voispace.gradient.ring.png"
                   alt="voispace"
@@ -56,7 +64,10 @@ export const VoiceSpaceFeedCard: React.FC<Props> = ({
               </div>
             ))}
 
-            <div className="relative">
+            <button
+              className="relative cursor-pointer"
+              onClick={() => setIsMoreModalOpen(true)}
+            >
               <Image
                 src="/images/voispace.more.png"
                 alt="voispace"
@@ -66,10 +77,22 @@ export const VoiceSpaceFeedCard: React.FC<Props> = ({
               <h6 className="max-w-[50px] py-1 text-center text-xs text-white">
                 More
               </h6>
-            </div>
+            </button>
           </div>
         </div>
       </div>
+
+      {isCreateModalOpen && (
+        <VoispaceCreateChannelModal
+          onClose={() => setIsCreateModalOpen(false)}
+        />
+      )}
+
+      {isMoreModalOpen && (
+        <VoispaceExploreChannelsModal
+          onClose={() => setIsMoreModalOpen(false)}
+        />
+      )}
     </>
   );
 };

@@ -182,7 +182,7 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
               `${AppRoutes.launchpad.launchpad_list.index}/${id}?list_type=launchpad_overview`
             );
           }}
-          className="gradient-borders-2 relative flex h-10 w-full cursor-pointer items-center justify-center !rounded-[10px] p-px"
+          className="gradient-borders-div relative flex h-10 w-full cursor-pointer items-center justify-center !rounded-[10px] p-px"
         >
           <span className="text-gradient-1 py-2 font-medium">View</span>
         </div>
@@ -210,7 +210,7 @@ const countdownRenderer: CountdownRendererFn = ({
 const textActive = "text-sm font-semibold text-white";
 
 const gradientRoundMain =
-  "gradient-borders-2 relative flex h-[22px] w-8 cursor-pointer items-center justify-center rounded-3xl p-px";
+  "gradient-borders-div relative flex h-[22px] w-8 cursor-pointer items-center justify-center rounded-3xl p-px";
 const gradientRoundInner = "text-gradient-1 py-1 font-medium";
 const simpleRoundMain =
   "relative flex h-[22px] w-8 cursor-pointer items-center justify-center rounded-3xl border border-gray-shade-14 p-px";
