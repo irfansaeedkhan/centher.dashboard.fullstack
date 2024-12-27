@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import clsx from "clsx";
 import Image from "next/image";
 import { VoispaceLiveIcon } from "@/assets/svgs";
 import { rooms } from "./dummy.data/rooms.list";
+import Modal from "./shared/Modal.js";
+import HostMainView from "./host/Host";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -10,6 +12,8 @@ export const VoiceSpaceFeedCard: React.FC<Props> = ({
   className,
   ...props
 }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <>
       <div
@@ -22,10 +26,19 @@ export const VoiceSpaceFeedCard: React.FC<Props> = ({
               VoiceSpace
             </h5>
             <button
+              onClick={() => setIsModalOpen(true)}
+              data-modal-target="default-modal"
+              data-modal-toggle="default-modal"
               className={`gradient-borders-2 h-8 w-16 rounded-10px p-[1px] text-xs font-medium`}
             >
               <span className={`text-gradient-1`}>New</span>
             </button>
+
+            <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+              <div>
+                <HostMainView />
+              </div>
+            </Modal>
           </div>
           <div
             className={`flex cursor-pointer items-center justify-center border-t-2 border-gray-shade-3 text-center`}
