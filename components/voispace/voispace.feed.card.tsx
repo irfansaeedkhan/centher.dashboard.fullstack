@@ -6,6 +6,8 @@ import { rooms } from "./dummy.data/rooms.list";
 import Button from "../button";
 import { VoispaceCreateChannelModal } from "./host/voispace.create.channel.modal";
 import { VoispaceExploreChannelsModal } from "./user/voispace.explore.channels.modal";
+import Modal from "./shared/Modal.js";
+import HostMainView from "./host/Host";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -15,6 +17,7 @@ export const VoiceSpaceFeedCard: React.FC<Props> = ({
 }) => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isMoreModalOpen, setIsMoreModalOpen] = useState(false);
+  const [mainChannelChatBox, setMainChannelChatBox] = useState(false);
 
   return (
     <>
@@ -34,6 +37,23 @@ export const VoiceSpaceFeedCard: React.FC<Props> = ({
               borderRounded="10px"
               className={` text-xs font-medium`}
             />
+            {/* <button
+              onClick={() => setIsCreateModalOpen(true)}
+              data-modal-target="default-modal"
+              data-modal-toggle="default-modal"
+              className={`gradient-borders-2 h-8 w-16 rounded-10px p-[1px] text-xs font-medium`}
+            >
+              <span className={`text-gradient-1`}>New</span>
+            </button> */}
+
+            <Modal
+              isOpen={mainChannelChatBox}
+              onClose={() => setMainChannelChatBox(false)}
+            >
+              <div>
+                <HostMainView />
+              </div>
+            </Modal>
           </div>
           <div
             className={`flex cursor-pointer items-center justify-center border-t-2 border-gray-shade-3 text-center`}

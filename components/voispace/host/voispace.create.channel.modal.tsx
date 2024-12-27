@@ -12,7 +12,7 @@ import { MdOutlineExpandLess } from "react-icons/md";
 import Button from "@/components/button";
 import { SearchedPrivilegeCollection } from "../shared/search.privilege";
 import { RemovePrivilegeCollection } from "../shared/remove.privilege.collection";
-import { MicIcon, SearchIcon, VideoIcon2 } from "@/assets/svgs";
+import { MicIcon, MicIcon2, SearchIcon, VideoIcon2 } from "@/assets/svgs";
 
 export interface Room {
   roomType: "AMA" | "Live";
@@ -228,7 +228,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
                   )}
                 >
                   <span className="flex items-center  gap-2 py-2 text-sm text-[#A8ABBB]">
-                    <MicIcon /> Audio
+                    <MicIcon2 /> Audio
                   </span>
                 </div>
 
