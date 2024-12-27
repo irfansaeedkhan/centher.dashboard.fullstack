@@ -1,5 +1,5 @@
 import React from "react";
-import HostCardView from "../shared/profile";
+import ClientCardView from "../shared/profile";
 import { speakers } from "../dummy.data/speakers.list";
 import { ChatProfile, MicIcon, ShareWhiteIcon } from "@/assets/svgs";
 
@@ -29,7 +29,7 @@ const HostMainView: React.FC = () => {
             </div>
 
             <div>
-              <HostCardView
+              <ClientCardView
                 name="John Wedson"
                 imageURL="/images/john-wedson.png"
                 isApproved={true}
@@ -52,7 +52,7 @@ const HostMainView: React.FC = () => {
               {speakers.map((speaker: any, index) => {
                 return (
                   <div className="" key={index}>
-                    <HostCardView
+                    <ClientCardView
                       name={speaker.name}
                       imageURL={speaker.imageURL}
                       isApproved={speaker.isApproved}
