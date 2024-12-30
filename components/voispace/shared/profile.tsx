@@ -7,6 +7,8 @@ interface UserProfileCard {
   name: string;
   isApproved: boolean;
   isSpeaking: boolean;
+  position?: string;
+  className?: string;
 }
 
 const UserProfileCard: React.FC<UserProfileCard> = ({
@@ -14,9 +16,11 @@ const UserProfileCard: React.FC<UserProfileCard> = ({
   imageURL,
   name,
   isSpeaking,
+  position,
+  className = "w-[64px]",
 }) => {
   return (
-    <div className="flex w-[64px] flex-col gap-[8px]">
+    <div className={`flex flex-col gap-[8px] ${className}`}>
       <div className="relative">
         <Image
           className="rounded-full"
@@ -41,6 +45,12 @@ const UserProfileCard: React.FC<UserProfileCard> = ({
       <span className="text-center font-monto text-[14px] font-semibold">
         {name}
       </span>
+
+      {position && (
+        <span className="rounded-[1000px] bg-[#141416] p-[8px] text-center font-monto text-[12px] font-medium text-[#A8ABBB]">
+          {position}
+        </span>
+      )}
     </div>
   );
 };

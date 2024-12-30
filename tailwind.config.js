@@ -29,6 +29,7 @@ module.exports = {
     extend: {
       fontFamily: {
         monto: ["Montserrat Alternates", "san-serif"],
+        gravesend: ["Gravesend Sans Inline", "sans-serif"],
       },
       fontSize: {
         34: "2.125rem",

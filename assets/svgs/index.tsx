@@ -200,6 +200,8 @@ export { default as AmaLiveProfileIcon } from "./ama.live.svg";
 export { default as VipIcon } from "./vip.icon.svg";
 export { default as MicIcon } from "./mic.icon.svg";
 export { default as MicIcon2 } from "./mic.live.svg";
+export { default as BackButtonShiny } from "./back.button.svg";
+export { default as GrabIcon } from "./grab.icon.svg";
 
 export const X369xIcon: React.FC<IconProps> = (props) => {
   return (

@@ -34,7 +34,7 @@
     "@emoji-mart/data": "^1.1.2",
     "@emoji-mart/react": "^1.1.1",
     "@ethersproject/providers": "^5.7.2",
-    "@floating-ui/react": "^0.26.0",
+    "@floating-ui/react": "^0.27.2",
     "@hookform/resolvers": "^2.9.8",
     "@lexical/react": "^0.12.5",
     "@metamask/providers": "^14.0.2",
