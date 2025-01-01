@@ -1,15 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import HostModalHeader from "./partials/HostModalHeader";
 import {
-  SearchIcon,
   SendChatIcon,
   MicIcon,
   MicIcon2,
   VideoIcon2,
   EyeIcon,
 } from "@/assets/svgs";
-import { SearchResultWithType, search } from "@/lib/search";
-import InviteRow from "@/components/voispace/host/partials/InviteRow";
 import { users } from "@/components/voispace/dummy.data/users.list";
 import LiveMessage from "@/components/voispace/host/partials/LiveMessage";
 import DropdownButton from "@/components/voispace/host/ui/DropdownButton";
@@ -20,20 +17,8 @@ interface DynamicProps {
 }
 
 const LiveView: React.FC<DynamicProps> = ({ onClose, setComponentName }) => {
-  const [searchedValue, setSearchedValue] = useState("");
-
-  const filteredUsers = users.filter((user) => {
-    return user.name.toLowerCase().includes(searchedValue.toLowerCase());
-  });
-
   const leaveHandler = () => {
     alert("Leave");
-  };
-
-  const handleInvitePrivateUser = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setSearchedValue(event.target.value);
   };
 
   const handleSelect = (value: string) => {
