@@ -4,11 +4,13 @@ import Image from "next/image";
 import { VoispaceLiveIcon } from "@/assets/svgs";
 import { rooms } from "./dummy.data/rooms.list";
 import Button from "../button";
-import { VoispaceCreateChannelModal } from "./host/voispace.create.channel.modal";
+import {
+  Room,
+  roomType,
+  VoispaceCreateChannelModal,
+} from "./host/voispace.create.channel.modal";
 import { VoispaceExploreChannelsModal } from "./user/voispace.explore.channels.modal";
-import Modal from "./shared/Modal.js";
-
-import DynamicComponent from "./host/HostMainView";
+import UserMainView from "./user/UserMainView";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -18,7 +20,8 @@ export const VoiceSpaceFeedCard: React.FC<Props> = ({
 }) => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isMoreModalOpen, setIsMoreModalOpen] = useState(false);
-  const [mainChannelChatBox, setMainChannelChatBox] = useState(false);
+  const [isUserMainViewOpen, setIsUserMainViewOpen] = useState(false);
+  const [selectedRoom, setSelectedRoom] = useState<roomType | null>(null);
 
   return (
     <>
@@ -38,25 +41,20 @@ export const VoiceSpaceFeedCard: React.FC<Props> = ({
               borderRounded="10px"
               className={` text-xs font-medium`}
             />
-            <button
-              onClick={() => setMainChannelChatBox(true)}
-              data-modal-target="default-modal"
-              data-modal-toggle="default-modal"
-              className={`gradient-borders-2 h-8 w-16 rounded-10px p-[1px] text-xs font-medium`}
-            >
-              <span className={`text-gradient-1`}>New</span>
-            </button>
-
-            {mainChannelChatBox && (
-              <DynamicComponent onClose={() => setMainChannelChatBox(false)} />
-            )}
           </div>
           <div
             className={`flex cursor-pointer items-center justify-center border-t-2 border-gray-shade-3 text-center`}
           ></div>
           <div className="mx-auto grid grid-cols-4 gap-4 px-4 py-4">
             {rooms.map((room, index) => (
-              <div className="relative cursor-pointer" key={index}>
+              <div
+                className="relative cursor-pointer"
+                key={index}
+                onClick={() => {
+                  setSelectedRoom(room); // Set the selected room data
+                  setIsUserMainViewOpen(true); // Open UserMainView modal
+                }}
+              >
                 <Image
                   src="/images/voispace.gradient.ring.png"
                   alt="voispace"
@@ -107,6 +105,17 @@ export const VoiceSpaceFeedCard: React.FC<Props> = ({
       {isMoreModalOpen && (
         <VoispaceExploreChannelsModal
           onClose={() => setIsMoreModalOpen(false)}
+          onChannelClick={(room: roomType) => {
+            setSelectedRoom(room); // Set the selected room data
+            setIsUserMainViewOpen(true); // Open UserMainView modal
+          }}
+        />
+      )}
+
+      {isUserMainViewOpen && selectedRoom && (
+        <UserMainView
+          onClose={() => setIsUserMainViewOpen(false)}
+          formState={selectedRoom}
         />
       )}
     </>

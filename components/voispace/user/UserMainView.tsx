@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react";
 
-import TheRoomOfTraders from "./TheRoomOfTraders";
-import Participators from "./Participators";
-import InvitetoRoom from "./InvitetoRoom";
-import Requests from "./Requests";
-
 import ModalContainer from "@/components/modal/modal-container";
-import { Room } from "./voispace.create.channel.modal";
+import { Room, roomType } from "../host/voispace.create.channel.modal";
+import TheRoomOfTraders from "../host/TheRoomOfTraders";
+import Participators from "../host/Participators";
+import InvitetoRoom from "../host/InvitetoRoom";
+import ChatRoom from "../host/ChatRoom";
 
-interface HostMainViewInterface {
+interface UserMainViewInterface {
   onClose: () => void;
-  formState: Room;
+  formState: roomType;
 }
 type ComponentMap = Map<
   string,
@@ -20,7 +19,7 @@ type ComponentMap = Map<
   }>
 >;
 
-const HostMainView: React.FC<HostMainViewInterface> = ({
+const UserMainView: React.FC<UserMainViewInterface> = ({
   onClose,
   formState,
 }) => {
@@ -30,7 +29,7 @@ const HostMainView: React.FC<HostMainViewInterface> = ({
     ["TheRoomOfTraders", TheRoomOfTraders],
     ["Participators", Participators],
     ["InvitetoRoom", InvitetoRoom],
-    ["Requests", Requests],
+    ["ChatRoom", ChatRoom],
   ]);
 
   const ComponentToRender = componentMap.get(componentName);
@@ -40,10 +39,10 @@ const HostMainView: React.FC<HostMainViewInterface> = ({
       setComponentName("TheRoomOfTraders");
     }
   }, [ComponentToRender]);
-
+  console.log(componentName);
   return (
     <ModalContainer
-      modalId="host-settings"
+      modalId="User-settings"
       onClose={onClose}
       isOpen={true}
       modalContentClassName="max-w-[100%] h-[100%] md:h-auto md:max-w-[761px] min-h-[645px] p-0 md:rounded-3xl"
@@ -72,9 +71,9 @@ const HostMainView: React.FC<HostMainViewInterface> = ({
           </button>
           <button
             className="bg-[#ccc] px-[10px] text-[#000]"
-            onClick={() => setComponentName("Requests")}
+            onClick={() => setComponentName("ChatRoom")}
           >
-            Requests
+            ChatRoom
           </button>
         </div>
 
@@ -89,4 +88,4 @@ const HostMainView: React.FC<HostMainViewInterface> = ({
   );
 };
 
-export default HostMainView;
+export default UserMainView;

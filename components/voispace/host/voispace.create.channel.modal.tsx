@@ -13,6 +13,8 @@ import Button from "@/components/button";
 import { SearchedPrivilegeCollection } from "../shared/search.privilege";
 import { RemovePrivilegeCollection } from "../shared/remove.privilege.collection";
 import { MicIcon, MicIcon2, SearchIcon, VideoIcon2 } from "@/assets/svgs";
+import DynamicComponent from "./HostMainView";
+import HostViewMain from "./HostMainView";
 
 export interface Room {
   roomType: "AMA" | "Live";
@@ -23,6 +25,12 @@ export interface Room {
   audioDevice: string;
   videoDevice: string;
   mode: "Audio" | "Video";
+}
+
+export interface roomType {
+  image: string;
+  live: boolean;
+  eventName: string;
 }
 
 interface Props {
@@ -41,6 +49,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
     mode: "Audio",
   });
   const [currentStep, setCurrentStep] = useState(1);
+  const [isHostSettingsOpen, setIsHostSettingsOpen] = useState(false);
   const [searchResults, setSearchResults] = useState<SearchResultWithType[]>(
     []
   );
@@ -76,11 +85,33 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
         toast.error("Please add at least one privilege user.");
         return;
       }
+      setIsHostSettingsOpen(true);
+      return;
     }
     setCurrentStep((prev) => prev + 1);
   };
 
   const handleBack = () => setCurrentStep((prev) => Math.max(prev - 1, 1));
+  // Handle collection input for privilege users
+  useEffect(() => {
+    async function getPrivilegeCollection() {
+      try {
+        const collection = await getSingleCollection(collectionAddress);
+        setPrivilegeCollection(collection);
+      } catch (err: any) {
+        setPrivilegeCollection(null);
+        toast.error(err.message);
+      }
+    }
+
+    if (collectionAddress) {
+      getPrivilegeCollection();
+    }
+  }, [collectionAddress]);
+
+  if (isHostSettingsOpen) {
+    return <HostViewMain onClose={onClose} formState={formState} />;
+  }
 
   // Handle search input for private users
   const handleInvitePrivateUser = async (
@@ -114,23 +145,6 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
     setSearchResults([]);
     setSearchedValue("");
   };
-
-  // Handle collection input for privilege users
-  useEffect(() => {
-    async function getPrivilegeCollection() {
-      try {
-        const collection = await getSingleCollection(collectionAddress);
-        setPrivilegeCollection(collection);
-      } catch (err: any) {
-        setPrivilegeCollection(null);
-        toast.error(err.message);
-      }
-    }
-
-    if (collectionAddress) {
-      getPrivilegeCollection();
-    }
-  }, [collectionAddress]);
 
   const handleAddCollection = (collection: CFSCollection) => {
     if (
@@ -346,6 +360,10 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
           </div>
         );
       case 4:
+        if (formState.roomPrivacy === "Public") {
+          setIsHostSettingsOpen(true);
+          return null;
+        }
         if (formState.roomPrivacy === "Private") {
           return (
             <div className="flex flex-col gap-6">
@@ -445,21 +463,6 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
           );
         }
         return null;
-      default:
-        return (
-          <div className="text-white">
-            <h3>Review and Submit</h3>
-            <pre>{JSON.stringify(formState, null, 2)}</pre>
-            <button
-              onClick={() => {
-                console.log("Submit Room", formState);
-                onClose();
-              }}
-            >
-              Submit
-            </button>
-          </div>
-        );
     }
   };
 
@@ -470,7 +473,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
       isOpen={true}
       modalContentClassName="max-w-[656px] p-0 rounded-3xl"
       shouldCloseOnEsc={true}
-      shouldCloseOnOverlayClick={false}
+      shouldCloseOnOverlayClick={currentStep === 1}
     >
       <div className="header border-b-2 border-[#141416]">
         <div
