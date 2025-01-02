@@ -131,13 +131,11 @@ export class ApolloService {
         url: this.getGqlUri(ApolloGraphQlUriEnum.WS, resource),
         keepAlive: 10000,
         connectionParams: {
-          headers:
-            token != null
-              ? {
-                  Authorization:
-                    token.length > 0 ? `Bearer ${token}` : undefined,
-                }
-              : { "X-Hasura-Role": "user" },
+          headers: {
+            // "X-Hasura-Role": "user",
+            "x-hasura-admin-secret":
+              "wenfhrebgyuberjkvqpsxmqnxuyerbytfcvvzvgwvdewf",
+          },
         },
         on: {
           connected: (socket) => (activeSocket = socket),
