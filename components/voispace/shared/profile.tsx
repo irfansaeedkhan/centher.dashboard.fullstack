@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+
 import { VipIcon, MicIcon } from "@/assets/svgs";
 
 interface UserProfileCard {

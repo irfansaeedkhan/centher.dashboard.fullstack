@@ -1,17 +1,12 @@
 import React from "react";
+import Image from "next/image";
 
-import { speakers } from "../dummy.data/speakers.list";
-import {
-  ChatProfile,
-  MicIcon,
-  MicIcon2,
-  ShareWhiteIcon,
-  GrabIcon,
-} from "@/assets/svgs";
+import { ChatProfile, MicIcon2, ShareWhiteIcon } from "@/assets/svgs";
+import HostModalHeader from "@/components/voispace/host/partials/HostModalHeader";
+
 import ActionButton from "./ui/ActionButton";
 import UserWithPopover from "./partials/UserWithPopover";
-import HostModalHeader from "@/components/voispace/host/partials/HostModalHeader";
-import Image from "next/image";
+import { speakers } from "../dummy.data/speakers.list";
 
 interface DynamicProps {
   onClose: () => void;
@@ -29,7 +24,8 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
           subTitle="Voispace"
           title="The Room of Traders"
           onClose={onClose}
-          hasBackButton={false}
+          hasBackButton={true}
+          onBack={() => null}
         >
           <button
             className="font-monto text-[14px] font-medium text-[#E34048]"
@@ -84,11 +80,12 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
             <div className="flex gap-[10px]">
               <ActionButton
                 text="Finish"
-                className="text-medium text-[14px] text-[#E34048]"
+                className="text-medium relative text-[14px] text-[#E34048]"
                 onClick={onClose}
               >
                 <ChatProfile />
                 Chat
+                <div className="absolute -top-1 right-0 h-3 w-3 rounded-full bg-gradient" />
               </ActionButton>
 
               <ActionButton
@@ -101,16 +98,6 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
             </div>
 
             <div className="flex items-center gap-[10px]">
-              <ActionButton
-                className="text-medium hidden text-[14px] text-[#E34048] md:flex"
-                onClick={() => setComponentName("Requests")}
-              >
-                <GrabIcon />
-                <span className="font-monto text-[11px] font-medium leading-[13px] tracking-[-0.4px]">
-                  3
-                </span>
-              </ActionButton>
-
               <ActionButton
                 className="text-medium text-[14px] text-[#E34048]"
                 onClick={() => setComponentName("Requests")}
@@ -135,7 +122,14 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
                   9
                 </span>
               </ActionButton>
-
+              <ActionButton
+                className="text-medium hidden text-[14px] text-[#E34048] md:flex"
+                onClick={() => alert("Requested")}
+              >
+                <span className="font-monto text-[11px] font-medium leading-[13px] tracking-[-0.4px]">
+                  Request to speak
+                </span>
+              </ActionButton>
               <ActionButton
                 text="Finish"
                 className="text-medium text-[14px] text-[#E34048]"

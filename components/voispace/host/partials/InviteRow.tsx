@@ -1,7 +1,6 @@
 import React from "react";
 import Image from "next/image";
 import Button from "@/components/button";
-import { VipIcon } from "@/assets/svgs";
 
 interface InviteProps {
   user: any;

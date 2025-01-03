@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
 
 import ModalContainer from "@/components/modal/modal-container";
-import LiveView from "@/components/voispace/host/LiveView";
 
-import TheRoomOfTraders from "./TheRoomOfTraders";
-import Participators from "./Participators";
-import InvitetoRoom from "./InvitetoRoom";
-import Requests from "./Requests";
-import { Room } from "./voispace.create.channel.modal/voispace.create.channel.modal";
+import { roomType } from "../host/voispace.create.channel.modal/voispace.create.channel.modal";
+import TheRoomOfTraders from "../host/TheRoomOfTraders";
+import Participators from "../host/Participators";
+import InvitetoRoom from "../host/InvitetoRoom";
+import ChatRoom from "../host/ChatRoom";
+import LiveView from "../host/LiveView";
 
-interface HostMainViewInterface {
+interface UserMainViewInterface {
   onClose: () => void;
-  formState: Room;
+  formState: roomType;
   component: string;
 }
 type ComponentMap = Map<
@@ -22,7 +22,7 @@ type ComponentMap = Map<
   }>
 >;
 
-const HostMainView: React.FC<HostMainViewInterface> = ({
+const UserMainView: React.FC<UserMainViewInterface> = ({
   onClose,
   formState,
   component,
@@ -35,7 +35,7 @@ const HostMainView: React.FC<HostMainViewInterface> = ({
     ["TheRoomOfTraders", TheRoomOfTraders],
     ["Participators", Participators],
     ["InvitetoRoom", InvitetoRoom],
-    ["Requests", Requests],
+    ["ChatRoom", ChatRoom],
     ["LiveView", LiveView],
   ]);
 
@@ -46,18 +46,18 @@ const HostMainView: React.FC<HostMainViewInterface> = ({
       setComponentName("TheRoomOfTraders");
     }
   }, [ComponentToRender]);
-
+  console.log(componentName);
   console.log(formState);
   return (
     <ModalContainer
-      modalId="host-settings"
+      modalId="User-settings"
       onClose={onClose}
       isOpen={true}
       modalContentClassName="max-w-[100%] h-[100%] md:h-auto md:max-w-[761px] min-h-[645px] p-0 md:rounded-3xl"
       shouldCloseOnEsc={true}
       shouldCloseOnOverlayClick={false}
     >
-      <div className="flex h-full flex-col justify-between">
+      <div className="flex h-[100%] flex-col justify-between">
         <div className="flex gap-[10px]">
           <button
             className="bg-[#ccc] px-[10px] text-[#000]"
@@ -79,11 +79,10 @@ const HostMainView: React.FC<HostMainViewInterface> = ({
           </button>
           <button
             className="bg-[#ccc] px-[10px] text-[#000]"
-            onClick={() => setComponentName("Requests")}
+            onClick={() => setComponentName("ChatRoom")}
           >
-            Requests
+            ChatRoom
           </button>
-
           <button
             className="bg-[#ccc] px-[10px] text-[#000]"
             onClick={() => setComponentName("LiveView")}
@@ -103,4 +102,4 @@ const HostMainView: React.FC<HostMainViewInterface> = ({
   );
 };
 
-export default HostMainView;
+export default UserMainView;

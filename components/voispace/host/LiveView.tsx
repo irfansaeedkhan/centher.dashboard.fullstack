@@ -1,5 +1,5 @@
 import React from "react";
-import HostModalHeader from "./partials/HostModalHeader";
+
 import {
   SendChatIcon,
   MicIcon,
@@ -11,12 +11,20 @@ import { users } from "@/components/voispace/dummy.data/users.list";
 import LiveMessage from "@/components/voispace/host/partials/LiveMessage";
 import DropdownButton from "@/components/voispace/host/ui/DropdownButton";
 
+import HostModalHeader from "./partials/HostModalHeader";
+import { Room } from "./voispace.create.channel.modal/voispace.create.channel.modal";
+
 interface DynamicProps {
   onClose: () => void;
+  formState?: Room;
   setComponentName: (name: string) => string;
 }
 
-const LiveView: React.FC<DynamicProps> = ({ onClose, setComponentName }) => {
+const LiveView: React.FC<DynamicProps> = ({
+  onClose,
+  setComponentName,
+  formState,
+}) => {
   const leaveHandler = () => {
     alert("Leave");
   };
@@ -25,7 +33,7 @@ const LiveView: React.FC<DynamicProps> = ({ onClose, setComponentName }) => {
     console.log("Selected:", value);
     alert(`انتخاب شد: ${value}`);
   };
-
+  console.log(formState);
   return (
     <div className="relative flex flex-col">
       <div className="flex flex-col gap-[27px] px-[24px] py-[24px]">

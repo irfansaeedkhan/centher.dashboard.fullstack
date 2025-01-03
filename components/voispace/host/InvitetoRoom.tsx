@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import HostModalHeader from "./partials/HostModalHeader";
+
 import { SearchIcon } from "@/assets/svgs";
-import { SearchResultWithType, search } from "@/lib/search";
 import InviteRow from "@/components/voispace/host/partials/InviteRow";
 import { users } from "@/components/voispace/dummy.data/users.list";
+
+import HostModalHeader from "./partials/HostModalHeader";
 
 interface DynamicProps {
   onClose: () => void;

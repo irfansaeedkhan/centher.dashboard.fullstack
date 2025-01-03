@@ -1,12 +1,9 @@
 import React from "react";
-import HostModalHeader from "./partials/HostModalHeader";
-import Button from "@/components/button";
-import { requests } from "../dummy.data/requests.list";
-import ClientCardView from "@/components/voispace/shared/profile";
-
-import { HostRequestContext } from "@/components/voispace/host/context/HostRequestContext";
 
 import RequestRow from "@/components/voispace/host/partials/RequestRow";
+
+import HostModalHeader from "./partials/HostModalHeader";
+import { requests } from "../dummy.data/requests.list";
 
 interface DynamicProps {
   onClose: () => void;

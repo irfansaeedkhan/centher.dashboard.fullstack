@@ -1,8 +1,10 @@
 import React from "react";
-import HostModalHeader from "@/components/voispace/host/partials/HostModalHeader";
+
 import Button from "@/components/button";
-import { speakers } from "../dummy.data/speakers.list";
 import ClientCardView from "@/components/voispace/shared/profile";
+import HostModalHeader from "@/components/voispace/host/partials/HostModalHeader";
+
+import { speakers } from "../dummy.data/speakers.list";
 
 interface DynamicProps {
   onClose: () => void;
