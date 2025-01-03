@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from "react";
 
+import ModalContainer from "@/components/modal/modal-container";
+import LiveView from "@/components/voispace/host/LiveView";
+
 import TheRoomOfTraders from "./TheRoomOfTraders";
 import Participators from "./Participators";
 import InvitetoRoom from "./InvitetoRoom";
 import Requests from "./Requests";
-import LiveView from "@/components/voispace/host/LiveView";
 
-import ModalContainer from "@/components/modal/modal-container";
 import { Room } from "./voispace.create.channel.modal";
 
 interface HostMainViewInterface {
   onClose: () => void;
   formState: Room;
+  component: string;
 }
 type ComponentMap = Map<
   string,
@@ -24,8 +26,11 @@ type ComponentMap = Map<
 const HostMainView: React.FC<HostMainViewInterface> = ({
   onClose,
   formState,
+  component,
 }) => {
-  const [componentName, setComponentName] = useState<string>("");
+  const [componentName, setComponentName] = useState<string>(
+    component || "TheRoomOfTraders"
+  );
 
   const componentMap: ComponentMap = new Map([
     ["TheRoomOfTraders", TheRoomOfTraders],
@@ -43,6 +48,7 @@ const HostMainView: React.FC<HostMainViewInterface> = ({
     }
   }, [ComponentToRender]);
 
+  console.log(formState);
   return (
     <ModalContainer
       modalId="host-settings"

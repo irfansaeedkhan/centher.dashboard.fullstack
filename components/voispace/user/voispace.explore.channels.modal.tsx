@@ -1,11 +1,11 @@
 import React, { useState } from "react";
+
 import ModalContainer from "@/components/modal/modal-container";
-import clsx from "clsx";
 import Button from "@/components/button";
+
 import { AmaStreamCard } from "./ama.stream.card";
 import { LiveStreamCard } from "./live.stream.card";
-import { dummyAMAChannels, dummyLiveChannels } from "../dummy.data/rooms.list";
-import { MdOutlineExpandLess } from "react-icons/md";
+import { rooms } from "../dummy.data/rooms.list";
 
 interface Props {
   onClose: () => void;
@@ -18,8 +18,7 @@ export const VoispaceExploreChannelsModal: React.FC<Props> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<"AMA" | "Live">("AMA");
 
-  const channels = activeTab === "AMA" ? dummyAMAChannels : dummyLiveChannels;
-
+  const filteredRooms = rooms.filter((room) => room.roomType === activeTab);
   return (
     <ModalContainer
       modalId="more-rooms"
@@ -50,7 +49,7 @@ export const VoispaceExploreChannelsModal: React.FC<Props> = ({
           </div>
         </div>
         <div className="customScrollbar grid max-h-[60vh] grid-cols-1 gap-4 overflow-y-auto fxm:grid-cols-2 fmd:grid-cols-3">
-          {channels.map((channel) =>
+          {filteredRooms.map((channel) =>
             activeTab === "AMA" ? (
               <div key={channel.id} onClick={() => onChannelClick(channel)}>
                 <AmaStreamCard {...channel} />

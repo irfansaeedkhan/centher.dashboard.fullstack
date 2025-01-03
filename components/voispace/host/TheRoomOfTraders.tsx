@@ -1,11 +1,12 @@
 import React from "react";
+import Image from "next/image";
 
-import { speakers } from "../dummy.data/speakers.list";
 import { ChatProfile, MicIcon2, ShareWhiteIcon } from "@/assets/svgs";
+import HostModalHeader from "@/components/voispace/host/partials/HostModalHeader";
+
 import ActionButton from "./ui/ActionButton";
 import UserWithPopover from "./partials/UserWithPopover";
-import HostModalHeader from "@/components/voispace/host/partials/HostModalHeader";
-import Image from "next/image";
+import { speakers } from "../dummy.data/speakers.list";
 
 interface DynamicProps {
   onClose: () => void;

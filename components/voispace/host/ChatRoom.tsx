@@ -1,16 +1,10 @@
 import React from "react";
-
-import { speakers } from "../dummy.data/speakers.list";
-import {
-  ChatProfile,
-  MicIcon2,
-  SendChatIcon,
-  ShareWhiteIcon,
-} from "@/assets/svgs";
-import ActionButton from "./ui/ActionButton";
-import UserWithPopover from "./partials/UserWithPopover";
-import HostModalHeader from "@/components/voispace/host/partials/HostModalHeader";
 import Image from "next/image";
+
+import { SendChatIcon } from "@/assets/svgs";
+import HostModalHeader from "@/components/voispace/host/partials/HostModalHeader";
+
+import ActionButton from "./ui/ActionButton";
 import { messages } from "../dummy.data/chat.list";
 
 interface DynamicProps {

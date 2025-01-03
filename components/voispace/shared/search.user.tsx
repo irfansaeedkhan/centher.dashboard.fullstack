@@ -1,8 +1,9 @@
 import React from "react";
 import Image from "next/image";
+
+import Button from "@/components/button";
 import { SearchResultWithType } from "@/lib/search";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
-import Button from "@/components/button";
 
 export const FindUsers: React.FC<{
   user: SearchResultWithType;

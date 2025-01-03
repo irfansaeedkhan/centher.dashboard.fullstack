@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from "react";
-import ModalContainer from "@/components/modal/modal-container";
 import { clsx } from "clsx";
 import toast from "react-hot-toast";
+import { MdOutlineExpandLess } from "react-icons/md";
+
+import { CFSCollection } from "@/models/nft";
 import { SearchResultWithType, search } from "@/lib/search";
 import { getSingleCollection } from "@/lib/get-single-collection";
-import { CFSCollection } from "@/models/nft";
+import ModalContainer from "@/components/modal/modal-container";
+import Button from "@/components/button";
+import { MicIcon2, SearchIcon, VideoIcon2 } from "@/assets/svgs";
+
 import { FindUsers } from "../shared/search.user";
 import { TextLengthChecker } from "../shared/text.length.checker";
 import { RemoveUser } from "../shared/remove.user";
-import { MdOutlineExpandLess } from "react-icons/md";
-import Button from "@/components/button";
 import { SearchedPrivilegeCollection } from "../shared/search.privilege";
 import { RemovePrivilegeCollection } from "../shared/remove.privilege.collection";
-import { MicIcon, MicIcon2, SearchIcon, VideoIcon2 } from "@/assets/svgs";
-import DynamicComponent from "./HostMainView";
 import HostViewMain from "./HostMainView";
 
 export interface Room {
@@ -28,9 +29,14 @@ export interface Room {
 }
 
 export interface roomType {
+  id: number;
+  name: string;
+  description: string;
+  views: number;
+  duration: string;
+  roomType: string;
   image: string;
   live: boolean;
-  eventName: string;
 }
 
 interface Props {
@@ -110,7 +116,23 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
   }, [collectionAddress]);
 
   if (isHostSettingsOpen) {
-    return <HostViewMain onClose={onClose} formState={formState} />;
+    if (formState.roomType === "AMA") {
+      return (
+        <HostViewMain
+          onClose={onClose}
+          formState={formState}
+          component="TheRoomOfTraders"
+        />
+      );
+    } else if (formState.roomType === "Live") {
+      return (
+        <HostViewMain
+          onClose={onClose}
+          formState={formState}
+          component="LiveView"
+        />
+      );
+    }
   }
 
   // Handle search input for private users

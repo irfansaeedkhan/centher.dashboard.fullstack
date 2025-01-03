@@ -1,6 +1,7 @@
-import { AmaLiveProfileIcon } from "@/assets/svgs";
-import Image from "next/image";
 import React from "react";
+import Image from "next/image";
+
+import { AmaLiveProfileIcon } from "@/assets/svgs";
 
 interface Props {
   name: string;

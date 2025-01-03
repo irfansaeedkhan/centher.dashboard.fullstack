@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from "react";
 
 import ModalContainer from "@/components/modal/modal-container";
-import { Room, roomType } from "../host/voispace.create.channel.modal";
+
+import { roomType } from "../host/voispace.create.channel.modal";
 import TheRoomOfTraders from "../host/TheRoomOfTraders";
 import Participators from "../host/Participators";
 import InvitetoRoom from "../host/InvitetoRoom";
 import ChatRoom from "../host/ChatRoom";
+import LiveView from "../host/LiveView";
 
 interface UserMainViewInterface {
   onClose: () => void;
   formState: roomType;
+  component: string;
 }
 type ComponentMap = Map<
   string,
@@ -22,14 +25,18 @@ type ComponentMap = Map<
 const UserMainView: React.FC<UserMainViewInterface> = ({
   onClose,
   formState,
+  component,
 }) => {
-  const [componentName, setComponentName] = useState<string>("");
+  const [componentName, setComponentName] = useState<string>(
+    component || "TheRoomOfTraders"
+  );
 
   const componentMap: ComponentMap = new Map([
     ["TheRoomOfTraders", TheRoomOfTraders],
     ["Participators", Participators],
     ["InvitetoRoom", InvitetoRoom],
     ["ChatRoom", ChatRoom],
+    ["LiveView", LiveView],
   ]);
 
   const ComponentToRender = componentMap.get(componentName);
@@ -40,6 +47,7 @@ const UserMainView: React.FC<UserMainViewInterface> = ({
     }
   }, [ComponentToRender]);
   console.log(componentName);
+  console.log(formState);
   return (
     <ModalContainer
       modalId="User-settings"
@@ -74,6 +82,12 @@ const UserMainView: React.FC<UserMainViewInterface> = ({
             onClick={() => setComponentName("ChatRoom")}
           >
             ChatRoom
+          </button>
+          <button
+            className="bg-[#ccc] px-[10px] text-[#000]"
+            onClick={() => setComponentName("LiveView")}
+          >
+            LiveView
           </button>
         </div>
 

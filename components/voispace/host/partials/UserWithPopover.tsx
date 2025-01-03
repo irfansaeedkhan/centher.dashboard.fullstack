@@ -1,9 +1,11 @@
 import React from "react";
+import Image from "next/image";
+
+import { ChatProfile, MicIcon2 } from "@/assets/svgs";
+
 import ClientCardView from "./../../shared/profile";
 import ActionButton from "./../ui/ActionButton";
 import Chips from "./../ui/Chips";
-import Image from "next/image";
-import { ChatProfile, MicIcon2 } from "@/assets/svgs";
 
 import {
   Popover,
