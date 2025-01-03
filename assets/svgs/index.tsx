@@ -202,6 +202,7 @@ export { default as MicIcon } from "./mic.icon.svg";
 export { default as MicIcon2 } from "./mic.live.svg";
 export { default as BackButtonShiny } from "./back.button.svg";
 export { default as GrabIcon } from "./grab.icon.svg";
+export { default as ChevronDown } from "./chevron-down.icon.svg";
 
 export const X369xIcon: React.FC<IconProps> = (props) => {
   return (
