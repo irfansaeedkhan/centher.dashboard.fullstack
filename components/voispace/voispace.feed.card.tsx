@@ -9,6 +9,7 @@ import { VoispaceExploreChannelsModal } from "./user/voispace.explore.channels.m
 import Modal from "./shared/Modal.js";
 
 import DynamicComponent from "./host/HostMainView";
+import SettingComponent from "@/components/voispace/host/SettingMainView";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -19,6 +20,7 @@ export const VoiceSpaceFeedCard: React.FC<Props> = ({
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isMoreModalOpen, setIsMoreModalOpen] = useState(false);
   const [mainChannelChatBox, setMainChannelChatBox] = useState(false);
+  const [settingBox, setSettingBox] = useState(false);
 
   return (
     <>
@@ -47,8 +49,21 @@ export const VoiceSpaceFeedCard: React.FC<Props> = ({
               <span className={`text-gradient-1`}>New</span>
             </button>
 
+            <button
+              onClick={() => setSettingBox(true)}
+              data-modal-target="default-modal"
+              data-modal-toggle="default-modal"
+              className={`gradient-borders-2 h-8 w-16 rounded-10px p-[1px] text-xs font-medium`}
+            >
+              <span className={`text-gradient-1`}>Setting</span>
+            </button>
+
             {mainChannelChatBox && (
               <DynamicComponent onClose={() => setMainChannelChatBox(false)} />
+            )}
+
+            {settingBox && (
+              <SettingComponent onClose={() => setSettingBox(false)} />
             )}
           </div>
           <div
