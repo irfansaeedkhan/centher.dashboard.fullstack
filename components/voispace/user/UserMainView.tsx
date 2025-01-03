@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import ModalContainer from "@/components/modal/modal-container";
 
-import { roomType } from "../host/voispace.create.channel.modal";
+import { roomType } from "../host/voispace.create.channel.modal/voispace.create.channel.modal";
 import TheRoomOfTraders from "../host/TheRoomOfTraders";
 import Participators from "../host/Participators";
 import InvitetoRoom from "../host/InvitetoRoom";

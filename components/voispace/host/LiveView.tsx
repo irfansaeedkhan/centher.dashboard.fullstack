@@ -12,7 +12,7 @@ import LiveMessage from "@/components/voispace/host/partials/LiveMessage";
 import DropdownButton from "@/components/voispace/host/ui/DropdownButton";
 
 import HostModalHeader from "./partials/HostModalHeader";
-import { Room } from "./voispace.create.channel.modal";
+import { Room } from "./voispace.create.channel.modal/voispace.create.channel.modal";
 
 interface DynamicProps {
   onClose: () => void;

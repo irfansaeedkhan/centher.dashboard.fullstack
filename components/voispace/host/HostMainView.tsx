@@ -7,8 +7,7 @@ import TheRoomOfTraders from "./TheRoomOfTraders";
 import Participators from "./Participators";
 import InvitetoRoom from "./InvitetoRoom";
 import Requests from "./Requests";
-
-import { Room } from "./voispace.create.channel.modal";
+import { Room } from "./voispace.create.channel.modal/voispace.create.channel.modal";
 
 interface HostMainViewInterface {
   onClose: () => void;

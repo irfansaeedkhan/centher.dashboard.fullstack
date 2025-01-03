@@ -4,11 +4,11 @@ import Image from "next/image";
 
 import { VoispaceLiveIcon } from "@/assets/svgs";
 
-import { VoispaceCreateChannelModal } from "./host/voispace.create.channel.modal";
 import { VoispaceExploreChannelsModal } from "./user/voispace.explore.channels.modal";
 import UserMainView from "./user/UserMainView";
 import Button from "../button";
 import { rooms } from "./dummy.data/rooms.list";
+import { VoispaceCreateChannelModal } from "./host/voispace.create.channel.modal/voispace.create.channel.modal";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {}
 
