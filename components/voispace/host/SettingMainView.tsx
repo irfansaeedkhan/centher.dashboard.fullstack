@@ -5,14 +5,7 @@ import HostModalHeaderV2 from "@/components/voispace/host/partials/HostModalHead
 import AudioSetting from "@/components/voispace/host/settings/audio/AudioSetting";
 import VideoSetting from "@/components/voispace/host/settings/video/VideoSetting";
 
-import {
-  ChatProfile,
-  MicIcon,
-  MicIcon2,
-  VideoIcon2,
-  ShareWhiteIcon,
-  GrabIcon,
-} from "@/assets/svgs";
+import { MicIcon2, VideoIcon2 } from "@/assets/svgs";
 
 interface SettingComponentInterface {
   onClose: () => void;

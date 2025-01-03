@@ -30,7 +30,7 @@ const HostModalHeader: React.FC<HostModalProps> = ({
             )}
           </div>
 
-          <span className="font-gravesend text-[24px] font-bold text-white">
+          <span className="text-[20px] font-semibold leading-[36px] text-white">
             {title}
           </span>
 
