@@ -126,6 +126,7 @@ export class ApolloService {
     let timedOut = null;
     const token = await this.getToken();
 
+    // FIXME: manage token
     return new GraphQLWsLink(
       createClient({
         url: this.getGqlUri(ApolloGraphQlUriEnum.WS, resource),

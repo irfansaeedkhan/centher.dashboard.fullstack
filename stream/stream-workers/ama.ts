@@ -250,6 +250,7 @@ export class AmaAgent<T extends IEventBus, K extends Socket> {
       );
     });
   }
+
   public async invite(users: string[]): Promise<void> {
     if (this.isOwner) {
       this.socket.emit("invite-members", {

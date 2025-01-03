@@ -1,10 +1,12 @@
 import { useGetSubscribes } from "@/hooks/stream";
 import { BroadcastPreviewDto } from "@/hooks/stream/dto/broadcast-preview.dto";
+import { useCoreStream } from "@/hooks/stream/use.core";
 import { NextPage } from "next";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
 const StreamPage: NextPage = () => {
+  const { useGetSubscribes } = useCoreStream();
   const streamPromise = useGetSubscribes();
   const [streamData, setStreamData] = useState<BroadcastPreviewDto[]>([]);
 
