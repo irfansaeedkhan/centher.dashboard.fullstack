@@ -9,6 +9,8 @@ import ScriptTags from "@/components/script.tags";
 import { CookiesConstentModal } from "@/components/modal/cookies-consent.modal";
 import { Web3ModalProvider } from "@/web3/context/web3-modal";
 import { GlobalModal } from "@/components/modal/global-modal/global-modal";
+import { createContext, useContext } from "react";
+
 import "@/styles/globals.css";
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
@@ -18,6 +20,8 @@ export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
 type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
 };
+
+const StreamContext = createContext(null);
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   // Create a socket.io connection

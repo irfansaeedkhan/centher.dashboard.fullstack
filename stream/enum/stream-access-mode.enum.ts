@@ -1,0 +1,5 @@
+export enum StreamAccessModeEnum {
+  PUBLIC = "PUBLIC",
+  ACCESS_BY_TOKEN = "ACCESS_BY_TOKEN",
+  ACCESS_BY_INVITATION = "ACCESS_BY_INVITATION",
+}
