@@ -9,6 +9,7 @@ import UserMainView from "./user/UserMainView";
 import Button from "../button";
 import { rooms } from "./dummy.data/rooms.list";
 import { VoispaceCreateChannelModal } from "./host/voispace.create.channel.modal/voispace.create.channel.modal";
+import SettingComponent from "@/components/voispace/host/SettingMainView";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -20,6 +21,7 @@ export const VoiceSpaceFeedCard: React.FC<Props> = ({
   const [isMoreModalOpen, setIsMoreModalOpen] = useState(false);
   const [isUserMainViewOpen, setIsUserMainViewOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<any>(null);
+  const [settingBox, setSettingBox] = useState(false);
 
   return (
     <>
@@ -39,6 +41,15 @@ export const VoiceSpaceFeedCard: React.FC<Props> = ({
               borderRounded="10px"
               className={` text-xs font-medium`}
             />
+
+            <button
+              onClick={() => setSettingBox(true)}
+              data-modal-target="default-modal"
+              data-modal-toggle="default-modal"
+              className={`gradient-borders-2 h-8 w-16 rounded-10px p-[1px] text-xs font-medium`}
+            >
+              <span className={`text-gradient-1`}>Setting</span>
+            </button>
           </div>
           <div
             className={`flex cursor-pointer items-center justify-center border-t-2 border-gray-shade-3 text-center`}
@@ -94,6 +105,8 @@ export const VoiceSpaceFeedCard: React.FC<Props> = ({
           </div>
         </div>
       </div>
+
+      {settingBox && <SettingComponent onClose={() => setSettingBox(false)} />}
 
       {isCreateModalOpen && (
         <VoispaceCreateChannelModal

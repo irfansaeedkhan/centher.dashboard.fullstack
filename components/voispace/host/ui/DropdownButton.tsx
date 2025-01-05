@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { ChevronDown } from "@/assets/svgs";
 
 interface DropdownProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   dropdownContent: (onSelect: (value: string) => void) => React.ReactNode;
   onSelect?: (value: string) => void;
 }
