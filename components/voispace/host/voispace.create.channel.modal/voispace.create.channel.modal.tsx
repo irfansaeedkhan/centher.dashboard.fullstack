@@ -8,6 +8,7 @@ import StepThree from "./steps/step.three";
 import StepFour from "./steps/step.four";
 import { MdOutlineExpandLess } from "react-icons/md";
 import toast from "react-hot-toast";
+import useMediaDevices from "hooks/use.get.media.devices/index";
 
 interface Props {
   onClose: () => void;
@@ -49,6 +50,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
 
   const [currentStep, setCurrentStep] = useState(1);
   const [isHostSettingsOpen, setIsHostSettingsOpen] = useState(false);
+  const { hasPermission } = useMediaDevices();
 
   // Generic input change handler
   const handleInputChange = (field: keyof Room, value: any) => {
@@ -157,6 +159,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
           </span>
           <Button
             title={currentStep === 4 ? "Submit" : "Next"}
+            disabled={currentStep === 2 ? !hasPermission : false}
             variant="primary"
             onClick={handleNext}
             borderRounded="10px"

@@ -2,10 +2,14 @@ import React from "react";
 import { clsx } from "clsx";
 import { TextLengthChecker } from "@/components/voispace/shared/text.length.checker";
 import { MicIcon2, VideoIcon2 } from "@/assets/svgs";
+import useMediaDevices from "hooks/use.get.media.devices/index";
 
 const StepTwo = ({ formState, handleInputChange }: any) => {
+  const { cameras, microphones, error } = useMediaDevices();
+
   return (
     <div className="flex flex-col gap-6">
+      {/* <div className="text-white">{devices}</div> */}
       <div className={`text-xl font-medium text-white`}>
         Dive into <span className={`text-gradient-1`}>VoiceSpace</span>
       </div>
@@ -77,25 +81,23 @@ const StepTwo = ({ formState, handleInputChange }: any) => {
               }
             }}
           >
-            {formState.mode === "Audio" ? (
-              <>
-                <option value="Internal Microphone">
-                  Default - Internal Microphone
-                </option>
-                <option value="External Microphone">External Microphone</option>
-                <option value="Bluetooth Device">Bluetooth Device</option>
-              </>
-            ) : (
-              <>
-                <option value="Internal Camera">
-                  Default - Internal Camera
-                </option>
-                <option value="External Camera">External Camera</option>
-                <option value="Virtual Background Camera">
-                  Virtual Background Camera
-                </option>
-              </>
-            )}
+            {formState.mode === "Audio" &&
+              microphones.map((microphone, index) => {
+                return (
+                  <option key={index} value={microphone.deviceId}>
+                    {microphone.label}
+                  </option>
+                );
+              })}
+
+            {formState.mode === "Video" &&
+              cameras.map((camera, index) => {
+                return (
+                  <option key={index} value={camera.deviceId}>
+                    {camera.label}
+                  </option>
+                );
+              })}
           </select>
         </div>
       </div>
