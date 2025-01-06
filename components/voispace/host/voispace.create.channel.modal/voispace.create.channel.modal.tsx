@@ -20,6 +20,7 @@ export interface Room {
   roomPrivacy: "Public" | "Private" | "Privilege";
   invitedPrivateUsers: SearchResultWithType[];
   invitedPrivilegeUsers: CFSCollection[];
+  image: string;
   audioDevice: string;
   videoDevice: string;
   mode: "Audio" | "Video";
@@ -39,6 +40,7 @@ export interface CFSCollection {
 export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
   const [formState, setFormState] = useState<Room>({
     roomType: "AMA",
+    image: "",
     roomTitle: "",
     roomPrivacy: "Public",
     invitedPrivateUsers: [],
@@ -159,7 +161,10 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
           </span>
           <Button
             title={currentStep === 4 ? "Submit" : "Next"}
-            disabled={currentStep === 2 ? !hasPermission : false}
+            disabled={
+              (currentStep === 2 && !hasPermission) ||
+              (currentStep === 2 && !formState.image)
+            } // Disable on Step 2 if no image
             variant="primary"
             onClick={handleNext}
             borderRounded="10px"

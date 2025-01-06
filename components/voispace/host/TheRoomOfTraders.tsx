@@ -42,7 +42,7 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
               <span className="rounded-[1000px] bg-[#141416] p-[8px] text-[12px]">
                 <span className="text-[#FAFAFA]">1</span>
                 <span>&nbsp;</span>
-                <span className="text-[#A8ABBB]">host</span>
+                <span className="text-gray-shade-24">host</span>
               </span>
             </div>
 
@@ -57,7 +57,7 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
               <span className="rounded-[1000px] bg-[#141416] p-[8px] text-[12px]">
                 <span className="text-[#FAFAFA]">0</span>
                 <span>&nbsp;</span>
-                <span className="text-[#A8ABBB]">Speakers</span>
+                <span className="text-gray-shade-24">Speakers</span>
               </span>
             </div>
 

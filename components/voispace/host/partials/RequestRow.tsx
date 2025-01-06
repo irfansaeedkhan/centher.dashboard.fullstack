@@ -31,14 +31,14 @@ const RequestRow: React.FC<RequestProps> = ({ request }) => {
           {request.isApproved && <VipIcon />}
         </div>
         {request.type === "join" && (
-          <span className="text-[12px] font-medium text-[#A8ABBB]">
+          <span className="text-[12px] font-medium text-gray-shade-24">
             Requested to join The{" "}
             <span className="text-[#FFF]">{request.room}</span>
           </span>
         )}
 
         {request.type === "speak" && (
-          <span className="text-[12px] font-medium text-[#A8ABBB]">
+          <span className="text-[12px] font-medium text-gray-shade-24">
             Requested to speak
           </span>
         )}

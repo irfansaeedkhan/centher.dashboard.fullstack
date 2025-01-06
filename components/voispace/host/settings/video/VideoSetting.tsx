@@ -17,7 +17,7 @@ const VideoSetting: React.FC<VideoSettingProps> = ({}) => {
         <span className="text-[14px] font-medium leading-[36px]">Camera</span>
         <div className="flex items-center justify-between gap-[16px]">
           <DropdownSelect options={cameras} />
-          <span className="text-[14px] font-medium leading-[36px] text-[#A8ABBB]">
+          <span className="text-[14px] font-medium leading-[36px] text-gray-shade-24">
             Camera is Off
           </span>
         </div>
@@ -29,7 +29,7 @@ const VideoSetting: React.FC<VideoSettingProps> = ({}) => {
         </span>
         <div className="flex items-center justify-between gap-[16px]">
           <DropdownSelect options={resoultions} />
-          <span className="text-[14px] font-medium leading-[36px] text-[#A8ABBB]">
+          <span className="text-[14px] font-medium leading-[36px] text-gray-shade-24">
             Video Lighting
           </span>
         </div>

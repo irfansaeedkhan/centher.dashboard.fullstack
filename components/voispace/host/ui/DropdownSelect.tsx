@@ -44,7 +44,7 @@ const Dropdown: React.FC<DropdownProps> = ({ options = [] }) => {
         className="flex w-[412px] items-center justify-between gap-[16px] rounded-[8px] bg-[rgba(255,255,255,0.04)] px-[16px] py-[8px] text-[14px] font-medium leading-[24px] text-white shadow-sm focus:outline-none"
         tabIndex={0} // Set tabIndex for focusability
       >
-        <span className="text-[14px] font-medium leading-[24px] text-[#A8ABBB]">
+        <span className="text-[14px] font-medium leading-[24px] text-gray-shade-24">
           {selected}
         </span>
         <svg
@@ -72,7 +72,7 @@ const Dropdown: React.FC<DropdownProps> = ({ options = [] }) => {
             <li
               key={index}
               onClick={() => handleSelect(option)}
-              className="cursor-pointer px-[24px] py-[16px] text-[14px] font-medium leading-[24px] text-[#A8ABBB] hover:bg-[#22242B]"
+              className="cursor-pointer px-[24px] py-[16px] text-[14px] font-medium leading-[24px] text-gray-shade-24 hover:bg-[#22242B]"
               tabIndex={0} // Set tabIndex for item focusability
             >
               {option}

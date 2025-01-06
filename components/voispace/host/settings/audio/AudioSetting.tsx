@@ -31,7 +31,7 @@ const AudioSetting: React.FC<AudioSettingProps> = ({}) => {
         <div className="flex items-center justify-between gap-[16px]">
           <DropdownSelect options={speakers} />
           {/* <AudioProgressBar /> */}
-          <span className="text-[14px] font-medium leading-[36px] text-[#A8ABBB]">
+          <span className="text-[14px] font-medium leading-[36px] text-gray-shade-24">
             Micorphone is Off
           </span>
         </div>
