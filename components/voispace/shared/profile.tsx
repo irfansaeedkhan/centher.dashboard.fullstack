@@ -48,7 +48,7 @@ const UserProfileCard: React.FC<UserProfileCard> = ({
       </span>
 
       {position && (
-        <span className="rounded-[1000px] bg-[#141416] p-[8px] text-center font-monto text-[12px] font-medium text-[#A8ABBB]">
+        <span className="rounded-[1000px] bg-[#141416] p-[8px] text-center font-monto text-[12px] font-medium text-gray-shade-24">
           {position}
         </span>
       )}

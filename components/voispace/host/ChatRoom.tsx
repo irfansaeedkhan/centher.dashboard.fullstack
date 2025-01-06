@@ -45,15 +45,17 @@ const ChatRoom: React.FC<DynamicProps> = ({ onClose, setComponentName }) => {
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium">{msg.userName}</span>
                     {msg.isReply && (
-                      <span className="text-xs text-[#A8ABBB]">
+                      <span className="text-xs text-gray-shade-24">
                         replying to{" "}
                         <span className="text-white">{msg.replyTo}</span>
                       </span>
                     )}
-                    <span className="text-xs text-[#A8ABBB]">{msg.time}</span>
+                    <span className="text-xs text-gray-shade-24">
+                      {msg.time}
+                    </span>
                   </div>
                   <p className="text-xs">{msg.message}</p>
-                  <button className="mt-1 text-xs text-[#A8ABBB] hover:underline">
+                  <button className="mt-1 text-xs text-gray-shade-24 hover:underline">
                     Reply
                   </button>
                 </div>

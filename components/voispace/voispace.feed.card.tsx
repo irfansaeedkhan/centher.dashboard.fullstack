@@ -42,14 +42,14 @@ export const VoiceSpaceFeedCard: React.FC<Props> = ({
               className={` text-xs font-medium`}
             />
 
-            <button
+            {/* <button
               onClick={() => setSettingBox(true)}
               data-modal-target="default-modal"
               data-modal-toggle="default-modal"
               className={`gradient-borders-2 h-8 w-16 rounded-10px p-[1px] text-xs font-medium`}
             >
               <span className={`text-gradient-1`}>Setting</span>
-            </button>
+            </button> */}
           </div>
           <div
             className={`flex cursor-pointer items-center justify-center border-t-2 border-gray-shade-3 text-center`}
