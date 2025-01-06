@@ -1,51 +1,31 @@
-import { useRef, useState } from "react";
-import { StreamHooksHelper } from "./helper";
-import { getStreams } from "@/stream/graphql/subscription";
+import { createContext, useContext, useRef, useState } from "react";
+import * as mediasoupClient from "mediasoup-client";
 import { CentalkUserStatusEnum, ICentalkUser } from "@/stream/model";
-import { UserBroadcast } from "./cen-talk";
 import { areStringsEquals } from "@/stream/utils/string.utils";
-import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
-import { CreateBroadcastDto, StreamAgentType } from "@/stream/types/Broadcast";
+import { getStreams } from "@/stream/graphql/subscription";
+import { UserBroadcast } from "./cen-talk";
+import { AMAStreamType, useAMA } from "./use.ama";
+import { LiveStreamType, useLive } from "./use.live";
+import { StreamHooksHelper } from "./helper";
 
-export const useCoreStream = () => {
+interface StreamContextType {
+  useGetSubscribes: () => Promise<any>;
+  amaAgent: AMAStreamType;
+  liveAgent: LiveStreamType;
+}
+
+const StreamContext = createContext<StreamContextType | null>(null);
+
+interface StreamProviderProps {
+  children: React.ReactNode;
+  deviceInstance: mediasoupClient.Device;
+}
+
+export const StreamProvider: React.FC<StreamProviderProps> = ({ children }) => {
   const helper = useRef<StreamHooksHelper>(new StreamHooksHelper());
   const speakersRawData = useRef<Partial<ICentalkUser>[]>([]);
-
-  //socket handlers
-  // const createStream = async(
-  //   input: CreateBroadcastDto,
-  //   userId: string
-  // ): Promise<StreamAgentType> => {
-  //   try {
-  //     // if (this._socketInstance) {
-  //     //   throw new Error("another stream is open");
-  //     // }
-
-  //     if (input.type === BroadcastTypeEnum.AMA) {
-  //       // this._peerInstance = new AmaAgent(
-  //       //   this._socketInstance,
-  //       //   this.emitterService
-  //       // );
-  //     } else {
-  //       // this._peerInstance = new LiveAgent(
-  //       //   this._socketInstance,
-  //       //   this.emitterService
-  //       // );
-  //     }
-
-  //     await new Promise((res, rej) => {
-  //       setTimeout(() => {
-  //         res();
-  //       }, 1 * 100);
-  //     });
-  //     // await this._peerInstance.createRoom(input, userId);
-
-  //     // return this._peerInstance;
-  //     return {};
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // };
+  const amaAgent = useAMA({});
+  const liveAgent = useLive({});
 
   const useGetSubscribes = async () => {
     console.log("useGetSubscribes");
@@ -128,5 +108,24 @@ export const useCoreStream = () => {
   //   });
   // };
 
-  return { useGetSubscribes };
+  const contextValue: StreamContextType = {
+    useGetSubscribes,
+    amaAgent,
+    liveAgent,
+  };
+
+  return (
+    <StreamContext.Provider value={contextValue}>
+      {children}
+    </StreamContext.Provider>
+  );
+};
+
+// Custom hook to use the AMA context
+export const useStream = () => {
+  const context = useContext(StreamContext);
+  if (!context) {
+    throw new Error("useAMA must be used within an AMAProvider");
+  }
+  return context;
 };

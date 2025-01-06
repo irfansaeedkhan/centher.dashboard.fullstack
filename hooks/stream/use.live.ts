@@ -1,40 +1,42 @@
 import { useRef, useState } from "react";
 import { Socket } from "socket.io-client";
 import * as mediasoupClient from "mediasoup-client";
-import { Transport } from "mediasoup-client/lib/Transport";
 import { Consumer } from "mediasoup-client/lib/Consumer";
 import { Producer } from "mediasoup-client/lib/Producer";
-import { CreateBroadcastDto } from "@/stream/types/Broadcast";
-import { areStringsEquals } from "@/stream/utils/string.utils";
+import { Transport } from "mediasoup-client/lib/Transport";
 import { TState } from "@/stream/types/interfaces";
+import { SocketClientService } from "@/stream/clients/socket-client";
+import { CreateBroadcastDto } from "@/stream/types/Broadcast";
 
-export interface AMAStreamType {
+export interface LiveStreamType {
   toast: string;
   createRoom: (input: CreateBroadcastDto, userId: string) => Promise<any>;
   joinRoom: (id: string, userId: string) => Promise<any>;
-  invite: (users: string[]) => void;
-  toggleMemberTalkPermission: (userId: string) => void;
-  toggleMessagePermission: (userId: string) => void;
-  kickUser: (userId: string) => void;
-  toggleMute: () => void;
-  leave: () => void;
 }
 
-export interface AMAHookParams {}
+export interface LiveHookParams {}
 
-export type AMAHook = (params: AMAHookParams) => AMAStreamType;
+export type LiveHook = (params: LiveHookParams) => LiveStreamType;
 
-export const useAMA: AMAHook = () => {
+export const useLive: LiveHook = () => {
+  const globalSocket = useRef<Socket | null>(null);
+  const globalSocketClient = useRef<SocketClientService | null>(
+    new SocketClientService()
+  );
+  const globalBroadcastId = useRef<string | null>(null);
+  const globalRtpCapabilities = useRef<any>(null);
+  const globalDevice = useRef<mediasoupClient.Device | null>(null);
+
   const globalConsumersAudioStream = useRef<Map<string, MediaStream>>(
     new Map()
   );
+  const globalConsumersVideoStream = useRef<Map<string, MediaStream>>(
+    new Map()
+  );
   const globalConsumersAudio = useRef<Map<string, Consumer>>(new Map());
+  const globalConsumersVideo = useRef<Map<string, Consumer>>(new Map());
   const globalAudioProducer = useRef<Producer | null>(null);
-  const globalSocket = useRef<Socket | null>(null);
-  const globalDevice = useRef<mediasoupClient.Device | null>(null);
   const globalUserId = useRef<string | null>(null);
-  const globalBroadcastId = useRef<string | null>(null);
-  const globalRtpCapabilities = useRef<any>(null);
   const globalIsOwner = useRef<boolean>(false);
   const globalHasTalkRequest = useRef<boolean>(false);
   const globalProducerTransport = useRef<Transport | null>(null);
@@ -56,93 +58,54 @@ export const useAMA: AMAHook = () => {
 
   const [toast, setToast] = useState<string>("");
 
-  const createRoom = (input: CreateBroadcastDto, userId: string) => {
-    return new Promise((res, rej) => {
-      if (!globalSocket.current) {
-        rej();
+  const createRoom = async (input: CreateBroadcastDto) => {
+    if (!globalSocket.current) {
+      await initSocketClient();
+    }
+
+    globalSocket.current!.emit("create-room", input, async (data: any) => {
+      if (!data) {
         return;
       }
-      globalSocket.current.emit("create-room", input, async (data: any) => {
-        if (!data) {
-          rej();
+      globalBroadcastId.current = data.id;
+      globalRtpCapabilities.current = data.rtpCapabilities.rtpCapabilities;
 
-          return;
-        }
-
-        globalUserId.current = userId;
-        globalBroadcastId.current = data.id;
-        globalRtpCapabilities.current = data.rtpCapabilities;
-        if (!globalDevice.current!.loaded) {
-          try {
-            await globalDevice.current!.load({
-              routerRtpCapabilities: globalRtpCapabilities.current,
-            });
-          } catch (error) {
-            leave();
-            rej(error);
-
-            return;
-          }
-        }
-
+      if (!globalDevice.current!.loaded) {
         try {
-          await createProducerTransport();
-          await createConsumerTransport();
-          await connectSendTransport();
-          globalIsOwner.current = true;
+          await globalDevice.current!.load({
+            routerRtpCapabilities: globalRtpCapabilities.current,
+          });
         } catch (error) {
           leave();
-          rej(error);
-
           return;
         }
+      }
 
-        globalSocket.current!.on("new-producer-joined", (data: any) => {
-          newProducerJoined(data.user_id, data.kind);
-        });
+      try {
+        await createProducerTransport();
+        await createConsumerTransport();
+        await connectSendTransport();
+        globalIsOwner.current = true;
+      } catch (error) {
+        leave();
 
-        globalSocket.current!.on("consumer-closed", async (data: any) => {
-          if (areStringsEquals(globalUserId.current!, data.user_id)) {
-            closeProducer();
-          } else {
-            closeConsumer(data.user_id);
-          }
-        });
+        return;
+      }
 
-        globalSocket.current!.on("broadcast-finished", async () => {
-          close();
-          // this.emitterService.emit(EventNameEnum.ON_SHOW_TOAST, {
-          //   message: "AMA has been finished",
-          //   type: "info",
-          // });
-        });
+      globalSocket.current!.on("broadcast-finished", async () => {
+        close();
+      });
 
-        globalSocket.current!.on("user-disconnected", async (data: any) => {
-          if (areStringsEquals(globalUserId.current!, data.id)) {
-            close();
-            // this.emitterService.emit(EventNameEnum.ON_SHOW_TOAST, {
-            //   message: "AMA has been finished",
-            //   type: "info",
-            // });
-          } else {
-            closeConsumer(data.id);
-            // this.emitterService.emit(
-            //   EventNameEnum.ON_USER_DISCONNECTED_FROM_TALK,
-            //   data
-            // );
-          }
-        });
-
-        // this.emitterService.emit(EventNameEnum.ON_SHOW_TOAST, {
-        //   message: "AMA started",
-        //   type: "info",
-        // });
-        res(true);
+      globalSocket.current!.on("user-disconnected", async (data) => {
+        // this.emitterService.emit(
+        //   EmitterEnum.ON_USER_DISCONNECTED_FROM_TALK,
+        //   data
+        // );
       });
     });
   };
 
-  const joinRoom = (id: string, userId: string) => {
+  const joinRoom = (id: string) => {
     return new Promise((res, rej) => {
       globalSocket.current!.emit(
         "join-room",
@@ -154,16 +117,15 @@ export const useAMA: AMAHook = () => {
             return;
           }
 
-          globalUserId.current = userId;
           globalBroadcastId.current = id;
           globalRtpCapabilities.current = data.rtpCapabilities;
-          if (!globalDevice || !globalDevice.current!.loaded) {
+          if (!globalDevice.current!.loaded) {
             try {
               await globalDevice.current!.load({
                 routerRtpCapabilities: globalRtpCapabilities.current,
               });
             } catch (error) {
-              await leave();
+              leave();
               rej(error);
             }
           }
@@ -182,67 +144,108 @@ export const useAMA: AMAHook = () => {
               broadcastId: globalBroadcastId.current,
               msg: { event: "get-producers", data: null },
             },
-            (data: any) => {
+            (data: any[]) => {
               data.forEach((producer: any) => {
+                newProducerJoined(producer, "video");
                 newProducerJoined(producer, "audio");
               });
             }
           );
 
-          globalSocket.current!.on("toggle-talk-permission", async (data) => {
-            if (data && globalHasTalkRequest.current) {
-              globalHasTalkRequest.current = false;
-              await createProducerTransport();
-              await connectSendTransport();
-              // toast.showInfo("Owner opened your talk");
-              setToast("Owner opened your talk");
-            } else {
-              closeProducer();
-              // toast.showInfo("Owner muted you");
-              setToast("Owner muted you");
-            }
-          });
-
-          globalSocket.current!.on("new-producer-joined", async (data) => {
-            newProducerJoined(data.user_id, data.kind);
-          });
-
           globalSocket.current!.on("consumer-closed", async (data) => {
-            if (areStringsEquals(globalUserId.current!, data.user_id)) {
-              closeProducer();
-            } else {
-              closeConsumer(data.user_id);
-            }
+            closeConsumer(data.user_id);
           });
 
           globalSocket.current!.on("broadcast-finished", async () => {
             close();
-            // toast.showInfo("AMA has been finished");
-            setToast("AMA has been finished");
           });
 
           globalSocket.current!.on("user-kicked", async () => {
             close();
-            // toast.showInfo("Owner has kicked you");
-            setToast("Owner has kicked you");
           });
 
           globalSocket.current!.on("user-disconnected", async (data) => {
-            if (areStringsEquals(globalUserId.current!, data.id)) {
-              close();
-              // toast.showInfo("AMA has been finished");
-              setToast("AMA has been finished");
-            } else {
-              closeConsumer(data.id);
-            }
+            closeConsumer(data.id);
           });
 
-          // toast.showSuccess("Joined");
-          setToast("Joined");
           res(true);
         }
       );
     });
+  };
+
+  const newProducerJoined = (producerId: string, kind: string) => {
+    try {
+      const { rtpCapabilities } = globalDevice.current!;
+      if (kind === "video") {
+        globalSocket.current!.emit(
+          "media",
+          {
+            broadcastId: globalBroadcastId.current,
+
+            msg: {
+              event: "consume",
+              data: { rtpCapabilities, user_id: producerId, kind: "video" },
+            },
+          },
+          async (
+            consumeData: mediasoupClient.types.ConsumerOptions<mediasoupClient.types.AppData>
+          ) => {
+            const consumer = await globalConsumerTransport.current!.consume(
+              consumeData
+            );
+
+            // 'trackended' | 'transportclose'
+            consumer.on("transportclose", () => {
+              console.log("remote producer closed");
+              globalConsumersVideo.current.delete(producerId);
+              globalConsumersVideo.current.delete(producerId);
+            });
+
+            globalConsumersVideo.current.set(producerId, consumer);
+            const stream = new MediaStream();
+            stream.addTrack(consumer.track);
+            globalConsumersVideoStream.current.set(producerId, stream);
+            // this.emitterService.emit(EmitterEnum.ON_UPDATE_VIDEO_STREAM)
+          }
+        );
+      }
+
+      if (kind === "audio") {
+        globalSocket.current!.emit(
+          "media",
+          {
+            broadcastId: globalBroadcastId.current,
+            msg: {
+              event: "consume",
+              data: { rtpCapabilities, user_id: producerId, kind: "audio" },
+            },
+          },
+          async (
+            consumeData: mediasoupClient.types.ConsumerOptions<mediasoupClient.types.AppData>
+          ) => {
+            const consumer = await globalConsumerTransport.current!.consume(
+              consumeData
+            );
+
+            // 'trackended' | 'transportclose'
+            consumer.on("transportclose", () => {
+              console.log("remote producer closed");
+              globalConsumersAudioStream.current.delete(producerId);
+              globalConsumersAudio.current.delete(producerId);
+            });
+
+            globalConsumersAudio.current.set(producerId, consumer);
+            const stream = new MediaStream();
+            stream.addTrack(consumer.track);
+            globalConsumersAudioStream.current.set(producerId, stream);
+            // this.emitterService.emit(EmitterEnum.ON_UPDATE_VIDEO_STREAM)
+          }
+        );
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const invite = (users: string[]): void => {
@@ -253,48 +256,22 @@ export const useAMA: AMAHook = () => {
     } else throw new Error("forbidden");
   };
 
-  //only owner
-  const toggleMemberTalkPermission = (userId: string) => {
-    if (globalIsOwner.current) {
-      globalSocket.current!.emit("media", {
-        broadcastId: globalBroadcastId.current,
-        msg: { event: "toggleMemberTalkPermission", data: { user_id: userId } },
-      });
-    } else throw new Error("forbidden");
-  };
+  const initSocketClient = async (): Promise<void> => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        globalSocket.current = await SocketClientService.build();
 
-  //only owner
-  const toggleMessagePermission = (userId: string) => {
-    if (globalIsOwner.current) {
-      globalSocket.current!.emit("toggle-messaging-permission", {
-        broadcastId: globalBroadcastId.current,
-        userId,
-      });
-    } else throw new Error("forbidden");
-  };
+        globalSocket.current.on("connection-accepted", () => {
+          resolve();
+        });
 
-  //only owner
-  const kickUser = (userId: string) => {
-    if (globalIsOwner.current) {
-      globalSocket.current!.emit("kick-user", {
-        broadcastId: globalBroadcastId.current,
-        userId,
-      });
-    } else throw new Error("forbidden");
-  };
-
-  const toggleMute = () => {
-    if (globalAudioProducer.current!.paused) {
-      globalAudioProducer.current!.resume();
-    } else {
-      globalAudioProducer.current!.pause();
-    }
-  };
-
-  // for owner it finished broadcast, for participants its leave room
-  const leave = () => {
-    globalSocket.current!.emit("leave-room", {
-      broadcastId: globalBroadcastId,
+        globalSocket.current.on("error", (err: any) => {
+          // this.emitterService.emit(EmitterEnum.ON_NEED_STREAM_ACCESS, err);
+          console.log("socket error: ", err);
+        });
+      } catch (error) {
+        reject(error);
+      }
     });
   };
 
@@ -323,7 +300,11 @@ export const useAMA: AMAHook = () => {
             // 'connect' | 'produce' | 'producedata' | 'connectionstatechange'
             globalProducerTransport.current.on(
               "connect",
-              async ({ dtlsParameters }, callback, errback) => {
+              async (
+                { dtlsParameters }: any,
+                callback: () => void,
+                errback: (arg0: any) => void
+              ) => {
                 try {
                   globalSocket.current!.emit("media", {
                     broadcastId: globalBroadcastId.current,
@@ -342,7 +323,11 @@ export const useAMA: AMAHook = () => {
 
             globalProducerTransport.current.on(
               "produce",
-              async (parameters, callback, errback) => {
+              async (
+                parameters: { kind: any; rtpParameters: any; appData: any },
+                callback: (arg0: { id: any }) => void,
+                errback: (arg0: any) => void
+              ) => {
                 try {
                   globalSocket.current!.emit(
                     "media",
@@ -423,7 +408,11 @@ export const useAMA: AMAHook = () => {
             // 'connect' | 'connectionstatechange'
             globalConsumerTransport.current!.on(
               "connect",
-              async ({ dtlsParameters }, callback, errback) => {
+              async (
+                { dtlsParameters }: any,
+                callback: () => void,
+                errback: (arg0: any) => void
+              ) => {
                 try {
                   globalSocket.current!.emit(
                     "media",
@@ -530,93 +519,35 @@ export const useAMA: AMAHook = () => {
     }
   };
 
-  const newProducerJoined = (producerId: string, kind: string) => {
-    try {
-      const { rtpCapabilities } = globalDevice.current!;
-      if (kind === "audio") {
-        globalSocket.current!.emit(
-          "media",
-          {
-            broadcastId: globalBroadcastId.current,
-            msg: {
-              event: "consume",
-              data: { rtpCapabilities, user_id: producerId, kind: "audio" },
-            },
-          },
-          async (
-            consumeData: mediasoupClient.types.ConsumerOptions<mediasoupClient.types.AppData>
-          ) => {
-            const consumer = await globalConsumerTransport.current!.consume(
-              consumeData
-            );
-
-            // 'trackended' | 'transportclose'
-            consumer.on("transportclose", () => {
-              console.log("remote producer closed.");
-              globalConsumersAudioStream.current.delete(producerId);
-              globalConsumersAudio.current.delete(producerId);
-            });
-
-            globalConsumersAudio.current.set(producerId, consumer);
-            const stream = new MediaStream();
-            stream.addTrack(consumer.track);
-            globalConsumersAudioStream.current.set(producerId, stream);
-            // this.emitterService.emit(EmitterEnum.ON_UPDATE_CONSUMER);
-          }
-        );
-      }
-    } catch (error) {
-      console.error(error);
-    }
+  const hasGetUserMedia = () => {
+    return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
   };
 
-  const closeProducer = () => {
-    if (globalAudioProducer.current) {
-      globalAudioProducer.current.close();
-      globalProducerTransport.current!.close();
-      globalAudioProducer.current = null;
-      globalProducerTransport.current = null;
+  const leave = () => {
+    if (globalSocket.current) {
+      globalSocket.current.emit("leave-room", {
+        broadcastId: globalBroadcastId.current,
+      });
     }
   };
 
   const closeConsumer = (producerId: string) => {
+    const videoConsumer = globalConsumersVideo.current.get(producerId);
     const audioConsumer = globalConsumersAudio.current.get(producerId);
 
-    if (audioConsumer) {
+    if (videoConsumer && audioConsumer) {
+      videoConsumer.close();
       audioConsumer.close();
+      globalConsumersVideo.current.delete(producerId);
       globalConsumersAudio.current.delete(producerId);
-      globalConsumersAudioStream.current.delete(producerId);
+      globalConsumersVideoStream.current.delete(producerId);
+      globalConsumersVideoStream.current.delete(producerId);
     }
-
-    // this.emitterService.emit(EmitterEnum.ON_UPDATE_CONSUMER);
-  };
-
-  const close = () => {
-    closeProducer();
-    globalConsumersAudio.current.forEach((e) => {
-      e.close();
-    });
-
-    globalConsumersAudio.current.clear();
-    globalConsumersAudioStream.current.clear();
-    globalSocket.current!.close();
-    globalSocket.current!.disconnect();
-    // this.emitterService.emit(EmitterEnum.ON_FINISH_BROADCAST)
-  };
-
-  const hasGetUserMedia = () => {
-    return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
   };
 
   return {
     toast,
     createRoom,
     joinRoom,
-    invite,
-    toggleMemberTalkPermission,
-    toggleMessagePermission,
-    kickUser,
-    toggleMute,
-    leave,
   };
 };

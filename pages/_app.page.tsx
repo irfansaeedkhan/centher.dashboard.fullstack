@@ -1,7 +1,9 @@
+import { createContext } from "react";
 import { NextPage } from "next";
 import type { AppProps } from "next/app";
 import NextNProgress from "nextjs-progressbar";
 import { Toaster } from "react-hot-toast";
+import * as mediasoupClient from "mediasoup-client";
 
 // App Imports
 import { RefreshContextProvider } from "@/web3/context/refresh.context";
@@ -9,7 +11,7 @@ import ScriptTags from "@/components/script.tags";
 import { CookiesConstentModal } from "@/components/modal/cookies-consent.modal";
 import { Web3ModalProvider } from "@/web3/context/web3-modal";
 import { GlobalModal } from "@/components/modal/global-modal/global-modal";
-import { createContext, useContext } from "react";
+import { StreamProvider } from "@/hooks/stream/use.core";
 
 import "@/styles/globals.css";
 
@@ -28,6 +30,8 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   // useCreateSocketIOConnection();
   const getLayout = Component.getLayout || ((page) => page);
 
+  const deviceInstance = new mediasoupClient.Device();
+
   return (
     <>
       <ScriptTags />
@@ -39,30 +43,32 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
           showSpinner: false,
         }}
       />
-      <RefreshContextProvider>
-        <GlobalModal>
-          <Web3ModalProvider>
-            <Toaster
-              position="top-center"
-              reverseOrder={false}
-              toastOptions={{
-                // Define default options
-                duration: 5000,
-                style: {
-                  background: "#363636",
-                  color: "#fff",
-                },
+      <StreamProvider deviceInstance={deviceInstance}>
+        <RefreshContextProvider>
+          <GlobalModal>
+            <Web3ModalProvider>
+              <Toaster
+                position="top-center"
+                reverseOrder={false}
+                toastOptions={{
+                  // Define default options
+                  duration: 5000,
+                  style: {
+                    background: "#363636",
+                    color: "#fff",
+                  },
 
-                // Default options for specific types
-                success: {
-                  duration: 3000,
-                },
-              }}
-            />
-            {getLayout(<Component {...pageProps} />)}
-          </Web3ModalProvider>
-        </GlobalModal>
-      </RefreshContextProvider>
+                  // Default options for specific types
+                  success: {
+                    duration: 3000,
+                  },
+                }}
+              />
+              {getLayout(<Component {...pageProps} />)}
+            </Web3ModalProvider>
+          </GlobalModal>
+        </RefreshContextProvider>
+      </StreamProvider>
     </>
   );
 }
