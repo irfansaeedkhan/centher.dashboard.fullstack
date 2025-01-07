@@ -7,6 +7,8 @@ import { Producer } from "mediasoup-client/lib/Producer";
 import { CreateBroadcastDto } from "@/stream/types/Broadcast";
 import { areStringsEquals } from "@/stream/utils/string.utils";
 import { TState } from "@/stream/types/interfaces";
+import { SocketClientService } from "@/stream/clients/socket-client";
+import { RtpCapabilities } from "mediasoup-client/lib/RtpParameters";
 
 export interface AMAStreamType {
   toast: string;
@@ -20,21 +22,23 @@ export interface AMAStreamType {
   leave: () => void;
 }
 
-export interface AMAHookParams {}
+export interface AMAHookParams {
+  deviceInstance: mediasoupClient.Device;
+}
 
 export type AMAHook = (params: AMAHookParams) => AMAStreamType;
 
-export const useAMA: AMAHook = () => {
+export const useAMA: AMAHook = ({ deviceInstance }) => {
   const globalConsumersAudioStream = useRef<Map<string, MediaStream>>(
     new Map()
   );
   const globalConsumersAudio = useRef<Map<string, Consumer>>(new Map());
   const globalAudioProducer = useRef<Producer | null>(null);
   const globalSocket = useRef<Socket | null>(null);
-  const globalDevice = useRef<mediasoupClient.Device | null>(null);
+  const globalDevice = useRef<mediasoupClient.Device>(deviceInstance);
   const globalUserId = useRef<string | null>(null);
   const globalBroadcastId = useRef<string | null>(null);
-  const globalRtpCapabilities = useRef<any>(null);
+  const globalRtpCapabilities = useRef<RtpCapabilities | null>(null);
   const globalIsOwner = useRef<boolean>(false);
   const globalHasTalkRequest = useRef<boolean>(false);
   const globalProducerTransport = useRef<Transport | null>(null);
@@ -56,89 +60,87 @@ export const useAMA: AMAHook = () => {
 
   const [toast, setToast] = useState<string>("");
 
-  const createRoom = (input: CreateBroadcastDto, userId: string) => {
-    return new Promise((res, rej) => {
-      if (!globalSocket.current) {
-        rej();
+  const createRoom = async (input: CreateBroadcastDto, userId: string) => {
+    if (!globalSocket.current) {
+      console.warn("socket is not connected");
+      await initSocketClient();
+      console.log("socket connected");
+    }
+    globalSocket.current!.emit("create-room", input, async (data: any) => {
+      console.log("create-room", data);
+      if (!data) {
         return;
       }
-      globalSocket.current.emit("create-room", input, async (data: any) => {
-        if (!data) {
-          rej();
 
-          return;
-        }
-
-        globalUserId.current = userId;
-        globalBroadcastId.current = data.id;
-        globalRtpCapabilities.current = data.rtpCapabilities;
-        if (!globalDevice.current!.loaded) {
-          try {
-            await globalDevice.current!.load({
-              routerRtpCapabilities: globalRtpCapabilities.current,
-            });
-          } catch (error) {
-            leave();
-            rej(error);
-
-            return;
-          }
-        }
-
+      globalUserId.current = userId;
+      globalBroadcastId.current = data.id;
+      globalRtpCapabilities.current = data.rtpCapabilities;
+      console.log("globalDevice.current", globalDevice.current);
+      console.log("globalDevice.current", !globalDevice.current.loaded);
+      if (!globalDevice.current!.loaded) {
         try {
-          await createProducerTransport();
-          await createConsumerTransport();
-          await connectSendTransport();
-          globalIsOwner.current = true;
+          await globalDevice.current!.load({
+            routerRtpCapabilities: globalRtpCapabilities.current!,
+          });
         } catch (error) {
           leave();
-          rej(error);
-
+          console.error(error);
           return;
         }
+      }
 
-        globalSocket.current!.on("new-producer-joined", (data: any) => {
-          newProducerJoined(data.user_id, data.kind);
-        });
+      try {
+        await createProducerTransport();
+        await createConsumerTransport();
+        await connectSendTransport();
+        globalIsOwner.current = true;
+      } catch (error) {
+        leave();
+        console.error(error);
 
-        globalSocket.current!.on("consumer-closed", async (data: any) => {
-          if (areStringsEquals(globalUserId.current!, data.user_id)) {
-            closeProducer();
-          } else {
-            closeConsumer(data.user_id);
-          }
-        });
+        return;
+      }
 
-        globalSocket.current!.on("broadcast-finished", async () => {
+      globalSocket.current!.on("new-producer-joined", (data: any) => {
+        newProducerJoined(data.user_id, data.kind);
+      });
+
+      globalSocket.current!.on("consumer-closed", async (data: any) => {
+        if (areStringsEquals(globalUserId.current!, data.user_id)) {
+          closeProducer();
+        } else {
+          closeConsumer(data.user_id);
+        }
+      });
+
+      globalSocket.current!.on("broadcast-finished", async () => {
+        close();
+        // this.emitterService.emit(EventNameEnum.ON_SHOW_TOAST, {
+        //   message: "AMA has been finished",
+        //   type: "info",
+        // });
+      });
+
+      globalSocket.current!.on("user-disconnected", async (data: any) => {
+        if (areStringsEquals(globalUserId.current!, data.id)) {
           close();
           // this.emitterService.emit(EventNameEnum.ON_SHOW_TOAST, {
           //   message: "AMA has been finished",
           //   type: "info",
           // });
-        });
-
-        globalSocket.current!.on("user-disconnected", async (data: any) => {
-          if (areStringsEquals(globalUserId.current!, data.id)) {
-            close();
-            // this.emitterService.emit(EventNameEnum.ON_SHOW_TOAST, {
-            //   message: "AMA has been finished",
-            //   type: "info",
-            // });
-          } else {
-            closeConsumer(data.id);
-            // this.emitterService.emit(
-            //   EventNameEnum.ON_USER_DISCONNECTED_FROM_TALK,
-            //   data
-            // );
-          }
-        });
-
-        // this.emitterService.emit(EventNameEnum.ON_SHOW_TOAST, {
-        //   message: "AMA started",
-        //   type: "info",
-        // });
-        res(true);
+        } else {
+          closeConsumer(data.id);
+          // this.emitterService.emit(
+          //   EventNameEnum.ON_USER_DISCONNECTED_FROM_TALK,
+          //   data
+          // );
+        }
       });
+
+      // this.emitterService.emit(EventNameEnum.ON_SHOW_TOAST, {
+      //   message: "AMA started",
+      //   type: "info",
+      // });
     });
   };
 
@@ -160,7 +162,7 @@ export const useAMA: AMAHook = () => {
           if (!globalDevice || !globalDevice.current!.loaded) {
             try {
               await globalDevice.current!.load({
-                routerRtpCapabilities: globalRtpCapabilities.current,
+                routerRtpCapabilities: globalRtpCapabilities.current!,
               });
             } catch (error) {
               await leave();
@@ -308,17 +310,16 @@ export const useAMA: AMAHook = () => {
         globalSocket.current!.emit(
           "media",
           {
-            broadcastId: globalBroadcastId,
+            broadcastId: globalBroadcastId.current,
             msg: {
               event: "createWebRtcTransport",
               data: { type: "producer" },
             },
           },
-          (data: {
-            params: mediasoupClient.types.TransportOptions<mediasoupClient.types.AppData>;
-          }) => {
+          (data: { params: any }) => {
+            console.log("createWebRtcTransport", data);
             globalProducerTransport.current =
-              globalDevice.current!.createSendTransport(data.params);
+              globalDevice.current.createSendTransport(data.params);
 
             // 'connect' | 'produce' | 'producedata' | 'connectionstatechange'
             globalProducerTransport.current.on(
@@ -606,6 +607,25 @@ export const useAMA: AMAHook = () => {
 
   const hasGetUserMedia = () => {
     return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+  };
+
+  const initSocketClient = async (): Promise<void> => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        globalSocket.current = await SocketClientService.build();
+
+        globalSocket.current.on("connection-accepted", () => {
+          resolve();
+        });
+
+        globalSocket.current.on("error", (err: any) => {
+          // this.emitterService.emit(EmitterEnum.ON_NEED_STREAM_ACCESS, err);
+          console.log("socket error: ", err);
+        });
+      } catch (error) {
+        reject(error);
+      }
+    });
   };
 
   return {

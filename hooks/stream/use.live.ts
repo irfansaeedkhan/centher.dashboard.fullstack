@@ -14,18 +14,20 @@ export interface LiveStreamType {
   joinRoom: (id: string, userId: string) => Promise<any>;
 }
 
-export interface LiveHookParams {}
+export interface LiveHookParams {
+  deviceInstance: mediasoupClient.Device;
+}
 
 export type LiveHook = (params: LiveHookParams) => LiveStreamType;
 
-export const useLive: LiveHook = () => {
+export const useLive: LiveHook = ({ deviceInstance }) => {
   const globalSocket = useRef<Socket | null>(null);
   const globalSocketClient = useRef<SocketClientService | null>(
     new SocketClientService()
   );
   const globalBroadcastId = useRef<string | null>(null);
   const globalRtpCapabilities = useRef<any>(null);
-  const globalDevice = useRef<mediasoupClient.Device | null>(null);
+  const globalDevice = useRef<mediasoupClient.Device>(deviceInstance);
 
   const globalConsumersAudioStream = useRef<Map<string, MediaStream>>(
     new Map()
@@ -33,15 +35,23 @@ export const useLive: LiveHook = () => {
   const globalConsumersVideoStream = useRef<Map<string, MediaStream>>(
     new Map()
   );
+
   const globalConsumersAudio = useRef<Map<string, Consumer>>(new Map());
   const globalConsumersVideo = useRef<Map<string, Consumer>>(new Map());
+
   const globalAudioProducer = useRef<Producer | null>(null);
+  const globalVideoProducer = useRef<Producer | null>(null);
+
   const globalUserId = useRef<string | null>(null);
   const globalIsOwner = useRef<boolean>(false);
+
   const globalHasTalkRequest = useRef<boolean>(false);
+
   const globalProducerTransport = useRef<Transport | null>(null);
   const globalConsumerTransport = useRef<Transport | null>(null);
+
   const globalLocalAudio = useRef<MediaStream | null>(null);
+  const globalLocalVideo = useRef<MediaStream | null>(null);
 
   const globalReceiveStreamLoader = useRef<
     "connecting" | "connected" | "failed" | "none"
@@ -285,7 +295,7 @@ export const useLive: LiveHook = () => {
         globalSocket.current!.emit(
           "media",
           {
-            broadcastId: globalBroadcastId,
+            broadcastId: globalBroadcastId.current,
             msg: {
               event: "createWebRtcTransport",
               data: { type: "producer" },
@@ -479,41 +489,70 @@ export const useLive: LiveHook = () => {
 
         const stream = await navigator.mediaDevices.getUserMedia({
           audio: true,
-          video: false,
+          video: {
+            width: {
+              min: 640,
+              max: 1920,
+            },
+            height: {
+              min: 400,
+              max: 1080,
+            },
+          },
         });
 
         const localAudio = stream.getAudioTracks()[0];
-        if (localAudio) {
+        const localVideo = stream.getVideoTracks()[0];
+
+        if (localAudio && localVideo) {
           if (
-            globalProducerTransport.current &&
-            !globalProducerTransport.current.closed
+            globalProducerTransport &&
+            !globalProducerTransport.current!.closed
           ) {
             globalAudioProducer.current =
-              await globalProducerTransport.current.produce({
+              await globalProducerTransport.current!.produce({
                 track: localAudio,
               });
             globalLocalAudio.current = new MediaStream([localAudio]);
+            globalVideoProducer.current =
+              await globalProducerTransport.current!.produce({
+                codecOptions: {
+                  videoGoogleStartBitrate: 1000,
+                },
+                track: localVideo,
+              });
+
+            globalLocalVideo.current = new MediaStream([localVideo]);
+
             globalAudioProducer.current.on("trackended", () => {
-              console.log("track ended");
               globalSendStreamLoader.current = "trackEnded";
+              console.log("audio track ended");
               // close audio track
             });
 
             globalAudioProducer.current.on("transportclose", () => {
-              console.log("producer closed");
               globalSendStreamLoader.current = "producerClosed";
+              console.log("audio transport ended");
               // close audio track
             });
-            console.log("track sent.");
-          } else {
-            throw new Error("producer is closed");
-          }
-        } else {
-          throw new Error("invalid stream");
-        }
-      } else {
-        throw new Error("cannot use audio");
-      }
+
+            globalVideoProducer.current.on("trackended", () => {
+              globalSendStreamLoader.current = "trackEnded";
+              console.log("video track ended");
+              // close video track
+            });
+
+            globalVideoProducer.current.on("transportclose", () => {
+              globalSendStreamLoader.current = "producerClosed";
+              console.log("video transport ended");
+
+              // close video track
+            });
+            console.log("tracks sent.");
+            // this.emitterService.emit(EmitterEnum.ON_UPDATE_VIDEO_STREAM);
+          } else throw new Error("producer is closed");
+        } else throw new Error("invalid local streams");
+      } else throw new Error("cannot use video or audio");
     } catch (error) {
       throw error;
     }

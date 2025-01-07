@@ -1,3 +1,4 @@
+import { getAuthTokens } from "@/lib/auth/auth-tokens-storage";
 import { SocketOptions, ManagerOptions, io, Socket } from "socket.io-client";
 
 export class SocketClientService {
@@ -12,8 +13,12 @@ export class SocketClientService {
   private static async getToken(): Promise<string> {
     return new Promise((res, rej) => {
       try {
-        //TODO: return token from store
-        res("TOKEN");
+        const tokens = getAuthTokens();
+        if (tokens?.access_token) {
+          res(tokens.access_token);
+        } else {
+          rej(new Error("Access token is undefined"));
+        }
       } catch (error) {
         rej(error);
       }
@@ -22,7 +27,7 @@ export class SocketClientService {
 
   private static getSocketAddress(): string {
     //RETURN server address from envs
-    return "SERVER_ADRESS";
+    return "https://15.188.108.51:3000/broadcast";
   }
 
   private static async getOptions(): Promise<

@@ -21,14 +21,20 @@ interface StreamProviderProps {
   deviceInstance: mediasoupClient.Device;
 }
 
-export const StreamProvider: React.FC<StreamProviderProps> = ({ children }) => {
+export const StreamProvider: React.FC<StreamProviderProps> = ({
+  children,
+  deviceInstance,
+}) => {
   const helper = useRef<StreamHooksHelper>(new StreamHooksHelper());
   const speakersRawData = useRef<Partial<ICentalkUser>[]>([]);
-  const amaAgent = useAMA({});
-  const liveAgent = useLive({});
+  const amaAgent = useAMA({
+    deviceInstance,
+  });
+  const liveAgent = useLive({
+    deviceInstance,
+  });
 
   const useGetSubscribes = async () => {
-    console.log("useGetSubscribes");
     const [data, setData] = useState<any>(null);
     const apollo = await helper.current.getApolloClientInstance();
     const query = getStreams();
@@ -40,7 +46,6 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({ children }) => {
     });
 
     result.subscribe((data) => {
-      console.log("Data1", data);
       setData(data);
     });
 
