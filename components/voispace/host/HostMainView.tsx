@@ -19,6 +19,7 @@ type ComponentMap = Map<
   React.ComponentType<{
     setComponentName: (name: string) => any;
     onClose: () => void;
+    formState: Room;
   }>
 >;
 
@@ -47,7 +48,7 @@ const HostMainView: React.FC<HostMainViewInterface> = ({
     }
   }, [ComponentToRender]);
 
-  console.log(formState);
+  console.log("formState-hostview channel::", formState);
   return (
     <ModalContainer
       modalId="host-settings"
@@ -96,6 +97,7 @@ const HostMainView: React.FC<HostMainViewInterface> = ({
           ? React.createElement(ComponentToRender, {
               setComponentName,
               onClose,
+              formState,
             })
           : null}
       </div>

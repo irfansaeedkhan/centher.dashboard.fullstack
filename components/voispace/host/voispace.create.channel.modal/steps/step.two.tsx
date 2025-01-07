@@ -33,7 +33,7 @@ const StepTwo = ({ formState, handleInputChange }: any) => {
   };
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center sm:justify-start">
+      <div className="flex flex-col items-start justify-between gap-4 ">
         <div className={`text-xl font-medium text-white`}>
           Dive into <span className={`text-gradient-1`}>VoiceSpace</span>
         </div>
