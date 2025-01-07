@@ -3,16 +3,13 @@ import { GraphQLResourcesUrl, GraphQlUrlRepository } from "../types/Graphql";
 
 const urlRepo: GraphQlUrlRepository = {
   mainServer: (mode: ApolloGraphQlUriEnum) => {
-    //TODO: return address from env
-    return "https://stag-kub-sig-live-v1.centher.io/v1/graphql";
+    return process.env.NEXT_PUBLIC_GQL_URL_MAIN || "";
   },
   subgraphServer: () => {
-    //TODO: return address from env
-    return "https://stag-kub-sig-live-v1.centher.io/v1/graphql";
+    return process.env.NEXT_PUBLIC_GQL_URL_SUBGRAPH || "";
   },
   blockchainServer: (mode: ApolloGraphQlUriEnum) => {
-    //TODO: return address from env
-    return "https://stag-kub-sig-live-v1.centher.io/v1/graphql";
+    return process.env.NEXT_PUBLIC_GQL_URL_BLOCKCHAIN || "";
   },
 };
 
