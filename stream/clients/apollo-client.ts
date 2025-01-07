@@ -141,6 +141,8 @@ export class ApolloService {
                 }
               : { "X-Hasura-Role": "user" },
         },
+
+        // TODO: Remove
         // connectionParams: {
         //   headers: {
         //     // "X-Hasura-Role": "user",
