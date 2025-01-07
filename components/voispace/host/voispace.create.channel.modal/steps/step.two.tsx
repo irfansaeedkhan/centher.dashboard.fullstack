@@ -5,7 +5,10 @@ import { MicIcon2, VideoIcon2 } from "@/assets/svgs";
 import Button from "@/components/button";
 import Image from "next/image";
 
+import useMediaDevices from "hooks/use.get.media.devices/index";
+
 const StepTwo = ({ formState, handleInputChange }: any) => {
+  const { cameras, microphones, error } = useMediaDevices();
   const [preview, setPreview] = useState<string | null>(null);
   const [imageName, setImageName] = useState<string | null>(null);
 
@@ -157,25 +160,23 @@ const StepTwo = ({ formState, handleInputChange }: any) => {
               formState.roomType === "AMA" && formState.mode === "Video"
             }
           >
-            {formState.mode === "Audio" ? (
-              <>
-                <option value="Internal Microphone">
-                  Default - Internal Microphone
-                </option>
-                <option value="External Microphone">External Microphone</option>
-                <option value="Bluetooth Device">Bluetooth Device</option>
-              </>
-            ) : (
-              <>
-                <option value="Internal Camera">
-                  Default - Internal Camera
-                </option>
-                <option value="External Camera">External Camera</option>
-                <option value="Virtual Background Camera">
-                  Virtual Background Camera
-                </option>
-              </>
-            )}
+            {formState.mode === "Audio" &&
+              microphones.map((microphone, index) => {
+                return (
+                  <option key={index} value={microphone.deviceId}>
+                    {microphone.label}
+                  </option>
+                );
+              })}
+
+            {formState.mode === "Video" &&
+              cameras.map((camera, index) => {
+                return (
+                  <option key={index} value={camera.deviceId}>
+                    {camera.label}
+                  </option>
+                );
+              })}
           </select>
         </div>
       </div>
