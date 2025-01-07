@@ -1,4 +1,5 @@
 import { SocketOptions, ManagerOptions, io, Socket } from "socket.io-client";
+import { getAuthTokens } from "@/lib/auth/auth-tokens-storage";
 
 export class SocketClientService {
   static async build(): Promise<Socket> {
@@ -13,7 +14,12 @@ export class SocketClientService {
     return new Promise((res, rej) => {
       try {
         //TODO: return token from store
-        res("TOKEN");
+        const tokens = getAuthTokens();
+        if (tokens?.access_token) {
+          res(tokens.access_token);
+        } else {
+          rej(new Error("Access token is undefined"));
+        }
       } catch (error) {
         rej(error);
       }
