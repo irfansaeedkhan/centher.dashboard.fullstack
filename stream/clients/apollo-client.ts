@@ -123,8 +123,8 @@ export class ApolloService {
     }
   }
   private async getWSLink(resource: GraphQLResourcesUrl) {
-    let activeSocket = null;
-    let timedOut = null;
+    let activeSocket: any = null;
+    let timedOut: any = null;
     const token = await this.getToken();
 
     // FIXME: manage token
