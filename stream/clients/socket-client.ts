@@ -13,7 +13,6 @@ export class SocketClientService {
   private static async getToken(): Promise<string> {
     return new Promise((res, rej) => {
       try {
-        //TODO: return token from store
         const tokens = getAuthTokens();
         if (tokens?.access_token) {
           res(tokens.access_token);
@@ -27,8 +26,7 @@ export class SocketClientService {
   }
 
   private static getSocketAddress(): string {
-    //RETURN server address from envs
-    return "SERVER_ADRESS";
+    return process.env.NEXT_PUBLIC_GQL_URL_WEBSOCKET || "";
   }
 
   private static async getOptions(): Promise<
