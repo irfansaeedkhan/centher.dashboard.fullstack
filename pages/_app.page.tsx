@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import { createContext, useEffect, useState } from "react";
 import { NextPage } from "next";
 import type { AppProps } from "next/app";
 import NextNProgress from "nextjs-progressbar";
@@ -30,7 +30,24 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   // useCreateSocketIOConnection();
   const getLayout = Component.getLayout || ((page) => page);
 
-  const deviceInstance = new mediasoupClient.Device();
+  const [deviceInstance, setDeviceInstance] =
+    useState<mediasoupClient.Device | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      // Ensure initialization happens only in the browser
+      try {
+        const device = new mediasoupClient.Device();
+        setDeviceInstance(device);
+      } catch (error) {
+        console.error("Error initializing mediasoup device:", error);
+      }
+    }
+  }, []);
+
+  if (!deviceInstance) {
+    return null;
+  }
 
   return (
     <>
