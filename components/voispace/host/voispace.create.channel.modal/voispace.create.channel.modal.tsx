@@ -248,8 +248,8 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
           <Button
             title={currentStep === 4 ? "Submit" : "Next"}
             disabled={
-              (currentStep === 2 && !hasPermission) ||
-              (currentStep === 2 && !formState.image)
+              // (currentStep === 2 && !hasPermission) ||
+              currentStep === 2 && !formState.image
             } // Disable on Step 2 if no image
             variant="primary"
             onClick={handleNext}
