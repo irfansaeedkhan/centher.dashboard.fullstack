@@ -269,9 +269,9 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
                 : "Next"
             }
             disabled={
-              loading ||
-              (currentStep === 2 && !formState.image) ||
-              (currentStep === 2 && !formState.hasPermission)
+              loading || (currentStep === 2 && !formState.image)
+              // ||
+              // (currentStep === 2 && !formState.hasPermission)
             }
             variant="primary"
             onClick={handleNext}
