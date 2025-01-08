@@ -6,15 +6,43 @@ import Button from "@/components/button";
 import Image from "next/image";
 
 import useMediaDevices from "hooks/use.get.media.devices/index";
+import axios from "axios";
+import toast from "react-hot-toast";
 
-const StepTwo = ({ formState, handleInputChange }: any) => {
+const StepTwo = ({ formState, handleInputChange, setLoading }: any) => {
   const { cameras, microphones, error } = useMediaDevices();
   const [preview, setPreview] = useState<string | null>(null);
   const [imageName, setImageName] = useState<string | null>(null);
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  async function uploadImageToAWS(file: File, type: string) {
+    const url = `/upload/path`;
+    try {
+      const { object_name, object_url, presigned_post_data } = (
+        await axios.post(url, { type })
+      ).data;
+
+      const formData = new FormData();
+      Object.keys(presigned_post_data.fields).forEach((key) => {
+        formData.append(key, presigned_post_data.fields[key]);
+      });
+      formData.append("file", file);
+
+      await axios.post(presigned_post_data.url, formData);
+
+      return { object_url, object_name };
+    } catch (error) {
+      console.error("Error uploading image to AWS:", error);
+      throw error;
+    }
+  }
+
+  const handleImageUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
     if (file) {
+      setLoading(true);
+
       const reader = new FileReader();
       reader.onload = () => {
         const imageUrl = reader.result as string;
@@ -23,6 +51,19 @@ const StepTwo = ({ formState, handleInputChange }: any) => {
         handleInputChange("image", imageUrl);
       };
       reader.readAsDataURL(file);
+
+      // Upload the image to AWS
+      // try {
+      //   const uploadResult = await uploadImageToAWS(file, "room-image");
+      //   const uploadedImageUrl = uploadResult.object_url; // Get the uploaded URL
+      //   handleInputChange("image", uploadedImageUrl); // Save the uploaded URL in the form state
+      //   toast.success("Image uploaded successfully!");
+      // } catch (error) {
+      //   console.error("Failed to upload image:", error);
+      //   toast.error("Image upload failed. Please try again.");
+      // } finally {
+      //   setLoading(false); // Hide loader
+      // }
     }
   };
 
