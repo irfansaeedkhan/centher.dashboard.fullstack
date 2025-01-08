@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
     environment:
-      name: play-kub
+      name: playground-kub
       url: https://play-kubapp.centher.io
     env:
       docker_image_name: centher/play-kub-site-dapp-frontend:${{ github.run_number }}
