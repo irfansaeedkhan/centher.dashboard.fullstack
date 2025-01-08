@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { clsx } from "clsx";
 import { TextLengthChecker } from "@/components/voispace/shared/text.length.checker";
 import { MicIcon2, VideoIcon2 } from "@/assets/svgs";
@@ -6,23 +6,97 @@ import Button from "@/components/button";
 import Image from "next/image";
 
 import useMediaDevices from "hooks/use.get.media.devices/index";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { getUserImageUploadUrl } from "@/lib/user";
 
-const StepTwo = ({ formState, handleInputChange }: any) => {
-  const { cameras, microphones, error } = useMediaDevices();
+interface UserImageUploadUrlResponse {
+  presignedPostData: PresignedPostData;
+  objectName: string;
+}
+
+interface PresignedPostData {
+  url: string;
+  fields: Fields;
+}
+
+interface Fields {
+  "Content-Type": string;
+  Policy: string;
+  "X-Amz-Algorithm": string;
+  "X-Amz-Credential": string;
+  "X-Amz-Date": string;
+  "X-Amz-Signature": string;
+  acl: string;
+  bucket: string;
+  key: string;
+}
+
+const StepTwo = ({ formState, handleInputChange, setLoading }: any) => {
+  const { cameras, microphones, error, hasPermission } = useMediaDevices();
   const [preview, setPreview] = useState<string | null>(null);
   const [imageName, setImageName] = useState<string | null>(null);
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  // to add audio and video id to the form state on the first render
+  useEffect(() => {
+    if (!formState.audioDevice && microphones.length > 0) {
+      handleInputChange("audioDevice", microphones[0].deviceId);
+    }
+    if (!formState.videoDevice && cameras.length > 0) {
+      handleInputChange("videoDevice", cameras[0].deviceId);
+    }
+  }, [microphones, cameras, handleInputChange, formState]);
+
+  // Function to upload the image to AWS
+  const handleImageUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
-    if (file) {
+
+    if (!file) return;
+
+    try {
+      if (
+        !["image/jpeg", "image/png", "image/gif", "image/webp"].includes(
+          file.type
+        )
+      ) {
+        toast.error("Invalid file type. Please upload a valid image.");
+        return;
+      }
+
+      setLoading(true);
+
+      // Get presigned URL for the image
+      const { presignedPostData, objectName } = await getUserImageUploadUrl(
+        file.name,
+        "cover_image"
+      );
+
+      // Prepare form data for uploading the image
+      const formData = new FormData();
+      (Object.keys(presignedPostData.fields) as (keyof Fields)[]).forEach(
+        (key) => {
+          formData.append(key, presignedPostData.fields[key]);
+        }
+      );
+      formData.append("file", file);
+
+      // Upload the image to AWS S3 using the presigned URL
+      await axios.post(presignedPostData.url, formData);
+      handleInputChange("image", objectName);
+      toast.success("Image uploaded successfully!");
+
       const reader = new FileReader();
       reader.onload = () => {
-        const imageUrl = reader.result as string;
-        setPreview(imageUrl);
-        setImageName(file.name);
-        handleInputChange("image", imageUrl);
+        setPreview(reader.result as string);
       };
       reader.readAsDataURL(file);
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      toast.error("Failed to upload image. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -31,6 +105,7 @@ const StepTwo = ({ formState, handleInputChange }: any) => {
     setImageName(null);
     handleInputChange("image", null);
   };
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col items-start justify-between gap-4 ">
@@ -161,22 +236,18 @@ const StepTwo = ({ formState, handleInputChange }: any) => {
             }
           >
             {formState.mode === "Audio" &&
-              microphones.map((microphone, index) => {
-                return (
-                  <option key={index} value={microphone.deviceId}>
-                    {microphone.label}
-                  </option>
-                );
-              })}
+              microphones.map((microphone, index) => (
+                <option key={index} value={microphone.deviceId}>
+                  {microphone.label}
+                </option>
+              ))}
 
             {formState.mode === "Video" &&
-              cameras.map((camera, index) => {
-                return (
-                  <option key={index} value={camera.deviceId}>
-                    {camera.label}
-                  </option>
-                );
-              })}
+              cameras.map((camera, index) => (
+                <option key={index} value={camera.deviceId}>
+                  {camera.label}
+                </option>
+              ))}
           </select>
         </div>
       </div>

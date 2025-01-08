@@ -11,11 +11,11 @@ import { StreamAccessModeEnum } from "@/stream/enum/stream-access-mode.enum";
 import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
 import { CreateBroadcastDto } from "@/stream/types/Broadcast";
 
-import HostMainView from "../HostMainView";
 import StepOne from "./steps/step.one";
 import StepTwo from "./steps/step.two";
 import StepThree from "./steps/step.three";
 import StepFour from "./steps/step.four";
+import ChannelMainView from "../../shared/ChannelMainView";
 
 interface Props {
   onClose: () => void;
@@ -32,6 +32,7 @@ export interface Room {
   videoDevice: string;
   mode: "Audio" | "Video";
   roomResponse: any;
+  hasPermission: Boolean;
 }
 
 export interface SearchResultWithType {
@@ -55,28 +56,48 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
     invitedPrivilegeUsers: [],
     audioDevice: "",
     videoDevice: "",
+    hasPermission: false,
     mode: "Audio",
     roomResponse: null,
   });
 
   const [currentStep, setCurrentStep] = useState(1);
+  const [loading, setLoading] = useState(false);
   const [isHostSettingsOpen, setIsHostSettingsOpen] = useState(false);
   const { hasPermission } = useMediaDevices();
   const { amaAgent, liveAgent } = useStream();
   const { createRoom: createAMARoom } = amaAgent;
   const { createRoom: createLiveRoom } = liveAgent;
   const { user } = useUser();
+
   // Generic input change handler
   const handleInputChange = (field: keyof Room, value: any) => {
-    setFormState((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+    setFormState((prev) => {
+      const updatedState = { ...prev, [field]: value };
+
+      if (field === "roomPrivacy") {
+        updatedState.invitedPrivateUsers =
+          value === "Private" ? prev.invitedPrivateUsers : [];
+        updatedState.invitedPrivilegeUsers =
+          value === "Privilege" ? prev.invitedPrivilegeUsers : [];
+      }
+
+      return updatedState;
+    });
   };
 
   const handleNext = async () => {
+    console.log(formState);
     if (currentStep === 2 && !formState.roomTitle) {
       toast.error("Room title is required.");
+      return;
+    }
+    if (currentStep === 2 && !formState.image) {
+      toast.error("Image is required.");
+      return;
+    }
+    if (currentStep === 3 && !formState.audioDevice) {
+      toast.error("Audio device is required.");
       return;
     }
 
@@ -97,36 +118,51 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
       }
 
       try {
+        // Reset formState fields based on roomPrivacy
+        const updatedFormState = {
+          ...formState,
+          invitedPrivateUsers:
+            formState.roomPrivacy === "Private"
+              ? formState.invitedPrivateUsers
+              : [],
+          invitedPrivilegeUsers:
+            formState.roomPrivacy === "Privilege"
+              ? formState.invitedPrivilegeUsers
+              : [],
+        };
+
+        setFormState(updatedFormState);
+
         const accessMode: StreamAccessModeEnum =
-          formState.roomPrivacy === "Public"
+          updatedFormState.roomPrivacy === "Public"
             ? StreamAccessModeEnum.PUBLIC
-            : formState.roomPrivacy === "Private"
+            : updatedFormState.roomPrivacy === "Private"
             ? StreamAccessModeEnum.ACCESS_BY_INVITATION
             : StreamAccessModeEnum.ACCESS_BY_TOKEN;
 
         const type: BroadcastTypeEnum =
-          formState.roomType === "AMA"
+          updatedFormState.roomType === "AMA"
             ? BroadcastTypeEnum.AMA
             : BroadcastTypeEnum.LIVE;
 
         const input: CreateBroadcastDto = {
-          name: formState.roomTitle,
+          name: updatedFormState.roomTitle,
           description: "",
           accessMode,
           type,
           image: formState.image,
           invitedUsers:
             accessMode === StreamAccessModeEnum.ACCESS_BY_INVITATION
-              ? formState.invitedPrivateUsers.map((u) => u._id)
+              ? updatedFormState.invitedPrivateUsers.map((u) => u._id)
               : [],
           tokenAddress:
             accessMode === StreamAccessModeEnum.ACCESS_BY_TOKEN
-              ? formState.invitedPrivilegeUsers.map((c) => c.collection)
+              ? updatedFormState.invitedPrivilegeUsers.map((c) => c.collection)
               : [],
         };
 
         const createRoom =
-          formState.roomType === "AMA" ? createAMARoom : createLiveRoom;
+          updatedFormState.roomType === "AMA" ? createAMARoom : createLiveRoom;
 
         if (!user) {
           toast.error("User not found. Please try again.");
@@ -134,7 +170,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
         }
         const response = await createRoom(input, user._id);
         toast.success("Room created successfully!");
-        console.log("response::", response);
+        console.log("response::::", response);
         setFormState((prev) => ({
           ...prev,
           roomResponse: response,
@@ -155,7 +191,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
 
   if (isHostSettingsOpen) {
     return (
-      <HostMainView
+      <ChannelMainView
         onClose={onClose}
         formState={formState}
         component={
@@ -179,6 +215,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
           <StepTwo
             formState={formState}
             handleInputChange={handleInputChange}
+            setLoading={setLoading}
           />
         );
       case 3:
@@ -221,13 +258,21 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
           </span>
           <span className="py-1 text-xl font-semibold text-white">
             Create New Room
+            {/* {formState.hasPermission.toString()}{ loading.toString() } {formState.image}  */}
           </span>
           <Button
-            title={currentStep === 4 ? "Submit" : "Next"}
+            title={
+              loading && currentStep === 2
+                ? "Uploading..."
+                : currentStep === 4
+                ? "Submit"
+                : "Next"
+            }
             disabled={
-              (currentStep === 2 && !hasPermission) ||
-              (currentStep === 2 && !formState.image)
-            } // Disable on Step 2 if no image
+              loading || (currentStep === 2 && !formState.image)
+              // ||
+              // (currentStep === 2 && !formState.hasPermission)
+            }
             variant="primary"
             onClick={handleNext}
             borderRounded="10px"

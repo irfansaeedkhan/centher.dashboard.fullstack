@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from "react";
 
 import ModalContainer from "@/components/modal/modal-container";
+import LiveView from "@/components/voispace/host/LiveView";
 
-import { roomType } from "../host/voispace.create.channel.modal/voispace.create.channel.modal";
+import { Room } from "../host/voispace.create.channel.modal/voispace.create.channel.modal";
 import TheRoomOfTraders from "../host/TheRoomOfTraders";
 import Participators from "../host/Participators";
 import InvitetoRoom from "../host/InvitetoRoom";
+import Requests from "../host/Requests";
 import ChatRoom from "../host/ChatRoom";
-import LiveView from "../host/LiveView";
 
-interface UserMainViewInterface {
+interface ChannelMainViewInterface {
   onClose: () => void;
-  formState: roomType;
+  formState: Room;
   component: string;
 }
 type ComponentMap = Map<
@@ -19,10 +20,11 @@ type ComponentMap = Map<
   React.ComponentType<{
     setComponentName: (name: string) => any;
     onClose: () => void;
+    formState?: Room;
   }>
 >;
 
-const UserMainView: React.FC<UserMainViewInterface> = ({
+const ChannelMainView: React.FC<ChannelMainViewInterface> = ({
   onClose,
   formState,
   component,
@@ -35,6 +37,7 @@ const UserMainView: React.FC<UserMainViewInterface> = ({
     ["TheRoomOfTraders", TheRoomOfTraders],
     ["Participators", Participators],
     ["InvitetoRoom", InvitetoRoom],
+    ["Requests", Requests],
     ["ChatRoom", ChatRoom],
     ["LiveView", LiveView],
   ]);
@@ -46,18 +49,18 @@ const UserMainView: React.FC<UserMainViewInterface> = ({
       setComponentName("TheRoomOfTraders");
     }
   }, [ComponentToRender]);
-  console.log(componentName);
-  console.log(formState);
+
+  console.log("formState-create channel::", formState);
   return (
     <ModalContainer
-      modalId="User-settings"
+      modalId="host-settings"
       onClose={onClose}
       isOpen={true}
       modalContentClassName="max-w-[100%] h-[100%] md:h-auto md:max-w-[761px] min-h-[645px] p-0 md:rounded-3xl"
       shouldCloseOnEsc={true}
       shouldCloseOnOverlayClick={false}
     >
-      <div className="flex h-[100%] flex-col justify-between">
+      <div className="flex h-full flex-col justify-between">
         <div className="flex gap-[10px]">
           <button
             className="bg-[#ccc] px-[10px] text-[#000]"
@@ -79,6 +82,12 @@ const UserMainView: React.FC<UserMainViewInterface> = ({
           </button>
           <button
             className="bg-[#ccc] px-[10px] text-[#000]"
+            onClick={() => setComponentName("Requests")}
+          >
+            Requests
+          </button>
+          <button
+            className="bg-[#ccc] px-[10px] text-[#000]"
             onClick={() => setComponentName("ChatRoom")}
           >
             ChatRoom
@@ -95,6 +104,7 @@ const UserMainView: React.FC<UserMainViewInterface> = ({
           ? React.createElement(ComponentToRender, {
               setComponentName,
               onClose,
+              formState,
             })
           : null}
       </div>
@@ -102,4 +112,4 @@ const UserMainView: React.FC<UserMainViewInterface> = ({
   );
 };
 
-export default UserMainView;
+export default ChannelMainView;
