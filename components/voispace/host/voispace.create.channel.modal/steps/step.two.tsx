@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { clsx } from "clsx";
 import { TextLengthChecker } from "@/components/voispace/shared/text.length.checker";
 import { MicIcon2, VideoIcon2 } from "@/assets/svgs";
@@ -13,6 +13,17 @@ const StepTwo = ({ formState, handleInputChange, setLoading }: any) => {
   const { cameras, microphones, error } = useMediaDevices();
   const [preview, setPreview] = useState<string | null>(null);
   const [imageName, setImageName] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Set the default audio device if it's not already selected
+    if (!formState.audioDevice && microphones.length > 0) {
+      handleInputChange("audioDevice", microphones[0].deviceId);
+    }
+    // Set the default video device if it's not already selected
+    if (!formState.videoDevice && cameras.length > 0) {
+      handleInputChange("videoDevice", cameras[0].deviceId);
+    }
+  }, [microphones, cameras]);
 
   async function uploadImageToAWS(file: File, type: string) {
     const url = `/upload/path`;
@@ -72,6 +83,7 @@ const StepTwo = ({ formState, handleInputChange, setLoading }: any) => {
     setImageName(null);
     handleInputChange("image", null);
   };
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col items-start justify-between gap-4 ">
@@ -202,22 +214,18 @@ const StepTwo = ({ formState, handleInputChange, setLoading }: any) => {
             }
           >
             {formState.mode === "Audio" &&
-              microphones.map((microphone, index) => {
-                return (
-                  <option key={index} value={microphone.deviceId}>
-                    {microphone.label}
-                  </option>
-                );
-              })}
+              microphones.map((microphone, index) => (
+                <option key={index} value={microphone.deviceId}>
+                  {microphone.label}
+                </option>
+              ))}
 
             {formState.mode === "Video" &&
-              cameras.map((camera, index) => {
-                return (
-                  <option key={index} value={camera.deviceId}>
-                    {camera.label}
-                  </option>
-                );
-              })}
+              cameras.map((camera, index) => (
+                <option key={index} value={camera.deviceId}>
+                  {camera.label}
+                </option>
+              ))}
           </select>
         </div>
       </div>

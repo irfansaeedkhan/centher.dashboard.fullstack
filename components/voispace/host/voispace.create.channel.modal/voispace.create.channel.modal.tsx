@@ -85,6 +85,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
   };
 
   const handleNext = async () => {
+    console.log(formState);
     if (currentStep === 2 && !formState.roomTitle) {
       toast.error("Room title is required.");
       return;
@@ -128,7 +129,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
               : [],
         };
 
-        setFormState(updatedFormState); // Update formState locally
+        setFormState(updatedFormState);
 
         const accessMode: StreamAccessModeEnum =
           updatedFormState.roomPrivacy === "Public"
@@ -167,7 +168,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
         }
         const response = await createRoom(input, user._id);
         toast.success("Room created successfully!");
-        console.log("response::", response);
+        console.log("response::::", response);
         setFormState((prev) => ({
           ...prev,
           roomResponse: response,
@@ -259,7 +260,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
           <Button
             title={currentStep === 4 ? "Submit" : "Next"}
             disabled={
-              loading ||
+              // loading ||
               (currentStep === 2 && !hasPermission) ||
               (currentStep === 2 && !formState.image)
             }
