@@ -62,10 +62,6 @@ jobs:
           echo "NEXT_PUBLIC_WALLET_SERVICE_API_KEY=${{ vars.NEXT_PUBLIC_WALLET_SERVICE_API_KEY }}" >> .env.staging
           echo "NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID=${{ vars.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID }}" >> .env.staging
 
-      - name: Loging content of file
-        run: |
-          cat .env.staging
-
       - name: Build playground image
         id: build-image
         uses: docker/build-push-action@v4
