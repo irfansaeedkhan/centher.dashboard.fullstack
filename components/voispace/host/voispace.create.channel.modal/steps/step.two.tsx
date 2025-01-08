@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { clsx } from "clsx";
 import { TextLengthChecker } from "@/components/voispace/shared/text.length.checker";
 import { MicIcon2, VideoIcon2 } from "@/assets/svgs";
@@ -10,9 +10,18 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 const StepTwo = ({ formState, handleInputChange, setLoading }: any) => {
-  const { cameras, microphones, error } = useMediaDevices();
+  const { cameras, microphones, error, hasPermission } = useMediaDevices();
   const [preview, setPreview] = useState<string | null>(null);
   const [imageName, setImageName] = useState<string | null>(null);
+
+  // alert(hasPermission)
+  useEffect(() => {
+    handleInputChange("hasPermission", hasPermission);
+  }, [hasPermission, handleInputChange]);
+
+  useEffect(() => {
+    handleInputChange("hasPermission", hasPermission);
+  }, []);
 
   async function uploadImageToAWS(file: File, type: string) {
     const url = `/upload/path`;

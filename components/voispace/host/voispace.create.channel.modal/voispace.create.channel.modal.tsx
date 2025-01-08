@@ -32,6 +32,7 @@ export interface Room {
   videoDevice: string;
   mode: "Audio" | "Video";
   roomResponse: any;
+  hasPermission: Boolean;
 }
 
 export interface SearchResultWithType {
@@ -55,6 +56,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
     invitedPrivilegeUsers: [],
     audioDevice: "",
     videoDevice: "",
+    hasPermission: false,
     mode: "Audio",
     roomResponse: null,
   });
@@ -255,13 +257,14 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
           </span>
           <span className="py-1 text-xl font-semibold text-white">
             Create New Room
+            {/* {formState.hasPermission.toString()}{ loading.toString() } {formState.image}  */}
           </span>
           <Button
             title={currentStep === 4 ? "Submit" : "Next"}
             disabled={
               loading ||
-              (currentStep === 2 && !hasPermission) ||
-              (currentStep === 2 && !formState.image)
+              (currentStep === 2 && !formState.image) ||
+              (currentStep === 2 && !formState.hasPermission)
             }
             variant="primary"
             onClick={handleNext}
