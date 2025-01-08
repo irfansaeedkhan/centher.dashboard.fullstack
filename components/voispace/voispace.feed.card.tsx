@@ -5,11 +5,11 @@ import Image from "next/image";
 import { VoispaceLiveIcon } from "@/assets/svgs";
 
 import { VoispaceExploreChannelsModal } from "./user/voispace.explore.channels.modal";
-import UserMainView from "./user/UserMainView";
 import Button from "../button";
 import { rooms } from "./dummy.data/rooms.list";
 import { VoispaceCreateChannelModal } from "./host/voispace.create.channel.modal/voispace.create.channel.modal";
 import SettingComponent from "@/components/voispace/host/SettingMainView";
+import ChannelMainView from "./shared/ChannelMainView";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -125,7 +125,7 @@ export const VoiceSpaceFeedCard: React.FC<Props> = ({
       )}
 
       {isUserMainViewOpen && selectedRoom && (
-        <UserMainView
+        <ChannelMainView
           onClose={() => setIsUserMainViewOpen(false)}
           formState={selectedRoom}
           component={

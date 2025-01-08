@@ -11,11 +11,11 @@ import { StreamAccessModeEnum } from "@/stream/enum/stream-access-mode.enum";
 import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
 import { CreateBroadcastDto } from "@/stream/types/Broadcast";
 
-import HostMainView from "../HostMainView";
 import StepOne from "./steps/step.one";
 import StepTwo from "./steps/step.two";
 import StepThree from "./steps/step.three";
 import StepFour from "./steps/step.four";
+import ChannelMainView from "../../shared/ChannelMainView";
 
 interface Props {
   onClose: () => void;
@@ -68,10 +68,18 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
   const { user } = useUser();
   // Generic input change handler
   const handleInputChange = (field: keyof Room, value: any) => {
-    setFormState((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+    setFormState((prev) => {
+      const updatedState = { ...prev, [field]: value };
+
+      if (field === "roomPrivacy") {
+        updatedState.invitedPrivateUsers =
+          value === "Private" ? prev.invitedPrivateUsers : [];
+        updatedState.invitedPrivilegeUsers =
+          value === "Privilege" ? prev.invitedPrivilegeUsers : [];
+      }
+
+      return updatedState;
+    });
   };
 
   const handleNext = async () => {
@@ -97,36 +105,51 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
       }
 
       try {
+        // Reset formState fields based on roomPrivacy
+        const updatedFormState = {
+          ...formState,
+          invitedPrivateUsers:
+            formState.roomPrivacy === "Private"
+              ? formState.invitedPrivateUsers
+              : [],
+          invitedPrivilegeUsers:
+            formState.roomPrivacy === "Privilege"
+              ? formState.invitedPrivilegeUsers
+              : [],
+        };
+
+        setFormState(updatedFormState); // Update formState locally
+
         const accessMode: StreamAccessModeEnum =
-          formState.roomPrivacy === "Public"
+          updatedFormState.roomPrivacy === "Public"
             ? StreamAccessModeEnum.PUBLIC
-            : formState.roomPrivacy === "Private"
+            : updatedFormState.roomPrivacy === "Private"
             ? StreamAccessModeEnum.ACCESS_BY_INVITATION
             : StreamAccessModeEnum.ACCESS_BY_TOKEN;
 
         const type: BroadcastTypeEnum =
-          formState.roomType === "AMA"
+          updatedFormState.roomType === "AMA"
             ? BroadcastTypeEnum.AMA
             : BroadcastTypeEnum.LIVE;
 
         const input: CreateBroadcastDto = {
-          name: formState.roomTitle,
+          name: updatedFormState.roomTitle,
           description: "",
           accessMode,
           type,
-          image: formState.image,
+          image: updatedFormState.image,
           invitedUsers:
             accessMode === StreamAccessModeEnum.ACCESS_BY_INVITATION
-              ? formState.invitedPrivateUsers.map((u) => u._id)
+              ? updatedFormState.invitedPrivateUsers.map((u) => u._id)
               : [],
           tokenAddress:
             accessMode === StreamAccessModeEnum.ACCESS_BY_TOKEN
-              ? formState.invitedPrivilegeUsers.map((c) => c.collection)
+              ? updatedFormState.invitedPrivilegeUsers.map((c) => c.collection)
               : [],
         };
 
         const createRoom =
-          formState.roomType === "AMA" ? createAMARoom : createLiveRoom;
+          updatedFormState.roomType === "AMA" ? createAMARoom : createLiveRoom;
 
         if (!user) {
           toast.error("User not found. Please try again.");
@@ -155,7 +178,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
 
   if (isHostSettingsOpen) {
     return (
-      <HostMainView
+      <ChannelMainView
         onClose={onClose}
         formState={formState}
         component={
