@@ -15,6 +15,7 @@ import { ApolloGraphQLErrorHandler } from "./apollo-error-handler";
 import { getApolloUrl } from "./apollo.paths";
 import { GraphQLResourcesUrl } from "../types/Graphql";
 import { ApolloGraphQlUriEnum } from "../enum/graphql-resource-type.enum";
+import { getAuthTokens } from "@/lib/auth/auth-tokens-storage";
 
 export class ApolloService {
   protected defaultOptions: DefaultOptions = {
@@ -122,8 +123,8 @@ export class ApolloService {
     }
   }
   private async getWSLink(resource: GraphQLResourcesUrl) {
-    let activeSocket = null;
-    let timedOut = null;
+    let activeSocket: any = null;
+    let timedOut: any = null;
     const token = await this.getToken();
 
     // FIXME: manage token
@@ -132,12 +133,23 @@ export class ApolloService {
         url: this.getGqlUri(ApolloGraphQlUriEnum.WS, resource),
         keepAlive: 10000,
         connectionParams: {
-          headers: {
-            // "X-Hasura-Role": "user",
-            "x-hasura-admin-secret":
-              "wenfhrebgyuberjkvqpsxmqnxuyerbytfcvvzvgwvdewf",
-          },
+          headers:
+            token != null
+              ? {
+                  Authorization:
+                    token.length > 0 ? `Bearer ${token}` : undefined,
+                }
+              : { "X-Hasura-Role": "user" },
         },
+
+        // TODO: Remove
+        // connectionParams: {
+        //   headers: {
+        //     // "X-Hasura-Role": "user",
+        //     "x-hasura-admin-secret":
+        //       "wenfhrebgyuberjkvqpsxmqnxuyerbytfcvvzvgwvdewf",
+        //   },
+        // },
         on: {
           connected: (socket) => (activeSocket = socket),
           ping: (received) => {
@@ -211,8 +223,12 @@ export class ApolloService {
   private async getToken(): Promise<string> {
     return new Promise((res, rej) => {
       try {
-        //TODO: return token from store
-        res("");
+        const tokens = getAuthTokens();
+        if (tokens?.access_token) {
+          res(tokens.access_token);
+        } else {
+          rej(new Error("Access token is undefined"));
+        }
       } catch (error) {
         rej(error);
       }
