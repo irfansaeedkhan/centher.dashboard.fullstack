@@ -60,12 +60,14 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
   });
 
   const [currentStep, setCurrentStep] = useState(1);
+  const [loading, setLoading] = useState(false);
   const [isHostSettingsOpen, setIsHostSettingsOpen] = useState(false);
   const { hasPermission } = useMediaDevices();
   const { amaAgent, liveAgent } = useStream();
   const { createRoom: createAMARoom } = amaAgent;
   const { createRoom: createLiveRoom } = liveAgent;
   const { user } = useUser();
+
   // Generic input change handler
   const handleInputChange = (field: keyof Room, value: any) => {
     setFormState((prev) => {
@@ -85,6 +87,14 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
   const handleNext = async () => {
     if (currentStep === 2 && !formState.roomTitle) {
       toast.error("Room title is required.");
+      return;
+    }
+    if (currentStep === 2 && !formState.image) {
+      toast.error("Image is required.");
+      return;
+    }
+    if (currentStep === 3 && !formState.audioDevice) {
+      toast.error("Audio device is required.");
       return;
     }
 
@@ -137,7 +147,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
           description: "",
           accessMode,
           type,
-          image: updatedFormState.image,
+          image: formState.image,
           invitedUsers:
             accessMode === StreamAccessModeEnum.ACCESS_BY_INVITATION
               ? updatedFormState.invitedPrivateUsers.map((u) => u._id)
@@ -202,6 +212,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
           <StepTwo
             formState={formState}
             handleInputChange={handleInputChange}
+            setLoading={setLoading}
           />
         );
       case 3:
@@ -248,14 +259,20 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
           <Button
             title={currentStep === 4 ? "Submit" : "Next"}
             disabled={
+              loading || (currentStep === 2 && !formState.image)
               // (currentStep === 2 && !hasPermission) ||
-              currentStep === 2 && !formState.image
-            } // Disable on Step 2 if no image
+            }
             variant="primary"
             onClick={handleNext}
             borderRounded="10px"
             className="text-xs font-medium"
-          />
+          >
+            {loading && currentStep === 2
+              ? "Uploading..."
+              : currentStep === 4
+              ? "Submit"
+              : "Next"}
+          </Button>
         </div>
       </div>
       <div className="p-6">{renderStep()}</div>
