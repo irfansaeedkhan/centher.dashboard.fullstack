@@ -12,6 +12,9 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
+    environment:
+      name: play-kub
+      url: https://play-kubapp.centher.io
     env:
       docker_image_name: centher/play-kub-site-dapp-frontend:${{ github.run_number }}
       git_repo: algoalliance-io/dapp_gitops  # Corrected to owner/repo format
