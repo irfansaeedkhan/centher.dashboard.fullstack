@@ -8,73 +8,95 @@ import Image from "next/image";
 import useMediaDevices from "hooks/use.get.media.devices/index";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { getUserImageUploadUrl } from "@/lib/user";
+
+interface UserImageUploadUrlResponse {
+  presignedPostData: PresignedPostData;
+  objectName: string;
+}
+
+interface PresignedPostData {
+  url: string;
+  fields: Fields;
+}
+
+interface Fields {
+  "Content-Type": string;
+  Policy: string;
+  "X-Amz-Algorithm": string;
+  "X-Amz-Credential": string;
+  "X-Amz-Date": string;
+  "X-Amz-Signature": string;
+  acl: string;
+  bucket: string;
+  key: string;
+}
 
 const StepTwo = ({ formState, handleInputChange, setLoading }: any) => {
   const { cameras, microphones, error } = useMediaDevices();
   const [preview, setPreview] = useState<string | null>(null);
   const [imageName, setImageName] = useState<string | null>(null);
 
+  // to add audio and video id to the form state on the first render
   useEffect(() => {
-    // Set the default audio device if it's not already selected
     if (!formState.audioDevice && microphones.length > 0) {
       handleInputChange("audioDevice", microphones[0].deviceId);
     }
-    // Set the default video device if it's not already selected
     if (!formState.videoDevice && cameras.length > 0) {
       handleInputChange("videoDevice", cameras[0].deviceId);
     }
-  }, [microphones, cameras]);
+  }, [microphones, cameras, handleInputChange, formState]);
 
-  async function uploadImageToAWS(file: File, type: string) {
-    const url = `/upload/path`;
-    try {
-      const { object_name, object_url, presigned_post_data } = (
-        await axios.post(url, { type })
-      ).data;
-
-      const formData = new FormData();
-      Object.keys(presigned_post_data.fields).forEach((key) => {
-        formData.append(key, presigned_post_data.fields[key]);
-      });
-      formData.append("file", file);
-
-      await axios.post(presigned_post_data.url, formData);
-
-      return { object_url, object_name };
-    } catch (error) {
-      console.error("Error uploading image to AWS:", error);
-      throw error;
-    }
-  }
-
+  // Function to upload the image to AWS
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
-    if (file) {
+
+    if (!file) return;
+
+    try {
+      if (
+        !["image/jpeg", "image/png", "image/gif", "image/webp"].includes(
+          file.type
+        )
+      ) {
+        toast.error("Invalid file type. Please upload a valid image.");
+        return;
+      }
+
       setLoading(true);
+
+      // Get presigned URL for the image
+      const { presignedPostData, objectName } = await getUserImageUploadUrl(
+        file.name,
+        "cover_image"
+      );
+
+      // Prepare form data for uploading the image
+      const formData = new FormData();
+      (Object.keys(presignedPostData.fields) as (keyof Fields)[]).forEach(
+        (key) => {
+          formData.append(key, presignedPostData.fields[key]);
+        }
+      );
+      formData.append("file", file);
+
+      // Upload the image to AWS S3 using the presigned URL
+      await axios.post(presignedPostData.url, formData);
+      handleInputChange("image", objectName);
+      toast.success("Image uploaded successfully!");
 
       const reader = new FileReader();
       reader.onload = () => {
-        const imageUrl = reader.result as string;
-        setPreview(imageUrl);
-        setImageName(file.name);
-        handleInputChange("image", imageUrl);
+        setPreview(reader.result as string);
       };
       reader.readAsDataURL(file);
-
-      // Upload the image to AWS
-      // try {
-      //   const uploadResult = await uploadImageToAWS(file, "room-image");
-      //   const uploadedImageUrl = uploadResult.object_url; // Get the uploaded URL
-      //   handleInputChange("image", uploadedImageUrl); // Save the uploaded URL in the form state
-      //   toast.success("Image uploaded successfully!");
-      // } catch (error) {
-      //   console.error("Failed to upload image:", error);
-      //   toast.error("Image upload failed. Please try again.");
-      // } finally {
-      //   setLoading(false); // Hide loader
-      // }
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      toast.error("Failed to upload image. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 

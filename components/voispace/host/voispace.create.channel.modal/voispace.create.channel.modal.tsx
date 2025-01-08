@@ -258,9 +258,15 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
             Create New Room
           </span>
           <Button
-            title={currentStep === 4 ? "Submit" : "Next"}
+            title={
+              loading && currentStep === 2
+                ? "Uploading..."
+                : currentStep === 4
+                ? "Submit"
+                : "Next"
+            }
             disabled={
-              // loading ||
+              loading ||
               (currentStep === 2 && !hasPermission) ||
               (currentStep === 2 && !formState.image)
             }
@@ -268,13 +274,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
             onClick={handleNext}
             borderRounded="10px"
             className="text-xs font-medium"
-          >
-            {loading && currentStep === 2
-              ? "Uploading..."
-              : currentStep === 4
-              ? "Submit"
-              : "Next"}
-          </Button>
+          />
         </div>
       </div>
       <div className="p-6">{renderStep()}</div>
