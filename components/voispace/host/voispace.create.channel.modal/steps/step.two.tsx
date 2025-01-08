@@ -33,7 +33,7 @@ interface Fields {
 }
 
 const StepTwo = ({ formState, handleInputChange, setLoading }: any) => {
-  const { cameras, microphones, error } = useMediaDevices();
+  const { cameras, microphones, error, hasPermission } = useMediaDevices();
   const [preview, setPreview] = useState<string | null>(null);
   const [imageName, setImageName] = useState<string | null>(null);
 
