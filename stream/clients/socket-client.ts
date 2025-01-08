@@ -1,3 +1,4 @@
+import { getAuthTokens } from "@/lib/auth/auth-tokens-storage";
 import { SocketOptions, ManagerOptions, io, Socket } from "socket.io-client";
 import { getAuthTokens } from "@/lib/auth/auth-tokens-storage";
 
