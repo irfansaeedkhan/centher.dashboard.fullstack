@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MdOutlineExpandLess } from "react-icons/md";
 
 import ModalContainer from "@/components/modal/modal-container";
@@ -69,6 +69,13 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
   const { createRoom: createAMARoom } = amaAgent;
   const { createRoom: createLiveRoom } = liveAgent;
   const { user } = useUser();
+
+  useEffect(() => {
+    setFormState((prev) => ({
+      ...prev,
+      hasPermission,
+    }));
+  }, [hasPermission]);
 
   // Generic input change handler
   const handleInputChange = (field: keyof Room, value: any) => {
@@ -269,9 +276,9 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
                 : "Next"
             }
             disabled={
-              loading || (currentStep === 2 && !formState.image)
-              // ||
-              // (currentStep === 2 && !formState.hasPermission)
+              loading ||
+              (currentStep === 2 && !formState.image) ||
+              (currentStep === 2 && !hasPermission)
             }
             variant="primary"
             onClick={handleNext}
