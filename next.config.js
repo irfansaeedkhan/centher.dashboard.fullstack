@@ -17,13 +17,12 @@ const nextConfig = {
             "static.centher.io.s3.eu-west-3.amazonaws.com",
             "s3.eu-west-3.amazonaws.com",
             "dapi.369x.io",
-            "static.369x.io",
+            "static.369x.io"
           ]
         : [
             "localhost",
             "devapi.centher.io",
-            "playgroundapi.centher.io",
-            "play-kubapi.centher.io",
+            "krakend.play.dapp.jedidev.com",
             "stag-kubapi.centher.io",
             "static.centher.io",
             "devstatic.centher.io",
@@ -31,6 +30,7 @@ const nextConfig = {
             "centher-development.s3.eu-west-3.amazonaws.com",
             "devstatic.centher.io.s3.eu-west-3.amazonaws.com",
             "centher-staging.infura-ipfs.io",
+            "play.dapp.jedidev.com"
           ],
   },
   pageExtensions: ["page.tsx", "page.ts", "api.ts"],
