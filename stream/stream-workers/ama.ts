@@ -350,6 +350,7 @@ export class AmaAgent<T extends IEventBus, K extends Socket> {
       console.error(error.message, error.stack);
     }
   }
+
   private async createProducerTransport(): Promise<void> {
     return new Promise(async (res, rej) => {
       try {
@@ -448,6 +449,7 @@ export class AmaAgent<T extends IEventBus, K extends Socket> {
       }
     });
   }
+
   private async createConsumerTransport(): Promise<void> {
     return new Promise(async (res, rej) => {
       try {
@@ -523,6 +525,7 @@ export class AmaAgent<T extends IEventBus, K extends Socket> {
       }
     });
   }
+
   private async connectSendTransport(): Promise<void> {
     try {
       if (this.device.canProduce("audio")) {
@@ -569,6 +572,7 @@ export class AmaAgent<T extends IEventBus, K extends Socket> {
       throw error;
     }
   }
+
   private closeConsumer(producerId: string) {
     const audioConsumer = this.consumersAudio.get(producerId);
 
@@ -580,6 +584,7 @@ export class AmaAgent<T extends IEventBus, K extends Socket> {
 
     this.emitterService.emit(EventNameEnum.ON_UPDATE_CONSUMER);
   }
+
   private closeProducer() {
     if (this.audioProducer) {
       this.audioProducer.close();
@@ -588,6 +593,7 @@ export class AmaAgent<T extends IEventBus, K extends Socket> {
       this.producerTransport = null;
     }
   }
+
   private close() {
     this.closeProducer();
     this.consumersAudio.forEach((e) => {
@@ -600,6 +606,7 @@ export class AmaAgent<T extends IEventBus, K extends Socket> {
     this.socket.disconnect();
     this.emitterService.emit(EventNameEnum.ON_FINISH_BROADCAST);
   }
+
   private hasGetUserMedia() {
     return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
   }

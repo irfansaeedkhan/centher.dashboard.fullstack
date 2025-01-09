@@ -1,4 +1,4 @@
-import { createContext, useContext, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import * as mediasoupClient from "mediasoup-client";
 import { CentalkUserStatusEnum, ICentalkUser } from "@/stream/model";
 import { areStringsEquals } from "@/stream/utils/string.utils";
@@ -7,9 +7,12 @@ import { UserBroadcast } from "./cen-talk";
 import { AMAStreamType, useAMA } from "./use.ama";
 import { LiveStreamType, useLive } from "./use.live";
 import { StreamHooksHelper } from "./helper";
+import { insertMessageToStream } from "@/stream/graphql/mutation";
 
 interface StreamContextType {
   useGetSubscribes: () => Promise<any>;
+  getSpeakers: (limit: number, offset: number) => Promise<ICentalkUser[]>;
+  insertMessage: (broadcastId: string, content: string) => Promise<void>;
   amaAgent: AMAStreamType;
   liveAgent: LiveStreamType;
 }
@@ -27,6 +30,7 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
 }) => {
   const helper = useRef<StreamHooksHelper>(new StreamHooksHelper());
   const speakersRawData = useRef<Partial<ICentalkUser>[]>([]);
+
   const amaAgent = useAMA({
     deviceInstance,
   });
@@ -34,20 +38,44 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
     deviceInstance,
   });
 
-  const useGetSubscribes = async () => {
+  const useGetSubscribes = () => {
     const [data, setData] = useState<any>(null);
-    const apollo = await helper.current.getApolloClientInstance();
-    const query = getStreams();
-    const result = apollo.subscribe({
-      query,
-      variables: {
-        limit: 100,
-      },
-    });
+    const subscriptionRef = useRef<any>();
+    const helperRef = useRef<StreamHooksHelper>(helper.current);
 
-    result.subscribe((data) => {
-      setData(data);
-    });
+    useEffect(() => {
+      let isSubscribed = true;
+
+      const setupSubscription = async () => {
+        try {
+          const apollo = await helperRef.current.getApolloClientInstance();
+          const query = getStreams();
+          const result = apollo.subscribe({
+            query,
+            variables: {
+              limit: 100,
+            },
+          });
+
+          subscriptionRef.current = result.subscribe((newData) => {
+            if (isSubscribed) {
+              setData(newData);
+            }
+          });
+        } catch (error) {
+          console.error("Subscription setup failed:", error);
+        }
+      };
+
+      setupSubscription();
+
+      return () => {
+        isSubscribed = false;
+        if (subscriptionRef.current) {
+          subscriptionRef.current.unsubscribe();
+        }
+      };
+    }, []);
 
     return data;
   };
@@ -88,33 +116,23 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
     });
   };
 
-  //instances initiators
-  // const initSocketClient = (): Promise<void> => {
-  //   // eslint-disable-next-line @typescript-eslint/no-this-alias
-  //   const _ctx = this;
+  // Mutations
+  const insertMessage = async (broadcastId: string, content: string) => {
+    const apollo = await helper.current.getApolloClientInstance();
 
-  //   return new Promise(async (resolve, reject) => {
-  //     try {
-  //       _ctx._socketInstance = await _ctx.socketClient.build(
-  //         SocketServersEnum.BROADCAST
-  //       );
-
-  //       _ctx._socketInstance.on("connection-accepted", () => {
-  //         resolve();
-  //       });
-
-  //       // _ctx._socketInstance.on("error", (err) => {
-  //       //   this.emitterService.emit(EmitterEnum.ON_NEED_STREAM_ACCESS, err);
-  //       //   console.log("socket error: ", err);
-  //       // });
-  //     } catch (error) {
-  //       reject(error);
-  //     }
-  //   });
-  // };
+    await apollo.mutate({
+      mutation: insertMessageToStream(),
+      variables: {
+        content: content,
+        broadcastId: broadcastId,
+      },
+    });
+  };
 
   const contextValue: StreamContextType = {
     useGetSubscribes,
+    getSpeakers,
+    insertMessage,
     amaAgent,
     liveAgent,
   };
