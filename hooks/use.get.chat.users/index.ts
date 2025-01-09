@@ -23,7 +23,7 @@ const useGetChatUsers = () => {
 
       const request = await getUsersRequest(needToFetchUsers);
       const fetchedUsers = request?.data?.users || [];
-      setUsers(fetchedUsers);
+      setUsers((prevUsers) => [...prevUsers, ...fetchedUsers]);
 
       return [...fetchedUsers, ...existUsers];
     } catch (error) {
