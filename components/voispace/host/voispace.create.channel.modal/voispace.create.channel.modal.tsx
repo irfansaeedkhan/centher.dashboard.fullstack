@@ -176,14 +176,13 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
           return;
         }
         const response = await createRoom(input, user._id);
-        toast.success("Room created successfully!");
-        console.log("response::::", response);
         setFormState((prev) => ({
           ...prev,
           roomResponse: response,
         }));
-
+        toast.success("Room created successfully!");
         setIsHostSettingsOpen(true);
+        console.log("response::::", response);
       } catch (error) {
         toast.error("Failed to create room. Please try again.");
         console.error(error);

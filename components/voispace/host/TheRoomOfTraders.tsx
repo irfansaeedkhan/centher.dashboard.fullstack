@@ -7,7 +7,6 @@ import UserWithPopover from "./partials/UserWithPopover";
 import { useStream } from "@/hooks/stream/use.core";
 import toast from "react-hot-toast";
 import { Room } from "./voispace.create.channel.modal/voispace.create.channel.modal";
-import { BroadcastPreviewDto } from "@/hooks/stream/dto/broadcast-preview.dto";
 
 interface DynamicProps {
   onClose: () => void;
@@ -20,7 +19,7 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
   setComponentName,
   formState,
 }) => {
-  const { useGetSubscribes, amaAgent, liveAgent } = useStream();
+  const { amaAgent, useGetSubscribes } = useStream();
   const streamPromise = useGetSubscribes();
   const {
     invite,
@@ -30,7 +29,10 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
     toggleMute,
     leave,
   } = amaAgent;
-  const [streamData, setStreamData] = useState<BroadcastPreviewDto[]>([]);
+
+  const [streamData, setStreamData] = useState<any[]>([]);
+  const [speakers, setSpeakers] = useState<any[]>([]);
+  const [hosts, setHosts] = useState<any[]>([]);
 
   // Fetch stream data
   useEffect(() => {
@@ -39,17 +41,28 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
         const data = await streamPromise;
         setStreamData(data.data.broadcast);
       } catch (err) {
-        console.log(err);
+        console.error("Error fetching stream data:", err);
       }
     };
 
     fetchStream();
   }, [streamPromise]);
 
+  useEffect(() => {
+    if (formState?.roomResponse?.hosts) {
+      setHosts(formState.roomResponse.hosts);
+    }
+    if (formState?.roomResponse?.latestParticipants) {
+      const filteredSpeakers = formState.roomResponse.latestParticipants.filter(
+        (participant: any) => participant.type === "SPEAKER"
+      );
+      setSpeakers(filteredSpeakers);
+    }
+  }, [formState]);
+
   const handleInvite = async () => {
     try {
-      // TODO add real users
-      const users = ["user1", "user2"];
+      const users = ["user1", "user2"]; // Replace with dynamic user IDs
       invite(users);
       toast.success("Users have been invited.");
     } catch (error) {
@@ -129,39 +142,41 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
           </button>
         </HostModalHeader>
 
-        <div className="flex flex-col gap-[32px]">
-          {/* Host Section */}
-          <div className="flex flex-col gap-[24px]">
-            <div className="flex max-w-[83px] flex-col gap-[2px]">
-              <span className="text-[14px]">Host</span>
-              <span className="rounded-[1000px] bg-[#141416] p-[8px] text-[12px]">
-                <span className="text-[#FAFAFA]">1</span>
-                <span>&nbsp;</span>
-                <span className="text-gray-shade-24">host</span>
-              </span>
-            </div>
-            {/* {streamData.length > 0 && (
-              <UserWithPopover client={streamData[0]} />
-            )} */}
+        {/* Hosts Section */}
+        <div className="flex flex-col gap-[24px]">
+          <div className="flex max-w-[83px] flex-col gap-[2px]">
+            <span className="text-[14px]">Host</span>
+            <span className="rounded-[1000px] bg-[#141416] p-[8px] text-[12px]">
+              <span className="text-[#FAFAFA]">{hosts.length}</span>
+              <span>&nbsp;</span>
+              <span className="text-gray-shade-24">host(s)</span>
+            </span>
           </div>
+          <div className="flex flex-wrap gap-[28px]">
+            {hosts.map((host: any, index) => (
+              <div key={index}>
+                <UserWithPopover client={host.user} />
+              </div>
+            ))}
+          </div>
+        </div>
 
-          {/* Speakers Section */}
-          <div className="flex flex-col gap-[24px]">
-            <div className="flex max-w-[83px] flex-col gap-[2px]">
-              <span className="text-[14px]">Speakers</span>
-              <span className="rounded-[1000px] bg-[#141416] p-[8px] text-[12px]">
-                <span className="text-[#FAFAFA]">0</span>
-                <span>&nbsp;</span>
-                <span className="text-gray-shade-24">Speakers</span>
-              </span>
-            </div>
-            <div className="flex flex-wrap gap-[28px]">
-              {/* {streamData.map((stream, index) => (
-                <div key={index}>
-                  <UserWithPopover client={stream} />
-                </div>
-              ))} */}
-            </div>
+        {/* Speakers Section */}
+        <div className="flex flex-col gap-[24px]">
+          <div className="flex max-w-[83px] flex-col gap-[2px]">
+            <span className="text-[14px]">Speakers</span>
+            <span className="rounded-[1000px] bg-[#141416] p-[8px] text-[12px]">
+              <span className="text-[#FAFAFA]">{speakers.length}</span>
+              <span>&nbsp;</span>
+              <span className="text-gray-shade-24">speaker(s)</span>
+            </span>
+          </div>
+          <div className="flex flex-wrap gap-[28px]">
+            {speakers.map((speaker: any, index) => (
+              <div key={index}>
+                <UserWithPopover client={speaker.user} />
+              </div>
+            ))}
           </div>
         </div>
 
@@ -173,7 +188,7 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
               <ActionButton
                 text="Chat"
                 className="text-medium relative text-[14px] text-[#E34048]"
-                onClick={() => setComponentName("Chat")}
+                onClick={() => setComponentName("ChatRoom")}
               >
                 <ChatProfile />
                 <div className="absolute -top-1 right-0 h-3 w-3 rounded-full bg-gradient" />
@@ -190,30 +205,6 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
             </div>
 
             <div className="flex items-center gap-[10px]">
-              {/* Toggle Talk Permission */}
-              <ActionButton
-                className="text-medium text-[14px] text-[#E34048]"
-                onClick={() => handleToggleTalkPermission("user-id")}
-              >
-                Toggle Talk
-              </ActionButton>
-
-              {/* Toggle Message Permission */}
-              <ActionButton
-                className="text-medium text-[14px] text-[#E34048]"
-                onClick={() => handleToggleMessagePermission("user-id")}
-              >
-                Toggle Message
-              </ActionButton>
-
-              {/* Kick User */}
-              <ActionButton
-                className="text-medium text-[14px] text-[#E34048]"
-                onClick={() => handleKickUser("user-id")}
-              >
-                Kick User
-              </ActionButton>
-
               {/* Mute Button */}
               <ActionButton
                 text="Mute"
