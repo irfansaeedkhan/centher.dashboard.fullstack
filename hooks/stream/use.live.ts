@@ -7,11 +7,21 @@ import { Transport } from "mediasoup-client/lib/Transport";
 import { TState } from "@/stream/types/interfaces";
 import { SocketClientService } from "@/stream/clients/socket-client";
 import { CreateBroadcastDto } from "@/stream/types/Broadcast";
+import { StreamEventEnum, StreamSubscriptionEnum } from "@/stream/model";
+import { IStreamEvent } from "./interfaces";
 
 export interface LiveStreamType {
   toast: string;
+  event: IStreamEvent | null;
   createRoom: (input: CreateBroadcastDto, userId: string) => Promise<any>;
   joinRoom: (id: string, userId: string) => Promise<any>;
+  getStatuses: () => { sendStreamLoader: string; receiveStreamLoader: string };
+  invite: (users: string[]) => void;
+  close: () => void;
+  kickUser: (userId: string) => void;
+  toggleMute: () => void;
+  toggleMessagePermission: (userId: string) => void;
+  closeSubscription: (key: keyof typeof StreamSubscriptionEnum) => void;
 }
 
 export interface LiveHookParams {
@@ -22,9 +32,7 @@ export type LiveHook = (params: LiveHookParams) => LiveStreamType;
 
 export const useLive: LiveHook = ({ deviceInstance }) => {
   const globalSocket = useRef<Socket | null>(null);
-  const globalSocketClient = useRef<SocketClientService | null>(
-    new SocketClientService()
-  );
+
   const globalBroadcastId = useRef<string | null>(null);
   const globalRtpCapabilities = useRef<any>(null);
   const globalDevice = useRef<mediasoupClient.Device>(deviceInstance);
@@ -42,17 +50,23 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
   const globalAudioProducer = useRef<Producer | null>(null);
   const globalVideoProducer = useRef<Producer | null>(null);
 
-  const globalUserId = useRef<string | null>(null);
   const globalIsOwner = useRef<boolean>(false);
-
-  const globalHasTalkRequest = useRef<boolean>(false);
 
   const globalProducerTransport = useRef<Transport | null>(null);
   const globalConsumerTransport = useRef<Transport | null>(null);
 
   const globalLocalAudio = useRef<MediaStream | null>(null);
   const globalLocalVideo = useRef<MediaStream | null>(null);
-
+  const [subscriptionAgents, setSubscriptionAgents] = useState<
+    Record<keyof typeof StreamSubscriptionEnum, any>
+  >({
+    [StreamSubscriptionEnum.SUBSCRIBE_ALL]: null,
+    [StreamSubscriptionEnum.SUBSCRIBE_SPEAKERS]: null,
+    [StreamSubscriptionEnum.SUBSCRIBE_MESSAGE]: null,
+    [StreamSubscriptionEnum.SUBSCRIBE_CURRENT_USER]: null,
+    [StreamSubscriptionEnum.SUBSCRIBE_HAS_TALK_REQUEST_USERS]: null,
+    [StreamSubscriptionEnum.SUBSCRIBE_CURRENT_STREAM]: null,
+  });
   const globalReceiveStreamLoader = useRef<
     "connecting" | "connected" | "failed" | "none"
   >("none");
@@ -67,6 +81,17 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
   >("none");
 
   const [toast, setToast] = useState<string>("");
+  const [event, setEvent] = useState<IStreamEvent | null>(null);
+
+  const getStatuses = (): {
+    sendStreamLoader: string;
+    receiveStreamLoader: string;
+  } => {
+    return {
+      sendStreamLoader: globalSendStreamLoader.current,
+      receiveStreamLoader: globalReceiveStreamLoader.current,
+    };
+  };
 
   const createRoom = async (input: CreateBroadcastDto) => {
     if (!globalSocket.current) {
@@ -107,10 +132,10 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
       });
 
       globalSocket.current!.on("user-disconnected", async (data) => {
-        // this.emitterService.emit(
-        //   EmitterEnum.ON_USER_DISCONNECTED_FROM_TALK,
-        //   data
-        // );
+        setEvent({
+          data,
+          type: StreamEventEnum.ON_USER_DISCONNECTED_FROM_TALK,
+        });
       });
     });
   };
@@ -216,7 +241,10 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
             const stream = new MediaStream();
             stream.addTrack(consumer.track);
             globalConsumersVideoStream.current.set(producerId, stream);
-            // this.emitterService.emit(EmitterEnum.ON_UPDATE_VIDEO_STREAM)
+            setEvent({
+              type: StreamEventEnum.ON_UPDATE_VIDEO_STREAM,
+              data: null,
+            });
           }
         );
       }
@@ -249,7 +277,10 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
             const stream = new MediaStream();
             stream.addTrack(consumer.track);
             globalConsumersAudioStream.current.set(producerId, stream);
-            // this.emitterService.emit(EmitterEnum.ON_UPDATE_VIDEO_STREAM)
+            setEvent({
+              type: StreamEventEnum.ON_UPDATE_VIDEO_STREAM,
+              data: null,
+            });
           }
         );
       }
@@ -276,7 +307,10 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
         });
 
         globalSocket.current.on("error", (err: any) => {
-          // this.emitterService.emit(EmitterEnum.ON_NEED_STREAM_ACCESS, err);
+          setEvent({
+            type: StreamEventEnum.ON_NEED_STREAM_ACCESS,
+            data: err,
+          });
           console.log("socket error: ", err);
         });
       } catch (error) {
@@ -549,7 +583,10 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
               // close video track
             });
             console.log("tracks sent.");
-            // this.emitterService.emit(EmitterEnum.ON_UPDATE_VIDEO_STREAM);
+            setEvent({
+              type: StreamEventEnum.ON_UPDATE_VIDEO_STREAM,
+              data: null,
+            });
           } else throw new Error("producer is closed");
         } else throw new Error("invalid local streams");
       } else throw new Error("cannot use video or audio");
@@ -560,6 +597,34 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
 
   const hasGetUserMedia = () => {
     return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+  };
+
+  const toggleMessagePermission = (userId: string): void => {
+    if (globalIsOwner.current) {
+      globalSocket.current!.emit("toggle-messaging-permission", {
+        broadcastId: globalBroadcastId.current,
+        userId: userId,
+      });
+    } else throw new Error("forbidden");
+  };
+
+  const kickUser = (userId: string): void => {
+    if (globalIsOwner.current) {
+      globalSocket.current!.emit("kick-user", {
+        broadcastId: globalBroadcastId.current,
+        userId,
+      });
+    } else throw new Error("forbidden");
+  };
+
+  const toggleMute = (): void => {
+    if (globalAudioProducer.current) {
+      if (globalAudioProducer.current.paused) {
+        globalAudioProducer.current.resume();
+      } else {
+        globalAudioProducer.current.pause();
+      }
+    }
   };
 
   const leave = () => {
@@ -584,9 +649,55 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
     }
   };
 
+  const closeProducer = () => {
+    if (globalAudioProducer.current) {
+      globalAudioProducer.current.close();
+      globalVideoProducer.current?.close();
+      globalProducerTransport.current?.close();
+      globalAudioProducer.current = null;
+      globalVideoProducer.current = null;
+      globalProducerTransport.current = null;
+    }
+  };
+  const closeSubscription = (key: keyof typeof StreamSubscriptionEnum) => {
+    if (subscriptionAgents[key]) {
+      subscriptionAgents[key].unsubscribe();
+      setSubscriptionAgents((prev) => ({
+        ...prev,
+        [key]: null,
+      }));
+    }
+  };
+
+  const close = () => {
+    closeProducer();
+    globalConsumersAudio.current.forEach((consumer: Consumer) => {
+      consumer.close();
+    });
+
+    globalConsumersVideo.current.forEach((consumer: Consumer) => {
+      consumer.close();
+    });
+
+    globalConsumersVideo.current.clear();
+    globalConsumersAudio.current.clear();
+    globalConsumersVideoStream.current.clear();
+    globalConsumersVideoStream.current.clear();
+    globalSocket.current?.close();
+    globalSocket.current?.disconnect();
+  };
+
   return {
     toast,
+    event,
     createRoom,
     joinRoom,
+    getStatuses,
+    invite,
+    kickUser,
+    toggleMute,
+    toggleMessagePermission,
+    closeSubscription,
+    close,
   };
 };

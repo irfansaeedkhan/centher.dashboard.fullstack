@@ -1,15 +1,35 @@
-import { createContext, useContext, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import * as mediasoupClient from "mediasoup-client";
 import { CentalkUserStatusEnum, ICentalkUser } from "@/stream/model";
 import { areStringsEquals } from "@/stream/utils/string.utils";
-import { getStreams } from "@/stream/graphql/subscription";
+import {
+  getCurrentStream,
+  getCurrentStreamUser,
+  getHasTalkRequestStreamUsers,
+  getStreamMessages,
+  getStreams,
+  getStreamSpeakers,
+} from "@/stream/graphql/subscription";
 import { UserBroadcast } from "./cen-talk";
 import { AMAStreamType, useAMA } from "./use.ama";
 import { LiveStreamType, useLive } from "./use.live";
 import { StreamHooksHelper } from "./helper";
+import { insertMessageToStream } from "@/stream/graphql/mutation";
+import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
 
 interface StreamContextType {
   useGetSubscribes: () => Promise<any>;
+  getSpeakers: (limit: number, offset: number) => Promise<ICentalkUser[]>;
+  insertMessage: (broadcastId: string, content: string) => Promise<void>;
+  useSubscribeToAllBroadcasts: () => any;
+  useSubscribeToSpeakers: (broadcastId: string) => any;
+  useSubscribeToMessages: (broadcastId: string) => any;
+  useSubscribeToCurrentStream: (
+    broadcastId: string,
+    type: BroadcastTypeEnum
+  ) => any;
+  useSubscribeToCurrentUser: (broadcastId: string, userId: string) => any;
+  useSubscribeToHasTalkRequestUsers: (broadcastId: string) => any;
   amaAgent: AMAStreamType;
   liveAgent: LiveStreamType;
 }
@@ -27,6 +47,7 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
 }) => {
   const helper = useRef<StreamHooksHelper>(new StreamHooksHelper());
   const speakersRawData = useRef<Partial<ICentalkUser>[]>([]);
+
   const amaAgent = useAMA({
     deviceInstance,
   });
@@ -34,20 +55,338 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
     deviceInstance,
   });
 
-  const useGetSubscribes = async () => {
+  const useSubscribeToAllBroadcasts = () => {
     const [data, setData] = useState<any>(null);
-    const apollo = await helper.current.getApolloClientInstance();
-    const query = getStreams();
-    const result = apollo.subscribe({
-      query,
-      variables: {
-        limit: 100,
-      },
-    });
+    const subscriptionRef = useRef<any>();
+    const helperRef = useRef<StreamHooksHelper>(helper.current);
 
-    result.subscribe((data) => {
-      setData(data);
-    });
+    useEffect(() => {
+      let isSubscribed = true;
+
+      // Subscription handling
+      const subscribeToAllBroadcasts = async (limit: number = 100) => {
+        const apollo = await helperRef.current.getApolloClientInstance();
+        const query = getStreams();
+
+        if (!query) {
+          throw new Error("invalid query");
+        }
+
+        const result = apollo.subscribe({
+          query,
+          variables: {
+            limit,
+          },
+        });
+
+        return result;
+      };
+
+      const setupSubscription = async () => {
+        try {
+          const subscription = await subscribeToAllBroadcasts();
+          subscriptionRef.current = subscription.subscribe((newData) => {
+            if (isSubscribed) {
+              setData(newData);
+            }
+          });
+        } catch (error) {
+          console.error("Subscription setup failed:", error);
+        }
+      };
+
+      setupSubscription();
+
+      return () => {
+        isSubscribed = false;
+        if (subscriptionRef.current) {
+          subscriptionRef.current.unsubscribe();
+        }
+      };
+    }, []);
+
+    return data;
+  };
+
+  const useSubscribeToSpeakers = (broadcastId: string) => {
+    const [data, setData] = useState<any>(null);
+    const subscriptionRef = useRef<any>();
+    const helperRef = useRef<StreamHooksHelper>(helper.current);
+
+    useEffect(() => {
+      let isSubscribed = true;
+
+      const setupSubscription = async () => {
+        try {
+          const apollo = await helperRef.current.getApolloClientInstance();
+          const query = getStreamSpeakers();
+
+          if (!query) {
+            throw new Error("invalid query");
+          }
+
+          const result = apollo.subscribe({
+            query,
+            variables: {
+              broadcastId,
+            },
+          });
+
+          subscriptionRef.current = result.subscribe((newData) => {
+            if (isSubscribed) {
+              setData(newData.data.speakers);
+              // You might want to handle the emitter event differently in hooks
+              // Consider using a callback prop or context for this
+            }
+          });
+        } catch (error) {
+          console.error("Subscription setup failed:", error);
+        }
+      };
+
+      setupSubscription();
+
+      return () => {
+        isSubscribed = false;
+        if (subscriptionRef.current) {
+          subscriptionRef.current.unsubscribe();
+        }
+      };
+    }, [broadcastId]);
+
+    return data;
+  };
+
+  const useSubscribeToMessages = (broadcastId: string) => {
+    const [messages, setMessages] = useState<any>(null);
+    const subscriptionRef = useRef<any>();
+    const helperRef = useRef<StreamHooksHelper>(helper.current);
+
+    useEffect(() => {
+      let isSubscribed = true;
+
+      const setupSubscription = async () => {
+        try {
+          const apollo = await helperRef.current.getApolloClientInstance();
+          const query = getStreamMessages();
+
+          if (!query) {
+            throw new Error("invalid query");
+          }
+
+          const result = apollo.subscribe({
+            query,
+            variables: {
+              broadcastId,
+            },
+          });
+
+          subscriptionRef.current = result.subscribe((data) => {
+            if (isSubscribed) {
+              setMessages(data.data.messages);
+            }
+          });
+        } catch (error) {
+          console.error("Messages subscription failed:", error);
+        }
+      };
+
+      setupSubscription();
+
+      return () => {
+        isSubscribed = false;
+        if (subscriptionRef.current) {
+          subscriptionRef.current.unsubscribe();
+        }
+      };
+    }, [broadcastId]);
+
+    return messages;
+  };
+
+  const useSubscribeToCurrentStream = (
+    broadcastId: string,
+    type: BroadcastTypeEnum
+  ) => {
+    const [currentStream, setCurrentStream] = useState<any>(null);
+    const subscriptionRef = useRef<any>();
+    const helperRef = useRef<StreamHooksHelper>(helper.current);
+
+    useEffect(() => {
+      let isSubscribed = true;
+
+      const setupSubscription = async () => {
+        try {
+          const apollo = await helperRef.current.getApolloClientInstance();
+          const query = getCurrentStream();
+
+          if (!query) {
+            throw new Error("invalid query");
+          }
+
+          const result = apollo.subscribe({
+            query,
+            variables: {
+              broadcastId,
+            },
+          });
+
+          subscriptionRef.current = result.subscribe((data) => {
+            if (isSubscribed) {
+              setCurrentStream(data.data.broadcast);
+            }
+          });
+        } catch (error) {
+          console.error("Current stream subscription failed:", error);
+        }
+      };
+
+      setupSubscription();
+
+      return () => {
+        isSubscribed = false;
+        if (subscriptionRef.current) {
+          subscriptionRef.current.unsubscribe();
+        }
+      };
+    }, [broadcastId, type]);
+
+    return currentStream;
+  };
+
+  const useSubscribeToCurrentUser = (broadcastId: string, userId: string) => {
+    const [currentUser, setCurrentUser] = useState<any>(null);
+    const subscriptionRef = useRef<any>();
+    const helperRef = useRef<StreamHooksHelper>(helper.current);
+
+    useEffect(() => {
+      let isSubscribed = true;
+
+      const setupSubscription = async () => {
+        try {
+          const apollo = await helperRef.current.getApolloClientInstance();
+          const query = getCurrentStreamUser();
+
+          if (!query) {
+            throw new Error("invalid query");
+          }
+
+          const result = apollo.subscribe({
+            query,
+            variables: {
+              broadcastId,
+              userId,
+            },
+          });
+
+          subscriptionRef.current = result.subscribe((data) => {
+            if (isSubscribed) {
+              setCurrentUser(data.data.users[0]);
+            }
+          });
+        } catch (error) {
+          console.error("Current user subscription failed:", error);
+        }
+      };
+
+      setupSubscription();
+
+      return () => {
+        isSubscribed = false;
+        if (subscriptionRef.current) {
+          subscriptionRef.current.unsubscribe();
+        }
+      };
+    }, [broadcastId, userId]);
+
+    return currentUser;
+  };
+
+  const useSubscribeToHasTalkRequestUsers = (broadcastId: string) => {
+    const [talkRequestUsers, setTalkRequestUsers] = useState<any>(null);
+    const subscriptionRef = useRef<any>();
+    const helperRef = useRef<StreamHooksHelper>(helper.current);
+
+    useEffect(() => {
+      let isSubscribed = true;
+
+      const setupSubscription = async () => {
+        try {
+          const apollo = await helperRef.current.getApolloClientInstance();
+          const query = getHasTalkRequestStreamUsers();
+
+          if (!query) {
+            throw new Error("invalid query");
+          }
+
+          const result = apollo.subscribe({
+            query,
+            variables: {
+              broadcastId,
+            },
+          });
+
+          subscriptionRef.current = result.subscribe((data) => {
+            if (isSubscribed) {
+              setTalkRequestUsers(data.data.users);
+            }
+          });
+        } catch (error) {
+          console.error("Talk request users subscription failed:", error);
+        }
+      };
+
+      setupSubscription();
+
+      return () => {
+        isSubscribed = false;
+        if (subscriptionRef.current) {
+          subscriptionRef.current.unsubscribe();
+        }
+      };
+    }, [broadcastId]);
+
+    return talkRequestUsers;
+  };
+
+  const useGetSubscribes = () => {
+    const [data, setData] = useState<any>(null);
+    const subscriptionRef = useRef<any>();
+    const helperRef = useRef<StreamHooksHelper>(helper.current);
+
+    useEffect(() => {
+      let isSubscribed = true;
+
+      const setupSubscription = async () => {
+        try {
+          const apollo = await helperRef.current.getApolloClientInstance();
+          const query = getStreams();
+          const result = apollo.subscribe({
+            query,
+            variables: {
+              limit: 100,
+            },
+          });
+
+          subscriptionRef.current = result.subscribe((newData) => {
+            if (isSubscribed) {
+              setData(newData);
+            }
+          });
+        } catch (error) {
+          console.error("Subscription setup failed:", error);
+        }
+      };
+
+      setupSubscription();
+
+      return () => {
+        isSubscribed = false;
+        if (subscriptionRef.current) {
+          subscriptionRef.current.unsubscribe();
+        }
+      };
+    }, []);
 
     return data;
   };
@@ -88,33 +427,29 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
     });
   };
 
-  //instances initiators
-  // const initSocketClient = (): Promise<void> => {
-  //   // eslint-disable-next-line @typescript-eslint/no-this-alias
-  //   const _ctx = this;
+  // Mutations
+  const insertMessage = async (broadcastId: string, content: string) => {
+    const apollo = await helper.current.getApolloClientInstance();
 
-  //   return new Promise(async (resolve, reject) => {
-  //     try {
-  //       _ctx._socketInstance = await _ctx.socketClient.build(
-  //         SocketServersEnum.BROADCAST
-  //       );
-
-  //       _ctx._socketInstance.on("connection-accepted", () => {
-  //         resolve();
-  //       });
-
-  //       // _ctx._socketInstance.on("error", (err) => {
-  //       //   this.emitterService.emit(EmitterEnum.ON_NEED_STREAM_ACCESS, err);
-  //       //   console.log("socket error: ", err);
-  //       // });
-  //     } catch (error) {
-  //       reject(error);
-  //     }
-  //   });
-  // };
+    await apollo.mutate({
+      mutation: insertMessageToStream(),
+      variables: {
+        content: content,
+        broadcastId: broadcastId,
+      },
+    });
+  };
 
   const contextValue: StreamContextType = {
     useGetSubscribes,
+    getSpeakers,
+    insertMessage,
+    useSubscribeToAllBroadcasts,
+    useSubscribeToSpeakers,
+    useSubscribeToMessages,
+    useSubscribeToCurrentStream,
+    useSubscribeToCurrentUser,
+    useSubscribeToHasTalkRequestUsers,
     amaAgent,
     liveAgent,
   };

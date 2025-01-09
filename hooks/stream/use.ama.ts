@@ -9,9 +9,12 @@ import { areStringsEquals } from "@/stream/utils/string.utils";
 import { TState } from "@/stream/types/interfaces";
 import { SocketClientService } from "@/stream/clients/socket-client";
 import { RtpCapabilities } from "mediasoup-client/lib/RtpParameters";
+import { StreamEventEnum, StreamSubscriptionEnum } from "@/stream/model";
+import { IStreamEvent } from "./interfaces";
 
 export interface AMAStreamType {
   toast: string;
+  event: IStreamEvent | null;
   createRoom: (input: CreateBroadcastDto, userId: string) => Promise<any>;
   joinRoom: (id: string, userId: string) => Promise<any>;
   invite: (users: string[]) => void;
@@ -20,6 +23,8 @@ export interface AMAStreamType {
   kickUser: (userId: string) => void;
   toggleMute: () => void;
   leave: () => void;
+  requestToTalk: (request: boolean) => void;
+  closeSubscription: (key: keyof typeof StreamSubscriptionEnum) => void;
 }
 
 export interface AMAHookParams {
@@ -44,6 +49,16 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
   const globalProducerTransport = useRef<Transport | null>(null);
   const globalConsumerTransport = useRef<Transport | null>(null);
   const globalLocalAudio = useRef<MediaStream | null>(null);
+  const [subscriptionAgents, setSubscriptionAgents] = useState<
+    Record<keyof typeof StreamSubscriptionEnum, any>
+  >({
+    [StreamSubscriptionEnum.SUBSCRIBE_ALL]: null,
+    [StreamSubscriptionEnum.SUBSCRIBE_SPEAKERS]: null,
+    [StreamSubscriptionEnum.SUBSCRIBE_MESSAGE]: null,
+    [StreamSubscriptionEnum.SUBSCRIBE_CURRENT_USER]: null,
+    [StreamSubscriptionEnum.SUBSCRIBE_HAS_TALK_REQUEST_USERS]: null,
+    [StreamSubscriptionEnum.SUBSCRIBE_CURRENT_STREAM]: null,
+  });
 
   const globalReceiveStreamLoader = useRef<
     "connecting" | "connected" | "failed" | "none"
@@ -59,6 +74,7 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
   >("none");
 
   const [toast, setToast] = useState<string>("");
+  const [event, setEvent] = useState<IStreamEvent | null>(null);
 
   const createRoom = async (input: CreateBroadcastDto, userId: string) => {
     if (!globalSocket.current) {
@@ -115,32 +131,23 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
 
       globalSocket.current!.on("broadcast-finished", async () => {
         close();
-        // this.emitterService.emit(EventNameEnum.ON_SHOW_TOAST, {
-        //   message: "AMA has been finished",
-        //   type: "info",
-        // });
+        setToast("AMA has been finished");
       });
 
       globalSocket.current!.on("user-disconnected", async (data: any) => {
         if (areStringsEquals(globalUserId.current!, data.id)) {
           close();
-          // this.emitterService.emit(EventNameEnum.ON_SHOW_TOAST, {
-          //   message: "AMA has been finished",
-          //   type: "info",
-          // });
+          setToast("AMA has been finished");
         } else {
           closeConsumer(data.id);
-          // this.emitterService.emit(
-          //   EventNameEnum.ON_USER_DISCONNECTED_FROM_TALK,
-          //   data
-          // );
+          setEvent({
+            data: data,
+            type: StreamEventEnum.ON_USER_DISCONNECTED_FROM_TALK,
+          });
         }
       });
 
-      // this.emitterService.emit(EventNameEnum.ON_SHOW_TOAST, {
-      //   message: "AMA started",
-      //   type: "info",
-      // });
+      setToast("AMA started");
     });
   };
 
@@ -562,13 +569,22 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
             const stream = new MediaStream();
             stream.addTrack(consumer.track);
             globalConsumersAudioStream.current.set(producerId, stream);
-            // this.emitterService.emit(EmitterEnum.ON_UPDATE_CONSUMER);
+            setEvent({
+              data: null,
+              type: StreamEventEnum.ON_UPDATE_CONSUMER,
+            });
           }
         );
       }
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const requestToTalk = (request: boolean) => {
+    globalHasTalkRequest.current = request;
+    globalSocket.current!.emit("request-to-talk", { request });
+    setToast("Talk request has been sent to owner");
   };
 
   const closeProducer = () => {
@@ -589,7 +605,10 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
       globalConsumersAudioStream.current.delete(producerId);
     }
 
-    // this.emitterService.emit(EmitterEnum.ON_UPDATE_CONSUMER);
+    setEvent({
+      data: null,
+      type: StreamEventEnum.ON_UPDATE_CONSUMER,
+    });
   };
 
   const close = () => {
@@ -602,7 +621,21 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
     globalConsumersAudioStream.current.clear();
     globalSocket.current!.close();
     globalSocket.current!.disconnect();
-    // this.emitterService.emit(EmitterEnum.ON_FINISH_BROADCAST)
+
+    setEvent({
+      data: null,
+      type: StreamEventEnum.ON_FINISH_BROADCAST,
+    });
+  };
+
+  const closeSubscription = (key: keyof typeof StreamSubscriptionEnum) => {
+    if (subscriptionAgents[key]) {
+      subscriptionAgents[key].unsubscribe();
+      setSubscriptionAgents((prev) => ({
+        ...prev,
+        [key]: null,
+      }));
+    }
   };
 
   const hasGetUserMedia = () => {
@@ -619,7 +652,10 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
         });
 
         globalSocket.current.on("error", (err: any) => {
-          // this.emitterService.emit(EmitterEnum.ON_NEED_STREAM_ACCESS, err);
+          setEvent({
+            data: err,
+            type: StreamEventEnum.ON_NEED_STREAM_ACCESS,
+          });
           console.log("socket error: ", err);
         });
       } catch (error) {
@@ -630,6 +666,7 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
 
   return {
     toast,
+    event,
     createRoom,
     joinRoom,
     invite,
@@ -638,5 +675,7 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
     kickUser,
     toggleMute,
     leave,
+    requestToTalk,
+    closeSubscription,
   };
 };

@@ -1,3 +1,5 @@
+import { StreamEventEnum } from "@/stream/model";
+
 export interface User {
   _id: string;
   display_name: string;
@@ -47,4 +49,9 @@ export interface IUserState {
   currentUser: Me | null;
   currentUserLastUpdateTime: number;
   users: User[];
+}
+
+export interface IStreamEvent {
+  type: StreamEventEnum;
+  data: any;
 }
