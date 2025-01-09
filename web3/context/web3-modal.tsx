@@ -22,7 +22,7 @@ const sepolia = {
   name: "SEPOLIA",
   currency: "ETH",
   explorerUrl: "https://sepolia.etherscan.io/",
-  rpcUrl: "https://sepolia.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
+  rpcUrl: "https://sepolia.infura.io/v3/8ca3f33ab9a94790b1ebf1b734d19ba0",
 };
 
 // 3. Create modal
