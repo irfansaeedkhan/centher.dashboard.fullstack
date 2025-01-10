@@ -42,17 +42,21 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
 
   // Fetch current stream data
   useEffect(() => {
-    if (currentStream) {
+    if (currentStream && Object.keys(currentStream).length > 0) {
       console.log("Current Stream Data:", currentStream);
+
+      // Update state only if the data is valid
       setStreamData(currentStream);
-      setHosts(currentStream.hosts || []);
+      setHosts(currentStream.hosts);
       setSpeakers(
         currentStream.latestParticipants?.filter(
           (participant: any) => participant.type === "SPEAKER"
         ) || []
       );
+    } else if (currentStream === null) {
+      console.warn("Current stream data is null or empty.");
     }
-  }, [currentStream, setStreamData]);
+  }, [currentStream]);
 
   const handleInvite = async () => {
     try {
@@ -117,6 +121,7 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
   };
 
   console.log("streamData::", streamData);
+  console.log("hosts::", hosts);
 
   return (
     <div className="h-full px-[24px] py-[24px] text-white">
