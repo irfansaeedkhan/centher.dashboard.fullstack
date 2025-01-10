@@ -13,6 +13,11 @@ import { IStreamEvent } from "./interfaces";
 export interface LiveStreamType {
   toast: string;
   event: IStreamEvent | null;
+  consumersAudio: Map<string, Consumer>;
+  consumersVideo: Map<string, Consumer>;
+  audioProducer: Producer | null;
+  videoProducer: Producer | null;
+  isOwner: boolean;
   createRoom: (input: CreateBroadcastDto, userId: string) => Promise<any>;
   joinRoom: (id: string, userId: string) => Promise<any>;
   getStatuses: () => { sendStreamLoader: string; receiveStreamLoader: string };
@@ -690,6 +695,11 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
   return {
     toast,
     event,
+    audioProducer: globalAudioProducer.current,
+    videoProducer: globalVideoProducer.current,
+    consumersAudio: globalConsumersAudio.current,
+    consumersVideo: globalConsumersVideo.current,
+    isOwner: globalIsOwner.current,
     createRoom,
     joinRoom,
     getStatuses,
