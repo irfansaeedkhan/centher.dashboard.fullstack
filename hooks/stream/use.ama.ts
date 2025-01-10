@@ -88,6 +88,13 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
         return;
       }
 
+      console.log("create-room", data.id);
+
+      setEvent({
+        data,
+        type: StreamEventEnum.ON_CREATE_CENTALK,
+      });
+
       globalUserId.current = userId;
       globalBroadcastId.current = data.id;
       globalRtpCapabilities.current = data.rtpCapabilities;
