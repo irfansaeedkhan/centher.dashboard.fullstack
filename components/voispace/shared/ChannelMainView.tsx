@@ -50,6 +50,10 @@ const ChannelMainView: React.FC<ChannelMainViewInterface> = ({
     }
   }, [ComponentToRender]);
 
+  // useEffect(() => {
+  //   console.log(formState)
+  // }, [formState])
+
   console.log("formState-create channel::", formState);
   return (
     <ModalContainer
@@ -61,6 +65,7 @@ const ChannelMainView: React.FC<ChannelMainViewInterface> = ({
       shouldCloseOnOverlayClick={false}
     >
       <div className="flex h-full flex-col justify-between">
+        <div className="text-white">{JSON.stringify(formState)}</div>
         <div className="flex gap-[10px]">
           <button
             className="bg-[#ccc] px-[10px] text-[#000]"

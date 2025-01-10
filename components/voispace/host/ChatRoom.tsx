@@ -12,9 +12,14 @@ import { stat } from "fs";
 interface DynamicProps {
   onClose: () => void;
   setComponentName: (name: string) => any;
+  formState: any;
 }
 
-const ChatRoom: React.FC<DynamicProps> = ({ onClose, setComponentName }) => {
+const ChatRoom: React.FC<DynamicProps> = ({
+  onClose,
+  setComponentName,
+  formState,
+}) => {
   const [inputValue, setInputValue] = useState("");
 
   const handleInputChange = (e: any) => {
@@ -59,7 +64,9 @@ const ChatRoom: React.FC<DynamicProps> = ({ onClose, setComponentName }) => {
           hasBackButton={true}
           onBack={() => setComponentName("TheRoomOfTraders")}
         ></HostModalHeader>
-
+        {/* <div className="text-white">
+          { JSON.stringify(formState) }
+        </div> */}
         <div className="flex flex-col gap-[32px]">
           <div className="customScrollbar flex max-h-[40vh] flex-col gap-6 overflow-y-auto p-6 text-white">
             {messages.map((msg, index) => (

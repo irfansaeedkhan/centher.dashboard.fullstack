@@ -5,6 +5,8 @@ import ModalContainer from "@/components/modal/modal-container";
 import Button from "@/components/button";
 import toast from "react-hot-toast";
 import useMediaDevices from "hooks/use.get.media.devices/index";
+
+import { BroadcastPreviewDto } from "@/hooks/stream/dto/broadcast-preview.dto";
 import { useStream } from "@/hooks/stream/use.core";
 import useUser from "@/hooks/use.user";
 import { StreamAccessModeEnum } from "@/stream/enum/stream-access-mode.enum";
@@ -65,10 +67,25 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
   const [loading, setLoading] = useState(false);
   const [isHostSettingsOpen, setIsHostSettingsOpen] = useState(false);
   const { hasPermission } = useMediaDevices();
-  const { amaAgent, liveAgent } = useStream();
+  const { amaAgent, liveAgent, useGetSubscribes } = useStream();
   const { createRoom: createAMARoom } = amaAgent;
   const { createRoom: createLiveRoom } = liveAgent;
   const { user } = useUser();
+  const streamPromise = useGetSubscribes();
+  const [streamData, setStreamData] = useState<BroadcastPreviewDto[]>([]);
+
+  useEffect(() => {
+    const fetchStream = async () => {
+      try {
+        const data = await streamPromise;
+        setStreamData(data.data.broadcast);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    fetchStream();
+  }, [streamPromise]);
 
   useEffect(() => {
     setFormState((prev) => ({
@@ -285,6 +302,17 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
             className="text-xs font-medium"
           />
         </div>
+      </div>
+      <div className="flex w-full flex-row flex-col text-white ">
+        <p>broudcasts</p>
+        {streamData?.map((stream) => {
+          console.log(stream);
+          return (
+            <div key={stream.id}>
+              <p>{stream.id}</p>
+            </div>
+          );
+        })}
       </div>
       <div className="p-6">{renderStep()}</div>
     </ModalContainer>
