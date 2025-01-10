@@ -9,6 +9,7 @@ import { SocketClientService } from "@/stream/clients/socket-client";
 import { CreateBroadcastDto } from "@/stream/types/Broadcast";
 import { StreamEventEnum, StreamSubscriptionEnum } from "@/stream/model";
 import { IStreamEvent } from "./interfaces";
+import { RtpCapabilities } from "mediasoup-client/lib/RtpParameters";
 
 export interface LiveStreamType {
   toast: string;
@@ -39,7 +40,7 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
   const globalSocket = useRef<Socket | null>(null);
 
   const globalBroadcastId = useRef<string | null>(null);
-  const globalRtpCapabilities = useRef<any>(null);
+  const globalRtpCapabilities = useRef<RtpCapabilities | null>(null);
   const globalDevice = useRef<mediasoupClient.Device>(deviceInstance);
 
   const globalConsumersAudioStream = useRef<Map<string, MediaStream>>(
@@ -103,46 +104,62 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
       await initSocketClient();
     }
 
-    globalSocket.current!.emit("create-room", input, async (data: any) => {
-      if (!data) {
-        return;
-      }
-      globalBroadcastId.current = data.id;
-      globalRtpCapabilities.current = data.rtpCapabilities.rtpCapabilities;
-
-      if (!globalDevice.current!.loaded) {
-        try {
-          await globalDevice.current!.load({
-            routerRtpCapabilities: globalRtpCapabilities.current,
-          });
-        } catch (error) {
-          leave();
+    globalSocket.current!.emit(
+      "create-room",
+      input,
+      async (data: {
+        id: string;
+        rtpCapabilities: { rtpCapabilities: any };
+      }) => {
+        if (!data) {
           return;
         }
-      }
 
-      try {
-        await createProducerTransport();
-        await createConsumerTransport();
-        await connectSendTransport();
-        globalIsOwner.current = true;
-      } catch (error) {
-        leave();
+        console.log("create-room", data.id);
 
-        return;
-      }
-
-      globalSocket.current!.on("broadcast-finished", async () => {
-        close();
-      });
-
-      globalSocket.current!.on("user-disconnected", async (data) => {
         setEvent({
           data,
-          type: StreamEventEnum.ON_USER_DISCONNECTED_FROM_TALK,
+          type: StreamEventEnum.ON_CREATE_CENTALK,
         });
-      });
-    });
+        globalBroadcastId.current = data.id;
+        globalRtpCapabilities.current = data.rtpCapabilities.rtpCapabilities;
+
+        if (!globalDevice.current!.loaded) {
+          try {
+            await globalDevice.current!.load({
+              routerRtpCapabilities: globalRtpCapabilities.current!,
+            });
+          } catch (error) {
+            leave();
+            return;
+          }
+        }
+
+        try {
+          await createProducerTransport();
+          await createConsumerTransport();
+          await connectSendTransport();
+          globalIsOwner.current = true;
+        } catch (error) {
+          leave();
+
+          return;
+        }
+
+        globalSocket.current!.on("broadcast-finished", async () => {
+          console.log("broadcast-finished");
+          close();
+        });
+
+        globalSocket.current!.on("user-disconnected", async (data) => {
+          console.log("user-disconnected", data);
+          setEvent({
+            data,
+            type: StreamEventEnum.ON_USER_DISCONNECTED_FROM_TALK,
+          });
+        });
+      }
+    );
   };
 
   const joinRoom = (id: string) => {
@@ -162,7 +179,7 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
           if (!globalDevice.current!.loaded) {
             try {
               await globalDevice.current!.load({
-                routerRtpCapabilities: globalRtpCapabilities.current,
+                routerRtpCapabilities: globalRtpCapabilities.current!,
               });
             } catch (error) {
               leave();
