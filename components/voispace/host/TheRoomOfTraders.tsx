@@ -7,20 +7,21 @@ import UserWithPopover from "./partials/UserWithPopover";
 import { useStream } from "@/hooks/stream/use.core";
 import toast from "react-hot-toast";
 import { Room } from "./voispace.create.channel.modal/voispace.create.channel.modal";
+import { RoomData } from "../voispace.feed.card";
+import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
 
 interface DynamicProps {
   onClose: () => void;
   setComponentName: (name: string) => any;
-  formState?: Room;
+  roomData?: RoomData;
 }
 
 const TheRoomOfTraders: React.FC<DynamicProps> = ({
   onClose,
   setComponentName,
-  formState,
+  roomData,
 }) => {
-  const { amaAgent, useGetSubscribes } = useStream();
-  const streamPromise = useGetSubscribes();
+  const { amaAgent, useSubscribeToCurrentStream } = useStream();
   const {
     invite,
     toggleMemberTalkPermission,
@@ -30,35 +31,28 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
     leave,
   } = amaAgent;
 
-  const [streamData, setStreamData] = useState<any[]>([]);
+  const [streamData, setStreamData] = useState<any>(null);
   const [speakers, setSpeakers] = useState<any[]>([]);
   const [hosts, setHosts] = useState<any[]>([]);
 
-  // Fetch stream data
-  useEffect(() => {
-    const fetchStream = async () => {
-      try {
-        const data = await streamPromise;
-        setStreamData(data.data.broadcast);
-      } catch (err) {
-        console.error("Error fetching stream data:", err);
-      }
-    };
+  const currentStream = useSubscribeToCurrentStream(
+    roomData?.id || "",
+    roomData?.type === "AMA" ? BroadcastTypeEnum.AMA : BroadcastTypeEnum.LIVE
+  );
 
-    fetchStream();
-  }, [streamPromise]);
-
+  // Fetch current stream data
   useEffect(() => {
-    if (formState?.roomResponse?.hosts) {
-      setHosts(formState.roomResponse.hosts);
-    }
-    if (formState?.roomResponse?.latestParticipants) {
-      const filteredSpeakers = formState.roomResponse.latestParticipants.filter(
-        (participant: any) => participant.type === "SPEAKER"
+    if (currentStream) {
+      console.log("Current Stream Data:", currentStream);
+      setStreamData(currentStream);
+      setHosts(currentStream.hosts || []);
+      setSpeakers(
+        currentStream.latestParticipants?.filter(
+          (participant: any) => participant.type === "SPEAKER"
+        ) || []
       );
-      setSpeakers(filteredSpeakers);
     }
-  }, [formState]);
+  }, [currentStream, setStreamData]);
 
   const handleInvite = async () => {
     try {
@@ -125,8 +119,8 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
   console.log("streamData::", streamData);
 
   return (
-    <div className="px-[24px] py-[24px] text-white">
-      <div className="flex flex-col gap-[42px]">
+    <div className="h-full px-[24px] py-[24px] text-white">
+      <div className="flex h-full flex-col gap-[42px]">
         <HostModalHeader
           subTitle="Voispace"
           title="The Room of Traders"
@@ -147,7 +141,7 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
           <div className="flex max-w-[83px] flex-col gap-[2px]">
             <span className="text-[14px]">Host</span>
             <span className="rounded-[1000px] bg-[#141416] p-[8px] text-[12px]">
-              <span className="text-[#FAFAFA]">{hosts.length}</span>
+              <span className="text-[#FAFAFA]">{hosts?.length}</span>
               <span>&nbsp;</span>
               <span className="text-gray-shade-24">host(s)</span>
             </span>
@@ -181,7 +175,8 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
         </div>
 
         {/* Bottom Action Buttons */}
-        <div className="flex min-h-[70px] items-center rounded-[24px] border border-[#32343C] bg-[#141416] p-[16px] text-white">
+        {/* <div className="absolute bottom-0 left-0 m-6 flex min-h-[70px] w-[calc(100%-48px)] items-center rounded-[24px] border border-[#32343C] bg-[#141416] p-[16px] text-white"> */}
+        <div className=" m-6 flex min-h-[70px]  items-center rounded-[24px] border border-[#32343C] bg-[#141416] p-[16px] text-white">
           <div className="flex w-[100%] justify-between">
             <div className="flex gap-[10px]">
               {/* Chat Button */}

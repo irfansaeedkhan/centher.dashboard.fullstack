@@ -3,30 +3,31 @@ import React, { useState, useEffect } from "react";
 import ModalContainer from "@/components/modal/modal-container";
 import LiveView from "@/components/voispace/host/LiveView";
 
-import { Room } from "../host/voispace.create.channel.modal/voispace.create.channel.modal";
 import TheRoomOfTraders from "../host/TheRoomOfTraders";
 import Participators from "../host/Participators";
 import InvitetoRoom from "../host/InvitetoRoom";
 import Requests from "../host/Requests";
 import ChatRoom from "../host/ChatRoom";
+import { RoomData } from "../voispace.feed.card";
 
 interface ChannelMainViewInterface {
   onClose: () => void;
-  formState: Room;
+  roomData: RoomData;
   component: string;
 }
+
 type ComponentMap = Map<
   string,
   React.ComponentType<{
     setComponentName: (name: string) => any;
     onClose: () => void;
-    formState?: Room;
+    roomData?: RoomData;
   }>
 >;
 
 const ChannelMainView: React.FC<ChannelMainViewInterface> = ({
   onClose,
-  formState,
+  roomData,
   component,
 }) => {
   const [componentName, setComponentName] = useState<string>(
@@ -50,7 +51,7 @@ const ChannelMainView: React.FC<ChannelMainViewInterface> = ({
     }
   }, [ComponentToRender]);
 
-  console.log("formState-create channel::", formState);
+  console.log("roomData::", roomData);
   return (
     <ModalContainer
       modalId="host-settings"
@@ -62,51 +63,23 @@ const ChannelMainView: React.FC<ChannelMainViewInterface> = ({
     >
       <div className="flex h-full flex-col justify-between">
         <div className="flex gap-[10px]">
-          <button
-            className="bg-[#ccc] px-[10px] text-[#000]"
-            onClick={() => setComponentName("TheRoomOfTraders")}
-          >
-            Main
-          </button>
-          <button
-            className="bg-[#ccc] px-[10px] text-[#000]"
-            onClick={() => setComponentName("Participators")}
-          >
-            Participators
-          </button>
-          <button
-            className="bg-[#ccc] px-[10px] text-[#000]"
-            onClick={() => setComponentName("InvitetoRoom")}
-          >
-            InvitetoRoom
-          </button>
-          <button
-            className="bg-[#ccc] px-[10px] text-[#000]"
-            onClick={() => setComponentName("Requests")}
-          >
-            Requests
-          </button>
-          <button
-            className="bg-[#ccc] px-[10px] text-[#000]"
-            onClick={() => setComponentName("ChatRoom")}
-          >
-            ChatRoom
-          </button>
-          <button
-            className="bg-[#ccc] px-[10px] text-[#000]"
-            onClick={() => setComponentName("LiveView")}
-          >
-            LiveView
-          </button>
+          {Array.from(componentMap.keys()).map((key) => (
+            <button
+              key={key}
+              className="bg-[#ccc] px-[10px] text-[#000]"
+              onClick={() => setComponentName(key)}
+            >
+              {key}
+            </button>
+          ))}
         </div>
 
-        {ComponentToRender
-          ? React.createElement(ComponentToRender, {
-              setComponentName,
-              onClose,
-              formState,
-            })
-          : null}
+        {ComponentToRender &&
+          React.createElement(ComponentToRender, {
+            setComponentName,
+            onClose,
+            roomData,
+          })}
       </div>
     </ModalContainer>
   );

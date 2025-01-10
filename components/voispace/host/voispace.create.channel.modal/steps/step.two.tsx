@@ -9,6 +9,7 @@ import useMediaDevices from "hooks/use.get.media.devices/index";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { getUserImageUploadUrl } from "@/lib/user";
+import { CFSBaseURL } from "@/constants/base-urls";
 
 interface UserImageUploadUrlResponse {
   presignedPostData: PresignedPostData;
@@ -37,7 +38,6 @@ const StepTwo = ({ formState, handleInputChange, setLoading }: any) => {
   const [preview, setPreview] = useState<string | null>(null);
   const [imageName, setImageName] = useState<string | null>(null);
 
-  // to add audio and video id to the form state on the first render
   useEffect(() => {
     if (!formState.audioDevice && microphones.length > 0) {
       handleInputChange("audioDevice", microphones[0].deviceId);
@@ -45,9 +45,34 @@ const StepTwo = ({ formState, handleInputChange, setLoading }: any) => {
     if (!formState.videoDevice && cameras.length > 0) {
       handleInputChange("videoDevice", cameras[0].deviceId);
     }
-  }, [microphones, cameras, handleInputChange, formState]);
+  }, [
+    microphones,
+    cameras,
+    handleInputChange,
+    formState.audioDevice,
+    formState.videoDevice,
+  ]);
 
   // Function to upload the image to AWS
+  // const generateImageUrl = (url: string, objectName: string) => {
+  //   // Ensure the base URL ends with a slash
+  //   const normalizedBaseUrl = url.endsWith("/") ? url : `${url}/`;
+
+  //   // Ensure the object name does not start with a slash
+  //   const normalizedObjectName = objectName.replace(/^\//, "");
+
+  //   // Combine the base URL and object name
+  //   return `${normalizedBaseUrl}${normalizedObjectName}`;
+  // };
+
+  const generateImageUrl = (params: any): string => {
+    if (params.type === "custom-image") {
+      return `${CFSBaseURL}/users?key=${params.object_name}`;
+    } else {
+      throw new Error("Invalid params");
+    }
+  };
+
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -75,16 +100,22 @@ const StepTwo = ({ formState, handleInputChange, setLoading }: any) => {
 
       // Prepare form data for uploading the image
       const formData = new FormData();
-      (Object.keys(presignedPostData.fields) as (keyof Fields)[]).forEach(
-        (key) => {
-          formData.append(key, presignedPostData.fields[key]);
-        }
-      );
+      Object.entries(presignedPostData.fields).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
       formData.append("file", file);
 
       // Upload the image to AWS S3 using the presigned URL
       await axios.post(presignedPostData.url, formData);
-      handleInputChange("image", objectName);
+
+      // Generate the full image URL
+      const imageUrl = generateImageUrl({
+        type: "custom-image",
+        object_name: objectName,
+      });
+      console.log("imageUrl", imageUrl);
+
+      handleInputChange("image", imageUrl); // Use the proper URL
       toast.success("Image uploaded successfully!");
 
       const reader = new FileReader();

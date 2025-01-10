@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { MdOutlineExpandLess } from "react-icons/md";
 
 import ModalContainer from "@/components/modal/modal-container";
@@ -16,6 +16,8 @@ import StepTwo from "./steps/step.two";
 import StepThree from "./steps/step.three";
 import StepFour from "./steps/step.four";
 import ChannelMainView from "../../shared/ChannelMainView";
+import { StreamEventEnum } from "@/stream/model";
+import { RoomData } from "../../voispace.feed.card";
 
 interface Props {
   onClose: () => void;
@@ -30,9 +32,8 @@ export interface Room {
   image: string;
   audioDevice: string;
   videoDevice: string;
-  mode: "Audio" | "Video";
-  roomResponse: any;
   hasPermission: Boolean;
+  mode: "Audio" | "Video";
 }
 
 export interface SearchResultWithType {
@@ -47,6 +48,17 @@ export interface CFSCollection {
 }
 
 export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
+  const [currentStep, setCurrentStep] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [isHostSettingsOpen, setIsHostSettingsOpen] = useState(false);
+  const [roomData, setRoomData] = useState<RoomData | null>(null);
+  const { hasPermission } = useMediaDevices();
+  const { amaAgent, liveAgent, useSubscribeToAllBroadcasts } = useStream();
+  const streamPromise = useSubscribeToAllBroadcasts();
+  const { createRoom: createAMARoom } = amaAgent;
+  const { createRoom: createLiveRoom } = liveAgent;
+  const { user } = useUser();
+
   const [formState, setFormState] = useState<Room>({
     roomType: "AMA",
     image: "",
@@ -56,109 +68,149 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
     invitedPrivilegeUsers: [],
     audioDevice: "",
     videoDevice: "",
-    hasPermission: false,
+    hasPermission: hasPermission,
     mode: "Audio",
-    roomResponse: null,
   });
 
-  const [currentStep, setCurrentStep] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const [isHostSettingsOpen, setIsHostSettingsOpen] = useState(false);
-  const { hasPermission } = useMediaDevices();
-  const { amaAgent, liveAgent } = useStream();
-  const { createRoom: createAMARoom } = amaAgent;
-  const { createRoom: createLiveRoom } = liveAgent;
-  const { user } = useUser();
-
-  useEffect(() => {
-    setFormState((prev) => ({
-      ...prev,
-      hasPermission,
-    }));
-  }, [hasPermission]);
+  // useEffect(() => {
+  //   setFormState((prev) => ({
+  //     ...prev,
+  //     hasPermission,
+  //   }));
+  // }, [hasPermission]);
 
   // Generic input change handler
-  const handleInputChange = (field: keyof Room, value: any) => {
-    setFormState((prev) => {
-      const updatedState = { ...prev, [field]: value };
 
-      if (field === "roomPrivacy") {
-        updatedState.invitedPrivateUsers =
-          value === "Private" ? prev.invitedPrivateUsers : [];
-        updatedState.invitedPrivilegeUsers =
-          value === "Privilege" ? prev.invitedPrivilegeUsers : [];
-      }
+  const handleInputChange = useCallback(
+    (field: keyof Room, value: any) => {
+      setFormState((prev) => {
+        const updatedState = { ...prev, [field]: value };
 
-      return updatedState;
-    });
-  };
+        if (field === "roomPrivacy") {
+          updatedState.invitedPrivateUsers =
+            value === "Private" ? prev.invitedPrivateUsers : [];
+          updatedState.invitedPrivilegeUsers =
+            value === "Privilege" ? prev.invitedPrivilegeUsers : [];
+        }
+
+        return updatedState;
+      });
+    },
+    [setFormState]
+  );
 
   const handleNext = async () => {
     console.log(formState);
 
-    if (currentStep === 2 && !formState.roomTitle) {
-      toast.error("Room title is required.");
-      return;
+    // Step 2: Validation for room title and image
+    if (currentStep === 2) {
+      if (!formState.roomTitle) {
+        toast.error("Room title is required.");
+        return;
+      }
+      if (!formState.image) {
+        toast.error("Image is required.");
+        return;
+      }
+      if (!hasPermission) {
+        toast.error("Permission is required.");
+        return;
+      }
     }
-    if (currentStep === 2 && !formState.image) {
-      toast.error("Image is required.");
-      return;
-    }
+
+    // Step 3: Validation for audio device
     if (currentStep === 3 && !formState.audioDevice) {
       toast.error("Audio device is required.");
       return;
     }
 
-    if (currentStep === 3 && formState.roomPrivacy === "Public") {
-      try {
-        // Create the public room directly at step 3
-        const accessMode: StreamAccessModeEnum = StreamAccessModeEnum.PUBLIC;
-        const type: BroadcastTypeEnum =
-          formState.roomType === "AMA"
-            ? BroadcastTypeEnum.AMA
-            : BroadcastTypeEnum.LIVE;
-
-        const input: CreateBroadcastDto = {
-          name: formState.roomTitle,
-          description: "",
-          accessMode,
-          type,
-          image: formState.image,
-          invitedUsers: [],
-          tokenAddress: [],
-        };
-
-        const createRoom =
-          formState.roomType === "AMA" ? createAMARoom : createLiveRoom;
-
-        if (!user) {
-          toast.error("User not found. Please try again.");
-          return;
-        }
-
-        const response = await createRoom(input, user._id);
-        setFormState((prev) => ({
-          ...prev,
-          roomResponse: response,
-        }));
-        toast.success("Public room created successfully!");
-        setIsHostSettingsOpen(true);
-        console.log("response::::", response);
-      } catch (error) {
-        toast.error("Failed to create public room. Please try again.");
-        console.error(error);
+    if (currentStep === 3) {
+      // Perform validation for Step 3
+      if (!formState.audioDevice) {
+        toast.error("Audio device is required.");
+        return;
       }
-      return; // Exit here for public rooms to avoid moving to the next step
+
+      if (!formState.roomTitle) {
+        toast.error("Room title is required.");
+        return;
+      }
+
+      if (!formState.image) {
+        toast.error("Room image is required.");
+        return;
+      }
+
+      if (formState.roomPrivacy === "Public") {
+        try {
+          const accessMode = StreamAccessModeEnum.PUBLIC;
+          const type =
+            formState.roomType === "AMA"
+              ? BroadcastTypeEnum.AMA
+              : BroadcastTypeEnum.LIVE;
+
+          const input: CreateBroadcastDto = {
+            name: formState.roomTitle,
+            description: "",
+            accessMode,
+            type,
+            image: formState.image,
+            invitedUsers: [],
+            tokenAddress: [],
+          };
+
+          const createRoom =
+            formState.roomType === "AMA" ? createAMARoom : createLiveRoom;
+
+          if (!user) {
+            toast.error("User not found. Please try again.");
+            return;
+          }
+
+          await createRoom(input, user._id);
+
+          const roomEvent =
+            formState.roomType === "AMA" ? amaAgent.event : liveAgent.event;
+          if (
+            roomEvent &&
+            roomEvent.type === StreamEventEnum.ON_CREATE_CENTALK
+          ) {
+            console.log("Room Created with ID:", roomEvent.data.id);
+
+            // room data to be passed to the main view
+            const newRoomData: RoomData = {
+              id: roomEvent.data.id,
+              type: formState.roomType,
+              roomPrivacy: formState.roomPrivacy,
+            };
+
+            setRoomData(newRoomData);
+            setIsHostSettingsOpen(true);
+            toast.success("Public room created successfully!");
+          } else {
+            toast.error("Failed to create public room.");
+          }
+        } catch (error) {
+          toast.error("Failed to create public room. Please try again.");
+          console.error("Error creating public room:", error);
+        }
+        return;
+      }
+      // Proceed to Step 4 for Private/Privilege rooms
+      setCurrentStep(4);
+      return;
     }
 
     if (currentStep === 4) {
+      // Perform validation specific to Step 4
       if (
         formState.roomPrivacy === "Private" &&
         formState.invitedPrivateUsers.length === 0
       ) {
-        toast.error("Please add at least one user.");
+        toast.error("Please add at least one user for a private room.");
         return;
       }
+
       if (
         formState.roomPrivacy === "Privilege" &&
         formState.invitedPrivilegeUsers.length === 0
@@ -168,13 +220,12 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
       }
 
       try {
-        // Create private or privileged room at step 4
-        const accessMode: StreamAccessModeEnum =
+        const accessMode =
           formState.roomPrivacy === "Private"
             ? StreamAccessModeEnum.ACCESS_BY_INVITATION
             : StreamAccessModeEnum.ACCESS_BY_TOKEN;
 
-        const type: BroadcastTypeEnum =
+        const type =
           formState.roomType === "AMA"
             ? BroadcastTypeEnum.AMA
             : BroadcastTypeEnum.LIVE;
@@ -186,11 +237,11 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
           type,
           image: formState.image,
           invitedUsers:
-            accessMode === StreamAccessModeEnum.ACCESS_BY_INVITATION
+            formState.roomPrivacy === "Private"
               ? formState.invitedPrivateUsers.map((u) => u._id)
               : [],
           tokenAddress:
-            accessMode === StreamAccessModeEnum.ACCESS_BY_TOKEN
+            formState.roomPrivacy === "Privilege"
               ? formState.invitedPrivilegeUsers.map((c) => c.collection)
               : [],
         };
@@ -203,34 +254,46 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
           return;
         }
 
-        const response = await createRoom(input, user._id);
-        setFormState((prev) => ({
-          ...prev,
-          roomResponse: response,
-        }));
-        toast.success("Room created successfully!");
-        setIsHostSettingsOpen(true);
-        console.log("response::::", response);
+        await createRoom(input, user._id);
+
+        const roomEvent =
+          formState.roomType === "AMA" ? amaAgent.event : liveAgent.event;
+
+        if (roomEvent && roomEvent.type === StreamEventEnum.ON_CREATE_CENTALK) {
+          console.log("Room Created with ID:", roomEvent.data.id);
+
+          // room data to be passed to the main view
+          const newRoomData: RoomData = {
+            id: roomEvent.data.id,
+            type: formState.roomType,
+            roomPrivacy: formState.roomPrivacy,
+          };
+
+          setRoomData(newRoomData);
+          setIsHostSettingsOpen(true);
+          toast.success("Room created successfully!");
+        } else {
+          toast.error("Failed to create room.");
+        }
       } catch (error) {
         toast.error("Failed to create room. Please try again.");
-        console.error(error);
+        console.error("Error creating room:", error);
       }
       return;
     }
 
+    // Move to the next step
     setCurrentStep((prev) => prev + 1);
   };
 
   const handleBack = () => setCurrentStep((prev) => Math.max(prev - 1, 1));
 
-  if (isHostSettingsOpen) {
+  if (isHostSettingsOpen && roomData) {
     return (
       <ChannelMainView
         onClose={onClose}
-        formState={formState}
-        component={
-          formState.roomType === "AMA" ? "TheRoomOfTraders" : "LiveView"
-        }
+        roomData={roomData}
+        component={roomData?.type === "AMA" ? "TheRoomOfTraders" : "LiveView"}
       />
     );
   }
@@ -302,11 +365,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
                 ? "Submit"
                 : "Next"
             }
-            disabled={
-              loading ||
-              (currentStep === 2 && !formState.image) ||
-              (currentStep === 2 && !hasPermission)
-            }
+            disabled={loading}
             variant="primary"
             onClick={handleNext}
             borderRounded="10px"

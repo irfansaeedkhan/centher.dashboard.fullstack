@@ -3,9 +3,9 @@ import Image from "next/image";
 
 import { ChatProfile, MicIcon2 } from "@/assets/svgs";
 
-import ClientCardView from "./../../shared/profile";
-import ActionButton from "./../ui/ActionButton";
-import Chips from "./../ui/Chips";
+import ClientCardView from "../../shared/profile";
+import ActionButton from "../ui/ActionButton";
+import Chips from "../ui/Chips";
 
 import {
   Popover,
@@ -13,10 +13,13 @@ import {
   PopoverContent,
   PopoverDescription,
   PopoverHeading,
-  PopoverClose,
-} from "./../ui/Popover";
+} from "../ui/Popover";
+import { toast } from "react-hot-toast";
+import { useStream } from "@/hooks/stream/use.core";
+import useGetUser from "@/hooks/use.get.user";
 
 interface UserProfileCard {
+  id: string; // Assuming each user has a unique ID
   imageURL: string;
   name: string;
   isApproved: boolean;
@@ -28,14 +31,30 @@ interface UserWithPopoverProps {
 }
 
 const UserWithPopover: React.FC<UserWithPopoverProps> = ({ client }) => {
+  const { amaAgent } = useStream();
+  const { kickUser } = amaAgent;
+  // get user details :
+  const { user } = useGetUser(client.id);
+  console.log("user::", user, client.id);
+  const handleKickOff = async () => {
+    try {
+      await kickUser(client.id);
+      toast.success(`User ${client.name} has been kicked.`);
+    } catch (error) {
+      console.error("Failed to kick user:", error);
+      toast.error(`Failed to kick user ${client.name}.`);
+    }
+  };
+
   return (
     <Popover placement="top">
       <PopoverTrigger>
         <ClientCardView
-          name={client.name}
-          imageURL={client.imageURL}
-          isApproved={client.isApproved}
-          isSpeaking={client.isSpeaking}
+          name={user?.display_name ?? "Unknown"}
+          imageURL={user?.profile_image ?? ""}
+          // TODO handle the isApproved and isSpeaking props
+          isApproved={true}
+          isSpeaking={true}
         />
       </PopoverTrigger>
       <PopoverContent className="Popover flex flex-col gap-[16px] bg-[#1C1D21] px-[20] py-[5px] text-white">
@@ -51,8 +70,8 @@ const UserWithPopover: React.FC<UserWithPopoverProps> = ({ client }) => {
             <div className="flex items-center gap-[16px]">
               <div className="h-[40px] w-[40px]">
                 <Image
-                  src={client.imageURL}
-                  alt={client.name}
+                  src={user?.profile_image ?? ""}
+                  alt={user?.display_name ?? "Unknown"}
                   width={40}
                   height={40}
                   objectFit="cover"
@@ -62,7 +81,7 @@ const UserWithPopover: React.FC<UserWithPopoverProps> = ({ client }) => {
 
               <div className="flex flex-col gap-[4px]">
                 <span className="font-monto text-[14px] font-medium">
-                  Hala Yasmin
+                  {user?.display_name ?? "Unknown"}
                 </span>
                 <Chips>
                   <span className="font-monto text-[12px] font-medium leading-[18px]">
@@ -73,15 +92,23 @@ const UserWithPopover: React.FC<UserWithPopoverProps> = ({ client }) => {
             </div>
 
             <div className="flex items-center gap-[8px]">
+              {/* Mute Button */}
               <ActionButton className="text-medium text-[14px] text-[#E34048]">
                 <MicIcon2 />
               </ActionButton>
 
+              {/* Chat Button */}
               <ActionButton className="text-medium text-[14px] text-[#E34048]">
                 <ChatProfile />
               </ActionButton>
 
-              <span>Kick off</span>
+              {/* Kick Off Button */}
+              <ActionButton
+                className="text-medium text-[14px] text-[#E34048]"
+                onClick={handleKickOff}
+              >
+                Kick off
+              </ActionButton>
             </div>
           </div>
         </PopoverDescription>
