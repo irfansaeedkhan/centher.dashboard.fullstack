@@ -95,6 +95,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
 
   const handleNext = async () => {
     console.log(formState);
+
     if (currentStep === 2 && !formState.roomTitle) {
       toast.error("Room title is required.");
       return;
@@ -106,6 +107,48 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
     if (currentStep === 3 && !formState.audioDevice) {
       toast.error("Audio device is required.");
       return;
+    }
+
+    if (currentStep === 3 && formState.roomPrivacy === "Public") {
+      try {
+        // Create the public room directly at step 3
+        const accessMode: StreamAccessModeEnum = StreamAccessModeEnum.PUBLIC;
+        const type: BroadcastTypeEnum =
+          formState.roomType === "AMA"
+            ? BroadcastTypeEnum.AMA
+            : BroadcastTypeEnum.LIVE;
+
+        const input: CreateBroadcastDto = {
+          name: formState.roomTitle,
+          description: "",
+          accessMode,
+          type,
+          image: formState.image,
+          invitedUsers: [],
+          tokenAddress: [],
+        };
+
+        const createRoom =
+          formState.roomType === "AMA" ? createAMARoom : createLiveRoom;
+
+        if (!user) {
+          toast.error("User not found. Please try again.");
+          return;
+        }
+
+        const response = await createRoom(input, user._id);
+        setFormState((prev) => ({
+          ...prev,
+          roomResponse: response,
+        }));
+        toast.success("Public room created successfully!");
+        setIsHostSettingsOpen(true);
+        console.log("response::::", response);
+      } catch (error) {
+        toast.error("Failed to create public room. Please try again.");
+        console.error(error);
+      }
+      return; // Exit here for public rooms to avoid moving to the next step
     }
 
     if (currentStep === 4) {
@@ -125,56 +168,41 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
       }
 
       try {
-        // Reset formState fields based on roomPrivacy
-        const updatedFormState = {
-          ...formState,
-          invitedPrivateUsers:
-            formState.roomPrivacy === "Private"
-              ? formState.invitedPrivateUsers
-              : [],
-          invitedPrivilegeUsers:
-            formState.roomPrivacy === "Privilege"
-              ? formState.invitedPrivilegeUsers
-              : [],
-        };
-
-        setFormState(updatedFormState);
-
+        // Create private or privileged room at step 4
         const accessMode: StreamAccessModeEnum =
-          updatedFormState.roomPrivacy === "Public"
-            ? StreamAccessModeEnum.PUBLIC
-            : updatedFormState.roomPrivacy === "Private"
+          formState.roomPrivacy === "Private"
             ? StreamAccessModeEnum.ACCESS_BY_INVITATION
             : StreamAccessModeEnum.ACCESS_BY_TOKEN;
 
         const type: BroadcastTypeEnum =
-          updatedFormState.roomType === "AMA"
+          formState.roomType === "AMA"
             ? BroadcastTypeEnum.AMA
             : BroadcastTypeEnum.LIVE;
 
         const input: CreateBroadcastDto = {
-          name: updatedFormState.roomTitle,
+          name: formState.roomTitle,
           description: "",
           accessMode,
           type,
           image: formState.image,
           invitedUsers:
             accessMode === StreamAccessModeEnum.ACCESS_BY_INVITATION
-              ? updatedFormState.invitedPrivateUsers.map((u) => u._id)
+              ? formState.invitedPrivateUsers.map((u) => u._id)
               : [],
           tokenAddress:
             accessMode === StreamAccessModeEnum.ACCESS_BY_TOKEN
-              ? updatedFormState.invitedPrivilegeUsers.map((c) => c.collection)
+              ? formState.invitedPrivilegeUsers.map((c) => c.collection)
               : [],
         };
 
         const createRoom =
-          updatedFormState.roomType === "AMA" ? createAMARoom : createLiveRoom;
+          formState.roomType === "AMA" ? createAMARoom : createLiveRoom;
 
         if (!user) {
           toast.error("User not found. Please try again.");
           return;
         }
+
         const response = await createRoom(input, user._id);
         setFormState((prev) => ({
           ...prev,
