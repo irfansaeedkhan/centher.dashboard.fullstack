@@ -1,13 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 
 import { SendChatIcon } from "@/assets/svgs";
 import HostModalHeader from "@/components/voispace/host/partials/HostModalHeader";
 
 import ActionButton from "./ui/ActionButton";
-import { messages } from "../dummy.data/chat.list";
+// import { messages } from "../dummy.data/chat.list";
 import DOMPurify from "dompurify";
-import { stat } from "fs";
+import { useStream } from "@/hooks/stream/use.core";
+// import useGetChatUsers from '@/hooks/use.get.chat.users/index'
+
+// import { BroadcastPreviewDto } from "@/hooks/stream/dto/broadcast-preview.dto";
 
 interface DynamicProps {
   onClose: () => void;
@@ -20,18 +23,21 @@ const ChatRoom: React.FC<DynamicProps> = ({
   setComponentName,
   formState,
 }) => {
+  const { useSubscribeToMessages, insertMessage, useGetSubscribes } =
+    useStream();
   const [inputValue, setInputValue] = useState("");
+  // const { getUsers } = useGetChatUsers()
+  // const [socketMessages, setSocketMessages] = useState<any[]>([]);
+
+  // const streamPromise = useGetSubscribes();
+  // const [streamData, setStreamData] = useState<BroadcastPreviewDto[]>([]);
 
   const handleInputChange = (e: any) => {
     setInputValue(e.target.value);
   };
 
-  const user = {
-    id: 10,
-    userName: "Shahram",
-    userImage: "/images/profiles/Profile-0.svg",
-    time: "Just now",
-  };
+  // TODO: update broadcastId with real broadcastId
+  const broadcastId = "166da0d9-12fa-42c0-ae31-1f5a927014cb";
 
   const onSend = async (e: any) => {
     e.preventDefault();
@@ -44,15 +50,40 @@ const ChatRoom: React.FC<DynamicProps> = ({
     message = message.replace(pattenr, "[filtered]");
 
     if (message.trim().length) {
-      messages.push({
-        ...user,
-        message,
-      });
-
+      insertMessage(broadcastId, message);
       setInputValue("");
-      // TODO: Message -> Push to server
     }
   };
+
+  const messages = (useSubscribeToMessages(broadcastId) || [])
+    .slice()
+    .reverse();
+
+  // useEffect(() => {
+
+  //   const checkUsersOnMessages = async () => {
+  //     console.log("useSubscribeToMessages", messages)
+
+  //     const userAddresses = messages.map(e => e.sender)
+  //     const users = await getUsers(userAddresses)
+
+  //     const bundle = []
+
+  //     for(var n = 0; n < messages.length; n++) {
+  //       const message = messages[n]
+
+  //       bundle.push({
+  //         user: users?.find(e => e.display_name === message.sender),
+  //         message
+  //       })
+  //     }
+
+  //     setSocketMessages(bundle)
+
+  //   }
+
+  //   checkUsersOnMessages()
+  // }, [messages])
 
   return (
     <div className="px-[24px] py-[24px] text-white">
@@ -64,9 +95,6 @@ const ChatRoom: React.FC<DynamicProps> = ({
           hasBackButton={true}
           onBack={() => setComponentName("TheRoomOfTraders")}
         ></HostModalHeader>
-        {/* <div className="text-white">
-          { JSON.stringify(formState) }
-        </div> */}
         <div className="flex flex-col gap-[32px]">
           <div className="customScrollbar flex max-h-[40vh] flex-col gap-6 overflow-y-auto p-6 text-white">
             {messages.map((msg, index) => (
@@ -97,7 +125,7 @@ const ChatRoom: React.FC<DynamicProps> = ({
                       {msg.time}
                     </span>
                   </div>
-                  <p className="text-xs">{msg.message}</p>
+                  <p className="text-xs">{msg.content}</p>
                   <button className="mt-1 text-xs text-gray-shade-24 hover:underline">
                     Reply
                   </button>
