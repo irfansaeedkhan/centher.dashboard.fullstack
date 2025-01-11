@@ -29,6 +29,8 @@ export const VoiceSpaceFeedCard: React.FC = () => {
   const { user } = useUser();
   const { loader, data: broadcasts } = useSubscribeToAllBroadcasts();
 
+  const { leave } = amaAgent;
+
   useEffect(() => {
     setRooms(broadcasts?.data?.broadcast);
   }, [broadcasts]);
@@ -68,6 +70,7 @@ export const VoiceSpaceFeedCard: React.FC = () => {
   };
 
   const handleCloseModal = () => {
+    leave();
     setIsUserMainViewOpen(false);
     setSelectedRoomData(null);
   };
@@ -78,7 +81,6 @@ export const VoiceSpaceFeedCard: React.FC = () => {
     }
     return `/` + src.replace(/^\//, "");
   };
-
   return (
     <>
       <div className={clsx(`relative max-w-[272px] select-none`)}>

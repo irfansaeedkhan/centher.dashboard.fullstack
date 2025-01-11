@@ -22,6 +22,7 @@ import { ICentalkBroadcast } from "@/hooks/stream/cen-talk";
 import { CFSBaseURL } from "@/constants/base-urls";
 import { getUserImageUploadUrl } from "@/lib/user";
 import useMediaDevices from "@/hooks/use.get.media.devices";
+import clsx from "clsx";
 
 interface Props {
   onClose: () => void;
@@ -386,7 +387,14 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
         <div className="mb-0 flex items-center justify-between rounded-t px-4 py-4 md:py-4">
           <span>
             {currentStep !== CreatRoomSteps.AMA_OR_LIVE && (
-              <button onClick={handleBack}>
+              <button
+                onClick={loading || roomCreationLoader ? undefined : handleBack}
+                className={clsx("transition-opacity", {
+                  "pointer-events-none opacity-50":
+                    loading || roomCreationLoader,
+                  "opacity-100": !loading && !roomCreationLoader,
+                })}
+              >
                 <MdOutlineExpandLess className="h-7 w-7 -rotate-90 text-white" />
               </button>
             )}
