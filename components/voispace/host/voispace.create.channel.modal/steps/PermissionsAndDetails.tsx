@@ -33,7 +33,11 @@ interface Fields {
   key: string;
 }
 
-const StepTwo = ({ formState, handleInputChange, setLoading }: any) => {
+const PermissionsAndDetails = ({
+  formState,
+  handleInputChange,
+  setLoading,
+}: any) => {
   const { cameras, microphones, error, hasPermission } = useMediaDevices();
   const [preview, setPreview] = useState<string | null>(null);
   const [imageName, setImageName] = useState<string | null>(null);
@@ -286,4 +290,4 @@ const StepTwo = ({ formState, handleInputChange, setLoading }: any) => {
   );
 };
 
-export default StepTwo;
+export default PermissionsAndDetails;

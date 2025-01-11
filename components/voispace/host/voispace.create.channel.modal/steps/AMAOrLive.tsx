@@ -1,7 +1,7 @@
 import React from "react";
 import { clsx } from "clsx";
 
-const StepOne = ({ formState, handleInputChange }: any) => {
+const AMAOrLive = ({ formState, handleInputChange }: any) => {
   return (
     <div className="flex flex-col gap-6">
       <div className="text-xl font-medium text-white">
@@ -37,4 +37,4 @@ const StepOne = ({ formState, handleInputChange }: any) => {
   );
 };
 
-export default StepOne;
+export default AMAOrLive;

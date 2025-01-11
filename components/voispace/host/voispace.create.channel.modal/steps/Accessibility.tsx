@@ -1,7 +1,7 @@
 import React from "react";
 import { clsx } from "clsx";
 
-const StepThree = ({ formState, handleInputChange }: any) => {
+const Accessibility = ({ formState, handleInputChange }: any) => {
   return (
     <div className="flex flex-col gap-6">
       <div className={`text-xl font-medium text-white`}>
@@ -56,4 +56,4 @@ const StepThree = ({ formState, handleInputChange }: any) => {
   );
 };
 
-export default StepThree;
+export default Accessibility;

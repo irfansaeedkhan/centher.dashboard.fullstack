@@ -47,7 +47,7 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
 
       // Update state only if the data is valid
       setStreamData(currentStream);
-      setHosts(currentStream.hosts);
+      setHosts(currentStream.hosts || []);
       setSpeakers(
         currentStream.latestParticipants?.filter(
           (participant: any) => participant.type === "SPEAKER"

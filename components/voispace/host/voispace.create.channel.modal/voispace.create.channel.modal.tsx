@@ -11,13 +11,14 @@ import { StreamAccessModeEnum } from "@/stream/enum/stream-access-mode.enum";
 import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
 import { CreateBroadcastDto } from "@/stream/types/Broadcast";
 
-import StepOne from "./steps/step.one";
-import StepTwo from "./steps/step.two";
-import StepThree from "./steps/step.three";
+import AMAOrLive from "./steps/AMAOrLive";
+import PermissionsAndDetails from "./steps/PermissionsAndDetails";
+import Accessibility from "./steps/Accessibility";
 import StepFour from "./steps/step.four";
 import ChannelMainView from "../../shared/ChannelMainView";
 import { StreamEventEnum } from "@/stream/model";
 import { RoomData } from "../../voispace.feed.card";
+import { CreatRoomSteps } from "./enums";
 
 interface Props {
   onClose: () => void;
@@ -48,15 +49,17 @@ export interface CFSCollection {
 }
 
 export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState<CreatRoomSteps>(
+    CreatRoomSteps.AMA_OR_LIVE
+  );
   const [loading, setLoading] = useState(false);
   const [isHostSettingsOpen, setIsHostSettingsOpen] = useState(false);
   const [roomData, setRoomData] = useState<RoomData | null>(null);
   const { hasPermission } = useMediaDevices();
   const { amaAgent, liveAgent, useSubscribeToAllBroadcasts } = useStream();
   const streamPromise = useSubscribeToAllBroadcasts();
-  const { createRoom: createAMARoom } = amaAgent;
-  const { createRoom: createLiveRoom } = liveAgent;
+  const { createRoom: createAMARoom, event: eventOnAMA } = amaAgent;
+  const { createRoom: createLiveRoom, event: eventOnLive } = liveAgent;
   const { user } = useUser();
 
   const [formState, setFormState] = useState<Room>({
@@ -71,6 +74,22 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
     hasPermission: hasPermission,
     mode: "Audio",
   });
+
+  // Add this near other useEffects
+  useEffect(() => {
+    console.log("eventOnAMA", eventOnAMA);
+    if (eventOnAMA?.type === StreamEventEnum.ON_CREATE_CENTALK) {
+      const newRoomData: RoomData = {
+        id: eventOnAMA.data.id,
+        type: "AMA",
+        roomPrivacy: formState.roomPrivacy,
+      };
+
+      setRoomData(newRoomData);
+      setIsHostSettingsOpen(true);
+      toast.success("Room created successfully!");
+    }
+  }, [eventOnAMA, formState.roomPrivacy]);
 
   // useEffect(() => {
   //   setFormState((prev) => ({
@@ -103,7 +122,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
     console.log(formState);
 
     // Step 2: Validation for room title and image
-    if (currentStep === 2) {
+    if (currentStep === CreatRoomSteps.PERMISSIONS_AND_DETAILS) {
       if (!formState.roomTitle) {
         toast.error("Room title is required.");
         return;
@@ -119,12 +138,15 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
     }
 
     // Step 3: Validation for audio device
-    if (currentStep === 3 && !formState.audioDevice) {
+    if (
+      currentStep === CreatRoomSteps.ACCESSIBILITY &&
+      !formState.audioDevice
+    ) {
       toast.error("Audio device is required.");
       return;
     }
 
-    if (currentStep === 3) {
+    if (currentStep === CreatRoomSteps.ACCESSIBILITY) {
       // Perform validation for Step 3
       if (!formState.audioDevice) {
         toast.error("Audio device is required.");
@@ -169,27 +191,27 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
 
           await createRoom(input, user._id);
 
-          const roomEvent =
-            formState.roomType === "AMA" ? amaAgent.event : liveAgent.event;
-          if (
-            roomEvent &&
-            roomEvent.type === StreamEventEnum.ON_CREATE_CENTALK
-          ) {
-            console.log("Room Created with ID:", roomEvent.data.id);
+          // const roomEvent =
+          //   formState.roomType === "AMA" ? amaAgent.event : liveAgent.event;
+          // if (
+          //   roomEvent &&
+          //   roomEvent.type === StreamEventEnum.ON_CREATE_CENTALK
+          // ) {
+          //   console.log("Room Created with ID:", roomEvent.data.id);
 
-            // room data to be passed to the main view
-            const newRoomData: RoomData = {
-              id: roomEvent.data.id,
-              type: formState.roomType,
-              roomPrivacy: formState.roomPrivacy,
-            };
+          //   // room data to be passed to the main view
+          //   const newRoomData: RoomData = {
+          //     id: roomEvent.data.id,
+          //     type: formState.roomType,
+          //     roomPrivacy: formState.roomPrivacy,
+          //   };
 
-            setRoomData(newRoomData);
-            setIsHostSettingsOpen(true);
-            toast.success("Public room created successfully!");
-          } else {
-            toast.error("Failed to create public room.");
-          }
+          //   setRoomData(newRoomData);
+          //   setIsHostSettingsOpen(true);
+          //   toast.success("Public room created successfully!");
+          // } else {
+          //   toast.error("Failed to create public room.");
+          // }
         } catch (error) {
           toast.error("Failed to create public room. Please try again.");
           console.error("Error creating public room:", error);
@@ -197,11 +219,11 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
         return;
       }
       // Proceed to Step 4 for Private/Privilege rooms
-      setCurrentStep(4);
+      setCurrentStep(CreatRoomSteps.ROOM);
       return;
     }
 
-    if (currentStep === 4) {
+    if (currentStep === CreatRoomSteps.ROOM) {
       // Perform validation specific to Step 4
       if (
         formState.roomPrivacy === "Private" &&
@@ -283,10 +305,26 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
     }
 
     // Move to the next step
-    setCurrentStep((prev) => prev + 1);
+    setCurrentStep((prev) => {
+      if (prev === CreatRoomSteps.AMA_OR_LIVE)
+        return CreatRoomSteps.PERMISSIONS_AND_DETAILS;
+      if (prev === CreatRoomSteps.PERMISSIONS_AND_DETAILS)
+        return CreatRoomSteps.ACCESSIBILITY;
+      return CreatRoomSteps.ROOM;
+    });
   };
 
-  const handleBack = () => setCurrentStep((prev) => Math.max(prev - 1, 1));
+  const handleBack = useCallback(() => {
+    setCurrentStep((prev) => {
+      if (prev <= CreatRoomSteps.AMA_OR_LIVE) return CreatRoomSteps.AMA_OR_LIVE;
+      if (prev === CreatRoomSteps.PERMISSIONS_AND_DETAILS)
+        return CreatRoomSteps.AMA_OR_LIVE;
+      if (prev === CreatRoomSteps.ACCESSIBILITY)
+        return CreatRoomSteps.PERMISSIONS_AND_DETAILS;
+      if (prev === CreatRoomSteps.ROOM) return CreatRoomSteps.ACCESSIBILITY;
+      return prev;
+    });
+  }, []);
 
   if (isHostSettingsOpen && roomData) {
     return (
@@ -300,29 +338,29 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
 
   const renderStep = () => {
     switch (currentStep) {
-      case 1:
+      case CreatRoomSteps.AMA_OR_LIVE:
         return (
-          <StepOne
+          <AMAOrLive
             formState={formState}
             handleInputChange={handleInputChange}
           />
         );
-      case 2:
+      case CreatRoomSteps.PERMISSIONS_AND_DETAILS:
         return (
-          <StepTwo
+          <PermissionsAndDetails
             formState={formState}
             handleInputChange={handleInputChange}
             setLoading={setLoading}
           />
         );
-      case 3:
+      case CreatRoomSteps.ACCESSIBILITY:
         return (
-          <StepThree
+          <Accessibility
             formState={formState}
             handleInputChange={handleInputChange}
           />
         );
-      case 4:
+      case CreatRoomSteps.ROOM:
         return (
           <StepFour
             formState={formState}
@@ -342,13 +380,13 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
       isOpen={true}
       modalContentClassName="max-w-[656px] p-0 rounded-3xl"
       shouldCloseOnEsc={true}
-      shouldCloseOnOverlayClick={currentStep === 1}
+      shouldCloseOnOverlayClick={currentStep === CreatRoomSteps.AMA_OR_LIVE}
     >
       <div className="header border-b-2 border-[#141416]">
         <div className="mb-0 flex items-center justify-between rounded-t px-4 py-4 md:py-4">
           <span>
-            {currentStep !== 1 && (
-              <button onClick={handleBack} disabled={currentStep === 1}>
+            {currentStep !== CreatRoomSteps.AMA_OR_LIVE && (
+              <button onClick={handleBack}>
                 <MdOutlineExpandLess className="h-7 w-7 -rotate-90 text-white" />
               </button>
             )}
@@ -359,9 +397,9 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
           </span>
           <Button
             title={
-              loading && currentStep === 2
+              loading && currentStep === CreatRoomSteps.PERMISSIONS_AND_DETAILS
                 ? "Uploading..."
-                : currentStep === 4
+                : currentStep === CreatRoomSteps.ROOM
                 ? "Submit"
                 : "Next"
             }
