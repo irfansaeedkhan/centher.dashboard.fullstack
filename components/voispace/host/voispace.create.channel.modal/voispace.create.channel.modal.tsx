@@ -89,6 +89,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
       const newRoomData: Room = {
         ...roomData!,
         accessMode: formState.accessMode,
+        id: eventOnAMA?.data.id || eventOnLive?.data.id,
       };
 
       setRoomData(newRoomData);

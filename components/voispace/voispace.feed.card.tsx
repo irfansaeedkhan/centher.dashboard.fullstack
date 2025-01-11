@@ -6,20 +6,20 @@ import { VoispaceLiveIcon } from "@/assets/svgs";
 import Button from "../button";
 import ChannelMainView from "./shared/ChannelMainView";
 import { useStream } from "@/hooks/stream/use.core";
-import { VoispaceCreateChannelModal } from "./host/voispace.create.channel.modal/voispace.create.channel.modal";
+import {
+  Room,
+  VoispaceCreateChannelModal,
+} from "./host/voispace.create.channel.modal/voispace.create.channel.modal";
 import { VoispaceExploreChannelsModal } from "./user/voispace.explore.channels.modal";
+import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
 
 export const VoiceSpaceFeedCard: React.FC = () => {
   const { useSubscribeToAllBroadcasts } = useStream();
   const streamPromise = useSubscribeToAllBroadcasts();
-  const [rooms, setRooms] = useState<any[]>([]);
+  const [rooms, setRooms] = useState<Room[]>([]);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isMoreModalOpen, setIsMoreModalOpen] = useState(false);
-  const [selectedRoomData, setSelectedRoomData] = useState<{
-    id: string;
-    type: "AMA" | "Live";
-    roomPrivacy: "Public" | "Private" | "Privilege";
-  } | null>(null);
+  const [selectedRoomData, setSelectedRoomData] = useState<Room | null>(null);
 
   const [isUserMainViewOpen, setIsUserMainViewOpen] = useState(false);
 
@@ -37,13 +37,7 @@ export const VoiceSpaceFeedCard: React.FC = () => {
   }, [streamPromise]);
 
   const handleRoomClick = (room: any) => {
-    const roomData = {
-      id: room.id,
-      type: room.type,
-      roomPrivacy: room.accessMode,
-    };
-    console.log("roomData::", roomData);
-    setSelectedRoomData(roomData);
+    setSelectedRoomData(room);
     setIsUserMainViewOpen(true);
   };
 
@@ -51,8 +45,6 @@ export const VoiceSpaceFeedCard: React.FC = () => {
     setIsUserMainViewOpen(false);
     setSelectedRoomData(null);
   };
-
-  console.log("room::", rooms);
 
   const getValidImageUrl = (src: string) => {
     if (src.startsWith("http://") || src.startsWith("https://")) {
@@ -95,8 +87,8 @@ export const VoiceSpaceFeedCard: React.FC = () => {
                     <VoispaceLiveIcon className="absolute right-0 top-0 size-4" />
                   )}
                   <Image
-                    src={getValidImageUrl(room.image)}
-                    alt={room?.name}
+                    src={getValidImageUrl(room.image as string)}
+                    alt={room?.name || ""}
                     height={40}
                     width={40}
                     className="m-1"
@@ -142,7 +134,9 @@ export const VoiceSpaceFeedCard: React.FC = () => {
           onClose={handleCloseModal}
           roomData={selectedRoomData}
           component={
-            selectedRoomData.type === "AMA" ? "TheRoomOfTraders" : "LiveView"
+            selectedRoomData.type === BroadcastTypeEnum.AMA
+              ? "TheRoomOfTraders"
+              : "LiveView"
           }
         />
       )}

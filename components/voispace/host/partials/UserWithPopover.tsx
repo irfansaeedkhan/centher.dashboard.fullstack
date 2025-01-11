@@ -14,44 +14,27 @@ import {
   PopoverDescription,
   PopoverHeading,
 } from "../ui/Popover";
-import { toast } from "react-hot-toast";
-import { useStream } from "@/hooks/stream/use.core";
-import useGetUser from "@/hooks/use.get.user";
-
-interface UserProfileCard {
-  id: string; // Assuming each user has a unique ID
-  imageURL: string;
-  name: string;
-  isApproved: boolean;
-  isSpeaking: boolean;
-}
+import { User } from "@/models/user";
 
 interface UserWithPopoverProps {
-  client: UserProfileCard;
+  client: User;
+  handleKickOff: (userId: string) => void;
+  handleTalkPermission: (userId: string) => void;
+  handleMessagePermission: (userId: string) => void;
 }
 
-const UserWithPopover: React.FC<UserWithPopoverProps> = ({ client }) => {
-  const { amaAgent } = useStream();
-  const { kickUser } = amaAgent;
-  // get user details :
-  const { user } = useGetUser(client.id);
-  console.log("user::", user, client.id);
-  const handleKickOff = async () => {
-    try {
-      await kickUser(client.id);
-      toast.success(`User ${client.name} has been kicked.`);
-    } catch (error) {
-      console.error("Failed to kick user:", error);
-      toast.error(`Failed to kick user ${client.name}.`);
-    }
-  };
-
+const UserWithPopover: React.FC<UserWithPopoverProps> = ({
+  client,
+  handleKickOff,
+  handleTalkPermission,
+  handleMessagePermission,
+}) => {
   return (
     <Popover placement="top">
       <PopoverTrigger>
         <ClientCardView
-          name={user?.display_name ?? "Unknown"}
-          imageURL={user?.profile_image ?? ""}
+          name={client?.display_name ?? "Unknown"}
+          imageURL={client?.profile_image ?? ""}
           // TODO handle the isApproved and isSpeaking props
           isApproved={true}
           isSpeaking={true}
@@ -70,8 +53,8 @@ const UserWithPopover: React.FC<UserWithPopoverProps> = ({ client }) => {
             <div className="flex items-center gap-[16px]">
               <div className="h-[40px] w-[40px]">
                 <Image
-                  src={user?.profile_image ?? ""}
-                  alt={user?.display_name ?? "Unknown"}
+                  src={client?.profile_image ?? ""}
+                  alt={client?.display_name ?? "Unknown"}
                   width={40}
                   height={40}
                   objectFit="cover"
@@ -81,7 +64,7 @@ const UserWithPopover: React.FC<UserWithPopoverProps> = ({ client }) => {
 
               <div className="flex flex-col gap-[4px]">
                 <span className="font-monto text-[14px] font-medium">
-                  {user?.display_name ?? "Unknown"}
+                  {client?.display_name ?? "Unknown"}
                 </span>
                 <Chips>
                   <span className="font-monto text-[12px] font-medium leading-[18px]">
@@ -93,19 +76,25 @@ const UserWithPopover: React.FC<UserWithPopoverProps> = ({ client }) => {
 
             <div className="flex items-center gap-[8px]">
               {/* Mute Button */}
-              <ActionButton className="text-medium text-[14px] text-[#E34048]">
+              <ActionButton
+                className="text-medium text-[14px] text-[#E34048]"
+                onClick={() => handleTalkPermission(client._id)}
+              >
                 <MicIcon2 />
               </ActionButton>
 
               {/* Chat Button */}
-              <ActionButton className="text-medium text-[14px] text-[#E34048]">
+              <ActionButton
+                className="text-medium text-[14px] text-[#E34048]"
+                onClick={() => handleMessagePermission(client._id)}
+              >
                 <ChatProfile />
               </ActionButton>
 
               {/* Kick Off Button */}
               <ActionButton
                 className="text-medium text-[14px] text-[#E34048]"
-                onClick={handleKickOff}
+                onClick={() => handleKickOff(client._id)}
               >
                 Kick off
               </ActionButton>

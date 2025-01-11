@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
 import { ChatProfile, MicIcon2, ShareWhiteIcon } from "@/assets/svgs";
 import HostModalHeader from "@/components/voispace/host/partials/HostModalHeader";
 import ActionButton from "./ui/ActionButton";
@@ -8,6 +7,7 @@ import { useStream } from "@/hooks/stream/use.core";
 import toast from "react-hot-toast";
 import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
 import { ICentalkBroadcast } from "@/hooks/stream/cen-talk";
+import ClientCardView from "../shared/profile";
 
 interface DynamicProps {
   onClose: () => void;
@@ -20,7 +20,8 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
   setComponentName,
   roomData,
 }) => {
-  const { amaAgent, useSubscribeToCurrentStream } = useStream();
+  const { amaAgent, useSubscribeToCurrentStream, useSubscribeToSpeakers } =
+    useStream();
   const {
     invite,
     toggleMemberTalkPermission,
@@ -30,32 +31,12 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
     leave,
   } = amaAgent;
 
-  const [streamData, setStreamData] = useState<any>(null);
-  const [speakers, setSpeakers] = useState<any[]>([]);
-  const [hosts, setHosts] = useState<any[]>([]);
-
   const currentStream = useSubscribeToCurrentStream(
     roomData?.id || "",
     roomData?.type === "AMA" ? BroadcastTypeEnum.AMA : BroadcastTypeEnum.LIVE
   );
 
-  // Fetch current stream data
-  useEffect(() => {
-    if (currentStream && Object.keys(currentStream).length > 0) {
-      console.log("Current Stream Data:", currentStream);
-
-      // Update state only if the data is valid
-      setStreamData(currentStream);
-      setHosts(currentStream.hosts || []);
-      setSpeakers(
-        currentStream.latestParticipants?.filter(
-          (participant: any) => participant.type === "SPEAKER"
-        ) || []
-      );
-    } else if (currentStream === null) {
-      console.warn("Current stream data is null or empty.");
-    }
-  }, [currentStream]);
+  const speakers = useSubscribeToSpeakers(roomData?.id || "");
 
   const handleInvite = async () => {
     try {
@@ -119,9 +100,6 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
     }
   };
 
-  console.log("streamData::", streamData);
-  console.log("hosts::", hosts);
-
   return (
     <div className="h-full px-[24px] py-[24px] text-white">
       <div className="flex h-full flex-col gap-[42px]">
@@ -144,16 +122,16 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
         <div className="flex flex-col gap-[24px]">
           <div className="flex max-w-[83px] flex-col gap-[2px]">
             <span className="text-[14px]">Host</span>
-            <span className="rounded-[1000px] bg-[#141416] p-[8px] text-[12px]">
-              <span className="text-[#FAFAFA]">{hosts?.length}</span>
-              <span>&nbsp;</span>
-              <span className="text-gray-shade-24">host(s)</span>
-            </span>
           </div>
           <div className="flex flex-wrap gap-[28px]">
-            {hosts.map((host: any, index) => (
+            {currentStream?.hosts?.map((host: any, index) => (
               <div key={index}>
-                <UserWithPopover client={host.user} />
+                <ClientCardView
+                  name={host.user?.display_name ?? "Unknown"}
+                  imageURL={host.user?.profile_image ?? ""}
+                  isApproved={host.user?.membership?.status === "citizen"}
+                  isSpeaking={true}
+                />
               </div>
             ))}
           </div>
@@ -164,15 +142,20 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
           <div className="flex max-w-[83px] flex-col gap-[2px]">
             <span className="text-[14px]">Speakers</span>
             <span className="rounded-[1000px] bg-[#141416] p-[8px] text-[12px]">
-              <span className="text-[#FAFAFA]">{speakers.length}</span>
+              <span className="text-[#FAFAFA]">{speakers?.length}</span>
               <span>&nbsp;</span>
               <span className="text-gray-shade-24">speaker(s)</span>
             </span>
           </div>
           <div className="flex flex-wrap gap-[28px]">
-            {speakers.map((speaker: any, index) => (
+            {speakers?.map((speaker: any, index: number) => (
               <div key={index}>
-                <UserWithPopover client={speaker.user} />
+                <UserWithPopover
+                  client={speaker}
+                  handleKickOff={handleKickUser}
+                  handleTalkPermission={handleToggleTalkPermission}
+                  handleMessagePermission={handleToggleMessagePermission}
+                />
               </div>
             ))}
           </div>

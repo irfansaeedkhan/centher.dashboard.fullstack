@@ -11,7 +11,7 @@ import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
 interface DynamicProps {
   onClose: () => void;
   setComponentName: (name: string) => any;
-  formState: Room;
+  roomData: Room;
 }
 
 const MessageSkeleton = () => (
@@ -30,7 +30,7 @@ const MessageSkeleton = () => (
 const ChatRoom: React.FC<DynamicProps> = ({
   onClose,
   setComponentName,
-  formState,
+  roomData,
 }) => {
   const { useSubscribeToMessages, insertMessage } = useStream();
   const [inputValue, setInputValue] = useState("");
@@ -55,9 +55,6 @@ const ChatRoom: React.FC<DynamicProps> = ({
     setInputValue(e.target.value);
   };
 
-  // TODO: update broadcastId with real broadcastId
-  const broadcastId = "166da0d9-12fa-42c0-ae31-1f5a927014cb";
-
   const onSend = async (e: any) => {
     e.preventDefault();
     const pattenr =
@@ -69,13 +66,14 @@ const ChatRoom: React.FC<DynamicProps> = ({
     message = message.replace(pattenr, "[filtered]");
 
     if (message.trim().length) {
-      insertMessage(broadcastId, message);
+      insertMessage(roomData?.id || "", message);
       setInputValue("");
     }
   };
 
-  const { messages, loading: subscriptionLoading } =
-    useSubscribeToMessages(broadcastId);
+  const { messages, loading: subscriptionLoading } = useSubscribeToMessages(
+    roomData?.id || ""
+  );
 
   const formattedMessages =
     messages

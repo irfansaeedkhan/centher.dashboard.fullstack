@@ -20,7 +20,6 @@ import useGetChatUsers from "../use.get.chat.users";
 
 interface StreamContextType {
   useGetSubscribes: () => Promise<any>;
-  getSpeakers: (limit: number, offset: number) => Promise<ICentalkUser[]>;
   insertMessage: (broadcastId: string, content: string) => Promise<void>;
   useSubscribeToAllBroadcasts: () => any;
   useSubscribeToSpeakers: (broadcastId: string) => any;
@@ -47,7 +46,6 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
   deviceInstance,
 }) => {
   const helper = useRef<StreamHooksHelper>(new StreamHooksHelper());
-  const speakersRawData = useRef<Partial<ICentalkUser>[]>([]);
 
   const amaAgent = useAMA({
     deviceInstance,
@@ -135,11 +133,12 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
             },
           });
 
-          subscriptionRef.current = result.subscribe((newData) => {
+          subscriptionRef.current = result.subscribe(async (newData) => {
             if (isSubscribed) {
-              setData(newData.data.speakers);
-              // You might want to handle the emitter event differently in hooks
-              // Consider using a callback prop or context for this
+              const detailedSpeakers = await aggregateSpeakers(
+                newData.data.speakers
+              );
+              setData(detailedSpeakers);
             }
           });
         } catch (error) {
@@ -241,9 +240,12 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
             },
           });
 
-          subscriptionRef.current = result.subscribe((data) => {
+          subscriptionRef.current = result.subscribe(async (data) => {
             if (isSubscribed) {
-              setCurrentStream(data.data.broadcast[0]);
+              const stream = await aggregateCurrentStreamUsers(
+                data.data.broadcast[0]
+              );
+              setCurrentStream(stream);
             }
           });
         } catch (error) {
@@ -401,42 +403,6 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
     return data;
   };
 
-  const getSpeakers = (
-    limit: number,
-    offset: number
-  ): Promise<ICentalkUser[]> => {
-    const slot = speakersRawData?.current.slice(offset, offset + limit) || [];
-
-    return getManipulatedParticipators(slot);
-  };
-
-  const getManipulatedParticipators = async (
-    participators: Partial<UserBroadcast>[]
-  ): Promise<ICentalkUser[]> => {
-    const userAddresses = participators.map((p) => {
-      return p.user!.id;
-    });
-
-    // const users = await this.userService.getUsers(userAddresses);
-    const users: any[] = [];
-
-    return participators.map((d) => {
-      const user = users.find((u) => areStringsEquals(u._id, d.user!.id));
-
-      return {
-        id: d.user!.id,
-        name: user.display_name,
-        image: user.profile_image,
-        isVerified: user.membership.status === "verified",
-        isMuted: d.isMuted,
-        isChatPermission: d.hasPermissionToMessage,
-        status: CentalkUserStatusEnum.ONLINE,
-        role: d.type,
-        hasTalkRequest: d.hasTalkRequest || false,
-      };
-    });
-  };
-
   // Mutations
   const insertMessage = async (broadcastId: string, content: string) => {
     const apollo = await helper.current.getApolloClientInstance();
@@ -462,10 +428,43 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
       };
     });
   };
+  const aggregateCurrentStreamUsers = async (stream: any) => {
+    const ids = stream.latestParticipants.map((e: any) => e.user.id);
+    ids.push(stream.hosts[0].user.id);
+    const users = await getUsers(ids);
+    stream.latestParticipants = stream.latestParticipants.map((e: any) => {
+      return {
+        ...e,
+        user:
+          users?.find((u) => areStringsEquals(u._id, e.user.id)) || e.user.id,
+      };
+    });
+    stream.hosts = stream.hosts.map((e: any) => {
+      return {
+        ...e,
+        user:
+          users?.find((u) => areStringsEquals(u._id, e.user.id)) || e.user.id,
+      };
+    });
+
+    return stream;
+  };
+
+  const aggregateSpeakers = async (speakers: any[]) => {
+    const ids = speakers.map((p) => {
+      return p.user!.id;
+    });
+
+    const users = await getUsers(ids);
+
+    return speakers.map(
+      (d) =>
+        users?.find((u) => areStringsEquals(u._id, d.user!.id)) || d.user?.id
+    );
+  };
 
   const contextValue: StreamContextType = {
     useGetSubscribes,
-    getSpeakers,
     insertMessage,
     useSubscribeToAllBroadcasts,
     useSubscribeToSpeakers,
