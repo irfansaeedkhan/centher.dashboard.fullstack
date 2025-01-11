@@ -28,6 +28,7 @@ export interface LiveStreamType {
   toggleMute: () => void;
   toggleMessagePermission: (userId: string) => void;
   closeSubscription: (key: keyof typeof StreamSubscriptionEnum) => void;
+  globalIsOwner: boolean;
 }
 
 export interface LiveHookParams {
@@ -716,7 +717,7 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
     videoProducer: globalVideoProducer.current,
     consumersAudio: globalConsumersAudio.current,
     consumersVideo: globalConsumersVideo.current,
-    isOwner: globalIsOwner.current,
+    globalIsOwner: globalIsOwner.current,
     createRoom,
     joinRoom,
     getStatuses,
