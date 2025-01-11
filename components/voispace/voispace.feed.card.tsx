@@ -12,16 +12,22 @@ import {
 } from "./host/voispace.create.channel.modal/voispace.create.channel.modal";
 import { VoispaceExploreChannelsModal } from "./user/voispace.explore.channels.modal";
 import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
+import useUser from "@/hooks/use.user";
+import { StreamEventEnum } from "@/stream/model";
+import toast from "react-hot-toast";
 
 export const VoiceSpaceFeedCard: React.FC = () => {
-  const { useSubscribeToAllBroadcasts } = useStream();
-  const streamPromise = useSubscribeToAllBroadcasts();
   const [rooms, setRooms] = useState<Room[]>([]);
+  const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isMoreModalOpen, setIsMoreModalOpen] = useState(false);
   const [selectedRoomData, setSelectedRoomData] = useState<Room | null>(null);
-
   const [isUserMainViewOpen, setIsUserMainViewOpen] = useState(false);
+  const { amaAgent, liveAgent, useSubscribeToAllBroadcasts } = useStream();
+  const streamPromise = useSubscribeToAllBroadcasts();
+  const { joinRoom: joinAMARoom, event: eventOnAMA } = amaAgent;
+  const { joinRoom: joinLiveRoom, event: eventOnLive } = liveAgent;
+  const { user } = useUser();
 
   useEffect(() => {
     const fetchStream = async () => {
@@ -36,9 +42,38 @@ export const VoiceSpaceFeedCard: React.FC = () => {
     fetchStream();
   }, [streamPromise]);
 
-  const handleRoomClick = (room: any) => {
-    setSelectedRoomData(room);
-    setIsUserMainViewOpen(true);
+  useEffect(() => {
+    if (
+      eventOnAMA?.type === StreamEventEnum.ON_JOINED_TO_BROADCAST ||
+      eventOnLive?.type === StreamEventEnum.ON_JOINED_TO_BROADCAST
+    ) {
+      setSelectedRoomData(selectedRoom);
+      setIsUserMainViewOpen(true);
+    }
+
+    if (
+      eventOnAMA?.type == StreamEventEnum.STREAM_INITIALIZATION_ERROR ||
+      eventOnLive?.type == StreamEventEnum.STREAM_INITIALIZATION_ERROR
+    ) {
+      const error = eventOnAMA?.data || eventOnLive?.data;
+      toast.error(error);
+
+      setIsUserMainViewOpen(false);
+      setSelectedRoomData(null);
+    }
+  }, [eventOnLive, eventOnAMA]);
+
+  const handleRoomClick = (room: Room) => {
+    try {
+      if (room.type == BroadcastTypeEnum.AMA) {
+        joinAMARoom(room.id as string, user?._id || "");
+      } else {
+        joinLiveRoom(room.id as string, user?._id || "");
+      }
+      setSelectedRoom(room);
+    } catch (error) {
+      toast.error("cannot join this room");
+    }
   };
 
   const handleCloseModal = () => {
@@ -131,7 +166,7 @@ export const VoiceSpaceFeedCard: React.FC = () => {
 
       {isUserMainViewOpen && selectedRoomData && (
         <ChannelMainView
-          onClose={handleCloseModal}
+          onClose={handleCloseModal} // TODO: change to leave
           roomData={selectedRoomData}
           component={
             selectedRoomData.type === BroadcastTypeEnum.AMA

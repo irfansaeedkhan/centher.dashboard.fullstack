@@ -116,12 +116,11 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
           return;
         }
 
-        console.log("create-room", data.id);
-
         setEvent({
           data,
           type: StreamEventEnum.ON_CREATE_CENTALK,
         });
+
         globalBroadcastId.current = data.id;
         globalRtpCapabilities.current = data.rtpCapabilities.rtpCapabilities;
 
@@ -164,7 +163,11 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
   };
 
   const joinRoom = (id: string) => {
-    return new Promise((res, rej) => {
+    return new Promise(async (res, rej) => {
+      if (!globalSocket.current) {
+        await initSocketClient();
+      }
+
       globalSocket.current!.emit(
         "join-room",
         { broadcastId: id, device: "" },
@@ -174,6 +177,11 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
 
             return;
           }
+
+          setEvent({
+            data,
+            type: StreamEventEnum.ON_JOINED_TO_BROADCAST,
+          });
 
           globalBroadcastId.current = id;
           globalRtpCapabilities.current = data.rtpCapabilities;

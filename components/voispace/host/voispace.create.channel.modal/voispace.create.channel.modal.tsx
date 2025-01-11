@@ -53,8 +53,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
   const [roomCreationLoader, setRoomCreationLoader] = useState(false);
   const [isHostSettingsOpen, setIsHostSettingsOpen] = useState(false);
   const [roomData, setRoomData] = useState<Room | null>(null);
-  const { amaAgent, liveAgent, useSubscribeToAllBroadcasts } = useStream();
-  const streamPromise = useSubscribeToAllBroadcasts();
+  const { amaAgent, liveAgent } = useStream();
   const { createRoom: createAMARoom, event: eventOnAMA } = amaAgent;
   const { createRoom: createLiveRoom, event: eventOnLive } = liveAgent;
   const { user } = useUser();

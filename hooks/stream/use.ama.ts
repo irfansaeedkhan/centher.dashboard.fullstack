@@ -83,6 +83,7 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
     if (!globalSocket.current) {
       await initSocketClient();
     }
+
     globalSocket.current!.emit("create-room", input, async (data: any) => {
       if (!data) {
         return;
@@ -153,7 +154,11 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
   };
 
   const joinRoom = (id: string, userId: string) => {
-    return new Promise((res, rej) => {
+    return new Promise(async (res, rej) => {
+      if (!globalSocket.current) {
+        await initSocketClient();
+      }
+
       globalSocket.current!.emit(
         "join-room",
         { broadcastId: id, device: "" },
@@ -163,6 +168,11 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
 
             return;
           }
+
+          setEvent({
+            data,
+            type: StreamEventEnum.ON_JOINED_TO_BROADCAST,
+          });
 
           globalUserId.current = userId;
           globalBroadcastId.current = id;
