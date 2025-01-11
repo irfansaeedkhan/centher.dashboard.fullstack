@@ -1,7 +1,7 @@
 import React from "react";
 
 interface ChipsProps {
-  className: string;
+  className?: string;
   onClick?: () => void;
   children?: React.ReactNode;
 }

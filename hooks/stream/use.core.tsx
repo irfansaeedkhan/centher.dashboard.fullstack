@@ -10,7 +10,7 @@ import {
   getStreams,
   getStreamSpeakers,
 } from "@/stream/graphql/subscription";
-import { UserBroadcast } from "./cen-talk";
+import { ICentalkBroadcast, UserBroadcast } from "./cen-talk";
 import { AMAStreamType, useAMA } from "./use.ama";
 import { LiveStreamType, useLive } from "./use.live";
 import { StreamHooksHelper } from "./helper";
@@ -27,7 +27,7 @@ interface StreamContextType {
   useSubscribeToCurrentStream: (
     broadcastId: string,
     type: BroadcastTypeEnum
-  ) => any;
+  ) => ICentalkBroadcast | null;
   useSubscribeToCurrentUser: (broadcastId: string, userId: string) => any;
   useSubscribeToHasTalkRequestUsers: (broadcastId: string) => any;
   amaAgent: AMAStreamType;
@@ -207,8 +207,9 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
   const useSubscribeToCurrentStream = (
     broadcastId: string,
     type: BroadcastTypeEnum
-  ) => {
-    const [currentStream, setCurrentStream] = useState<any>(null);
+  ): ICentalkBroadcast | null => {
+    const [currentStream, setCurrentStream] =
+      useState<ICentalkBroadcast | null>(null);
     const subscriptionRef = useRef<any>();
     const helperRef = useRef<StreamHooksHelper>(helper.current);
 
@@ -233,7 +234,7 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
 
           subscriptionRef.current = result.subscribe((data) => {
             if (isSubscribed) {
-              setCurrentStream(data.data.broadcast);
+              setCurrentStream(data.data.broadcast[0]);
             }
           });
         } catch (error) {
