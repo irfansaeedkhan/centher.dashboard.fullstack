@@ -8,7 +8,7 @@ interface RequestProps {
 }
 
 const RequestRow: React.FC<RequestProps> = ({ request }) => {
-  const handler = (action) => {
+  const handler = (action: string) => {
     alert(action);
   };
 

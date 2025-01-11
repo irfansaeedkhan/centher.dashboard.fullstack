@@ -7,7 +7,7 @@ interface InviteProps {
 }
 
 const InviteRow: React.FC<InviteProps> = ({ user }) => {
-  const handler = (action) => {
+  const handler = (action: string) => {
     alert(action);
   };
 

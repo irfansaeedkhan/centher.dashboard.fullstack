@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 const MicrophoneVolume = () => {
-  const [volume, setVolume] = useState(0); // مقدار حجم صدا (0 تا 5)
+  const [volume, setVolume] = useState(0);
 
   useEffect(() => {
     let audioContext: AudioContext | null = null;
@@ -17,16 +17,16 @@ const MicrophoneVolume = () => {
         audioContext = new AudioContext();
         analyser = audioContext.createAnalyser();
         microphone = audioContext.createMediaStreamSource(stream);
-        analyser.fftSize = 256; // دقت تحلیل
+        analyser.fftSize = 256;
         const bufferLength = analyser.frequencyBinCount;
         dataArray = new Uint8Array(bufferLength);
         microphone.connect(analyser);
 
         const updateVolume = () => {
-          analyser.getByteFrequencyData(dataArray!);
+          analyser?.getByteFrequencyData(dataArray!);
           const avg =
             dataArray!.reduce((sum, value) => sum + value, 0) / bufferLength;
-          const scaledVolume = Math.min(Math.floor(avg / 51), 5); // مقدار 0 تا 5
+          const scaledVolume = Math.min(Math.floor(avg / 51), 5);
           setVolume(scaledVolume);
           requestAnimationFrame(updateVolume);
         };

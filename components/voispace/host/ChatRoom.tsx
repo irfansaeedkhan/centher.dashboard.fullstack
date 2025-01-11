@@ -6,7 +6,7 @@ import ActionButton from "./ui/ActionButton";
 import DOMPurify from "dompurify";
 import { useStream } from "@/hooks/stream/use.core";
 import { Room } from "./voispace.create.channel.modal/voispace.create.channel.modal";
-import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
+import EmojiPicker, { EmojiClickData, Theme } from "emoji-picker-react";
 
 interface DynamicProps {
   onClose: () => void;
@@ -184,7 +184,7 @@ const ChatRoom: React.FC<DynamicProps> = ({
                   <EmojiPicker
                     onEmojiClick={onEmojiClick}
                     autoFocusSearch={false}
-                    theme="dark"
+                    theme={Theme.DARK}
                   />
                 </div>
               )}

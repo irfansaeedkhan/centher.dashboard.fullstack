@@ -68,7 +68,7 @@ const Dropdown: React.FC<DropdownProps> = ({ options = [] }) => {
       {/* Dropdown Items */}
       {isOpen && (
         <ul className="absolute z-10 mt-2 w-full overflow-hidden rounded-[12px] bg-[#1B1C22] text-white shadow-lg">
-          {options.map((option, index) => (
+          {options.map((option: any, index: number) => (
             <li
               key={index}
               onClick={() => handleSelect(option)}
