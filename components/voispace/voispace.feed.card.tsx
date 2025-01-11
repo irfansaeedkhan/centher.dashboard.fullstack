@@ -99,7 +99,7 @@ export const VoiceSpaceFeedCard: React.FC = () => {
                     alt={room?.name}
                     height={40}
                     width={40}
-                    className="m-1"
+                    className="m-1 h-10 w-10 rounded-full object-cover"
                   />
                   <h6 className="max-w-[50px] overflow-hidden text-ellipsis whitespace-nowrap py-1 text-xs text-white">
                     {room?.name}

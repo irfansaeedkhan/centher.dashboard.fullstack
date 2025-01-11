@@ -26,11 +26,11 @@ interface Fields {
 const PermissionsAndDetails = ({
   formState,
   handleInputChange,
-  setLoading,
+  loading,
 }: {
   formState: Room;
   handleInputChange: (key: keyof Room, value: any) => void;
-  setLoading: any;
+  loading: boolean;
 }) => {
   const { cameras, microphones, error, updateDevices, getMediaPermissions } =
     useMediaDevices();
@@ -120,7 +120,7 @@ const PermissionsAndDetails = ({
   };
   //TODO: show a dialog when showGetPermission is true and ask user to allow device permission, in the same dialog we shoud show mediaError if it has value
   return (
-    <div className="flex flex-col gap-6">
+    <div className={clsx(`flex flex-col gap-6`, loading && "opacity-50")}>
       <div className="flex flex-col items-start justify-between gap-4 ">
         <div className={`text-xl font-medium text-white`}>
           Dive into <span className={`text-gradient-1`}>VoiceSpace</span>
@@ -144,6 +144,7 @@ const PermissionsAndDetails = ({
             accept="image/*"
             style={{ display: "none" }}
             onChange={handleOnUserSelectedImage}
+            disabled={loading}
           />
           <Button
             title={preview ? "Remove Image" : "Upload Image"}
@@ -157,6 +158,7 @@ const PermissionsAndDetails = ({
             }
             borderRounded="10px"
             className={`text-xs font-medium`}
+            disabled={loading}
           />
         </div>
       </div>
@@ -168,6 +170,7 @@ const PermissionsAndDetails = ({
             maxLength={100}
             value={formState.name}
             onChange={(e) => handleInputChange("name", e.target.value)}
+            disabled={loading}
           ></textarea>
 
           <div className="absolute bottom-2 right-2 z-[100] ml-4 h-7 w-7">
@@ -183,9 +186,13 @@ const PermissionsAndDetails = ({
           {/* Audio Tab */}
           {formState.type === BroadcastTypeEnum.LIVE ? (
             <div
-              onClick={() => setCurrentTab("audio")}
+              onClick={!loading ? () => setCurrentTab("audio") : undefined}
               className={clsx(
-                "flex w-full cursor-pointer items-center justify-center gap-2 rounded-[10px]"
+                "flex w-full cursor-pointer items-center justify-center gap-2 rounded-[10px]",
+                currentTab === "audio"
+                  ? "gradient-borders-div"
+                  : "border-gray-600",
+                loading && "pointer-events-none"
               )}
             >
               <span className="flex items-center gap-2 py-2 text-sm text-gray-shade-24">
@@ -200,9 +207,13 @@ const PermissionsAndDetails = ({
 
           {formState.type === BroadcastTypeEnum.LIVE && (
             <div
-              onClick={() => setCurrentTab("video")}
+              onClick={!loading ? () => setCurrentTab("video") : undefined}
               className={clsx(
-                "flex w-full items-center justify-center gap-2 rounded-[10px] "
+                "flex w-full cursor-pointer items-center justify-center gap-2 rounded-[10px]",
+                currentTab === "video"
+                  ? "gradient-borders-div"
+                  : "border-gray-600",
+                loading && "pointer-events-none"
               )}
             >
               <span
@@ -226,18 +237,21 @@ const PermissionsAndDetails = ({
                 : formState.videoDevice?.label
             }
             onChange={(e) => {
-              if (currentTab === "audio") {
-                handleInputChange(
-                  "audioDevice",
-                  microphones.find((m) => m.deviceId === e.target.value)
-                );
-              } else {
-                handleInputChange(
-                  "videoDevice",
-                  cameras.find((c) => c.deviceId === e.target.value)
-                );
+              if (!loading) {
+                if (currentTab === "audio") {
+                  handleInputChange(
+                    "audioDevice",
+                    microphones.find((m) => m.deviceId === e.target.value)
+                  );
+                } else {
+                  handleInputChange(
+                    "videoDevice",
+                    cameras.find((c) => c.deviceId === e.target.value)
+                  );
+                }
               }
             }}
+            disabled={loading}
           >
             {currentTab === "audio" &&
               microphones.map((microphone, index) => (

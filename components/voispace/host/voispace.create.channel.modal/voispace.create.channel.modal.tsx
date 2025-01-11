@@ -348,7 +348,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
           <PermissionsAndDetails
             formState={formState}
             handleInputChange={handleInputChange}
-            setLoading={setLoading}
+            loading={loading}
           />
         );
       case CreatRoomSteps.ACCESSIBILITY:
@@ -356,6 +356,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
           <Accessibility
             formState={formState}
             handleInputChange={handleInputChange}
+            loading={roomCreationLoader}
           />
         );
       case CreatRoomSteps.ROOM:
@@ -364,6 +365,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
             formState={formState}
             setFormState={setFormState}
             setIsHostSettingsOpen={setIsHostSettingsOpen}
+            loading={roomCreationLoader}
           />
         );
       default:
