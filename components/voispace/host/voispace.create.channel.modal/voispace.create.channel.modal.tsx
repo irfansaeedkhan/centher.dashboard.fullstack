@@ -5,6 +5,8 @@ import ModalContainer from "@/components/modal/modal-container";
 import Button from "@/components/button";
 import toast from "react-hot-toast";
 import useMediaDevices from "hooks/use.get.media.devices/index";
+
+import { BroadcastPreviewDto } from "@/hooks/stream/dto/broadcast-preview.dto";
 import { useStream } from "@/hooks/stream/use.core";
 import useUser from "@/hooks/use.user";
 import { StreamAccessModeEnum } from "@/stream/enum/stream-access-mode.enum";
