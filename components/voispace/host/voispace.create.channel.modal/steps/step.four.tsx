@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
+import clsx from "clsx";
 
 import { search, SearchResultWithType } from "@/lib/search";
 import { SearchIcon } from "@/assets/svgs";
@@ -16,12 +17,14 @@ interface StepFourProps {
   formState: Room;
   setFormState: React.Dispatch<React.SetStateAction<any>>;
   setIsHostSettingsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  loading: boolean;
 }
 
 const StepFour: React.FC<StepFourProps> = ({
   formState,
   setFormState,
   setIsHostSettingsOpen,
+  loading,
 }) => {
   const [searchResults, setSearchResults] = useState<SearchResultWithType[]>(
     []
@@ -100,7 +103,12 @@ const StepFour: React.FC<StepFourProps> = ({
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div
+      className={clsx(
+        `flex flex-col gap-6`,
+        loading && "pointer-events-none opacity-50"
+      )}
+    >
       <div className={`text-xl font-medium text-white`}>
         Dive into <span className={`text-gradient-1`}>VoiceSpace</span>
       </div>
