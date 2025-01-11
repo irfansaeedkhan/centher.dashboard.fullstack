@@ -1,5 +1,6 @@
 import React from "react";
 import { clsx } from "clsx";
+import { StreamAccessModeEnum } from "@/stream/enum/stream-access-mode.enum";
 
 const Accessibility = ({ formState, handleInputChange }: any) => {
   return (
@@ -9,10 +10,13 @@ const Accessibility = ({ formState, handleInputChange }: any) => {
       </div>
       <div className="flex w-full flex-col gap-4">
         <div
-          onClick={() => handleInputChange("roomPrivacy", "Public")}
+          onClick={() =>
+            handleInputChange("accessMode", StreamAccessModeEnum.PUBLIC)
+          }
           className={clsx(
             "cursor-pointer rounded-2xl bg-[#141416] p-[1px]",
-            formState.roomPrivacy === "Public" && "gradient-borders-div"
+            formState.accessMode === StreamAccessModeEnum.PUBLIC &&
+              "gradient-borders-div"
           )}
         >
           <div className="px-4 pt-2 text-base font-medium text-white">
@@ -23,10 +27,17 @@ const Accessibility = ({ formState, handleInputChange }: any) => {
           </div>
         </div>
         <div
-          onClick={() => handleInputChange("roomPrivacy", "Private")}
+          onClick={() =>
+            handleInputChange(
+              "accessMode",
+              StreamAccessModeEnum.ACCESS_BY_INVITATION
+            )
+          }
           className={clsx(
             "cursor-pointer rounded-2xl bg-[#141416] p-[1px]",
-            formState.roomPrivacy === "Private" && "gradient-borders-div"
+            formState.accessMode ===
+              StreamAccessModeEnum.ACCESS_BY_INVITATION &&
+              "gradient-borders-div"
           )}
         >
           <div className="px-4 pt-2 text-base font-medium text-white">
@@ -38,10 +49,16 @@ const Accessibility = ({ formState, handleInputChange }: any) => {
         </div>
 
         <div
-          onClick={() => handleInputChange("roomPrivacy", "Privilege")}
+          onClick={() =>
+            handleInputChange(
+              "accessMode",
+              StreamAccessModeEnum.ACCESS_BY_TOKEN
+            )
+          }
           className={clsx(
             "cursor-pointer rounded-2xl bg-[#141416] p-[1px]",
-            formState.roomPrivacy === "Privilege" && "gradient-borders-div"
+            formState.accessMode === StreamAccessModeEnum.ACCESS_BY_TOKEN &&
+              "gradient-borders-div"
           )}
         >
           <div className="px-4 pt-2 text-base font-medium text-white">

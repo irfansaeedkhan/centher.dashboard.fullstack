@@ -6,23 +6,10 @@ import Button from "@/components/button";
 import Image from "next/image";
 
 import useMediaDevices from "hooks/use.get.media.devices/index";
-import axios from "axios";
+
 import toast from "react-hot-toast";
-import { getUserImageUploadUrl } from "@/lib/user";
-import { CFSBaseURL } from "@/constants/base-urls";
-import { ICentalkBroadcast } from "@/hooks/stream/cen-talk";
 import { Room } from "../voispace.create.channel.modal";
 import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
-
-interface UserImageUploadUrlResponse {
-  presignedPostData: PresignedPostData;
-  objectName: string;
-}
-
-interface PresignedPostData {
-  url: string;
-  fields: Fields;
-}
 
 interface Fields {
   "Content-Type": string;
@@ -42,49 +29,57 @@ const PermissionsAndDetails = ({
   setLoading,
 }: {
   formState: Room;
-  handleInputChange: any;
+  handleInputChange: (key: keyof Room, value: any) => void;
   setLoading: any;
 }) => {
-  const { cameras, microphones, error, hasPermission } = useMediaDevices();
-  const [preview, setPreview] = useState<string | null>(null);
-  const [imageName, setImageName] = useState<string | null>(null);
+  const { cameras, microphones, error, updateDevices, getMediaPermissions } =
+    useMediaDevices();
+  const [preview, setPreview] = useState<string | undefined>(undefined);
+  const [rawImage, setRawImage] = useState<File | undefined>(undefined);
+  const [showGetPermission, setShowGetPermission] = useState(false);
+  const [currentTab, setCurrentTab] = useState<string>("audio");
 
   useEffect(() => {
-    if (!formState.audioDevice && microphones.length > 0) {
-      handleInputChange("audioDevice", microphones[0].deviceId);
-    }
-    if (!formState.videoDevice && cameras.length > 0) {
-      handleInputChange("videoDevice", cameras[0].deviceId);
-    }
+    updateDevices().then(() => {
+      if (formState.type == BroadcastTypeEnum.LIVE) {
+        if (microphones.length == 0 || cameras.length == 0) {
+          setShowGetPermission(true);
+        } else {
+          handleInputChange("videoDevice", cameras[0]);
+          handleInputChange("audioDevice", microphones[0]);
+        }
+      }
+
+      if (formState.type == BroadcastTypeEnum.AMA) {
+        if (microphones.length == 0) {
+          setShowGetPermission(true);
+        } else {
+          handleInputChange("audioDevice", microphones[0]);
+        }
+      }
+    });
   }, [
-    microphones,
-    cameras,
+    updateDevices,
     handleInputChange,
     formState.audioDevice,
     formState.videoDevice,
   ]);
 
-  // Function to upload the image to AWS
-  // const generateImageUrl = (url: string, objectName: string) => {
-  //   // Ensure the base URL ends with a slash
-  //   const normalizedBaseUrl = url.endsWith("/") ? url : `${url}/`;
-
-  //   // Ensure the object name does not start with a slash
-  //   const normalizedObjectName = objectName.replace(/^\//, "");
-
-  //   // Combine the base URL and object name
-  //   return `${normalizedBaseUrl}${normalizedObjectName}`;
-  // };
-
-  const generateImageUrl = (params: any): string => {
-    if (params.type === "custom-image") {
-      return `${CFSBaseURL}/users?key=${params.object_name}`;
-    } else {
-      throw new Error("Invalid params");
+  useEffect(() => {
+    if (showGetPermission) {
+      getMediaPermissions(formState.type).then();
     }
-  };
+  }, [showGetPermission]);
 
-  const handleImageUpload = async (
+  useEffect(() => {
+    if (rawImage) {
+      getFilePreview(rawImage);
+    } else {
+      getFilePreview(null);
+    }
+  }, [rawImage]);
+
+  const handleOnUserSelectedImage = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
@@ -101,53 +96,29 @@ const PermissionsAndDetails = ({
         return;
       }
 
-      setLoading(true);
+      setRawImage(file);
+      handleInputChange("image", file);
+    } catch (error) {}
+  };
 
-      // Get presigned URL for the image
-      const { presignedPostData, objectName } = await getUserImageUploadUrl(
-        file.name,
-        "cover_image"
-      );
-
-      // Prepare form data for uploading the image
-      const formData = new FormData();
-      Object.entries(presignedPostData.fields).forEach(([key, value]) => {
-        formData.append(key, value);
-      });
-      formData.append("file", file);
-
-      // Upload the image to AWS S3 using the presigned URL
-      await axios.post(presignedPostData.url, formData);
-
-      // Generate the full image URL
-      const imageUrl = generateImageUrl({
-        type: "custom-image",
-        object_name: objectName,
-      });
-      console.log("imageUrl", imageUrl);
-
-      handleInputChange("image", imageUrl); // Use the proper URL
-      toast.success("Image uploaded successfully!");
-
-      const reader = new FileReader();
-      reader.onload = () => {
-        setPreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    } catch (error) {
-      console.error("Error uploading image:", error);
-      toast.error("Failed to upload image. Please try again.");
-    } finally {
-      setLoading(false);
+  const getFilePreview = (file: File | null) => {
+    if (!rawImage) {
+      setPreview(undefined);
+      return;
     }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setPreview(reader.result as string);
+    };
+    reader.readAsDataURL(rawImage);
   };
 
   const handleRemoveImage = () => {
-    setPreview(null);
-    setImageName(null);
+    setRawImage(undefined);
     handleInputChange("image", null);
   };
-
+  //TODO: show a dialog when showGetPermission is true and ask user to allow device permission, in the same dialog we shoud show mediaError if it has value
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col items-start justify-between gap-4 ">
@@ -164,9 +135,6 @@ const PermissionsAndDetails = ({
                 height={50}
                 className="h-12 w-12 rounded-full object-cover"
               />
-              <h6 className="text-xs text-gray-shade-24">
-                {imageName || "Uploaded"}
-              </h6>
             </div>
           )}
 
@@ -175,7 +143,7 @@ const PermissionsAndDetails = ({
             type="file"
             accept="image/*"
             style={{ display: "none" }}
-            onChange={handleImageUpload}
+            onChange={handleOnUserSelectedImage}
           />
           <Button
             title={preview ? "Remove Image" : "Upload Image"}
@@ -199,7 +167,7 @@ const PermissionsAndDetails = ({
             placeholder="Write a smart title for your Room"
             maxLength={100}
             value={formState.name}
-            onChange={(e) => handleInputChange("roomTitle", e.target.value)}
+            onChange={(e) => handleInputChange("name", e.target.value)}
           ></textarea>
 
           <div className="absolute bottom-2 right-2 z-[100] ml-4 h-7 w-7">
@@ -213,48 +181,39 @@ const PermissionsAndDetails = ({
       <div className="tabs flex flex-col gap-4">
         <div className="flex items-center gap-4">
           {/* Audio Tab */}
-          <div
-            onClick={() => handleInputChange("mode", "Audio")}
-            className={clsx(
-              "flex w-full cursor-pointer items-center justify-center gap-2 rounded-[10px]",
-              formState.mode === "Audio"
-                ? "gradient-borders-div"
-                : "border-gray-600"
-            )}
-          >
-            <span className="flex items-center gap-2 py-2 text-sm text-gray-shade-24">
-              <MicIcon2 /> Audio
-            </span>
-          </div>
-
-          {/* Video Tab */}
-          <div
-            onClick={
-              formState.type === BroadcastTypeEnum.LIVE
-                ? () => handleInputChange("mode", "Video")
-                : undefined
-            }
-            className={clsx(
-              "flex w-full items-center justify-center gap-2 rounded-[10px]",
-              formState.type === BroadcastTypeEnum.LIVE
-                ? "cursor-pointer"
-                : "cursor-not-allowed opacity-50",
-              formState.mode === "Video"
-                ? "gradient-borders-div"
-                : "border-gray-600"
-            )}
-          >
-            <span
+          {formState.type === BroadcastTypeEnum.LIVE ? (
+            <div
+              onClick={() => setCurrentTab("audio")}
               className={clsx(
-                "flex items-center gap-2 py-2 text-sm",
-                formState.type === BroadcastTypeEnum.LIVE
-                  ? "text-gray-shade-24"
-                  : "text-gray-shade-10"
+                "flex w-full cursor-pointer items-center justify-center gap-2 rounded-[10px]"
               )}
             >
-              <VideoIcon2 className="size-6" /> Video
-            </span>
-          </div>
+              <span className="flex items-center gap-2 py-2 text-sm text-gray-shade-24">
+                <MicIcon2 /> Audio
+              </span>
+            </div>
+          ) : (
+            <div className={`text-sm font-medium text-white`}>
+              Select Audio device:
+            </div>
+          )}
+
+          {formState.type === BroadcastTypeEnum.LIVE && (
+            <div
+              onClick={() => setCurrentTab("video")}
+              className={clsx(
+                "flex w-full items-center justify-center gap-2 rounded-[10px] "
+              )}
+            >
+              <span
+                className={clsx(
+                  "flex items-center gap-2 py-2 text-sm text-gray-shade-24"
+                )}
+              >
+                <VideoIcon2 className="size-6" /> Video
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Dropdown for Audio/Video Options */}
@@ -262,30 +221,32 @@ const PermissionsAndDetails = ({
           <select
             className="mt-2 block w-full rounded-[10px] border-0 bg-[#141416] px-4 py-3 text-white focus:outline-none focus:ring-[#141416]"
             value={
-              formState.mode === "Audio"
-                ? formState.audioDevice
-                : formState.videoDevice
+              currentTab === "audio"
+                ? formState.audioDevice?.label
+                : formState.videoDevice?.label
             }
             onChange={(e) => {
-              if (formState.mode === "Audio") {
-                handleInputChange("audioDevice", e.target.value);
+              if (currentTab === "audio") {
+                handleInputChange(
+                  "audioDevice",
+                  microphones.find((m) => m.deviceId === e.target.value)
+                );
               } else {
-                handleInputChange("videoDevice", e.target.value);
+                handleInputChange(
+                  "videoDevice",
+                  cameras.find((c) => c.deviceId === e.target.value)
+                );
               }
             }}
-            disabled={
-              formState.type === BroadcastTypeEnum.AMA &&
-              formState.mode === "Video"
-            }
           >
-            {formState.mode === "Audio" &&
+            {currentTab === "audio" &&
               microphones.map((microphone, index) => (
                 <option key={index} value={microphone.deviceId}>
                   {microphone.label}
                 </option>
               ))}
 
-            {formState.mode === "Video" &&
+            {currentTab === "video" &&
               cameras.map((camera, index) => (
                 <option key={index} value={camera.deviceId}>
                   {camera.label}

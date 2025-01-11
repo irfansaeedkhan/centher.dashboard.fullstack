@@ -51,7 +51,6 @@ const ChannelMainView: React.FC<ChannelMainViewInterface> = ({
     }
   }, [ComponentToRender]);
 
-  console.log("roomData::", roomData);
   return (
     <ModalContainer
       modalId="host-settings"

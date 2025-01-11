@@ -33,7 +33,7 @@ interface IAggregateCount {
 export interface ICentalkBroadcast {
   id?: string;
   name?: string;
-  image: string;
+  image: string | File;
   description?: string;
   accessMode: StreamAccessModeEnum;
   type: BroadcastTypeEnum;

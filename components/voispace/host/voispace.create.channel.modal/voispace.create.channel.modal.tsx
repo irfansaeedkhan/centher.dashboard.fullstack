@@ -4,12 +4,12 @@ import { MdOutlineExpandLess } from "react-icons/md";
 import ModalContainer from "@/components/modal/modal-container";
 import Button from "@/components/button";
 import toast from "react-hot-toast";
-import useMediaDevices from "hooks/use.get.media.devices/index";
 import { useStream } from "@/hooks/stream/use.core";
 import useUser from "@/hooks/use.user";
 import { StreamAccessModeEnum } from "@/stream/enum/stream-access-mode.enum";
 import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
 import { CreateBroadcastDto } from "@/stream/types/Broadcast";
+import axios from "axios";
 
 import AMAOrLive from "./steps/AMAOrLive";
 import PermissionsAndDetails from "./steps/PermissionsAndDetails";
@@ -19,6 +19,9 @@ import ChannelMainView from "../../shared/ChannelMainView";
 import { StreamEventEnum } from "@/stream/model";
 import { CreatRoomSteps } from "./enums";
 import { ICentalkBroadcast } from "@/hooks/stream/cen-talk";
+import { CFSBaseURL } from "@/constants/base-urls";
+import { getUserImageUploadUrl } from "@/lib/user";
+import useMediaDevices from "@/hooks/use.get.media.devices";
 
 interface Props {
   onClose: () => void;
@@ -27,10 +30,8 @@ interface Props {
 export interface Room extends ICentalkBroadcast {
   invitedPrivateUsers: SearchResultWithType[];
   invitedPrivilegeUsers: CFSCollection[];
-  audioDevice: string;
-  videoDevice: string;
-  hasPermission: Boolean;
-  mode: "Audio" | "Video";
+  audioDevice: MediaDeviceInfo | null;
+  videoDevice: MediaDeviceInfo | null;
 }
 
 export interface SearchResultWithType {
@@ -49,55 +50,121 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
     CreatRoomSteps.AMA_OR_LIVE
   );
   const [loading, setLoading] = useState(false);
+  const [roomCreationLoader, setRoomCreationLoader] = useState(false);
   const [isHostSettingsOpen, setIsHostSettingsOpen] = useState(false);
-  const [roomData, setRoomData] = useState<ICentalkBroadcast | null>(null);
-  const { hasPermission } = useMediaDevices();
+  const [roomData, setRoomData] = useState<Room | null>(null);
   const { amaAgent, liveAgent, useSubscribeToAllBroadcasts } = useStream();
   const streamPromise = useSubscribeToAllBroadcasts();
   const { createRoom: createAMARoom, event: eventOnAMA } = amaAgent;
   const { createRoom: createLiveRoom, event: eventOnLive } = liveAgent;
   const { user } = useUser();
+  const { getMediaPermissions, error: mediaError } = useMediaDevices();
 
   const [formState, setFormState] = useState<Room>({
     type: BroadcastTypeEnum.AMA,
     image: "",
     name: "test",
-    accessMode: StreamAccessModeEnum.PUBLIC,
+    accessMode: StreamAccessModeEnum.NONE,
     invitedPrivateUsers: [],
     invitedPrivilegeUsers: [],
-    audioDevice: "",
-    videoDevice: "",
-    hasPermission: hasPermission,
-    mode: "Audio",
+    audioDevice: null,
+    videoDevice: null,
     invitedUsers: [],
     latestParticipants: [],
     participatorsCount: { aggregate: { count: 0 } },
     speakersCount: { aggregate: { count: 0 } },
   });
 
-  // Add this near other useEffects
   useEffect(() => {
-    console.log("eventOnAMA", eventOnAMA);
-    if (eventOnAMA?.type === StreamEventEnum.ON_CREATE_CENTALK) {
-      const newRoomData: ICentalkBroadcast = {
+    if (mediaError) {
+      toast.error("Check your devices");
+    }
+  }, [mediaError]);
+
+  useEffect(() => {
+    if (
+      eventOnAMA?.type === StreamEventEnum.ON_CREATE_CENTALK ||
+      eventOnLive?.type === StreamEventEnum.ON_CREATE_CENTALK
+    ) {
+      const newRoomData: Room = {
         ...roomData!,
         accessMode: formState.accessMode,
       };
 
       setRoomData(newRoomData);
       setIsHostSettingsOpen(true);
-      toast.success("Room created successfully!");
+      setRoomCreationLoader(false);
     }
-  }, [eventOnAMA, formState.accessMode, roomData]);
 
-  // useEffect(() => {
-  //   setFormState((prev) => ({
-  //     ...prev,
-  //     hasPermission,
-  //   }));
-  // }, [hasPermission]);
+    if (
+      eventOnAMA?.type == StreamEventEnum.STREAM_INITIALIZATION_ERROR ||
+      eventOnLive?.type == StreamEventEnum.STREAM_INITIALIZATION_ERROR
+    ) {
+      const error = eventOnAMA?.data || eventOnLive?.data;
+      toast.error(error);
 
-  // Generic input change handler
+      onClose();
+      setRoomCreationLoader(false);
+    }
+  }, [eventOnLive, eventOnAMA, formState.accessMode]);
+
+  const generateImageUrl = (params: any): string => {
+    if (params.type === "custom-image") {
+      return `${CFSBaseURL}/users?key=${params.object_name}`;
+    } else {
+      throw new Error("Invalid params");
+    }
+  };
+
+  const handleImageUpload = async () => {
+    const file = formState.image;
+
+    if (!file || typeof file === "string") return;
+
+    try {
+      if (
+        !["image/jpeg", "image/png", "image/gif", "image/webp"].includes(
+          file.type
+        )
+      ) {
+        toast.error("Invalid file type. Please upload a valid image.");
+        return;
+      }
+
+      setLoading(true);
+
+      // Get presigned URL for the image
+      const { presignedPostData, objectName } = await getUserImageUploadUrl(
+        file.name,
+        "cover_image"
+      );
+
+      // Prepare form data for uploading the image
+      const formData = new FormData();
+      Object.entries(presignedPostData.fields).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
+      formData.append("file", file);
+
+      // Upload the image to AWS S3 using the presigned URL
+      await axios.post(presignedPostData.url, formData);
+
+      // Generate the full image URL
+      const imageUrl = generateImageUrl({
+        type: "custom-image",
+        object_name: objectName,
+      });
+
+      setFormState((current) => ({
+        ...current,
+        image: imageUrl,
+      }));
+    } catch (error) {
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleInputChange = useCallback(
     (field: keyof Room, value: any) => {
@@ -121,39 +188,77 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
     [setFormState]
   );
 
-  const handleNext = async () => {
-    console.log(formState);
+  const createRoom = async () => {
+    try {
+      setRoomCreationLoader(true);
+      const input: CreateBroadcastDto = {
+        name: formState.name,
+        description: "",
+        accessMode: formState.accessMode,
+        type: formState.type,
+        image: formState.image as string,
+        invitedUsers:
+          formState.accessMode === StreamAccessModeEnum.ACCESS_BY_INVITATION
+            ? formState.invitedPrivateUsers.map((u) => u._id)
+            : [],
+        tokenAddress:
+          formState.accessMode === StreamAccessModeEnum.ACCESS_BY_TOKEN
+            ? formState.invitedPrivilegeUsers.map((c) => c.collection)
+            : [],
+      };
 
+      const createRoom =
+        formState.type === BroadcastTypeEnum.AMA
+          ? createAMARoom
+          : createLiveRoom;
+
+      if (!user) {
+        toast.error("User not found. Please try again.");
+        return;
+      }
+
+      await createRoom(input, user._id);
+    } catch (error) {
+      console.error("Error creating public room:", error);
+    }
+  };
+
+  const handleNext = async () => {
     // Step 2: Validation for room title and image
     if (currentStep === CreatRoomSteps.PERMISSIONS_AND_DETAILS) {
       if (!formState.name) {
         toast.error("Room title is required.");
         return;
       }
+
       if (!formState.image) {
         toast.error("Image is required.");
         return;
       }
-      if (!hasPermission) {
-        toast.error("Permission is required.");
+
+      try {
+        await getMediaPermissions(formState.type);
+        await handleImageUpload();
+      } catch (error) {
+        toast.error("Failed to upload image, please try another image");
         return;
       }
     }
 
     // Step 3: Validation for audio device
-    if (
-      currentStep === CreatRoomSteps.ACCESSIBILITY &&
-      !formState.audioDevice
-    ) {
-      toast.error("Audio device is required.");
-      return;
-    }
 
     if (currentStep === CreatRoomSteps.ACCESSIBILITY) {
       // Perform validation for Step 3
       if (!formState.audioDevice) {
         toast.error("Audio device is required.");
         return;
+      }
+
+      if (formState.type === BroadcastTypeEnum.LIVE) {
+        if (!formState.videoDevice) {
+          toast.error("Video device is required.");
+          return;
+        }
       }
 
       if (!formState.name) {
@@ -167,60 +272,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
       }
 
       if (formState.accessMode === StreamAccessModeEnum.PUBLIC) {
-        try {
-          const accessMode = StreamAccessModeEnum.PUBLIC;
-          const type =
-            formState.type === BroadcastTypeEnum.AMA
-              ? BroadcastTypeEnum.AMA
-              : BroadcastTypeEnum.LIVE;
-
-          const input: CreateBroadcastDto = {
-            name: formState.name,
-            description: "",
-            accessMode,
-            type,
-            image: formState.image,
-            invitedUsers: [],
-            tokenAddress: [],
-          };
-
-          const createRoom =
-            formState.type === BroadcastTypeEnum.AMA
-              ? createAMARoom
-              : createLiveRoom;
-
-          if (!user) {
-            toast.error("User not found. Please try again.");
-            return;
-          }
-
-          await createRoom(input, user._id);
-
-          // const roomEvent =
-          //   formState.roomType === "AMA" ? amaAgent.event : liveAgent.event;
-          // if (
-          //   roomEvent &&
-          //   roomEvent.type === StreamEventEnum.ON_CREATE_CENTALK
-          // ) {
-          //   console.log("Room Created with ID:", roomEvent.data.id);
-
-          //   // room data to be passed to the main view
-          //   const newRoomData: RoomData = {
-          //     id: roomEvent.data.id,
-          //     type: formState.roomType,
-          //     roomPrivacy: formState.roomPrivacy,
-          //   };
-
-          //   setRoomData(newRoomData);
-          //   setIsHostSettingsOpen(true);
-          //   toast.success("Public room created successfully!");
-          // } else {
-          //   toast.error("Failed to create public room.");
-          // }
-        } catch (error) {
-          toast.error("Failed to create public room. Please try again.");
-          console.error("Error creating public room:", error);
-        }
+        await createRoom();
         return;
       }
       // Proceed to Step 4 for Private/Privilege rooms
@@ -246,71 +298,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
         return;
       }
 
-      try {
-        const accessMode =
-          formState.accessMode === StreamAccessModeEnum.ACCESS_BY_INVITATION
-            ? StreamAccessModeEnum.ACCESS_BY_INVITATION
-            : StreamAccessModeEnum.ACCESS_BY_TOKEN;
-
-        const type =
-          formState.type === BroadcastTypeEnum.AMA
-            ? BroadcastTypeEnum.AMA
-            : BroadcastTypeEnum.LIVE;
-
-        const input: CreateBroadcastDto = {
-          name: formState.name,
-          description: "",
-          accessMode,
-          type,
-          image: formState.image,
-          invitedUsers:
-            formState.accessMode === StreamAccessModeEnum.ACCESS_BY_INVITATION
-              ? formState.invitedPrivateUsers.map((u) => u._id)
-              : [],
-          tokenAddress:
-            formState.accessMode === StreamAccessModeEnum.ACCESS_BY_TOKEN
-              ? formState.invitedPrivilegeUsers.map((c) => c.collection)
-              : [],
-        };
-
-        const createRoom =
-          formState.type === BroadcastTypeEnum.AMA
-            ? createAMARoom
-            : createLiveRoom;
-
-        if (!user) {
-          toast.error("User not found. Please try again.");
-          return;
-        }
-
-        await createRoom(input, user._id);
-
-        const roomEvent =
-          formState.type === BroadcastTypeEnum.AMA
-            ? amaAgent.event
-            : liveAgent.event;
-
-        if (roomEvent && roomEvent.type === StreamEventEnum.ON_CREATE_CENTALK) {
-          console.log("Room Created with ID:", roomEvent.data.id);
-
-          // room data to be passed to the main view
-          const newRoomData: ICentalkBroadcast = {
-            ...roomData!,
-            id: roomEvent.data.id,
-            type: formState.type,
-            accessMode: formState.accessMode,
-          };
-
-          setRoomData(newRoomData);
-          setIsHostSettingsOpen(true);
-          toast.success("Room created successfully!");
-        } else {
-          toast.error("Failed to create room.");
-        }
-      } catch (error) {
-        toast.error("Failed to create room. Please try again.");
-        console.error("Error creating room:", error);
-      }
+      await createRoom();
       return;
     }
 
@@ -409,11 +397,13 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
             title={
               loading && currentStep === CreatRoomSteps.PERMISSIONS_AND_DETAILS
                 ? "Uploading..."
+                : roomCreationLoader
+                ? "setting up room..."
                 : currentStep === CreatRoomSteps.ROOM
                 ? "Submit"
                 : "Next"
             }
-            disabled={loading}
+            disabled={loading || roomCreationLoader}
             variant="primary"
             onClick={handleNext}
             borderRounded="10px"

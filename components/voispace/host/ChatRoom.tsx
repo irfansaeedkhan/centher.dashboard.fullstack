@@ -1,36 +1,55 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-
 import { SendChatIcon } from "@/assets/svgs";
 import HostModalHeader from "@/components/voispace/host/partials/HostModalHeader";
-
 import ActionButton from "./ui/ActionButton";
-// import { messages } from "../dummy.data/chat.list";
 import DOMPurify from "dompurify";
 import { useStream } from "@/hooks/stream/use.core";
-// import useGetChatUsers from '@/hooks/use.get.chat.users/index'
-
-// import { BroadcastPreviewDto } from "@/hooks/stream/dto/broadcast-preview.dto";
+import { Room } from "./voispace.create.channel.modal/voispace.create.channel.modal";
+import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
 
 interface DynamicProps {
   onClose: () => void;
   setComponentName: (name: string) => any;
-  formState: any;
+  formState: Room;
 }
+
+const MessageSkeleton = () => (
+  <div className="flex animate-pulse gap-3">
+    <div className="relative h-10 w-10 flex-shrink-0 rounded-full bg-gray-700" />
+    <div className="flex w-full flex-col items-start gap-2">
+      <div className="flex items-center gap-2">
+        <div className="h-4 w-24 rounded bg-gray-700" />
+        <div className="h-3 w-12 rounded bg-gray-700" />
+      </div>
+      <div className="h-3 w-3/4 rounded bg-gray-700" />
+    </div>
+  </div>
+);
 
 const ChatRoom: React.FC<DynamicProps> = ({
   onClose,
   setComponentName,
   formState,
 }) => {
-  const { useSubscribeToMessages, insertMessage, useGetSubscribes } =
-    useStream();
+  const { useSubscribeToMessages, insertMessage } = useStream();
   const [inputValue, setInputValue] = useState("");
-  // const { getUsers } = useGetChatUsers()
-  // const [socketMessages, setSocketMessages] = useState<any[]>([]);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const emojiPickerRef = useRef<HTMLDivElement>(null);
 
-  // const streamPromise = useGetSubscribes();
-  // const [streamData, setStreamData] = useState<BroadcastPreviewDto[]>([]);
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        emojiPickerRef.current &&
+        !emojiPickerRef.current.contains(event.target as Node)
+      ) {
+        setShowEmojiPicker(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleInputChange = (e: any) => {
     setInputValue(e.target.value);
@@ -55,35 +74,42 @@ const ChatRoom: React.FC<DynamicProps> = ({
     }
   };
 
-  const messages = (useSubscribeToMessages(broadcastId) || [])
-    .slice()
-    .reverse();
+  const { messages, loading: subscriptionLoading } =
+    useSubscribeToMessages(broadcastId);
 
-  // useEffect(() => {
+  const formattedMessages =
+    messages
+      ?.sort(
+        (a: { createdAt: string }, b: { createdAt: string }) =>
+          +new Date(b.createdAt) - +new Date(a.createdAt)
+      )
+      ?.reverse() || [];
 
-  //   const checkUsersOnMessages = async () => {
-  //     console.log("useSubscribeToMessages", messages)
+  const getTimeLapsed = (date: Date | string): string => {
+    date = date instanceof Date ? date : new Date(date);
+    const now = new Date();
+    const diff = now.getTime() - date.getTime();
 
-  //     const userAddresses = messages.map(e => e.sender)
-  //     const users = await getUsers(userAddresses)
+    const seconds = Math.floor(diff / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
 
-  //     const bundle = []
+    if (days > 0) {
+      return `${days}d ago`;
+    } else if (hours > 0) {
+      return `${hours}h ago`;
+    } else if (minutes > 0) {
+      return `${minutes}m ago`;
+    } else {
+      return "just now";
+    }
+  };
 
-  //     for(var n = 0; n < messages.length; n++) {
-  //       const message = messages[n]
-
-  //       bundle.push({
-  //         user: users?.find(e => e.display_name === message.sender),
-  //         message
-  //       })
-  //     }
-
-  //     setSocketMessages(bundle)
-
-  //   }
-
-  //   checkUsersOnMessages()
-  // }, [messages])
+  const onEmojiClick = (emojiData: EmojiClickData) => {
+    setInputValue((prev) => prev + emojiData.emoji);
+    setShowEmojiPicker(false);
+  };
 
   return (
     <div className="px-[24px] py-[24px] text-white">
@@ -97,41 +123,43 @@ const ChatRoom: React.FC<DynamicProps> = ({
         ></HostModalHeader>
         <div className="flex flex-col gap-[32px]">
           <div className="customScrollbar flex max-h-[40vh] flex-col gap-6 overflow-y-auto p-6 text-white">
-            {messages.map((msg, index) => (
-              <div key={index} className="flex gap-3">
-                {/* User Avatar */}
-                <div className="relative h-10 w-10 flex-shrink-0">
-                  <Image
-                    src={msg.userImage}
-                    alt={msg.userName}
-                    width={48}
-                    height={48}
-                    className="h-full w-full rounded-full"
-                  />
-                  <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-[#141416] bg-green-500" />
-                </div>
-
-                {/* Message Content */}
-                <div className="flex flex-col items-start">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium">{msg.userName}</span>
-                    {msg.isReply && (
-                      <span className="text-xs text-gray-shade-24">
-                        replying to{" "}
-                        <span className="text-white">{msg.replyTo}</span>
-                      </span>
-                    )}
-                    <span className="text-xs text-gray-shade-24">
-                      {msg.time}
-                    </span>
+            {subscriptionLoading ? (
+              <>
+                <MessageSkeleton />
+                <MessageSkeleton />
+                <MessageSkeleton />
+                <MessageSkeleton />
+                <MessageSkeleton />
+              </>
+            ) : (
+              formattedMessages.map((msg: any, index: number) => (
+                <div key={index} className="flex gap-3">
+                  <div className="relative h-10 w-10 flex-shrink-0">
+                    <Image
+                      src={msg.sender.profile_image}
+                      alt={msg.sender.display_name}
+                      width={48}
+                      height={48}
+                      className="h-full w-full rounded-full"
+                    />
+                    <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-[#141416] bg-green-500" />
                   </div>
-                  <p className="text-xs">{msg.content}</p>
-                  <button className="mt-1 text-xs text-gray-shade-24 hover:underline">
-                    Reply
-                  </button>
+
+                  <div className="flex flex-col items-start">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium">
+                        {msg.sender.display_name}
+                      </span>
+
+                      <span className="text-xs text-gray-shade-24">
+                        {getTimeLapsed(msg.createdAt)}
+                      </span>
+                    </div>
+                    <p className="text-xs">{msg.content}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
 
@@ -141,14 +169,37 @@ const ChatRoom: React.FC<DynamicProps> = ({
             onSubmit={(e) => onSend(e)}
             className="relative flex w-full items-center justify-between rounded-xl bg-[#212329] pl-4"
           >
-            <input
-              name="messageInput"
-              id="messageInput"
-              value={inputValue}
-              onChange={handleInputChange}
-              className="w-full border-0 bg-transparent p-0 text-white ring-0 focus:outline-none focus:ring-0"
-              placeholder="Type something"
-            />
+            <div className="relative flex w-full items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                className="text-gray-400 transition-colors hover:text-white"
+              >
+                🙂
+              </button>
+
+              {showEmojiPicker && (
+                <div
+                  ref={emojiPickerRef}
+                  className="absolute bottom-12 left-0 z-10"
+                >
+                  <EmojiPicker
+                    onEmojiClick={onEmojiClick}
+                    autoFocusSearch={false}
+                    theme="dark"
+                  />
+                </div>
+              )}
+
+              <input
+                name="messageInput"
+                id="messageInput"
+                value={inputValue}
+                onChange={handleInputChange}
+                className="w-full border-0 bg-transparent p-0 text-white ring-0 focus:outline-none focus:ring-0"
+                placeholder="Type something"
+              />
+            </div>
 
             <ActionButton
               text="Finish"

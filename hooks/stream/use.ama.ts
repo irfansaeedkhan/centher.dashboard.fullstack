@@ -80,17 +80,12 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
 
   const createRoom = async (input: CreateBroadcastDto, userId: string) => {
     if (!globalSocket.current) {
-      console.warn("socket is not connected");
       await initSocketClient();
-      console.log("socket connected");
     }
     globalSocket.current!.emit("create-room", input, async (data: any) => {
-      console.log("create-room", data);
       if (!data) {
         return;
       }
-
-      console.log("create-room", data.id);
 
       setEvent({
         data,
@@ -100,8 +95,6 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
       globalUserId.current = userId;
       globalBroadcastId.current = data.id;
       globalRtpCapabilities.current = data.rtpCapabilities;
-      console.log("globalDevice.current", globalDevice.current);
-      console.log("globalDevice.current", !globalDevice.current.loaded);
       if (!globalDevice.current!.loaded) {
         try {
           await globalDevice.current!.load({
@@ -121,8 +114,6 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
         globalIsOwner.current = true;
       } catch (error) {
         leave();
-        console.error(error);
-
         return;
       }
 
@@ -660,12 +651,11 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
           resolve();
         });
 
-        globalSocket.current.on("error", (err: any) => {
+        globalSocket.current.on("error", ({ data }: any) => {
           setEvent({
-            data: err,
-            type: StreamEventEnum.ON_NEED_STREAM_ACCESS,
+            data,
+            type: StreamEventEnum.STREAM_INITIALIZATION_ERROR,
           });
-          console.log("socket error: ", err);
         });
       } catch (error) {
         reject(error);

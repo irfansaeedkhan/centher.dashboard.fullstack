@@ -16,6 +16,7 @@ import { LiveStreamType, useLive } from "./use.live";
 import { StreamHooksHelper } from "./helper";
 import { insertMessageToStream } from "@/stream/graphql/mutation";
 import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
+import useGetChatUsers from "../use.get.chat.users";
 
 interface StreamContextType {
   useGetSubscribes: () => Promise<any>;
@@ -54,6 +55,8 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
   const liveAgent = useLive({
     deviceInstance,
   });
+
+  const { getUsers } = useGetChatUsers();
 
   const useSubscribeToAllBroadcasts = () => {
     const [data, setData] = useState<any>(null);
@@ -159,6 +162,7 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
 
   const useSubscribeToMessages = (broadcastId: string) => {
     const [messages, setMessages] = useState<any>(null);
+    const [loading, setLoading] = useState<boolean>(false);
     const subscriptionRef = useRef<any>();
     const helperRef = useRef<StreamHooksHelper>(helper.current);
 
@@ -167,6 +171,7 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
 
       const setupSubscription = async () => {
         try {
+          setLoading(true);
           const apollo = await helperRef.current.getApolloClientInstance();
           const query = getStreamMessages();
 
@@ -181,9 +186,13 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
             },
           });
 
-          subscriptionRef.current = result.subscribe((data) => {
+          subscriptionRef.current = result.subscribe(async (data) => {
             if (isSubscribed) {
-              setMessages(data.data.messages);
+              const mappedUsers = await aggregateMessagesWithUsers(
+                data.data.messages
+              );
+              setMessages(mappedUsers);
+              setLoading(false);
             }
           });
         } catch (error) {
@@ -201,7 +210,7 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
       };
     }, [broadcastId]);
 
-    return messages;
+    return { messages, loading };
   };
 
   const useSubscribeToCurrentStream = (
@@ -438,6 +447,19 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
         content: content,
         broadcastId: broadcastId,
       },
+    });
+  };
+
+  //Utility
+  const aggregateMessagesWithUsers = async (messages: any[]) => {
+    const ids = messages.map((e) => e.sender);
+    const users = await getUsers(ids);
+    return messages.map((e) => {
+      return {
+        ...e,
+        sender:
+          users?.find((u) => areStringsEquals(u._id, e.sender)) || e.sender,
+      };
     });
   };
 

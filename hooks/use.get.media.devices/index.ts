@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
+import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
+import { useState } from "react";
 
 const useMediaDevices = () => {
   const [cameras, setCameras] = useState<MediaDeviceInfo[]>([]);
   const [microphones, setMicrophones] = useState<MediaDeviceInfo[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [hasPermission, setHasPermission] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
 
   const updateDevices = async () => {
     try {
@@ -19,53 +19,37 @@ const useMediaDevices = () => {
       setCameras(camerasList);
       setMicrophones(microphonesList);
     } catch (err) {
-      setError((err as Error).message);
+      setError(err instanceof Error ? err : new Error(String(err)));
     }
   };
 
-  const getMediaPermissions = async () => {
+  const getMediaPermissions = async (type: BroadcastTypeEnum) => {
     try {
-      const cameraStream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
-        video: true,
-      });
-      updateDevices();
-      cameraStream.getTracks().forEach((track) => track.stop());
-
-      setHasPermission(true);
-    } catch (err) {
-      if (err instanceof DOMException && err.name === "NotFoundError") {
-        setError((err as Error).message);
-      } else {
-        setError((err as Error).message);
-      }
-
-      try {
-        const microphoneStream = await navigator.mediaDevices.getUserMedia({
+      let devices;
+      if (type == BroadcastTypeEnum.AMA) {
+        devices = await navigator.mediaDevices.getUserMedia({
           audio: true,
+          video: false,
         });
-        updateDevices();
-        microphoneStream.getTracks().forEach((track) => track.stop());
-
-        setHasPermission(true);
-      } catch (err) {
-        setError((err as Error).message);
-        console.error(err);
-        setHasPermission(false);
+      } else {
+        devices = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+          video: true,
+        });
       }
+      devices?.getTracks().forEach((track) => track.stop());
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error(String(err)));
     }
   };
 
-  useEffect(() => {
-    getMediaPermissions();
-    navigator.mediaDevices.addEventListener("devicechange", updateDevices);
-
-    return () => {
-      navigator.mediaDevices.removeEventListener("devicechange", updateDevices);
-    };
-  }, []);
-
-  return { cameras, microphones, error, hasPermission, getMediaPermissions };
+  return {
+    cameras,
+    microphones,
+    error,
+    getMediaPermissions,
+    updateDevices,
+  };
 };
 
 export default useMediaDevices;

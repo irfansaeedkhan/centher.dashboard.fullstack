@@ -1,7 +1,15 @@
 import React from "react";
 import { clsx } from "clsx";
+import { Room } from "../voispace.create.channel.modal";
+import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
 
-const AMAOrLive = ({ formState, handleInputChange }: any) => {
+const AMAOrLive = ({
+  formState,
+  handleInputChange,
+}: {
+  formState: Room;
+  handleInputChange: Function;
+}) => {
   return (
     <div className="flex flex-col gap-6">
       <div className="text-xl font-medium text-white">
@@ -9,10 +17,10 @@ const AMAOrLive = ({ formState, handleInputChange }: any) => {
       </div>
       <div className="flex flex-col gap-4">
         <div
-          onClick={() => handleInputChange("roomType", "AMA")}
+          onClick={() => handleInputChange("type", BroadcastTypeEnum.AMA)}
           className={clsx(
             "cursor-pointer rounded-2xl bg-[#141416] p-[1px]",
-            formState.roomType === "AMA" && "gradient-borders-div"
+            formState.type === BroadcastTypeEnum.AMA && "gradient-borders-div"
           )}
         >
           <div className="px-4 pt-2 text-base font-medium text-white">AMA</div>
@@ -21,10 +29,10 @@ const AMAOrLive = ({ formState, handleInputChange }: any) => {
           </div>
         </div>
         <div
-          onClick={() => handleInputChange("roomType", "Live")}
+          onClick={() => handleInputChange("type", BroadcastTypeEnum.LIVE)}
           className={clsx(
             "cursor-pointer rounded-2xl bg-[#141416] p-[1px]",
-            formState.roomType === "Live" && "gradient-borders-div"
+            formState.type === BroadcastTypeEnum.LIVE && "gradient-borders-div"
           )}
         >
           <div className="px-4 pt-2 text-base font-medium text-white">Live</div>

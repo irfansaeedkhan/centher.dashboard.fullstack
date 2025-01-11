@@ -9,9 +9,11 @@ import { FindUsers } from "@/components/voispace/shared/search.user";
 import { RemoveUser } from "@/components/voispace/shared/remove.user";
 import { SearchedPrivilegeCollection } from "@/components/voispace/shared/search.privilege";
 import { RemovePrivilegeCollection } from "@/components/voispace/shared/remove.privilege.collection";
+import { Room } from "../voispace.create.channel.modal";
+import { StreamAccessModeEnum } from "@/stream/enum/stream-access-mode.enum";
 
 interface StepFourProps {
-  formState: any;
+  formState: Room;
   setFormState: React.Dispatch<React.SetStateAction<any>>;
   setIsHostSettingsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -92,7 +94,7 @@ const StepFour: React.FC<StepFourProps> = ({
     setSearchedValue("");
   };
 
-  if (formState.roomPrivacy === "Public") {
+  if (formState.accessMode === StreamAccessModeEnum.PUBLIC) {
     setIsHostSettingsOpen(true);
     return null;
   }
@@ -104,7 +106,7 @@ const StepFour: React.FC<StepFourProps> = ({
       </div>
 
       {/* PRIVATE ROOMS */}
-      {formState.roomPrivacy === "Private" && (
+      {formState.accessMode === StreamAccessModeEnum.ACCESS_BY_INVITATION && (
         <>
           <div className="relative rounded-xl bg-[#141416] px-3 py-1">
             <div className="flex items-center">
@@ -151,7 +153,7 @@ const StepFour: React.FC<StepFourProps> = ({
       )}
 
       {/* PRIVILEGE ROOMS */}
-      {formState.roomPrivacy === "Privilege" && (
+      {formState.accessMode === StreamAccessModeEnum.ACCESS_BY_TOKEN && (
         <>
           <div className="relative rounded-xl bg-[#141416] px-3 py-1">
             <div className="flex items-center">
