@@ -24,27 +24,14 @@ export const VoiceSpaceFeedCard: React.FC = () => {
   const [selectedRoomData, setSelectedRoomData] = useState<Room | null>(null);
   const [isUserMainViewOpen, setIsUserMainViewOpen] = useState(false);
   const { amaAgent, liveAgent, useSubscribeToAllBroadcasts } = useStream();
-  const streamPromise = useSubscribeToAllBroadcasts();
   const { joinRoom: joinAMARoom, event: eventOnAMA } = amaAgent;
   const { joinRoom: joinLiveRoom, event: eventOnLive } = liveAgent;
   const { user } = useUser();
-  const [loading, setLoading] = useState(true);
+  const { loader, data: broadcasts } = useSubscribeToAllBroadcasts();
 
   useEffect(() => {
-    const fetchStream = async () => {
-      try {
-        setLoading(true);
-        const data = await streamPromise;
-        setRooms(data.data.broadcast);
-      } catch (err) {
-        console.log("Error fetching rooms:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchStream();
-  }, [streamPromise]);
+    setRooms(broadcasts?.data?.broadcast);
+  }, [broadcasts]);
 
   useEffect(() => {
     if (
@@ -109,7 +96,7 @@ export const VoiceSpaceFeedCard: React.FC = () => {
             />
           </div>
           <div className="mx-auto grid grid-cols-4 gap-4 px-4 py-4">
-            {loading
+            {loader
               ? Array.from({ length: 8 }).map((_, index) => (
                   <div
                     key={index}
@@ -117,7 +104,7 @@ export const VoiceSpaceFeedCard: React.FC = () => {
                   ></div>
                 ))
               : rooms &&
-                rooms.slice(0, 7).map((room) => (
+                rooms?.slice(0, 7).map((room) => (
                   <div
                     className="relative cursor-pointer"
                     key={room.id}
@@ -146,7 +133,7 @@ export const VoiceSpaceFeedCard: React.FC = () => {
                   </div>
                 ))}
 
-            {!loading && rooms.length > 7 && (
+            {!loader && rooms?.length > 7 && (
               <button
                 className="relative cursor-pointer"
                 onClick={() => setIsMoreModalOpen(true)}

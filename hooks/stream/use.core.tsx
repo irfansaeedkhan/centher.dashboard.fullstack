@@ -58,12 +58,13 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
 
   const useSubscribeToAllBroadcasts = () => {
     const [data, setData] = useState<any>(null);
+    const [loader, setLoader] = useState<boolean>(false);
     const subscriptionRef = useRef<any>();
     const helperRef = useRef<StreamHooksHelper>(helper.current);
 
     useEffect(() => {
       let isSubscribed = true;
-
+      setLoader(true);
       // Subscription handling
       const subscribeToAllBroadcasts = async (limit: number = 100) => {
         const apollo = await helperRef.current.getApolloClientInstance();
@@ -89,6 +90,7 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
           subscriptionRef.current = subscription.subscribe((newData) => {
             if (isSubscribed) {
               setData(newData);
+              setLoader(false);
             }
           });
         } catch (error) {
@@ -106,7 +108,7 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
       };
     }, []);
 
-    return data;
+    return { data, loader };
   };
 
   const useSubscribeToSpeakers = (broadcastId: string) => {
