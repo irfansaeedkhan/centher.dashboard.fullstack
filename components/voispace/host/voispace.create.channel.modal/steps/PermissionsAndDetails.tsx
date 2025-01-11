@@ -10,6 +10,9 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { getUserImageUploadUrl } from "@/lib/user";
 import { CFSBaseURL } from "@/constants/base-urls";
+import { ICentalkBroadcast } from "@/hooks/stream/cen-talk";
+import { Room } from "../voispace.create.channel.modal";
+import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
 
 interface UserImageUploadUrlResponse {
   presignedPostData: PresignedPostData;
@@ -37,7 +40,11 @@ const PermissionsAndDetails = ({
   formState,
   handleInputChange,
   setLoading,
-}: any) => {
+}: {
+  formState: Room;
+  handleInputChange: any;
+  setLoading: any;
+}) => {
   const { cameras, microphones, error, hasPermission } = useMediaDevices();
   const [preview, setPreview] = useState<string | null>(null);
   const [imageName, setImageName] = useState<string | null>(null);
@@ -191,13 +198,13 @@ const PermissionsAndDetails = ({
             className="w-full rounded-2xl border-none bg-[#141416] p-4 text-sm font-medium text-white focus:outline-none focus:ring-0"
             placeholder="Write a smart title for your Room"
             maxLength={100}
-            value={formState.roomTitle}
+            value={formState.name}
             onChange={(e) => handleInputChange("roomTitle", e.target.value)}
           ></textarea>
 
           <div className="absolute bottom-2 right-2 z-[100] ml-4 h-7 w-7">
             <TextLengthChecker
-              currentLength={formState.roomTitle.length}
+              currentLength={formState.name!.length}
               maxLength={100}
             />
           </div>
@@ -223,13 +230,13 @@ const PermissionsAndDetails = ({
           {/* Video Tab */}
           <div
             onClick={
-              formState.roomType === "Live"
+              formState.type === BroadcastTypeEnum.LIVE
                 ? () => handleInputChange("mode", "Video")
                 : undefined
             }
             className={clsx(
               "flex w-full items-center justify-center gap-2 rounded-[10px]",
-              formState.roomType === "Live"
+              formState.type === BroadcastTypeEnum.LIVE
                 ? "cursor-pointer"
                 : "cursor-not-allowed opacity-50",
               formState.mode === "Video"
@@ -240,7 +247,7 @@ const PermissionsAndDetails = ({
             <span
               className={clsx(
                 "flex items-center gap-2 py-2 text-sm",
-                formState.roomType === "Live"
+                formState.type === BroadcastTypeEnum.LIVE
                   ? "text-gray-shade-24"
                   : "text-gray-shade-10"
               )}
@@ -267,7 +274,8 @@ const PermissionsAndDetails = ({
               }
             }}
             disabled={
-              formState.roomType === "AMA" && formState.mode === "Video"
+              formState.type === BroadcastTypeEnum.AMA &&
+              formState.mode === "Video"
             }
           >
             {formState.mode === "Audio" &&

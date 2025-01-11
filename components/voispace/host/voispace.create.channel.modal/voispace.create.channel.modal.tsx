@@ -5,8 +5,6 @@ import ModalContainer from "@/components/modal/modal-container";
 import Button from "@/components/button";
 import toast from "react-hot-toast";
 import useMediaDevices from "hooks/use.get.media.devices/index";
-
-import { BroadcastPreviewDto } from "@/hooks/stream/dto/broadcast-preview.dto";
 import { useStream } from "@/hooks/stream/use.core";
 import useUser from "@/hooks/use.user";
 import { StreamAccessModeEnum } from "@/stream/enum/stream-access-mode.enum";
@@ -19,20 +17,16 @@ import Accessibility from "./steps/Accessibility";
 import StepFour from "./steps/step.four";
 import ChannelMainView from "../../shared/ChannelMainView";
 import { StreamEventEnum } from "@/stream/model";
-import { RoomData } from "../../voispace.feed.card";
 import { CreatRoomSteps } from "./enums";
+import { ICentalkBroadcast } from "@/hooks/stream/cen-talk";
 
 interface Props {
   onClose: () => void;
 }
 
-export interface Room {
-  roomType: "AMA" | "Live";
-  roomTitle: string;
-  roomPrivacy: "Public" | "Private" | "Privilege";
+export interface Room extends ICentalkBroadcast {
   invitedPrivateUsers: SearchResultWithType[];
   invitedPrivilegeUsers: CFSCollection[];
-  image: string;
   audioDevice: string;
   videoDevice: string;
   hasPermission: Boolean;
@@ -56,7 +50,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
   );
   const [loading, setLoading] = useState(false);
   const [isHostSettingsOpen, setIsHostSettingsOpen] = useState(false);
-  const [roomData, setRoomData] = useState<RoomData | null>(null);
+  const [roomData, setRoomData] = useState<ICentalkBroadcast | null>(null);
   const { hasPermission } = useMediaDevices();
   const { amaAgent, liveAgent, useSubscribeToAllBroadcasts } = useStream();
   const streamPromise = useSubscribeToAllBroadcasts();
@@ -65,33 +59,36 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
   const { user } = useUser();
 
   const [formState, setFormState] = useState<Room>({
-    roomType: "AMA",
+    type: BroadcastTypeEnum.AMA,
     image: "",
-    roomTitle: "",
-    roomPrivacy: "Public",
+    name: "test",
+    accessMode: StreamAccessModeEnum.PUBLIC,
     invitedPrivateUsers: [],
     invitedPrivilegeUsers: [],
     audioDevice: "",
     videoDevice: "",
     hasPermission: hasPermission,
     mode: "Audio",
+    invitedUsers: [],
+    latestParticipants: [],
+    participatorsCount: { aggregate: { count: 0 } },
+    speakersCount: { aggregate: { count: 0 } },
   });
 
   // Add this near other useEffects
   useEffect(() => {
     console.log("eventOnAMA", eventOnAMA);
     if (eventOnAMA?.type === StreamEventEnum.ON_CREATE_CENTALK) {
-      const newRoomData: RoomData = {
-        id: eventOnAMA.data.id,
-        type: "AMA",
-        roomPrivacy: formState.roomPrivacy,
+      const newRoomData: ICentalkBroadcast = {
+        ...roomData!,
+        accessMode: formState.accessMode,
       };
 
       setRoomData(newRoomData);
       setIsHostSettingsOpen(true);
       toast.success("Room created successfully!");
     }
-  }, [eventOnAMA, formState.roomPrivacy]);
+  }, [eventOnAMA, formState.accessMode, roomData]);
 
   // useEffect(() => {
   //   setFormState((prev) => ({
@@ -107,11 +104,15 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
       setFormState((prev) => {
         const updatedState = { ...prev, [field]: value };
 
-        if (field === "roomPrivacy") {
+        if (field === "accessMode") {
           updatedState.invitedPrivateUsers =
-            value === "Private" ? prev.invitedPrivateUsers : [];
+            value === StreamAccessModeEnum.ACCESS_BY_INVITATION
+              ? prev.invitedPrivateUsers
+              : [];
           updatedState.invitedPrivilegeUsers =
-            value === "Privilege" ? prev.invitedPrivilegeUsers : [];
+            value === StreamAccessModeEnum.ACCESS_BY_TOKEN
+              ? prev.invitedPrivilegeUsers
+              : [];
         }
 
         return updatedState;
@@ -125,7 +126,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
 
     // Step 2: Validation for room title and image
     if (currentStep === CreatRoomSteps.PERMISSIONS_AND_DETAILS) {
-      if (!formState.roomTitle) {
+      if (!formState.name) {
         toast.error("Room title is required.");
         return;
       }
@@ -155,7 +156,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
         return;
       }
 
-      if (!formState.roomTitle) {
+      if (!formState.name) {
         toast.error("Room title is required.");
         return;
       }
@@ -165,16 +166,16 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
         return;
       }
 
-      if (formState.roomPrivacy === "Public") {
+      if (formState.accessMode === StreamAccessModeEnum.PUBLIC) {
         try {
           const accessMode = StreamAccessModeEnum.PUBLIC;
           const type =
-            formState.roomType === "AMA"
+            formState.type === BroadcastTypeEnum.AMA
               ? BroadcastTypeEnum.AMA
               : BroadcastTypeEnum.LIVE;
 
           const input: CreateBroadcastDto = {
-            name: formState.roomTitle,
+            name: formState.name,
             description: "",
             accessMode,
             type,
@@ -184,7 +185,9 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
           };
 
           const createRoom =
-            formState.roomType === "AMA" ? createAMARoom : createLiveRoom;
+            formState.type === BroadcastTypeEnum.AMA
+              ? createAMARoom
+              : createLiveRoom;
 
           if (!user) {
             toast.error("User not found. Please try again.");
@@ -228,7 +231,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
     if (currentStep === CreatRoomSteps.ROOM) {
       // Perform validation specific to Step 4
       if (
-        formState.roomPrivacy === "Private" &&
+        formState.accessMode === StreamAccessModeEnum.ACCESS_BY_INVITATION &&
         formState.invitedPrivateUsers.length === 0
       ) {
         toast.error("Please add at least one user for a private room.");
@@ -236,7 +239,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
       }
 
       if (
-        formState.roomPrivacy === "Privilege" &&
+        formState.accessMode === StreamAccessModeEnum.ACCESS_BY_TOKEN &&
         formState.invitedPrivilegeUsers.length === 0
       ) {
         toast.error("Please add at least one privilege user.");
@@ -245,33 +248,35 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
 
       try {
         const accessMode =
-          formState.roomPrivacy === "Private"
+          formState.accessMode === StreamAccessModeEnum.ACCESS_BY_INVITATION
             ? StreamAccessModeEnum.ACCESS_BY_INVITATION
             : StreamAccessModeEnum.ACCESS_BY_TOKEN;
 
         const type =
-          formState.roomType === "AMA"
+          formState.type === BroadcastTypeEnum.AMA
             ? BroadcastTypeEnum.AMA
             : BroadcastTypeEnum.LIVE;
 
         const input: CreateBroadcastDto = {
-          name: formState.roomTitle,
+          name: formState.name,
           description: "",
           accessMode,
           type,
           image: formState.image,
           invitedUsers:
-            formState.roomPrivacy === "Private"
+            formState.accessMode === StreamAccessModeEnum.ACCESS_BY_INVITATION
               ? formState.invitedPrivateUsers.map((u) => u._id)
               : [],
           tokenAddress:
-            formState.roomPrivacy === "Privilege"
+            formState.accessMode === StreamAccessModeEnum.ACCESS_BY_TOKEN
               ? formState.invitedPrivilegeUsers.map((c) => c.collection)
               : [],
         };
 
         const createRoom =
-          formState.roomType === "AMA" ? createAMARoom : createLiveRoom;
+          formState.type === BroadcastTypeEnum.AMA
+            ? createAMARoom
+            : createLiveRoom;
 
         if (!user) {
           toast.error("User not found. Please try again.");
@@ -281,16 +286,19 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
         await createRoom(input, user._id);
 
         const roomEvent =
-          formState.roomType === "AMA" ? amaAgent.event : liveAgent.event;
+          formState.type === BroadcastTypeEnum.AMA
+            ? amaAgent.event
+            : liveAgent.event;
 
         if (roomEvent && roomEvent.type === StreamEventEnum.ON_CREATE_CENTALK) {
           console.log("Room Created with ID:", roomEvent.data.id);
 
           // room data to be passed to the main view
-          const newRoomData: RoomData = {
+          const newRoomData: ICentalkBroadcast = {
+            ...roomData!,
             id: roomEvent.data.id,
-            type: formState.roomType,
-            roomPrivacy: formState.roomPrivacy,
+            type: formState.type,
+            accessMode: formState.accessMode,
           };
 
           setRoomData(newRoomData);

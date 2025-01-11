@@ -38,8 +38,8 @@ export interface ICentalkBroadcast {
   accessMode: StreamAccessModeEnum;
   type: BroadcastTypeEnum;
   tokenAddress?: string;
-  createdAt: Date;
-  deletedAt: Date;
+  createdAt?: Date;
+  deletedAt?: Date;
   hosts?: UserBroadcast[];
   latestParticipants: UserBroadcast[];
   speakersCount: IAggregateCount;

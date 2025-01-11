@@ -6,14 +6,13 @@ import ActionButton from "./ui/ActionButton";
 import UserWithPopover from "./partials/UserWithPopover";
 import { useStream } from "@/hooks/stream/use.core";
 import toast from "react-hot-toast";
-import { Room } from "./voispace.create.channel.modal/voispace.create.channel.modal";
-import { RoomData } from "../voispace.feed.card";
 import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
+import { ICentalkBroadcast } from "@/hooks/stream/cen-talk";
 
 interface DynamicProps {
   onClose: () => void;
   setComponentName: (name: string) => any;
-  roomData?: RoomData;
+  roomData?: ICentalkBroadcast;
 }
 
 const TheRoomOfTraders: React.FC<DynamicProps> = ({

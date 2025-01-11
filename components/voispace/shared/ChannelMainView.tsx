@@ -8,11 +8,11 @@ import Participators from "../host/Participators";
 import InvitetoRoom from "../host/InvitetoRoom";
 import Requests from "../host/Requests";
 import ChatRoom from "../host/ChatRoom";
-import { RoomData } from "../voispace.feed.card";
+import { Room } from "../host/voispace.create.channel.modal/voispace.create.channel.modal";
 
 interface ChannelMainViewInterface {
   onClose: () => void;
-  roomData: RoomData;
+  roomData: Room;
   component: string;
 }
 
@@ -21,7 +21,7 @@ type ComponentMap = Map<
   React.ComponentType<{
     setComponentName: (name: string) => any;
     onClose: () => void;
-    roomData?: RoomData;
+    roomData?: Room;
   }>
 >;
 
@@ -62,7 +62,7 @@ const ChannelMainView: React.FC<ChannelMainViewInterface> = ({
       shouldCloseOnOverlayClick={false}
     >
       <div className="flex h-full flex-col justify-between">
-        <div className="text-white">{JSON.stringify(formState)}</div>
+        {/* <div className="text-white">{JSON.stringify(formState)}</div> */}
         <div className="flex gap-[10px]">
           {Array.from(componentMap.keys()).map((key) => (
             <button

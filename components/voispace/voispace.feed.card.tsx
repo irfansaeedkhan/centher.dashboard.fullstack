@@ -9,12 +9,6 @@ import { useStream } from "@/hooks/stream/use.core";
 import { VoispaceCreateChannelModal } from "./host/voispace.create.channel.modal/voispace.create.channel.modal";
 import { VoispaceExploreChannelsModal } from "./user/voispace.explore.channels.modal";
 
-export interface RoomData {
-  id: string;
-  type: "AMA" | "Live";
-  roomPrivacy: "Public" | "Private" | "Privilege";
-}
-
 export const VoiceSpaceFeedCard: React.FC = () => {
   const { useSubscribeToAllBroadcasts } = useStream();
   const streamPromise = useSubscribeToAllBroadcasts();
