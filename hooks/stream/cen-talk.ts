@@ -54,3 +54,29 @@ export interface IBroadcastMessage {
   sender: string;
   createdAt: Date;
 }
+
+interface User {
+  citizenshipEnd: string;
+  createdAt: string;
+  id: string;
+  lastSeen: string;
+}
+
+interface Participator {
+  id: string;
+  hasTalkRequest: boolean;
+  createdAt: string;
+  user: User;
+  type: string;
+  hasPermissionToMessage: boolean;
+  isMuted: boolean;
+}
+
+export interface ParticipatorsResponse {
+  participators: Participator[];
+  aggregates: {
+    aggregate: {
+      count: number;
+    };
+  };
+}

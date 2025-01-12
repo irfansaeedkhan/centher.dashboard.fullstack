@@ -7,11 +7,25 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 
 const StreamPage: NextPage = () => {
-  const { useGetSubscribes, amaAgent, liveAgent } = useStream();
+  const {
+    useGetSubscribes,
+    useQueryToGetInvitedUsersByBrooadcastId,
+    useQueryToGetParticipatorsByBroadcastId,
+    amaAgent,
+    liveAgent,
+  } = useStream();
   const { createRoom: createAMARoom } = amaAgent;
   const { createRoom: createLiveRoom } = liveAgent;
   const streamPromise = useGetSubscribes();
   const [streamData, setStreamData] = useState<BroadcastPreviewDto[]>([]);
+  const { data: invitedUsers, loader } =
+    useQueryToGetInvitedUsersByBrooadcastId(
+      "9de4cb22-25f9-4191-9408-510b53cf0887"
+    );
+
+  const { data: participators } = useQueryToGetParticipatorsByBroadcastId(
+    "9de4cb22-25f9-4191-9408-510b53cf0887"
+  );
 
   useEffect(() => {
     const fetchStream = async () => {
@@ -25,6 +39,14 @@ const StreamPage: NextPage = () => {
 
     fetchStream();
   }, [streamPromise]);
+
+  useEffect(() => {
+    console.log({ invitedUsers });
+  }, [invitedUsers]);
+
+  useEffect(() => {
+    console.log({ participators });
+  }, [participators]);
 
   return (
     <div className="flex flex-col items-center justify-center bg-white">
@@ -90,6 +112,23 @@ const StreamPage: NextPage = () => {
         >
           Create Live Room
         </button>
+      </div>
+      <div className="felx w-full flex-row ">
+        <p>Invited Users</p>
+        {}
+        {/* {invitedUsers?.map((stream) => {
+          return (
+            <div key={stream.id}>
+              <Image
+                src={stream.image}
+                alt="Picture of the author"
+                width={50}
+                height={50}
+              />
+              <p>{stream.id}</p>
+            </div>
+          );
+        })} */}
       </div>
     </div>
   );

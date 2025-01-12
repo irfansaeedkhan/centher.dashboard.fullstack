@@ -10,13 +10,17 @@ import {
   getStreams,
   getStreamSpeakers,
 } from "@/stream/graphql/subscription";
-import { ICentalkBroadcast, UserBroadcast } from "./cen-talk";
+import { ICentalkBroadcast, ParticipatorsResponse } from "./cen-talk";
 import { AMAStreamType, useAMA } from "./use.ama";
 import { LiveStreamType, useLive } from "./use.live";
 import { StreamHooksHelper } from "./helper";
 import { insertMessageToStream } from "@/stream/graphql/mutation";
 import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
 import useGetChatUsers from "../use.get.chat.users";
+import {
+  getInvitedUsersByBrooadcastId,
+  getParticipatorsByBroadcastId,
+} from "@/stream/graphql/query";
 
 interface StreamContextType {
   useGetSubscribes: () => Promise<any>;
@@ -30,6 +34,14 @@ interface StreamContextType {
   ) => { stream: ICentalkBroadcast | null; loader: boolean };
   useSubscribeToCurrentUser: (broadcastId: string, userId: string) => any;
   useSubscribeToHasTalkRequestUsers: (broadcastId: string) => any;
+  useQueryToGetInvitedUsersByBrooadcastId: (id: string) => {
+    data: any;
+    loader: boolean;
+  };
+  useQueryToGetParticipatorsByBroadcastId: (id: string) => {
+    data: ParticipatorsResponse | undefined;
+    loader: boolean;
+  };
   amaAgent: AMAStreamType;
   liveAgent: LiveStreamType;
 }
@@ -56,6 +68,98 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
 
   const { getUsers } = useGetChatUsers();
 
+  // QUERY
+  const useQueryToGetParticipatorsByBroadcastId = (id: string) => {
+    const [data, setData] = useState<ParticipatorsResponse | undefined>(
+      undefined
+    );
+    const [loader, setLoader] = useState<boolean>(false);
+    const helperRef = useRef<StreamHooksHelper>(helper.current);
+
+    useEffect(() => {
+      setLoader(true);
+
+      const setupQuery = async () => {
+        try {
+          const apollo = await helperRef.current.getApolloClientInstance();
+          const query = getParticipatorsByBroadcastId();
+
+          if (!query) {
+            throw new Error("invalid query");
+          }
+
+          const result = apollo.query({
+            query,
+            variables: {
+              broadcastId: id,
+              offset: 0,
+              limit: 100,
+            },
+          });
+
+          const finalResult = await result;
+          console.log(
+            "useQueryToGetParticipatorsByBroadcastId final",
+            finalResult
+          );
+
+          setData(finalResult.data);
+          setLoader(false);
+        } catch (error) {
+          console.error("query setup failed:", error);
+        } finally {
+          setLoader(false);
+        }
+      };
+
+      setupQuery();
+    }, [id]);
+
+    return { data, loader };
+  };
+
+  const useQueryToGetInvitedUsersByBrooadcastId = (id: string) => {
+    const [data, setData] = useState<any[]>([]);
+    const [loader, setLoader] = useState<boolean>(false);
+    const helperRef = useRef<StreamHooksHelper>(helper.current);
+
+    useEffect(() => {
+      setLoader(true);
+
+      const setupQuery = async () => {
+        try {
+          const apollo = await helperRef.current.getApolloClientInstance();
+          const query = getInvitedUsersByBrooadcastId();
+
+          if (!query) {
+            throw new Error("invalid query");
+          }
+
+          const result = apollo.query({
+            query,
+            variables: {
+              id,
+            },
+          });
+
+          const finalResult = await result;
+
+          setData(finalResult.data);
+          setLoader(false);
+        } catch (error) {
+          console.error("query setup failed:", error);
+        } finally {
+          setLoader(false);
+        }
+      };
+
+      setupQuery();
+    }, [id]);
+
+    return { data, loader };
+  };
+
+  // SUBSCRIPTIONS
   const useSubscribeToAllBroadcasts = () => {
     const [data, setData] = useState<any>(null);
     const [loader, setLoader] = useState<boolean>(false);
@@ -441,6 +545,7 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
       };
     });
   };
+
   const aggregateCurrentStreamUsers = async (stream: any) => {
     const ids = stream.latestParticipants.map((e: any) => e.user.id);
     ids.push(stream.hosts[0].user.id);
@@ -491,6 +596,8 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
     useSubscribeToCurrentStream,
     useSubscribeToCurrentUser,
     useSubscribeToHasTalkRequestUsers,
+    useQueryToGetInvitedUsersByBrooadcastId,
+    useQueryToGetParticipatorsByBroadcastId,
     amaAgent,
     liveAgent,
   };
