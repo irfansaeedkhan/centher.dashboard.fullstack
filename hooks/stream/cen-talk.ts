@@ -62,11 +62,12 @@ interface User {
   lastSeen: string;
 }
 
-interface Participator {
+export interface Participator {
   id: string;
   hasTalkRequest: boolean;
   createdAt: string;
   user: User;
+  mappedUser?: any;
   type: string;
   hasPermissionToMessage: boolean;
   isMuted: boolean;

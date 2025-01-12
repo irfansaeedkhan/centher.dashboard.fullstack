@@ -10,7 +10,11 @@ import {
   getStreams,
   getStreamSpeakers,
 } from "@/stream/graphql/subscription";
-import { ICentalkBroadcast, ParticipatorsResponse } from "./cen-talk";
+import {
+  ICentalkBroadcast,
+  Participator,
+  ParticipatorsResponse,
+} from "./cen-talk";
 import { AMAStreamType, useAMA } from "./use.ama";
 import { LiveStreamType, useLive } from "./use.live";
 import { StreamHooksHelper } from "./helper";
@@ -38,7 +42,10 @@ interface StreamContextType {
     data: any;
     loader: boolean;
   };
-  useQueryToGetParticipatorsByBroadcastId: (id: string) => {
+  useQueryToGetParticipatorsByBroadcastId: (
+    id: string,
+    skip: number
+  ) => {
     data: ParticipatorsResponse | undefined;
     loader: boolean;
   };
@@ -69,7 +76,10 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
   const { getUsers } = useGetChatUsers();
 
   // QUERY
-  const useQueryToGetParticipatorsByBroadcastId = (id: string) => {
+  const useQueryToGetParticipatorsByBroadcastId = (
+    id: string,
+    skip: number = 0
+  ) => {
     const [data, setData] = useState<ParticipatorsResponse | undefined>(
       undefined
     );
@@ -92,21 +102,18 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
             query,
             variables: {
               broadcastId: id,
-              offset: 0,
-              limit: 100,
+              offset: skip,
+              limit: 25,
             },
           });
 
           const finalResult = await result;
-          console.log(
-            "useQueryToGetParticipatorsByBroadcastId final",
-            finalResult
+          const mappedUsers = await aggregateParticipatorsUser(
+            finalResult.data
           );
-
-          setData(finalResult.data);
+          setData(mappedUsers);
           setLoader(false);
         } catch (error) {
-          console.error("query setup failed:", error);
         } finally {
           setLoader(false);
         }
@@ -545,7 +552,6 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
       };
     });
   };
-
   const aggregateCurrentStreamUsers = async (stream: any) => {
     const ids = stream.latestParticipants.map((e: any) => e.user.id);
     ids.push(stream.hosts[0].user.id);
@@ -585,6 +591,18 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
     return users.map((u) =>
       mappedUsers?.find((m) => areStringsEquals(u.user.id, m._id))
     );
+  };
+  const aggregateParticipatorsUser = async (data: ParticipatorsResponse) => {
+    const ids = data?.participators?.map((e) => e.user.id);
+    const users = await getUsers(ids);
+    data.participators = data.participators.map((e) => {
+      return {
+        ...e,
+        mappedUser: users?.find((u) => areStringsEquals(u._id, e.user.id)),
+      };
+    });
+
+    return data;
   };
 
   const contextValue: StreamContextType = {
