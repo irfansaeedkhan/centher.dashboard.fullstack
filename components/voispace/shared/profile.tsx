@@ -18,13 +18,13 @@ const UserProfileCard: React.FC<UserProfileCard> = ({
   name,
   isSpeaking,
   position,
-  className = "w-[64px]",
+  className = "w-[74px]",
 }) => {
   return (
-    <div className={`flex flex-col gap-[8px] ${className}`}>
+    <div className={`flex flex-col items-center gap-[8px] ${className}`}>
       <div className="relative">
         <Image
-          className="rounded-full"
+          className="h-16 w-16 rounded-full object-cover "
           src={imageURL}
           alt="profile"
           height={64}
@@ -43,7 +43,7 @@ const UserProfileCard: React.FC<UserProfileCard> = ({
         )}
       </div>
 
-      <span className="text-center font-monto text-[14px] font-semibold">
+      <span className="text-center font-monto text-xs font-semibold">
         {name}
       </span>
 

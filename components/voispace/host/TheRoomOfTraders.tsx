@@ -171,16 +171,16 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
               <span className="text-gray-shade-24">speaker(s)</span>
             </span>
           </div>
-          <div className="flex flex-wrap gap-[28px]">
+          <div className="flex flex-wrap gap-9">
             {speakersLoader
-              ? Array.from({ length: 4 }).map((_, index) => (
+              ? Array.from({ length: 7 }).map((_, index) => (
                   <div key={index} className="flex flex-col items-center gap-4">
                     <div className="h-10 w-10 animate-pulse rounded-full bg-gray-700"></div>
                     <div className="relative h-3 w-16 animate-pulse rounded-md bg-gray-700" />
                   </div>
                 ))
               : speakers &&
-                speakers?.map((speaker: any, index: number) => (
+                speakers?.slice(0, 7).map((speaker: any, index: number) => (
                   <div key={index}>
                     <UserWithPopover
                       client={speaker}
