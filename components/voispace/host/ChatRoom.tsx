@@ -7,6 +7,7 @@ import DOMPurify from "dompurify";
 import { useStream } from "@/hooks/stream/use.core";
 import { Room } from "./voispace.create.channel.modal/voispace.create.channel.modal";
 import EmojiPicker, { EmojiClickData, Theme } from "emoji-picker-react";
+import { format } from "path";
 
 interface DynamicProps {
   onClose: () => void;
@@ -129,7 +130,7 @@ const ChatRoom: React.FC<DynamicProps> = ({
                 <MessageSkeleton />
                 <MessageSkeleton />
               </>
-            ) : (
+            ) : formattedMessages.length ? (
               formattedMessages.map((msg: any, index: number) => (
                 <div key={index} className="flex gap-3">
                   <div className="relative h-10 w-10 flex-shrink-0">
@@ -157,10 +158,13 @@ const ChatRoom: React.FC<DynamicProps> = ({
                   </div>
                 </div>
               ))
+            ) : (
+              <p className="text-center text-xs text-gray-shade-24">
+                No messages yet
+              </p>
             )}
           </div>
         </div>
-        {/* <div className="absolute bottom-0 left-0 m-6 flex min-h-[70px] w-[calc(100%-48px)] items-center rounded-[24px] border border-[#32343C] bg-[#141416] p-[16px] text-white"></div> */}
         <div className="absolute bottom-0 left-0 m-6 flex min-h-[70px] w-[calc(100%-48px)] items-center rounded-[24px] border border-[#32343C] bg-[#141416] p-[16px] text-white">
           <form
             id="messageForm"
