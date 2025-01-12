@@ -215,7 +215,6 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
               globalHasTalkRequest.current = false;
               await createProducerTransport();
               await connectSendTransport();
-              // toast.showInfo("Owner opened your talk");
               setToast("Owner opened your talk");
             } else {
               closeProducer();
