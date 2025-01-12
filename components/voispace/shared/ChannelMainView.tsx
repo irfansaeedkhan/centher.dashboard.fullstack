@@ -9,6 +9,7 @@ import InvitetoRoom from "../host/InvitetoRoom";
 import Requests from "../host/Requests";
 import ChatRoom from "../host/ChatRoom";
 import { Room } from "../host/voispace.create.channel.modal/voispace.create.channel.modal";
+import { useStream } from "@/hooks/stream/use.core";
 
 interface ChannelMainViewInterface {
   onClose: () => void;
@@ -22,6 +23,7 @@ type ComponentMap = Map<
     setComponentName: (name: string) => any;
     onClose: () => void;
     roomData?: Room;
+    unreadMessages: number;
   }>
 >;
 
@@ -33,6 +35,12 @@ const ChannelMainView: React.FC<ChannelMainViewInterface> = ({
   const [componentName, setComponentName] = useState<string>(
     component || "TheRoomOfTraders"
   );
+
+  const [lastReadMessageCount, setLastReadMessageCount] = useState(0);
+  const [unreadMessages, setUnreadMessages] = useState(0);
+
+  const { useSubscribeToMessages } = useStream();
+  const { messages } = useSubscribeToMessages(roomData?.id || "");
 
   const componentMap: ComponentMap = new Map([
     ["TheRoomOfTraders", TheRoomOfTraders],
@@ -51,6 +59,20 @@ const ChannelMainView: React.FC<ChannelMainViewInterface> = ({
     }
   }, [ComponentToRender]);
 
+  useEffect(() => {
+    if (componentName === "ChatRoom") {
+      setLastReadMessageCount(messages?.length || 0);
+      setUnreadMessages(0);
+    }
+  }, [componentName, messages]);
+
+  useEffect(() => {
+    if (componentName !== "ChatRoom" && messages?.length) {
+      const newUnreadCount = messages.length - lastReadMessageCount;
+      setUnreadMessages(newUnreadCount > 0 ? newUnreadCount : 0);
+    }
+  }, [componentName, messages, lastReadMessageCount]);
+
   return (
     <ModalContainer
       modalId="host-settings"
@@ -66,6 +88,7 @@ const ChannelMainView: React.FC<ChannelMainViewInterface> = ({
             setComponentName,
             onClose,
             roomData,
+            unreadMessages,
           })}
       </div>
     </ModalContainer>

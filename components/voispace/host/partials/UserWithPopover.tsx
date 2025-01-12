@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
 
-import { ChatProfile, MicIcon2 } from "@/assets/svgs";
+import { MutedChat, MutedMic, UnmutedChat, UnmutedMic } from "@/assets/svgs";
 
 import ClientCardView from "../../shared/profile";
 import ActionButton from "../ui/ActionButton";
@@ -61,7 +61,7 @@ const UserWithPopover: React.FC<UserWithPopoverProps> = ({
                     width={40}
                     height={40}
                     objectFit="cover"
-                    className="rounded-full object-cover"
+                    className="h-10 w-10 rounded-full object-cover"
                   />
                 </div>
 
@@ -83,7 +83,8 @@ const UserWithPopover: React.FC<UserWithPopoverProps> = ({
                   className="text-medium text-[14px] text-[#E34048]"
                   onClick={() => handleTalkPermission(client._id)}
                 >
-                  <MicIcon2 />
+                  <UnmutedMic />
+                  <MutedMic />
                 </ActionButton>
 
                 {/* Chat Button */}
@@ -91,7 +92,8 @@ const UserWithPopover: React.FC<UserWithPopoverProps> = ({
                   className="text-medium text-[14px] text-[#E34048]"
                   onClick={() => handleMessagePermission(client._id)}
                 >
-                  <ChatProfile />
+                  <UnmutedChat />
+                  <MutedChat />
                 </ActionButton>
 
                 {/* Kick Off Button */}
