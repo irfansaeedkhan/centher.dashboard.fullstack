@@ -35,12 +35,12 @@ const Participators: React.FC<DynamicProps> = ({
           />
         </HostModalHeader>
 
-        <div className="flex flex-wrap gap-[28px]">
+        <div className="flex flex-wrap gap-8">
           {participators.map((speaker: any, index) => {
             return (
               <div className="" key={index}>
                 <ClientCardView
-                  className="w-[72px]"
+                  className="w-18"
                   name={speaker.display_name}
                   imageURL={speaker.profile_image}
                   isApproved={true}

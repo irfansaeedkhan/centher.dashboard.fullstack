@@ -160,8 +160,8 @@ const ChatRoom: React.FC<DynamicProps> = ({
             )}
           </div>
         </div>
-
-        <div className="flex min-h-[70px] items-center rounded-[24px] border border-[#32343C] bg-[#141416] p-[16px] text-white">
+        {/* <div className="absolute bottom-0 left-0 m-6 flex min-h-[70px] w-[calc(100%-48px)] items-center rounded-[24px] border border-[#32343C] bg-[#141416] p-[16px] text-white"></div> */}
+        <div className="absolute bottom-0 left-0 m-6 flex min-h-[70px] w-[calc(100%-48px)] items-center rounded-[24px] border border-[#32343C] bg-[#141416] p-[16px] text-white">
           <form
             id="messageForm"
             onSubmit={(e) => onSend(e)}
