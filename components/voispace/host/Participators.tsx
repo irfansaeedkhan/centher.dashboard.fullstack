@@ -113,6 +113,8 @@ const Participators: React.FC<DynamicProps> = ({
                 <div className="relative h-3 w-16 animate-pulse rounded-md bg-gray-700" />
               </div>
             ))}
+
+          <div ref={loaderRef} className="h-10"></div>
         </div>
       </div>
     </div>
