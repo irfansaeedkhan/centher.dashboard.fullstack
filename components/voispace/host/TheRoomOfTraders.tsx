@@ -191,7 +191,7 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
         <div className="flex flex-col gap-[24px]">
           <div className="flex max-w-[83px] flex-col gap-[2px]">
             <span className="text-[14px]">Speakers</span>
-            <span className="rounded-[1000px] bg-[#141416] p-[8px] text-[12px]">
+            <span className="rounded-[1000px] bg-[#141416] px-3 py-2 text-[12px]">
               <span className="text-[#FAFAFA]">{speakers?.length}</span>
               <span>&nbsp;</span>
               <span className="text-gray-shade-24">speaker(s)</span>
