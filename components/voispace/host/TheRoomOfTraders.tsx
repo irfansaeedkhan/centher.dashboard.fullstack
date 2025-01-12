@@ -9,6 +9,7 @@ import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
 import { ICentalkBroadcast } from "@/hooks/stream/cen-talk";
 import ClientCardView from "../shared/profile";
 import Image from "next/image";
+import clsx from "clsx";
 
 interface DynamicProps {
   onClose: () => void;
@@ -171,7 +172,7 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
           </div>
           <div className="flex flex-wrap gap-9">
             {speakersLoader
-              ? Array.from({ length: 7 }).map((_, index) => (
+              ? Array.from({ length: 4 }).map((_, index) => (
                   <div key={index} className="flex flex-col items-center gap-4">
                     <div className="h-10 w-10 animate-pulse rounded-full bg-gray-700"></div>
                     <div className="relative h-3 w-16 animate-pulse rounded-md bg-gray-700" />
@@ -234,18 +235,21 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
                 onClick={() => setComponentName("Participators")}
               >
                 <div className="relative h-[20px] w-[40px]">
-                  {currentStream?.latestParticipants?.map(
-                    (participant: any, index: number) => (
+                  {currentStream?.latestParticipants
+                    ?.slice(0, 3)
+                    .map((participant: any, index: number) => (
                       <Image
                         key={index}
                         src={participant.user.profile_image}
                         alt={participant.user.display_name}
                         width={20}
                         height={20}
-                        className="absolute left-0 top-0 z-0 h-5 w-5"
+                        className={clsx(
+                          `absolute left-0 top-0 z-0 h-5 w-5 rounded-full object-cover`
+                        )}
+                        style={{ left: `${index * 10}px` }}
                       />
-                    )
-                  )}
+                    ))}
                 </div>
                 <span className="font-monto text-[11px] font-medium leading-[13px] tracking-[-0.4px]">
                   {currentStream?.participatorsCount?.aggregate?.count}
