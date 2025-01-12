@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import Button from "@/components/button";
 import ClientCardView from "@/components/voispace/shared/profile";
 import HostModalHeader from "@/components/voispace/host/partials/HostModalHeader";
-import { Room } from "./voispace.create.channel.modal/voispace.create.channel.modal";
+
 import { useStream } from "@/hooks/stream/use.core";
 import { StreamAccessModeEnum } from "@/stream/enum/stream-access-mode.enum";
+
+import { Room } from "./voispace.create.channel.modal/voispace.create.channel.modal";
 
 interface DynamicProps {
   onClose: () => void;
@@ -26,9 +28,45 @@ const Participators: React.FC<DynamicProps> = ({
   const isPrivate =
     roomData.accessMode == StreamAccessModeEnum.ACCESS_BY_INVITATION;
 
-  //TODO: handle pagination
-  const { data: participators, loader } =
-    useQueryToGetParticipatorsByBroadcastId(roomData.id as string, 0);
+  const [limit, setLimit] = useState<number>(0);
+  const [allParticipators, setAllParticipators] = useState<any[]>([]);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  const loaderRef = useRef<HTMLDivElement | null>(null);
+
+  const { data, loader } = useQueryToGetParticipatorsByBroadcastId(
+    roomData.id as string,
+    limit
+  );
+
+  useEffect(() => {
+    if (data?.participators?.length) {
+      setAllParticipators(data.participators);
+      if (data.participators.length < limit) {
+        setHasMore(false);
+      }
+    } else {
+      setHasMore(false);
+    }
+  }, [data, limit]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && hasMore && !loader) {
+          setLimit((prevLimit) => prevLimit + 25);
+        }
+      },
+      { root: null, rootMargin: "0px", threshold: 1.0 }
+    );
+
+    if (loaderRef.current) {
+      observer.observe(loaderRef.current);
+    }
+
+    return () => {
+      if (loaderRef.current) observer.unobserve(loaderRef.current);
+    };
+  }, [loaderRef.current, hasMore, loader]);
 
   return (
     <div className="px-[24px] py-[24px] text-white">
@@ -50,34 +88,31 @@ const Participators: React.FC<DynamicProps> = ({
           )}
         </HostModalHeader>
 
-        <div className="flex flex-wrap gap-8">
-          {loader
-            ? Array.from({ length: 4 }).map((_, index) => (
-                <div key={index} className="flex flex-col items-center gap-4">
-                  <div className="h-10 w-10 animate-pulse rounded-full bg-gray-700"></div>
-                  <div className="relative h-3 w-16 animate-pulse rounded-md bg-gray-700" />
-                </div>
-              ))
-            : participators?.participators?.map(
-                (participator: any, index: number) => {
-                  return (
-                    <div className="" key={index}>
-                      <ClientCardView
-                        className="w-18"
-                        name={participator.mappedUser.display_name}
-                        imageURL={participator.mappedUser.profile_image}
-                        isApproved={
-                          participator.mappedUser.membership.status == "citizen"
-                        }
-                        isSpeaking={
-                          participator.type?.toLowerCase() == "speaker"
-                        }
-                        position={participator.type}
-                      />
-                    </div>
-                  );
-                }
-              )}
+        <div className="customScrollbar flex max-h-[60vh] flex-wrap items-center gap-12 overflow-y-auto py-2 sm:px-2">
+          {allParticipators?.map((participator: any, index: number) => {
+            return (
+              <div className="" key={index}>
+                <ClientCardView
+                  className="w-18"
+                  name={participator.mappedUser.display_name}
+                  imageURL={participator.mappedUser.profile_image}
+                  isApproved={
+                    participator.mappedUser.membership.status == "citizen"
+                  }
+                  isSpeaking={participator.type?.toLowerCase() == "speaker"}
+                  position={participator.type}
+                />
+              </div>
+            );
+          })}
+
+          {loader &&
+            Array.from({ length: 4 }).map((_, index) => (
+              <div key={index} className="flex flex-col items-center gap-4">
+                <div className="h-10 w-10 animate-pulse rounded-full bg-gray-700"></div>
+                <div className="relative h-3 w-16 animate-pulse rounded-md bg-gray-700" />
+              </div>
+            ))}
         </div>
       </div>
     </div>
