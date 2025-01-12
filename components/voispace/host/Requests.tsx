@@ -3,14 +3,26 @@ import React from "react";
 import RequestRow from "@/components/voispace/host/partials/RequestRow";
 
 import HostModalHeader from "./partials/HostModalHeader";
-import { requests } from "../dummy.data/requests.list";
+import { Room } from "./voispace.create.channel.modal/voispace.create.channel.modal";
+import { useStream } from "@/hooks/stream/use.core";
 
 interface DynamicProps {
   onClose: () => void;
   setComponentName: (name: string) => string;
+  roomData: Room;
 }
 
-const Requests: React.FC<DynamicProps> = ({ onClose, setComponentName }) => {
+const Requests: React.FC<DynamicProps> = ({
+  onClose,
+  setComponentName,
+  roomData,
+}) => {
+  const { useSubscribeToHasTalkRequestUsers } = useStream();
+  const { talkRequestUsers, loader } = useSubscribeToHasTalkRequestUsers(
+    roomData.id as string
+  );
+  const talkRequestHandler = (user: any, action: string) => {};
+
   return (
     <div className="px-[24px] py-[24px] text-white">
       <div className="flex flex-col gap-[16px]">
@@ -22,9 +34,22 @@ const Requests: React.FC<DynamicProps> = ({ onClose, setComponentName }) => {
         />
 
         <div className="">
-          {requests.map((request, index) => {
-            return <RequestRow request={request} key={index} />;
-          })}
+          {loader
+            ? Array.from({ length: 4 }).map((_, index) => (
+                <div key={index} className="flex flex-col items-center gap-4">
+                  <div className="h-10 w-10 animate-pulse rounded-full bg-gray-700"></div>
+                  <div className="relative h-3 w-16 animate-pulse rounded-md bg-gray-700" />
+                </div>
+              ))
+            : talkRequestUsers?.map((request: any, index: number) => {
+                return (
+                  <RequestRow
+                    request={request}
+                    key={index}
+                    talkRequestHandler={talkRequestHandler}
+                  />
+                );
+              })}
         </div>
       </div>
     </div>

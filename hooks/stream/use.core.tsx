@@ -323,6 +323,7 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
 
   const useSubscribeToHasTalkRequestUsers = (broadcastId: string) => {
     const [talkRequestUsers, setTalkRequestUsers] = useState<any>(null);
+    const [loader, setLoader] = useState<boolean>(false);
     const subscriptionRef = useRef<any>();
     const helperRef = useRef<StreamHooksHelper>(helper.current);
 
@@ -331,6 +332,7 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
 
       const setupSubscription = async () => {
         try {
+          setLoader(true);
           const apollo = await helperRef.current.getApolloClientInstance();
           const query = getHasTalkRequestStreamUsers();
 
@@ -345,9 +347,13 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
             },
           });
 
-          subscriptionRef.current = result.subscribe((data) => {
+          subscriptionRef.current = result.subscribe(async (data) => {
             if (isSubscribed) {
-              setTalkRequestUsers(data.data.users);
+              const users = await aggregateUsersHaveTalkRequest(
+                data.data.users
+              );
+              setTalkRequestUsers(users);
+              setLoader(false);
             }
           });
         } catch (error) {
@@ -365,7 +371,7 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
       };
     }, [broadcastId]);
 
-    return talkRequestUsers;
+    return { talkRequestUsers, loader };
   };
 
   const useGetSubscribes = () => {
@@ -456,7 +462,6 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
 
     return stream;
   };
-
   const aggregateSpeakers = async (speakers: any[]) => {
     const ids = speakers.map((p) => {
       return p.user!.id;
@@ -467,6 +472,13 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
     return speakers.map(
       (d) =>
         users?.find((u) => areStringsEquals(u._id, d.user!.id)) || d.user?.id
+    );
+  };
+  const aggregateUsersHaveTalkRequest = async (users: any[]) => {
+    const ids = users.map((e) => e!.user?.id);
+    const mappedUsers = await getUsers(ids);
+    return users.map((u) =>
+      mappedUsers?.find((m) => areStringsEquals(u.user.id, m._id))
     );
   };
 

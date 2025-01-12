@@ -93,6 +93,13 @@ function getCurrentStream() {
             count
           }
         }
+        hasTalkRequestUsers: user_broadcasts_aggregate(
+          where: { hasTalkRequest: { _eq: true } }
+        ) {
+          aggregate {
+            count
+          }
+        }
       }
     }
   `;

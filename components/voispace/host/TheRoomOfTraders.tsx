@@ -6,9 +6,9 @@ import UserWithPopover from "./partials/UserWithPopover";
 import { useStream } from "@/hooks/stream/use.core";
 import toast from "react-hot-toast";
 import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
-import { ICentalkBroadcast } from "@/hooks/stream/cen-talk";
 import ClientCardView from "../shared/profile";
 import Image from "next/image";
+import { ICentalkBroadcast } from "@/hooks/stream/cen-talk";
 
 interface DynamicProps {
   onClose: () => void;
@@ -215,19 +215,18 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
               </ActionButton>
             </div>
 
-            {/* //TODO add number of requests in it */}
             <div className="flex items-center gap-[10px]">
-              {globalIsOwner && (
+              {
                 <ActionButton
                   className="text-medium text-[14px] text-[#E34048]"
                   onClick={() => setComponentName("Requests")}
                 >
                   <GrabIcon />
                   <span className="font-monto text-[11px] font-medium leading-[13px] tracking-[-0.4px]">
-                    9
+                    {currentStream?.hasTalkRequestUsers?.aggregate?.count}
                   </span>
                 </ActionButton>
-              )}
+              }
 
               <ActionButton
                 className="text-medium text-[14px] text-[#E34048]"

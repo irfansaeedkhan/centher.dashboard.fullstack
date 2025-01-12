@@ -45,6 +45,7 @@ export interface ICentalkBroadcast {
   speakersCount: IAggregateCount;
   participatorsCount: IAggregateCount;
   invitedUsers: string[];
+  hasTalkRequestUsers: IAggregateCount;
 }
 
 export interface IBroadcastMessage {

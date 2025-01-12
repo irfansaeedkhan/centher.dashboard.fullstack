@@ -5,18 +5,21 @@ import { VipIcon } from "@/assets/svgs";
 
 interface RequestProps {
   request: any;
+  talkRequestHandler: any;
 }
 
-const RequestRow: React.FC<RequestProps> = ({ request }) => {
+const RequestRow: React.FC<RequestProps> = ({
+  request,
+  talkRequestHandler,
+}) => {
   const handler = (action: string) => {
-    alert(action);
+    talkRequestHandler(request, action);
   };
-
   return (
     <div className="flex items-center gap-[12px] py-[12px]">
       <Image
-        src={request.imageURL}
-        alt={request.name}
+        src={request.profile_image}
+        alt={request.display_name}
         width={40}
         height={40}
         objectFit="cover"
@@ -26,29 +29,17 @@ const RequestRow: React.FC<RequestProps> = ({ request }) => {
       <div className="flex flex-grow flex-col gap-[2px]">
         <div className="flex items-center gap-[2px]">
           <span className="text-[14px] font-medium text-[#FFF]">
-            {request.name}
+            {request.display_name}
           </span>
-          {request.isApproved && <VipIcon />}
+          {request.membership.status == "citizen" && <VipIcon />}
         </div>
-        {request.type === "join" && (
-          <span className="text-[12px] font-medium text-gray-shade-24">
-            Requested to join The{" "}
-            <span className="text-[#FFF]">{request.room}</span>
-          </span>
-        )}
-
-        {request.type === "speak" && (
-          <span className="text-[12px] font-medium text-gray-shade-24">
-            Requested to speak
-          </span>
-        )}
       </div>
 
       <div className="flex gap-[12px]">
         <Button
           title="Accept"
           variant="primary"
-          onClick={() => handler("Accept")}
+          onClick={() => handler("accept")}
           className={` text-xs font-medium`}
           borderRounded="10px"
         />
@@ -56,7 +47,7 @@ const RequestRow: React.FC<RequestProps> = ({ request }) => {
         <Button
           title="Decline"
           variant="danger"
-          onClick={() => handler("Decline")}
+          onClick={() => handler("decline")}
           className={` text-xs font-medium`}
           borderRounded="10px"
         />
