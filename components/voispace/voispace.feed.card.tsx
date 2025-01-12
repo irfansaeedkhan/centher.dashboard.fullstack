@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import clsx from "clsx";
 import Image from "next/image";
 
-import { VoispaceLiveIcon } from "@/assets/svgs";
+import { LoaderSpinner, SpinIcon3, VoispaceLiveIcon } from "@/assets/svgs";
 import Button from "../button";
 import ChannelMainView from "./shared/ChannelMainView";
 import { useStream } from "@/hooks/stream/use.core";
@@ -14,7 +14,7 @@ import { VoispaceExploreChannelsModal } from "./user/voispace.explore.channels.m
 import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
 import useUser from "@/hooks/use.user";
 import { StreamEventEnum } from "@/stream/model";
-import toast from "react-hot-toast";
+import toast, { LoaderIcon } from "react-hot-toast";
 
 export const VoiceSpaceFeedCard: React.FC = () => {
   const [rooms, setRooms] = useState<Room[]>([]);
@@ -178,6 +178,17 @@ export const VoiceSpaceFeedCard: React.FC = () => {
               : "LiveView"
           }
         />
+      )}
+
+      {true && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
+          <div className="flex flex-col items-center gap-4">
+            <LoaderIcon className="h-16 w-16 animate-spin text-2xl text-white" />
+            <span className="text-lg font-medium text-white">
+              Loading room...
+            </span>
+          </div>
+        </div>
       )}
     </>
   );

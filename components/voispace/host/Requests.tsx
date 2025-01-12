@@ -36,9 +36,18 @@ const Requests: React.FC<DynamicProps> = ({
         <div className="">
           {loader
             ? Array.from({ length: 4 }).map((_, index) => (
-                <div key={index} className="flex flex-col items-center gap-4">
-                  <div className="h-10 w-10 animate-pulse rounded-full bg-gray-700"></div>
-                  <div className="relative h-3 w-16 animate-pulse rounded-md bg-gray-700" />
+                <div
+                  key={index}
+                  className="flex w-full items-center  justify-between gap-4"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="h-10 w-10 animate-pulse rounded-full bg-gray-700"></div>
+                    <div className="relative h-5 w-24 animate-pulse rounded-md bg-gray-700" />
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="relative h-8 w-20 animate-pulse rounded-md bg-gray-700" />
+                    <div className="relative h-8 w-20 animate-pulse rounded-md bg-gray-700" />
+                  </div>
                 </div>
               ))
             : talkRequestUsers?.map((request: any, index: number) => {
