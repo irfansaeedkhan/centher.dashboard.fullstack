@@ -21,7 +21,6 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
   setComponentName,
   roomData,
 }) => {
-  // TODO : loader should be removed and replaced with actual data sent from the useSubscribeToCurrentStream
   const { amaAgent, useSubscribeToCurrentStream, useSubscribeToSpeakers } =
     useStream();
   const {
@@ -43,7 +42,6 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
   const { data: speakers, loader: speakersLoader } = useSubscribeToSpeakers(
     roomData?.id || ""
   );
-
   // const handleInvite = async () => {
   //   try {
   //     const users = ["user1", "user2"]; // Replace with dynamic user IDs
@@ -231,29 +229,26 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
                 </ActionButton>
               )}
 
-              {/* //TODO add image of first two participants */}
               <ActionButton
                 className="text-medium text-[14px] text-[#E34048]"
                 onClick={() => setComponentName("Participators")}
               >
                 <div className="relative h-[20px] w-[40px]">
-                  <Image
-                    src="/images/profiles/Profile-0.svg"
-                    alt="Test"
-                    width={20}
-                    height={20}
-                    className="absolute left-0 top-0 z-0 h-5 w-5"
-                  />
-                  <Image
-                    src="/images/profiles/Profile-1.svg"
-                    alt="Test"
-                    width={20}
-                    height={20}
-                    className="z-1 absolute left-[50%] top-0 h-5 w-5 -translate-x-1/2 transform"
-                  />
+                  {currentStream?.latestParticipants?.map(
+                    (participant: any, index: number) => (
+                      <Image
+                        key={index}
+                        src={participant.user.profile_image}
+                        alt={participant.user.display_name}
+                        width={20}
+                        height={20}
+                        className="absolute left-0 top-0 z-0 h-5 w-5"
+                      />
+                    )
+                  )}
                 </div>
                 <span className="font-monto text-[11px] font-medium leading-[13px] tracking-[-0.4px]">
-                  {speakers?.length + currentStream?.hosts?.length}
+                  {currentStream?.participatorsCount?.aggregate?.count}
                 </span>
               </ActionButton>
 
