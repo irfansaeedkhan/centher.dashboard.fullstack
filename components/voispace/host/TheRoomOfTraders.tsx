@@ -28,8 +28,8 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
 }) => {
   const { amaAgent, useSubscribeToCurrentStream, useSubscribeToSpeakers } =
     useStream();
+
   const {
-    invite,
     toggleMemberTalkPermission,
     toggleMessagePermission,
     kickUser,
@@ -189,6 +189,7 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
                 speakers?.slice(0, 7).map((speaker: any, index: number) => (
                   <div key={index}>
                     <UserWithPopover
+                      mode={globalIsOwner ? "admin" : "participant"}
                       client={speaker}
                       handleKickOff={handleKickUser}
                       handleTalkPermission={handleToggleTalkPermission}
@@ -269,8 +270,6 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
                 </span>
               </ActionButton>
 
-              {/* //TODO */}
-              {/* TODO change text when user send the request to request sent and remove it if he has permission to speak */}
               {!globalIsOwner && (
                 <ActionButton
                   className="text-medium hidden text-[14px] text-[#E34048] md:flex"
