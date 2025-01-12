@@ -41,7 +41,8 @@ const LiveView: React.FC<DynamicProps> = ({
   setComponentName,
   roomData,
 }) => {
-  const { useSubscribeToMessages, insertMessage } = useStream();
+  const { useSubscribeToMessages, insertMessage, liveAgent } = useStream();
+  const { consumersAudioStream } = liveAgent;
   const [inputValue, setInputValue] = useState("");
   const [formattedMessages, setFormattedMessages] = useState<
     BroadcastMessage[]

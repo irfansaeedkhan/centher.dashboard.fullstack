@@ -16,6 +16,8 @@ export interface LiveStreamType {
   event: IStreamEvent | null;
   consumersAudio: Map<string, Consumer>;
   consumersVideo: Map<string, Consumer>;
+  consumersAudioStream: Map<string, MediaStream>;
+  consumersVideoStram: Map<string, MediaStream>;
   audioProducer: Producer | null;
   videoProducer: Producer | null;
   globalIsOwner: boolean;
@@ -337,12 +339,12 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
           resolve();
         });
 
-        globalSocket.current.on("error", (err: any) => {
+        globalSocket.current.on("error", ({ data }: any) => {
           setEvent({
-            type: StreamEventEnum.ON_NEED_STREAM_ACCESS,
-            data: err,
+            data,
+            type: StreamEventEnum.STREAM_INITIALIZATION_ERROR,
           });
-          console.log("socket error: ", err);
+          console.log("socket error: ", data);
         });
       } catch (error) {
         reject(error);
@@ -726,6 +728,8 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
     videoProducer: globalVideoProducer.current,
     consumersAudio: globalConsumersAudio.current,
     consumersVideo: globalConsumersVideo.current,
+    consumersAudioStream: globalConsumersAudioStream.current,
+    consumersVideoStram: globalConsumersVideoStream.current,
     globalIsOwner: globalIsOwner.current,
     createRoom,
     joinRoom,
