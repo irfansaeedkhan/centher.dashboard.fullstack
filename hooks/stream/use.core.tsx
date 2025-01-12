@@ -150,8 +150,8 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
           });
 
           const finalResult = await result;
-
-          setData(finalResult.data);
+          const users = await aggregateInvitedUsers(finalResult.data);
+          setData(users as any[]);
           setLoader(false);
         } catch (error) {
           console.error("query setup failed:", error);
@@ -603,6 +603,11 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
     });
 
     return data;
+  };
+  const aggregateInvitedUsers = async (data: any) => {
+    const ids = data?.broadcast[0]?.invitedUsers;
+    const mappedUsers = await getUsers(ids);
+    return mappedUsers;
   };
 
   const contextValue: StreamContextType = {
