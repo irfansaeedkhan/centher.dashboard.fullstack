@@ -22,7 +22,6 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
   roomData,
 }) => {
   // TODO : loader should be removed and replaced with actual data sent from the useSubscribeToCurrentStream
-  const [loader, setLoader] = useState(true);
   const { amaAgent, useSubscribeToCurrentStream, useSubscribeToSpeakers } =
     useStream();
   const {
@@ -36,12 +35,14 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
     globalIsOwner,
   } = amaAgent;
 
-  const currentStream = useSubscribeToCurrentStream(
+  const { stream: currentStream, loader } = useSubscribeToCurrentStream(
     roomData?.id || "",
     roomData?.type === "AMA" ? BroadcastTypeEnum.AMA : BroadcastTypeEnum.LIVE
   );
 
-  const speakers = useSubscribeToSpeakers(roomData?.id || "");
+  const { data: speakers, loader: speakersLoader } = useSubscribeToSpeakers(
+    roomData?.id || ""
+  );
 
   // const handleInvite = async () => {
   //   try {
@@ -121,7 +122,7 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
           subTitle="Voispace"
           title="The Room of Traders"
           onClose={onClose}
-          hasBackButton={true}
+          hasBackButton={false}
           onBack={() => null}
         >
           <button
@@ -171,7 +172,7 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
             </span>
           </div>
           <div className="flex flex-wrap gap-[28px]">
-            {loader
+            {speakersLoader
               ? Array.from({ length: 4 }).map((_, index) => (
                   <div key={index} className="flex flex-col items-center gap-4">
                     <div className="h-10 w-10 animate-pulse rounded-full bg-gray-700"></div>

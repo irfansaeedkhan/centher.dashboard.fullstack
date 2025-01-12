@@ -27,7 +27,7 @@ interface StreamContextType {
   useSubscribeToCurrentStream: (
     broadcastId: string,
     type: BroadcastTypeEnum
-  ) => ICentalkBroadcast | null;
+  ) => { stream: ICentalkBroadcast | null; loader: boolean };
   useSubscribeToCurrentUser: (broadcastId: string, userId: string) => any;
   useSubscribeToHasTalkRequestUsers: (broadcastId: string) => any;
   amaAgent: AMAStreamType;
@@ -113,12 +113,13 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
 
   const useSubscribeToSpeakers = (broadcastId: string) => {
     const [data, setData] = useState<any>(null);
+    const [loader, setLoader] = useState<boolean>(false);
     const subscriptionRef = useRef<any>();
     const helperRef = useRef<StreamHooksHelper>(helper.current);
 
     useEffect(() => {
       let isSubscribed = true;
-
+      setLoader(true);
       const setupSubscription = async () => {
         try {
           const apollo = await helperRef.current.getApolloClientInstance();
@@ -141,6 +142,7 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
                 newData.data.speakers
               );
               setData(detailedSpeakers);
+              setLoader(false);
             }
           });
         } catch (error) {
@@ -158,7 +160,7 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
       };
     }, [broadcastId]);
 
-    return data;
+    return { data, loader };
   };
 
   const useSubscribeToMessages = (broadcastId: string) => {
@@ -217,9 +219,10 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
   const useSubscribeToCurrentStream = (
     broadcastId: string,
     type: BroadcastTypeEnum
-  ): ICentalkBroadcast | null => {
+  ): { stream: ICentalkBroadcast | null; loader: boolean } => {
     const [currentStream, setCurrentStream] =
       useState<ICentalkBroadcast | null>(null);
+    const [loader, setLoader] = useState<boolean>(false);
     const subscriptionRef = useRef<any>();
     const helperRef = useRef<StreamHooksHelper>(helper.current);
 
@@ -228,6 +231,7 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
 
       const setupSubscription = async () => {
         try {
+          setLoader(true);
           const apollo = await helperRef.current.getApolloClientInstance();
           const query = getCurrentStream();
 
@@ -248,6 +252,7 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
                 data.data.broadcast[0]
               );
               setCurrentStream(stream);
+              setLoader(false);
             }
           });
         } catch (error) {
@@ -265,7 +270,7 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
       };
     }, [broadcastId, type]);
 
-    return currentStream;
+    return { stream: currentStream, loader };
   };
 
   const useSubscribeToCurrentUser = (broadcastId: string, userId: string) => {
