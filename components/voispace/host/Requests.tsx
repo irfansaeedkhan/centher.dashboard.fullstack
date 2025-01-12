@@ -22,7 +22,7 @@ const Requests: React.FC<DynamicProps> = ({
     roomData.id as string
   );
   const talkRequestHandler = (user: any, action: string) => {
-    amaAgent.toggleMemberTalkPermission(user.id);
+    amaAgent.toggleMemberTalkPermission(user._id);
   };
 
   return (
