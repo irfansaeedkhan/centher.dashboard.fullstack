@@ -3,18 +3,20 @@ import React from "react";
 import Button from "@/components/button";
 import ClientCardView from "@/components/voispace/shared/profile";
 import HostModalHeader from "@/components/voispace/host/partials/HostModalHeader";
-
-import { speakers } from "../dummy.data/speakers.list";
+import { Room } from "./voispace.create.channel.modal/voispace.create.channel.modal";
 
 interface DynamicProps {
   onClose: () => void;
   setComponentName: (name: string) => string;
+  roomData: Room;
 }
 
 const Participators: React.FC<DynamicProps> = ({
   onClose,
   setComponentName,
+  roomData,
 }) => {
+  const participators = roomData.latestParticipants;
   return (
     <div className="px-[24px] py-[24px] text-white">
       <div className="flex flex-col gap-[27px]">
@@ -34,16 +36,16 @@ const Participators: React.FC<DynamicProps> = ({
         </HostModalHeader>
 
         <div className="flex flex-wrap gap-8">
-          {speakers.map((speaker: any, index) => {
+          {participators.map((speaker: any, index) => {
             return (
               <div className="" key={index}>
                 <ClientCardView
-                  className="w-[74px]"
-                  name={speaker.name}
-                  imageURL={speaker.imageURL}
-                  isApproved={speaker.isApproved}
-                  isSpeaking={speaker.isSpeaking}
-                  position={speaker.position}
+                  className="w-18"
+                  name={speaker.display_name}
+                  imageURL={speaker.profile_image}
+                  isApproved={true}
+                  isSpeaking={true}
+                  position={speaker.type}
                 />
               </div>
             );
