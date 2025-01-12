@@ -31,6 +31,7 @@ export const VoiceSpaceFeedCard: React.FC = () => {
   const { amaAgent, liveAgent, useSubscribeToAllBroadcasts } = useStream();
   const { joinRoom: joinAMARoom, event: eventOnAMA } = amaAgent;
   const { joinRoom: joinLiveRoom, event: eventOnLive } = liveAgent;
+  const [joiningRoomLoader, setJoiningRoomLoader] = useState<boolean>(false);
   const { user } = useUser();
   const { loader, data: broadcasts } = useSubscribeToAllBroadcasts();
 
@@ -47,6 +48,7 @@ export const VoiceSpaceFeedCard: React.FC = () => {
     ) {
       setSelectedRoomData(selectedRoom);
       setIsUserMainViewOpen(true);
+      setJoiningRoomLoader(false);
     }
 
     if (
@@ -69,6 +71,7 @@ export const VoiceSpaceFeedCard: React.FC = () => {
         joinLiveRoom(room.id as string, user?._id || "");
       }
       setSelectedRoom(room);
+      setJoiningRoomLoader(true);
     } catch (error) {
       toast.error("cannot join this room");
     }
@@ -185,13 +188,11 @@ export const VoiceSpaceFeedCard: React.FC = () => {
         />
       )}
 
-      {true && (
+      {joiningRoomLoader && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
           <div className="flex flex-col items-center gap-4 rounded-lg bg-black bg-opacity-80 px-10 py-8">
             <VoispaceGradientRing className="animate-spin text-2xl text-white" />
-            <span className="text-lg font-medium text-white">
-              Joining room...
-            </span>
+            <span className="text-lg font-medium text-white">Joining...</span>
           </div>
         </div>
       )}

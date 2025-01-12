@@ -10,6 +10,7 @@ import ClientCardView from "../shared/profile";
 import Image from "next/image";
 import { ICentalkBroadcast } from "@/hooks/stream/cen-talk";
 import clsx from "clsx";
+import { StreamAccessModeEnum } from "@/stream/enum/stream-access-mode.enum";
 
 interface DynamicProps {
   onClose: () => void;
@@ -34,7 +35,6 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
     requestToTalk,
     globalIsOwner,
   } = amaAgent;
-
   const { stream: currentStream, loader } = useSubscribeToCurrentStream(
     roomData?.id || "",
     roomData?.type === "AMA" ? BroadcastTypeEnum.AMA : BroadcastTypeEnum.LIVE
@@ -43,6 +43,10 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
   const { data: speakers, loader: speakersLoader } = useSubscribeToSpeakers(
     roomData?.id || ""
   );
+
+  const showInvitePeople =
+    roomData?.accessMode == StreamAccessModeEnum.ACCESS_BY_INVITATION &&
+    globalIsOwner;
   // const handleInvite = async () => {
   //   try {
   //     const users = ["user1", "user2"]; // Replace with dynamic user IDs
@@ -207,13 +211,15 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
               </ActionButton>
 
               {/* Share Button */}
-              <ActionButton
-                text="Share"
-                className="text-medium text-[14px] text-[#E34048]"
-                onClick={() => setComponentName("InvitetoRoom")}
-              >
-                <ShareWhiteIcon />
-              </ActionButton>
+              {showInvitePeople && (
+                <ActionButton
+                  text="Share"
+                  className="text-medium text-[14px] text-[#E34048]"
+                  onClick={() => setComponentName("InvitetoRoom")}
+                >
+                  <ShareWhiteIcon />
+                </ActionButton>
+              )}
             </div>
 
             <div className="flex items-center gap-[10px]">

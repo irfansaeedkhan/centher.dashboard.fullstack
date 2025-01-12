@@ -1,22 +1,31 @@
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 
 import { SearchIcon } from "@/assets/svgs";
 import InviteRow from "@/components/voispace/host/partials/InviteRow";
 import { users } from "@/components/voispace/dummy.data/users.list";
 
 import HostModalHeader from "./partials/HostModalHeader";
+import { Room } from "./voispace.create.channel.modal/voispace.create.channel.modal";
+import { useStream } from "@/hooks/stream/use.core";
 
 interface DynamicProps {
   onClose: () => void;
   setComponentName: (name: string) => string;
+  roomData: Room;
 }
 
 const InvitetoRoom: React.FC<DynamicProps> = ({
   onClose,
   setComponentName,
+  roomData,
 }) => {
-  const [searchedValue, setSearchedValue] = useState("");
+  const { useQueryToGetInvitedUsersByBrooadcastId } = useStream();
+  const { data, loader } = useQueryToGetInvitedUsersByBrooadcastId(
+    roomData?.id as string
+  );
 
+  const currentPeople = data?.data?.invitedUsers;
+  const [searchedValue, setSearchedValue] = useState("");
   const filteredUsers = users.filter((user) => {
     return user.name.toLowerCase().includes(searchedValue.toLowerCase());
   });
