@@ -25,13 +25,17 @@ import {
   getInvitedUsersByBrooadcastId,
   getParticipatorsByBroadcastId,
 } from "@/stream/graphql/query";
+import { BroadcastMessage } from "./dto/broadcast-inffo.dto";
 
 interface StreamContextType {
   useGetSubscribes: () => Promise<any>;
   insertMessage: (broadcastId: string, content: string) => Promise<void>;
   useSubscribeToAllBroadcasts: () => any;
   useSubscribeToSpeakers: (broadcastId: string) => any;
-  useSubscribeToMessages: (broadcastId: string) => any;
+  useSubscribeToMessages: (broadcastId: string) => {
+    messages: BroadcastMessage[];
+    loading: boolean;
+  };
   useSubscribeToCurrentStream: (
     broadcastId: string,
     type: BroadcastTypeEnum
@@ -274,8 +278,10 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
     return { data, loader };
   };
 
-  const useSubscribeToMessages = (broadcastId: string) => {
-    const [messages, setMessages] = useState<any>(null);
+  const useSubscribeToMessages = (
+    broadcastId: string
+  ): { messages: BroadcastMessage[]; loading: boolean } => {
+    const [messages, setMessages] = useState<BroadcastMessage[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const subscriptionRef = useRef<any>();
     const helperRef = useRef<StreamHooksHelper>(helper.current);

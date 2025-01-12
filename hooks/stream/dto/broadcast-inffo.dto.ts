@@ -1,8 +1,9 @@
-import { ICentalkUser } from "../model";
+import { User } from "@/models/user";
+import { ICentalkUser } from "@/stream/model";
 
-export class BroadcastMessage {
+export interface BroadcastMessage {
   id: string;
   content: string;
-  sender: ICentalkUser;
+  sender: User;
   createdAt: Date;
 }

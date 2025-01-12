@@ -78,10 +78,7 @@ const ChatRoom: React.FC<DynamicProps> = ({
 
   const formattedMessages =
     messages
-      ?.sort(
-        (a: { createdAt: string }, b: { createdAt: string }) =>
-          +new Date(b.createdAt) - +new Date(a.createdAt)
-      )
+      ?.sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt))
       ?.reverse() || [];
 
   const getTimeLapsed = (date: Date | string): string => {

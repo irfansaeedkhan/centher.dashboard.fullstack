@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   SendChatIcon,
@@ -7,33 +7,90 @@ import {
   VideoIcon2,
   EyeIcon,
 } from "@/assets/svgs";
-import { users } from "@/components/voispace/dummy.data/users.list";
 import LiveMessage from "@/components/voispace/host/partials/LiveMessage";
 import DropdownButton from "@/components/voispace/host/ui/DropdownButton";
 
 import HostModalHeader from "./partials/HostModalHeader";
 import { Room } from "./voispace.create.channel.modal/voispace.create.channel.modal";
+import { useStream } from "@/hooks/stream/use.core";
+import DOMPurify from "dompurify";
+import { BroadcastMessage } from "@/hooks/stream/dto/broadcast-inffo.dto";
+import useMediaDevices from "@/hooks/use.get.media.devices";
 
 interface DynamicProps {
   onClose: () => void;
-  formState?: Room;
+  roomData?: Room;
   setComponentName: (name: string) => string;
 }
 
 const LiveView: React.FC<DynamicProps> = ({
   onClose,
   setComponentName,
-  formState,
+  roomData,
 }) => {
+  const { useSubscribeToMessages, insertMessage } = useStream();
+  const [inputValue, setInputValue] = useState("");
+  const [formattedMessages, setFormattedMessages] = useState<
+    BroadcastMessage[]
+  >([]);
+  const { cameras, microphones, error, updateDevices, getMediaPermissions } =
+    useMediaDevices();
+
+  const { messages, loading: subscriptionLoading } = useSubscribeToMessages(
+    roomData?.id || ""
+  );
+
+  useEffect(() => {
+    updateDevices();
+  }, [updateDevices]);
+
+  useEffect(() => {
+    if (messages.length) {
+      console.log({ messages });
+      const formattedMessages =
+        messages
+          ?.sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt))
+          ?.reverse() || [];
+
+      setFormattedMessages(formattedMessages);
+    }
+  }, [messages]);
+
   const leaveHandler = () => {
     alert("Leave");
   };
 
-  const handleSelect = (value: string) => {
-    console.log("Selected:", value);
-    alert(`انتخاب شد: ${value}`);
+  const onSelectCamera = (
+    value: MediaDeviceInfo,
+    e: React.MouseEvent<HTMLLIElement, MouseEvent>
+  ) => {
+    if (roomData) {
+      roomData.videoDevice = value;
+    }
   };
-  console.log(formState);
+
+  const onSelectMic = (value: MediaDeviceInfo) => {
+    if (roomData) {
+      roomData.audioDevice = value;
+    }
+  };
+
+  const onSend = async (e: any) => {
+    e.preventDefault();
+    const pattenr =
+      /((https?:\/\/|www\.)[^\s]+)|(\b\d{10}\b)|(\+\d{1,3}\s?\d+)/g;
+    let message = DOMPurify.sanitize(inputValue, {
+      ALLOWED_TAGS: [],
+      ALLOWED_ATTR: [],
+    });
+    message = message.replace(pattenr, "[filtered]");
+
+    if (message.trim().length) {
+      insertMessage(roomData?.id || "", message);
+      setInputValue("");
+    }
+  };
+
   return (
     <div className="relative flex flex-col">
       <div className="flex flex-col gap-[27px] px-[24px] py-[24px]">
@@ -71,37 +128,33 @@ const LiveView: React.FC<DynamicProps> = ({
       <div className="h-[100%] min-h-[645px] bg-[url('/images/live-room-bg.svg')]">
         <div className="flex h-[100%] min-h-[645px] flex-col justify-end px-[16px] py-[16px]">
           <div className="flex flex-col px-[8px]">
-            {users.map((user, index) => {
-              return <LiveMessage user={user} key={index} />;
+            {formattedMessages.map((message, index) => {
+              return <LiveMessage message={message} key={index} />;
             })}
           </div>
 
           <div className="mt-[50px] flex gap-[8px]">
             <div>
               <DropdownButton
-                onSelect={handleSelect}
-                dropdownContent={(onSelect) => (
+                dropdownContent={() => (
                   <ul className="flex flex-col gap-[8px] p-[8px]">
-                    <li
-                      className="flex gap-[8px] rounded-[1000px] border border-[#32343C] bg-[#212228] px-[10px] py-[6px] text-[13px] font-medium"
-                      onClick={() => onSelect("Item 1")}
-                    >
-                      <MicIcon />
-                      Default- Internal audio...
-                    </li>
-                    <li
-                      className="flex gap-[8px] rounded-[1000px] border border-[#32343C] bg-[#212228] px-[10px] py-[6px] text-[13px] font-medium"
-                      onClick={() => onSelect("Item 1")}
-                    >
-                      <MicIcon />
-                      Iphone 14 pro audio
-                    </li>
-                    <li
-                      className="flex gap-[8px] rounded-[1000px] border border-[#32343C] bg-[#212228] px-[10px] py-[6px] text-[13px] font-medium"
-                      onClick={() => onSelect("Item 1")}
-                    >
-                      View more settings
-                    </li>
+                    {microphones.map((microphone, index) => (
+                      <li
+                        className={
+                          "flex cursor-pointer gap-[8px] rounded-[1000px] border border-[#32343C] bg-[#212228] px-[10px] py-[6px] text-[13px] font-medium" +
+                          (roomData?.audioDevice?.deviceId ===
+                          microphone.deviceId
+                            ? "border-[#FF453A] bg-red-600"
+                            : "")
+                        }
+                        key={index}
+                        value={microphone.deviceId}
+                        onClick={() => onSelectMic(microphone)}
+                      >
+                        <MicIcon />
+                        {microphone.label}
+                      </li>
+                    ))}
                   </ul>
                 )}
               >
@@ -110,29 +163,24 @@ const LiveView: React.FC<DynamicProps> = ({
             </div>
             <div>
               <DropdownButton
-                onSelect={handleSelect}
-                dropdownContent={(onSelect) => (
+                dropdownContent={() => (
                   <ul className="flex flex-col gap-[8px] p-[8px]">
-                    <li
-                      className="flex gap-[8px] rounded-[1000px] border border-[#32343C] bg-[#212228] px-[10px] py-[6px] text-[13px] font-medium"
-                      onClick={() => onSelect("Item 1")}
-                    >
-                      <MicIcon />
-                      Default- Internal camera...
-                    </li>
-                    <li
-                      className="flex gap-[8px] rounded-[1000px] border border-[#32343C] bg-[#212228] px-[10px] py-[6px] text-[13px] font-medium"
-                      onClick={() => onSelect("Item 1")}
-                    >
-                      <MicIcon />
-                      Iphone 14 pro Camera
-                    </li>
-                    <li
-                      className="flex gap-[8px] rounded-[1000px] border border-[#32343C] bg-[#212228] px-[10px] py-[6px] text-[13px] font-medium"
-                      onClick={() => onSelect("Item 1")}
-                    >
-                      View more settings
-                    </li>
+                    {cameras.map((camers, index) => (
+                      <li
+                        className={
+                          "flex cursor-pointer gap-[8px] rounded-[1000px] border border-[#32343C] bg-[#212228] px-[10px] py-[6px] text-[13px] font-medium" +
+                          (roomData?.videoDevice?.deviceId === camers.deviceId
+                            ? "border-[#FF453A] bg-red-600"
+                            : "")
+                        }
+                        key={index}
+                        value={camers.deviceId}
+                        onClick={(e) => onSelectCamera(camers, e)}
+                      >
+                        <VideoIcon2 />
+                        {camers.label}
+                      </li>
+                    ))}
                   </ul>
                 )}
               >
@@ -143,8 +191,13 @@ const LiveView: React.FC<DynamicProps> = ({
               <input
                 className="font-regular flex-grow border-0 bg-transparent text-[12px] text-white"
                 placeholder="Type something"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
               />
-              <button className="mr-[12px] h-[20px] w-[20px]">
+              <button
+                className="mr-[12px] h-[20px] w-[20px]"
+                onClick={(e) => onSend(e)}
+              >
                 <SendChatIcon />
               </button>
             </div>
