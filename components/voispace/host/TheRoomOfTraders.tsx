@@ -1,16 +1,19 @@
 import React from "react";
-import { ChatProfile, GrabIcon, MicIcon2, ShareWhiteIcon } from "@/assets/svgs";
+import clsx from "clsx";
+import Image from "next/image";
+import toast from "react-hot-toast";
+import { FaUser } from "react-icons/fa";
+
+import { useStream } from "@/hooks/stream/use.core";
+import { ICentalkBroadcast } from "@/hooks/stream/cen-talk";
+import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
+import { StreamAccessModeEnum } from "@/stream/enum/stream-access-mode.enum";
 import HostModalHeader from "@/components/voispace/host/partials/HostModalHeader";
+import { ChatProfile, GrabIcon, MicIcon2, ShareWhiteIcon } from "@/assets/svgs";
+
+import ClientCardView from "../shared/profile";
 import ActionButton from "./ui/ActionButton";
 import UserWithPopover from "./partials/UserWithPopover";
-import { useStream } from "@/hooks/stream/use.core";
-import toast from "react-hot-toast";
-import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
-import ClientCardView from "../shared/profile";
-import Image from "next/image";
-import { ICentalkBroadcast } from "@/hooks/stream/cen-talk";
-import clsx from "clsx";
-import { StreamAccessModeEnum } from "@/stream/enum/stream-access-mode.enum";
 
 interface DynamicProps {
   onClose: () => void;
@@ -236,28 +239,30 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
               )}
 
               <ActionButton
-                className="text-medium text-[14px] text-[#E34048]"
+                className="text-medium flex items-center text-[14px] text-[#E34048]"
                 onClick={() => setComponentName("Participators")}
               >
-                <div className="relative h-[20px] w-[40px]">
+                <div className="relative h-[20px] min-w-[40px] px-2">
                   {currentStream?.latestParticipants &&
-                  currentStream.latestParticipants.length > 0
-                    ? currentStream?.latestParticipants.map(
-                        (participant: any, index: number) => (
-                          <Image
-                            key={index}
-                            src={participant.user.profile_image}
-                            alt={participant.user.display_name}
-                            width={20}
-                            height={20}
-                            className={clsx(
-                              `absolute left-0 top-0 z-0 h-5 w-5 rounded-full object-cover`
-                            )}
-                            style={{ left: `${index * 10}px` }}
-                          />
-                        )
+                  currentStream.latestParticipants.length > 0 ? (
+                    currentStream?.latestParticipants.map(
+                      (participant: any, index: number) => (
+                        <Image
+                          key={index}
+                          src={participant.user.profile_image}
+                          alt={participant.user.display_name}
+                          width={20}
+                          height={20}
+                          className={clsx(
+                            `absolute left-0 top-0 z-0 h-5 w-5 rounded-full object-cover`
+                          )}
+                          style={{ left: `${index * 10}px` }}
+                        />
                       )
-                    : "Participants"}
+                    )
+                  ) : (
+                    <FaUser className="text-base" />
+                  )}
                 </div>
                 <span className="font-monto text-[11px] font-medium leading-[13px] tracking-[-0.4px]">
                   {currentStream?.participatorsCount?.aggregate?.count}
