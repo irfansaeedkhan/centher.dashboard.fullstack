@@ -1,42 +1,57 @@
 import React from "react";
 import Image from "next/image";
+import { BroadcastMessage } from "@/hooks/stream/dto/broadcast-inffo.dto";
 
 interface LiveMessageProps {
-  user: any;
-  message?: any;
+  message: BroadcastMessage;
 }
 
-const LiveMessage: React.FC<LiveMessageProps> = ({ user, message }) => {
+const LiveMessage: React.FC<LiveMessageProps> = ({ message }) => {
+  const getTimeLapsed = (date: Date | string): string => {
+    date = date instanceof Date ? date : new Date(date);
+    const now = new Date();
+    const diff = now.getTime() - date.getTime();
+
+    const seconds = Math.floor(diff / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    if (days > 0) {
+      return `${days}d ago`;
+    } else if (hours > 0) {
+      return `${hours}h ago`;
+    } else if (minutes > 0) {
+      return `${minutes}m ago`;
+    } else {
+      return "just now";
+    }
+  };
+
   return (
-    <div className="flex items-center gap-[16px] py-[8px] text-white">
-      <div className="relative">
+    <div className="flex gap-3">
+      <div className="relative h-10 w-10 flex-shrink-0">
         <Image
-          src={user.imageURL}
-          alt={user.name}
-          width={40}
-          height={40}
-          objectFit="cover"
-          className="rounded-full object-cover"
+          src={message.sender.profile_image}
+          alt={message.sender.display_name}
+          width={48}
+          height={48}
+          className="h-full w-full rounded-full"
         />
-        <span className="absolute bottom-[0px] right-[0px] flex h-[12px] w-[12px] rounded-[50%] border-2 border-black bg-[#30D158]"></span>
+        <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-[#141416] bg-green-500" />
       </div>
 
-      <div className="flex flex-col gap-[4px]">
-        <span className="flex items-center gap-[4px]">
-          <span className="text-[14px] font-semibold text-white">
-            Hala Yasmin
+      <div className="flex flex-col items-start">
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium">
+            {message.sender.display_name}
           </span>
-          <span className="text-[11px] font-medium text-white opacity-[0.5]">
-            Just now
-          </span>
-        </span>
 
-        <span className="text-[12px] font-medium text-white">
-          Hello and welcome to the room by traders world.
-        </span>
-        <span className="text-[11px] font-semibold text-white opacity-[0.5]">
-          Reply
-        </span>
+          <span className="text-xs text-gray-shade-24">
+            {getTimeLapsed(message.createdAt)}
+          </span>
+        </div>
+        <p className="text-xs">{message.content}</p>
       </div>
     </div>
   );

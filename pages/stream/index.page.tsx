@@ -24,7 +24,8 @@ const StreamPage: NextPage = () => {
     );
 
   const { data: participators } = useQueryToGetParticipatorsByBroadcastId(
-    "9de4cb22-25f9-4191-9408-510b53cf0887"
+    "9de4cb22-25f9-4191-9408-510b53cf0887",
+    0
   );
 
   useEffect(() => {

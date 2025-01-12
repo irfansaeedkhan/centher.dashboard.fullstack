@@ -1,3 +1,5 @@
+import { User } from "@/hooks/stream/interfaces";
+
 export enum CentalkUserStatusEnum {
   ONLINE = "ONLINE",
   OFFLINE = "OFFLINE",
@@ -34,7 +36,7 @@ export interface ICentalkMessage {
   createdAt: Date;
   content: string;
   id: string;
-  sender: Partial<ICentalkUser>;
+  sender: Partial<User>;
 }
 
 export enum StreamEventEnum {
