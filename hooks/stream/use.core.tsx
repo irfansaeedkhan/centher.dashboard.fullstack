@@ -392,6 +392,7 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
 
   const useSubscribeToCurrentUser = (broadcastId: string, userId: string) => {
     const [currentUser, setCurrentUser] = useState<any>(null);
+    const [loader, setLoader] = useState<boolean>(false);
     const subscriptionRef = useRef<any>();
     const helperRef = useRef<StreamHooksHelper>(helper.current);
 
@@ -400,6 +401,7 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
 
       const setupSubscription = async () => {
         try {
+          setLoader(true);
           const apollo = await helperRef.current.getApolloClientInstance();
           const query = getCurrentStreamUser();
 
@@ -422,6 +424,8 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
           });
         } catch (error) {
           console.error("Current user subscription failed:", error);
+        } finally {
+          setLoader(false);
         }
       };
 
@@ -435,7 +439,7 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
       };
     }, [broadcastId, userId]);
 
-    return currentUser;
+    return { currentUser, loader };
   };
 
   const useSubscribeToHasTalkRequestUsers = (broadcastId: string) => {
@@ -559,8 +563,8 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
     });
   };
   const aggregateCurrentStreamUsers = async (stream: any) => {
-    const ids = stream.latestParticipants.map((e: any) => e.user.id);
-    ids.push(stream.hosts[0].user.id);
+    const ids = stream?.latestParticipants?.map((e: any) => e.user.id) || [];
+    ids.push(stream?.hosts[0]?.user.id);
     const users = await getUsers(ids);
     stream.latestParticipants = stream.latestParticipants.map((e: any) => {
       return {

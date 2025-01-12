@@ -29,6 +29,7 @@ export interface LiveStreamType {
   toggleMessagePermission: (userId: string) => void;
   closeSubscription: (key: keyof typeof StreamSubscriptionEnum) => void;
   globalIsOwner: boolean;
+  userId: string;
 }
 
 export interface LiveHookParams {
@@ -40,6 +41,7 @@ export type LiveHook = (params: LiveHookParams) => LiveStreamType;
 export const useLive: LiveHook = ({ deviceInstance }) => {
   const globalSocket = useRef<Socket | null>(null);
 
+  const globalUserId = useRef<string | null>(null);
   const globalBroadcastId = useRef<string | null>(null);
   const globalRtpCapabilities = useRef<RtpCapabilities | null>(null);
   const globalDevice = useRef<mediasoupClient.Device>(deviceInstance);
@@ -100,7 +102,7 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
     };
   };
 
-  const createRoom = async (input: CreateBroadcastDto) => {
+  const createRoom = async (input: CreateBroadcastDto, userId: string) => {
     if (!globalSocket.current) {
       await initSocketClient();
     }
@@ -121,6 +123,7 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
           type: StreamEventEnum.ON_CREATE_CENTALK,
         });
 
+        globalUserId.current = userId;
         globalBroadcastId.current = data.id;
         globalRtpCapabilities.current = data.rtpCapabilities.rtpCapabilities;
 
@@ -162,7 +165,7 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
     );
   };
 
-  const joinRoom = (id: string) => {
+  const joinRoom = (id: string, userId: string) => {
     return new Promise(async (res, rej) => {
       if (!globalSocket.current) {
         await initSocketClient();
@@ -183,6 +186,7 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
             type: StreamEventEnum.ON_JOINED_TO_BROADCAST,
           });
 
+          globalUserId.current = userId;
           globalBroadcastId.current = id;
           globalRtpCapabilities.current = data.rtpCapabilities;
           if (!globalDevice.current!.loaded) {
@@ -721,6 +725,7 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
   return {
     toast,
     event,
+    userId: globalUserId.current,
     audioProducer: globalAudioProducer.current,
     videoProducer: globalVideoProducer.current,
     consumersAudio: globalConsumersAudio.current,

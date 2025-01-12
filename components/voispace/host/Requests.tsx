@@ -17,11 +17,13 @@ const Requests: React.FC<DynamicProps> = ({
   setComponentName,
   roomData,
 }) => {
-  const { useSubscribeToHasTalkRequestUsers } = useStream();
+  const { useSubscribeToHasTalkRequestUsers, amaAgent } = useStream();
   const { talkRequestUsers, loader } = useSubscribeToHasTalkRequestUsers(
     roomData.id as string
   );
-  const talkRequestHandler = (user: any, action: string) => {};
+  const talkRequestHandler = (user: any, action: string) => {
+    amaAgent.toggleMemberTalkPermission(user.id);
+  };
 
   return (
     <div className="px-[24px] py-[24px] text-white">

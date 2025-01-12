@@ -94,7 +94,7 @@ const Header = () => {
         if (audioElement) {
           audioElement.srcObject = e.stream;
         }
-        return <audio key={e.user} id={e.user} autoPlay controls />;
+        return <audio key={e.user} id={e.user} autoPlay />;
       })}
 
       <div className={`flex flex-grow items-center justify-end gap-6`}>
