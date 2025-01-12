@@ -28,6 +28,7 @@ export interface AMAStreamType {
   requestToTalk: (request: boolean) => void;
   closeSubscription: (key: keyof typeof StreamSubscriptionEnum) => void;
   globalIsOwner: boolean;
+  userId: string | null;
 }
 
 export interface AMAHookParams {
@@ -677,6 +678,7 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
   return {
     toast,
     event,
+    userId: globalUserId.current,
     audioProducer: globalAudioProducer.current,
     consumersAudio: globalConsumersAudioStream.current,
     globalIsOwner: globalIsOwner.current,

@@ -26,8 +26,12 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
   setComponentName,
   roomData,
 }) => {
-  const { amaAgent, useSubscribeToCurrentStream, useSubscribeToSpeakers } =
-    useStream();
+  const {
+    amaAgent,
+    useSubscribeToCurrentStream,
+    useSubscribeToSpeakers,
+    useSubscribeToCurrentUser,
+  } = useStream();
 
   const {
     toggleMemberTalkPermission,
@@ -37,6 +41,7 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
     leave,
     requestToTalk,
     globalIsOwner,
+    userId,
   } = amaAgent;
   const { stream: currentStream, loader } = useSubscribeToCurrentStream(
     roomData?.id || "",
@@ -51,36 +56,11 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
     roomData?.accessMode == StreamAccessModeEnum.ACCESS_BY_INVITATION &&
     globalIsOwner;
 
-  // const { event, consumersAudio } = amaAgent;
-  // const [consumers, setConsumers] = useState<any[]>([]);
-
-  // useEffect(() => {
-  //   const consumersArray: { user: string; stream: MediaStream }[] = Array.from(
-  //     consumersAudio,
-  //     ([user, stream]) => {
-  //       return {
-  //         user,
-  //         stream,
-  //       };
-  //     }
-  //   );
-
-  //   setConsumers(
-  //     Array.isArray(consumersArray) ? consumersArray : [consumersArray]
-  //   );
-  // }, [consumersAudio, event]);
-
-  // const handleInvite = async () => {
-  //   try {
-  //     const users = ["user1", "user2"]; // Replace with dynamic user IDs
-  //     invite(users);
-  //     toast.success("Users have been invited.");
-  //   } catch (error) {
-  //     console.error("Failed to invite users:", error);
-  //     toast.error("Failed to invite users.");
-  //   }
-  // };
-
+  const { loader: currentUserLoader, currentUser } = useSubscribeToCurrentUser(
+    roomData?.id || "",
+    userId || ""
+  );
+  console.log("currentUser", currentUser);
   const handleToggleTalkPermission = async (userId: string) => {
     try {
       toggleMemberTalkPermission(userId);
@@ -133,7 +113,6 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
   const handleLeaveRoom = () => {
     try {
       leave();
-      toast.success("You have left the room.");
       onClose();
     } catch (error) {
       console.error("Failed to leave the room:", error);
@@ -147,7 +126,7 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
         <HostModalHeader
           subTitle="Voispace"
           title="The Room of Traders"
-          onClose={onClose}
+          onClose={handleLeaveRoom}
           hasBackButton={false}
           onBack={() => null}
         >
@@ -222,95 +201,129 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
 
         {/* Bottom Action Buttons */}
         <div className="absolute bottom-0 left-0 m-6 flex min-h-[70px] w-[calc(100%-48px)] items-center rounded-[24px] border border-[#32343C] bg-[#141416] p-[16px] text-white">
-          <div className="flex w-[100%] justify-between">
-            <div className="flex gap-[10px]">
-              {/* Chat Button */}
-              <ActionButton
-                text="Chat"
-                className="text-medium relative text-[14px] text-[#E34048]"
-                onClick={() => setComponentName("ChatRoom")}
-              >
-                <ChatProfile />
-                <div className="absolute -top-1 right-0 h-3 w-3 rounded-full bg-gradient" />
-              </ActionButton>
+          {!currentUserLoader ? (
+            <div className="flex w-[100%] justify-between">
+              <div className="flex gap-[10px]">
+                {/* Chat Button */}
+                {currentUser?.hasPermissionToMessage ? (
+                  <ActionButton
+                    text="Chat"
+                    className="text-medium relative text-[14px] text-[#E34048]"
+                    onClick={() => setComponentName("ChatRoom")}
+                  >
+                    <ChatProfile />
+                    <div className="absolute -top-1 right-0 h-3 w-3 rounded-full bg-gradient" />
+                  </ActionButton>
+                ) : (
+                  "no chat access"
+                )}
 
-              {/* Share Button */}
-              {showInvitePeople && (
+                {/* Share Button */}
+                {showInvitePeople && (
+                  <ActionButton
+                    text="Share"
+                    className="text-medium text-[14px] text-[#E34048]"
+                    onClick={() => setComponentName("InvitetoRoom")}
+                  >
+                    <ShareWhiteIcon />
+                  </ActionButton>
+                )}
+              </div>
+              {/* TODO:show a small points on icon if
+                  currentStream?.hasTalkRequestUsers?.aggregate?.count > 0 */}
+              <div className="flex items-center gap-[10px]">
+                {globalIsOwner && (
+                  <ActionButton
+                    className="text-medium text-[14px] text-[#E34048]"
+                    onClick={() => setComponentName("Requests")}
+                  >
+                    <GrabIcon />
+                    <span className="font-monto text-[11px] font-medium leading-[13px] tracking-[-0.4px]">
+                      {currentStream?.hasTalkRequestUsers?.aggregate?.count}
+                    </span>
+                  </ActionButton>
+                )}
+
                 <ActionButton
-                  text="Share"
-                  className="text-medium text-[14px] text-[#E34048]"
-                  onClick={() => setComponentName("InvitetoRoom")}
+                  className="text-medium flex items-center text-[14px] text-[#E34048]"
+                  onClick={() => setComponentName("Participators")}
                 >
-                  <ShareWhiteIcon />
-                </ActionButton>
-              )}
-            </div>
-
-            <div className="flex items-center gap-[10px]">
-              {globalIsOwner && (
-                <ActionButton
-                  className="text-medium text-[14px] text-[#E34048]"
-                  onClick={() => setComponentName("Requests")}
-                >
-                  <GrabIcon />
-                  <span className="font-monto text-[11px] font-medium leading-[13px] tracking-[-0.4px]">
-                    {currentStream?.hasTalkRequestUsers?.aggregate?.count}
-                  </span>
-                </ActionButton>
-              )}
-
-              <ActionButton
-                className="text-medium flex items-center text-[14px] text-[#E34048]"
-                onClick={() => setComponentName("Participators")}
-              >
-                <div className="relative h-[20px] min-w-[40px] px-2">
-                  {currentStream?.latestParticipants &&
-                  currentStream.latestParticipants.length > 0 ? (
-                    currentStream?.latestParticipants.map(
-                      (participant: any, index: number) => (
-                        <Image
-                          key={index}
-                          src={participant.user.profile_image}
-                          alt={participant.user.display_name}
-                          width={20}
-                          height={20}
-                          className={clsx(
-                            `absolute left-0 top-0 z-0 h-5 w-5 rounded-full object-cover`
-                          )}
-                          style={{ left: `${index * 10}px` }}
-                        />
+                  <div className="relative h-[20px] min-w-[40px] px-2">
+                    {currentStream?.latestParticipants &&
+                    currentStream.latestParticipants.length > 0 ? (
+                      currentStream?.latestParticipants.map(
+                        (participant: any, index: number) => (
+                          <Image
+                            key={index}
+                            src={participant.user.profile_image}
+                            alt={participant.user.display_name}
+                            width={20}
+                            height={20}
+                            className={clsx(
+                              `absolute left-0 top-0 z-0 h-5 w-5 rounded-full object-cover`
+                            )}
+                            style={{ left: `${index * 10}px` }}
+                          />
+                        )
                       )
-                    )
-                  ) : (
-                    <FaUser className="text-base" />
-                  )}
-                </div>
-                <span className="font-monto text-[11px] font-medium leading-[13px] tracking-[-0.4px]">
-                  {currentStream?.participatorsCount?.aggregate?.count}
-                </span>
-              </ActionButton>
-
-              {!globalIsOwner && (
-                <ActionButton
-                  className="text-medium hidden text-[14px] text-[#E34048] md:flex"
-                  onClick={() => handleRequestToTalk(true)}
-                >
+                    ) : (
+                      <FaUser className="text-base" />
+                    )}
+                  </div>
                   <span className="font-monto text-[11px] font-medium leading-[13px] tracking-[-0.4px]">
-                    Request to speak
+                    {currentStream?.participatorsCount?.aggregate?.count}
                   </span>
                 </ActionButton>
-              )}
 
-              {/* Mute Button */}
-              <ActionButton
-                text="Mute"
-                className="text-medium text-[14px] text-[#E34048]"
-                onClick={handleToggleMute}
-              >
-                <MicIcon2 />
-              </ActionButton>
+                {!globalIsOwner &&
+                  currentUser?.type == "LISTENER" &&
+                  !currentUser?.hasTalkRequest && (
+                    <ActionButton
+                      className="text-medium hidden text-[14px] text-[#E34048] md:flex"
+                      onClick={() => handleRequestToTalk(true)}
+                    >
+                      <span className="font-monto text-[11px] font-medium leading-[13px] tracking-[-0.4px]">
+                        Request to speak
+                      </span>
+                    </ActionButton>
+                  )}
+
+                {!globalIsOwner &&
+                  currentUser?.type == "LISTENER" &&
+                  currentUser?.hasTalkRequest && (
+                    <ActionButton
+                      className="text-medium hidden text-[14px] text-[#E34048] md:flex"
+                      onClick={() => handleRequestToTalk(false)}
+                    >
+                      <span className="font-monto text-[11px] font-medium leading-[13px] tracking-[-0.4px]">
+                        Cancel Request
+                      </span>
+                    </ActionButton>
+                  )}
+
+                {/* Mute Button */}
+                {currentUser?.type == "SPEAKER" && !currentUser?.isMuted ? (
+                  <ActionButton
+                    text="Mute"
+                    className="text-medium text-[14px] text-[#E34048]"
+                    onClick={handleToggleMute}
+                  >
+                    <MicIcon2 />
+                  </ActionButton>
+                ) : (
+                  <ActionButton
+                    text="Unmute"
+                    className="text-medium text-[14px] text-[#E34048]"
+                    onClick={handleToggleMute}
+                  >
+                    <MicIcon2 />
+                  </ActionButton>
+                )}
+              </div>
             </div>
-          </div>
+          ) : (
+            "LOADING..."
+          )}
         </div>
       </div>
     </div>
