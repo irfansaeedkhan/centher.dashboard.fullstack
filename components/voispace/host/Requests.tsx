@@ -33,6 +33,7 @@ const Requests: React.FC<DynamicProps> = ({
           title="Requests"
           onClose={onClose}
           onBack={() => setComponentName("TheRoomOfTraders")}
+          hasBackButton={true}
         />
 
         <div className="">

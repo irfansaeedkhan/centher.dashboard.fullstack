@@ -127,7 +127,6 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
           subTitle="Voispace"
           title="The Room of Traders"
           onClose={handleLeaveRoom}
-          hasBackButton={false}
           onBack={() => null}
         >
           <button

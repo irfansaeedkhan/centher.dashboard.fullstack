@@ -16,7 +16,7 @@ const HostModalHeader: React.FC<HostModalProps> = ({
   onBack,
   title,
   subTitle,
-  hasBackButton = true,
+  hasBackButton = false,
 }) => {
   return (
     <div className="align-start flex justify-between">
