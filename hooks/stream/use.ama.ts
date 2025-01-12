@@ -15,7 +15,7 @@ import { IStreamEvent } from "./interfaces";
 export interface AMAStreamType {
   toast: string;
   event: IStreamEvent | null;
-  consumersAudio: Map<string, Consumer>;
+  consumersAudio: Map<string, MediaStream>;
   audioProducer: Producer | null;
   createRoom: (input: CreateBroadcastDto, userId: string) => Promise<any>;
   joinRoom: (id: string, userId: string) => Promise<any>;
@@ -678,7 +678,7 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
     toast,
     event,
     audioProducer: globalAudioProducer.current,
-    consumersAudio: globalConsumersAudio.current,
+    consumersAudio: globalConsumersAudioStream.current,
     globalIsOwner: globalIsOwner.current,
     createRoom,
     joinRoom,
