@@ -88,7 +88,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
       eventOnLive?.type === StreamEventEnum.ON_CREATE_CENTALK
     ) {
       const newRoomData: Room = {
-        ...roomData!,
+        ...formState!,
         accessMode: formState.accessMode,
         id: eventOnAMA?.data.id || eventOnLive?.data.id,
       };
@@ -331,7 +331,11 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
       <ChannelMainView
         onClose={onClose}
         roomData={roomData}
-        component={roomData?.type === "AMA" ? "TheRoomOfTraders" : "LiveView"}
+        component={
+          roomData?.type === BroadcastTypeEnum.AMA
+            ? "TheRoomOfTraders"
+            : "LiveView"
+        }
       />
     );
   }
@@ -402,7 +406,6 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
           </span>
           <span className="py-1 text-xl font-semibold text-white">
             Create New Room
-            {/* {formState.hasPermission.toString()}{ loading.toString() } {formState.image}  */}
           </span>
           <Button
             title={

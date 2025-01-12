@@ -302,7 +302,7 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
                   )}
 
                 {/* Mute Button */}
-                {currentUser?.type == "SPEAKER" && !currentUser?.isMuted ? (
+                {currentUser?.type == "SPEAKER" && !currentUser?.isMuted && (
                   <ActionButton
                     text="Mute"
                     className="text-medium text-[14px] text-[#E34048]"
@@ -310,7 +310,8 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
                   >
                     <MicIcon2 />
                   </ActionButton>
-                ) : (
+                )}
+                {currentUser?.type == "SPEAKER" && currentUser?.isMuted && (
                   <ActionButton
                     text="Unmute"
                     className="text-medium text-[14px] text-[#E34048]"
