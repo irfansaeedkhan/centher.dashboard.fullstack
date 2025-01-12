@@ -43,15 +43,15 @@ const LiveMessage: React.FC<LiveMessageProps> = ({ message }) => {
 
       <div className="flex flex-col items-start">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-medium">
+          <span className="text-sm font-medium text-white">
             {message.sender.display_name}
           </span>
 
-          <span className="text-xs text-gray-shade-24">
+          <span className="text-xs text-white/50">
             {getTimeLapsed(message.createdAt)}
           </span>
         </div>
-        <p className="text-xs">{message.content}</p>
+        <p className="text-xs text-[#FAFAFA]">{message.content}</p>
       </div>
     </div>
   );

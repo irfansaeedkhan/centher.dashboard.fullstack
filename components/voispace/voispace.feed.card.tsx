@@ -189,10 +189,13 @@ export const VoiceSpaceFeedCard: React.FC = () => {
       )}
 
       {joiningRoomLoader && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-          <div className="flex flex-col items-center gap-4 rounded-lg bg-black/75  px-14 py-8">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75">
+          <div className="flex flex-col items-center gap-4 rounded-lg  px-14 py-8">
             <VoispaceGradientRing className="animate-spin text-2xl text-white" />
-            <span className="text-lg font-medium text-white">Joining...</span>
+            <span className=" text-lg font-medium capitalize text-white">
+              Joining Stream{" "}
+              <span className="textGradient animate-pulse">...</span>
+            </span>
           </div>
         </div>
       )}
