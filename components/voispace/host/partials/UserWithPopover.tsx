@@ -31,7 +31,6 @@ const UserWithPopover: React.FC<UserWithPopoverProps> = ({
   handleMessagePermission,
   mode,
 }) => {
-  console.log("client", client);
   return (
     <Popover placement="top">
       <PopoverTrigger>

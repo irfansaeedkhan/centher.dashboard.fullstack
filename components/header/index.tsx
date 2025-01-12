@@ -13,6 +13,9 @@ import HeaderProfile from "./header.profile";
 import SearchBar from "./search";
 import { useWallet } from "@/web3/hooks/use.wallet";
 import ConnectWalletModal from "../modal/connect-wallet-modal";
+import { useStream } from "@/hooks/stream/use.core";
+import { StreamEventEnum } from "@/stream/model";
+import AudioPlayer from "@/pages/marketplace/_components/audio.player";
 
 const Header = () => {
   const { width } = useWindowSize();
@@ -24,6 +27,23 @@ const Header = () => {
   const modalOpenerRef = React.useRef<HTMLDivElement>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const sidebarOpenerRef = React.useRef<HTMLDivElement>(null);
+
+  const { amaAgent } = useStream();
+  const { event, consumersAudio } = amaAgent;
+  const [consumers, setConsumers] = useState<any[]>([]);
+
+  useEffect(() => {
+    const consumersArray = Array.from(consumersAudio, ([user, stream]) => {
+      return {
+        user,
+        stream,
+      };
+    });
+
+    setConsumers(
+      Array.isArray(consumersArray) ? consumersArray : [consumersArray]
+    );
+  }, [consumersAudio, event]);
 
   useEffect(() => {
     if (width > 1280) {
@@ -66,6 +86,16 @@ const Header = () => {
           className="w-18"
         />
       </Link>
+
+      {consumers.map((e: { user: string; stream: MediaStream }) => {
+        const audioElement = document.getElementById(
+          e.user
+        ) as HTMLAudioElement;
+        if (audioElement) {
+          audioElement.srcObject = e.stream;
+        }
+        return <audio key={e.user} id={e.user} autoPlay controls />;
+      })}
 
       <div className={`flex flex-grow items-center justify-end gap-6`}>
         {user && <SearchBar />}

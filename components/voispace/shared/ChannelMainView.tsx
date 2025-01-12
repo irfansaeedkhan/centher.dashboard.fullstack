@@ -61,19 +61,6 @@ const ChannelMainView: React.FC<ChannelMainViewInterface> = ({
       shouldCloseOnOverlayClick={false}
     >
       <div className="flex h-full flex-col justify-between">
-        {/* <div className="text-white">{JSON.stringify(formState)}</div> */}
-        <div className="flex gap-[10px]">
-          {Array.from(componentMap.keys()).map((key) => (
-            <button
-              key={key}
-              className="bg-[#ccc] px-[10px] text-[#000]"
-              onClick={() => setComponentName(key)}
-            >
-              {key}
-            </button>
-          ))}
-        </div>
-
         {ComponentToRender &&
           React.createElement(ComponentToRender, {
             setComponentName,

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import clsx from "clsx";
 import Image from "next/image";
 import toast from "react-hot-toast";
@@ -50,6 +50,26 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
   const showInvitePeople =
     roomData?.accessMode == StreamAccessModeEnum.ACCESS_BY_INVITATION &&
     globalIsOwner;
+
+  // const { event, consumersAudio } = amaAgent;
+  // const [consumers, setConsumers] = useState<any[]>([]);
+
+  // useEffect(() => {
+  //   const consumersArray: { user: string; stream: MediaStream }[] = Array.from(
+  //     consumersAudio,
+  //     ([user, stream]) => {
+  //       return {
+  //         user,
+  //         stream,
+  //       };
+  //     }
+  //   );
+
+  //   setConsumers(
+  //     Array.isArray(consumersArray) ? consumersArray : [consumersArray]
+  //   );
+  // }, [consumersAudio, event]);
+
   // const handleInvite = async () => {
   //   try {
   //     const users = ["user1", "user2"]; // Replace with dynamic user IDs
