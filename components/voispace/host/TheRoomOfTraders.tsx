@@ -217,7 +217,7 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
             </div>
 
             <div className="flex items-center gap-[10px]">
-              {
+              {globalIsOwner && (
                 <ActionButton
                   className="text-medium text-[14px] text-[#E34048]"
                   onClick={() => setComponentName("Requests")}
@@ -227,28 +227,31 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
                     {currentStream?.hasTalkRequestUsers?.aggregate?.count}
                   </span>
                 </ActionButton>
-              }
+              )}
 
               <ActionButton
                 className="text-medium text-[14px] text-[#E34048]"
                 onClick={() => setComponentName("Participators")}
               >
                 <div className="relative h-[20px] w-[40px]">
-                  {currentStream?.latestParticipants
-                    ?.slice(0, 3)
-                    .map((participant: any, index: number) => (
-                      <Image
-                        key={index}
-                        src={participant.user.profile_image}
-                        alt={participant.user.display_name}
-                        width={20}
-                        height={20}
-                        className={clsx(
-                          `absolute left-0 top-0 z-0 h-5 w-5 rounded-full object-cover`
-                        )}
-                        style={{ left: `${index * 10}px` }}
-                      />
-                    ))}
+                  {currentStream?.latestParticipants &&
+                  currentStream.latestParticipants.length > 0
+                    ? currentStream?.latestParticipants.map(
+                        (participant: any, index: number) => (
+                          <Image
+                            key={index}
+                            src={participant.user.profile_image}
+                            alt={participant.user.display_name}
+                            width={20}
+                            height={20}
+                            className={clsx(
+                              `absolute left-0 top-0 z-0 h-5 w-5 rounded-full object-cover`
+                            )}
+                            style={{ left: `${index * 10}px` }}
+                          />
+                        )
+                      )
+                    : "Participants"}
                 </div>
                 <span className="font-monto text-[11px] font-medium leading-[13px] tracking-[-0.4px]">
                   {currentStream?.participatorsCount?.aggregate?.count}

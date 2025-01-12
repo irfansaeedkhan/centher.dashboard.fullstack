@@ -73,6 +73,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
     latestParticipants: [],
     participatorsCount: { aggregate: { count: 0 } },
     speakersCount: { aggregate: { count: 0 } },
+    hasTalkRequestUsers: { aggregate: { count: 0 } },
   });
 
   useEffect(() => {

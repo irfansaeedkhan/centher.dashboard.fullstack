@@ -5,7 +5,6 @@ import ClientCardView from "@/components/voispace/shared/profile";
 import HostModalHeader from "@/components/voispace/host/partials/HostModalHeader";
 import { Room } from "./voispace.create.channel.modal/voispace.create.channel.modal";
 import { useStream } from "@/hooks/stream/use.core";
-import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
 import { StreamAccessModeEnum } from "@/stream/enum/stream-access-mode.enum";
 
 interface DynamicProps {
