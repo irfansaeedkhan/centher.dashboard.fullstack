@@ -23,6 +23,19 @@ interface DynamicProps {
   setComponentName: (name: string) => string;
 }
 
+const MessageSkeleton = () => (
+  <div className="flex animate-pulse gap-3">
+    <div className="relative h-10 w-10 flex-shrink-0 rounded-full bg-gray-700" />
+    <div className="flex w-full flex-col items-start gap-2">
+      <div className="flex items-center gap-2">
+        <div className="h-4 w-24 rounded bg-gray-700" />
+        <div className="h-3 w-12 rounded bg-gray-700" />
+      </div>
+      <div className="h-3 w-3/4 rounded bg-gray-700" />
+    </div>
+  </div>
+);
+
 const LiveView: React.FC<DynamicProps> = ({
   onClose,
   setComponentName,
@@ -108,7 +121,7 @@ const LiveView: React.FC<DynamicProps> = ({
                 <span className="h-[8px] w-[8px] rounded-[50%] bg-[#FF453A]"></span>
                 <span className="font-monto text-[11px] font-medium">Live</span>
               </div>
-
+              {/* //TODO : number of viewers   */}
               <div className="flex h-[20px] w-[44px] items-center justify-center gap-[2px] rounded-[5px] bg-[#1C1D21] text-white">
                 <EyeIcon />
                 <span className="font-monto text-[11px] font-medium">549</span>
@@ -127,10 +140,26 @@ const LiveView: React.FC<DynamicProps> = ({
 
       <div className="h-[100%] min-h-[645px] bg-[url('/images/live-room-bg.svg')]">
         <div className="flex h-[100%] min-h-[645px] flex-col justify-end px-[16px] py-[16px]">
-          <div className="flex flex-col px-[8px]">
-            {formattedMessages.map((message, index) => {
-              return <LiveMessage message={message} key={index} />;
-            })}
+          <div className="customScrollbar flex max-h-[40vh] flex-col overflow-y-auto px-2">
+            {subscriptionLoading ? (
+              <>
+                <MessageSkeleton />
+                <MessageSkeleton />
+                <MessageSkeleton />
+                <MessageSkeleton />
+                <MessageSkeleton />
+              </>
+            ) : formattedMessages?.length ? (
+              formattedMessages.map((message, index) => {
+                return <LiveMessage message={message} key={index} />;
+              })
+            ) : (
+              <div className="mx-auto max-w-[350px] rounded-lg bg-black-shade-3/30 px-8 py-4 text-center">
+                <p className="text-center text-sm text-white">
+                  No messages yet
+                </p>
+              </div>
+            )}
           </div>
 
           <div className="mt-[50px] flex gap-[8px]">
@@ -141,24 +170,24 @@ const LiveView: React.FC<DynamicProps> = ({
                     {microphones.map((microphone, index) => (
                       <li
                         className={
-                          "flex cursor-pointer gap-[8px] rounded-[1000px] border border-[#32343C] bg-[#212228] px-[10px] py-[6px] text-[13px] font-medium" +
+                          "flex cursor-pointer gap-[8px] rounded-[1000px] border border-[#32343C] bg-[#212228] p-2 px-[10px] py-[6px] text-[11px] font-medium" +
                           (roomData?.audioDevice?.deviceId ===
                           microphone.deviceId
-                            ? "border-[#FF453A] bg-red-600"
+                            ? "border-black-shade-2 bg-black-shade-2"
                             : "")
                         }
                         key={index}
                         value={microphone.deviceId}
                         onClick={() => onSelectMic(microphone)}
                       >
-                        <MicIcon />
+                        {/* <MicIcon /> */}
                         {microphone.label}
                       </li>
                     ))}
                   </ul>
                 )}
               >
-                <MicIcon2 />
+                <MicIcon2 className="  [&>*]:stroke-[#A8ABBB]" />
               </DropdownButton>
             </div>
             <div>
@@ -168,23 +197,23 @@ const LiveView: React.FC<DynamicProps> = ({
                     {cameras.map((camers, index) => (
                       <li
                         className={
-                          "flex cursor-pointer gap-[8px] rounded-[1000px] border border-[#32343C] bg-[#212228] px-[10px] py-[6px] text-[13px] font-medium" +
+                          "flex cursor-pointer gap-[8px] rounded-[1000px] border border-[#32343C] bg-[#212228] p-2 px-[10px] py-[6px] text-[11px] font-medium" +
                           (roomData?.videoDevice?.deviceId === camers.deviceId
-                            ? "border-[#FF453A] bg-red-600"
+                            ? "border-black-shade-2 bg-black-shade-2"
                             : "")
                         }
                         key={index}
                         value={camers.deviceId}
                         onClick={(e) => onSelectCamera(camers, e)}
                       >
-                        <VideoIcon2 />
+                        {/* <VideoIcon2 /> */}
                         {camers.label}
                       </li>
                     ))}
                   </ul>
                 )}
               >
-                <VideoIcon2 />
+                <VideoIcon2 className="text-white [&>*]:fill-[#A8ABBB]" />
               </DropdownButton>
             </div>
             <div className="flex w-[100%] max-w-[583px] items-center overflow-hidden rounded-[12px] bg-[#212329]">
