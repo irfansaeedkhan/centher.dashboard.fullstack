@@ -18,17 +18,17 @@ export interface LiveStreamType {
   consumersVideo: Map<string, Consumer>;
   audioProducer: Producer | null;
   videoProducer: Producer | null;
-  isOwner: boolean;
+  globalIsOwner: boolean;
   createRoom: (input: CreateBroadcastDto, userId: string) => Promise<any>;
   joinRoom: (id: string, userId: string) => Promise<any>;
   getStatuses: () => { sendStreamLoader: string; receiveStreamLoader: string };
   invite: (users: string[]) => void;
   close: () => void;
+  leave: () => void;
   kickUser: (userId: string) => void;
   toggleMute: () => void;
   toggleMessagePermission: (userId: string) => void;
   closeSubscription: (key: keyof typeof StreamSubscriptionEnum) => void;
-  globalIsOwner: boolean;
 }
 
 export interface LiveHookParams {
@@ -690,6 +690,7 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
       globalProducerTransport.current = null;
     }
   };
+
   const closeSubscription = (key: keyof typeof StreamSubscriptionEnum) => {
     if (subscriptionAgents[key]) {
       subscriptionAgents[key].unsubscribe();
@@ -735,5 +736,6 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
     toggleMessagePermission,
     closeSubscription,
     close,
+    leave,
   };
 };
