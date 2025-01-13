@@ -110,7 +110,7 @@ const InvitetoRoom: React.FC<DynamicProps> = ({
   };
 
   return (
-    <div className="px-[24px] py-[24px] text-white">
+    <div className="px-4 py-6 text-white md:p-6">
       <div className="flex flex-col gap-[27px]">
         <HostModalHeader
           subTitle="The Room of Traders"
@@ -123,7 +123,7 @@ const InvitetoRoom: React.FC<DynamicProps> = ({
         <div className="flex flex-col gap-[16px]">
           <div className="relative rounded-xl bg-[#141416] px-3 py-1">
             <div className="flex items-center gap-2">
-              <SearchIcon className="h-7 w-7 opacity-70" />
+              <SearchIcon className="h-6 w-6 shrink-0 opacity-70 md:h-7 md:w-7" />
               <input
                 className="flex-1 border-none bg-[#141416] text-sm font-medium text-white focus:outline-none focus:ring-0"
                 placeholder="Invite people"

@@ -31,7 +31,7 @@ const InviteRow: React.FC<InviteProps> = ({
         />
       </div>
 
-      <div className="flex flex-grow items-center gap-[6px]">
+      <div className="flex flex-grow items-center gap-[6px] text-sm">
         <span>{user.display_name}</span>
         {user.membership.status == "citizen" && (
           <span className="bottom-0 right-[-6px] rounded-full bg-[#1C1C1E]">

@@ -10,6 +10,7 @@ import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
 import { StreamAccessModeEnum } from "@/stream/enum/stream-access-mode.enum";
 import HostModalHeader from "@/components/voispace/host/partials/HostModalHeader";
 import {
+  CancelSpeechIcon,
   GrabIcon,
   MutedChat,
   MutedMic,
@@ -334,28 +335,21 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
                       className="text-medium flex text-[14px] text-[#E34048]"
                       onClick={() => handleRequestToTalk(false)}
                     >
-                      <span className="flex h-5 items-center justify-center font-monto text-xs font-medium leading-[13px] tracking-[-0.4px]">
+                      <span className="hidden h-5 items-center justify-center font-monto text-xs font-medium leading-[13px] tracking-[-0.4px] flg:flex">
                         Cancel Request
                       </span>
+                      <CancelSpeechIcon className="block flg:hidden" />
                     </ActionButton>
                   )}
 
                 {/* Mute Button */}
                 {currentUser?.type == "SPEAKER" && !currentUser?.isMuted && (
-                  <ActionButton
-                    text="Mute"
-                    className="text-medium text-[14px] text-[#E34048]"
-                    onClick={handleToggleMute}
-                  >
+                  <ActionButton text="Mute" onClick={handleToggleMute}>
                     <UnmutedMic />
                   </ActionButton>
                 )}
                 {currentUser?.type == "SPEAKER" && currentUser?.isMuted && (
-                  <ActionButton
-                    text="Unmute"
-                    className="text-medium text-[14px] text-[#E34048]"
-                    onClick={handleToggleMute}
-                  >
+                  <ActionButton text="Unmute" onClick={handleToggleMute}>
                     <MutedMic />
                   </ActionButton>
                 )}

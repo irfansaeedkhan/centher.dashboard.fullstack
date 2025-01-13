@@ -109,7 +109,7 @@ const LiveView: React.FC<DynamicProps> = ({
   };
 
   return (
-    <div className="relative flex flex-col">
+    <div className="flex flex-col overflow-hidden">
       <div className="flex flex-col gap-[27px] px-[24px] py-[24px]">
         <HostModalHeader
           subTitle="Voispace"
@@ -121,13 +121,13 @@ const LiveView: React.FC<DynamicProps> = ({
         <div className="absolute right-[24px] top-[24px]">
           <div className="flex items-center gap-[20px]">
             <div className="flex items-center gap-[6px]">
-              <div className="flex h-[20px] w-[44px] items-center justify-center gap-[4px] rounded-[5px] bg-[#1C1D21] text-white">
-                <span className="h-[8px] w-[8px] rounded-[50%] bg-[#FF453A]"></span>
+              <div className="flex items-center justify-center gap-2  rounded-[5px] bg-[#1C1D21] px-1 py-1 text-white">
+                <span className="h-[10px] w-[10px] rounded-[50%] bg-[#FF453A]"></span>
                 <span className="font-monto text-[11px] font-medium">Live</span>
               </div>
               {/* //TODO : number of viewers   */}
-              <div className="flex h-[20px] w-[44px] items-center justify-center gap-[2px] rounded-[5px] bg-[#1C1D21] text-white">
-                <EyeIcon />
+              <div className="flex items-center justify-center gap-2 rounded-[5px] bg-[#1C1D21] px-1 py-[1px] text-white">
+                <EyeIcon className="scale-75" />
                 <span className="font-monto text-[11px] font-medium">549</span>
               </div>
             </div>
@@ -149,12 +149,12 @@ const LiveView: React.FC<DynamicProps> = ({
         </div>
       </div>
 
-      <div className="absolute inset-0 mt-20 h-[80%] bg-center">
-        <div className="absolute inset-0  h-[100%]  w-full">
+      <div className="absolute inset-0 mt-[16%] h-full w-full overflow-hidden rounded-2xl bg-center flg:max-h-[calc(84%-7px)] mobile-max:bottom-0 mobile-max:mt-[35%]">
+        <div className="absolute inset-0 h-full w-full">
           {videoStream && (
             <video
               ref={videoRef}
-              className="h-[80%] w-full"
+              className="h-full w-full"
               autoPlay
               playsInline
               muted
@@ -164,8 +164,8 @@ const LiveView: React.FC<DynamicProps> = ({
       </div>
 
       {/* <div className="absolute inset-0 h-[80%] bg-[url('/images/live-room-bg.svg')] bg-cover bg-center" /> */}
-      <div className="relative flex h-[80%] min-h-[645px] flex-col justify-end px-[16px] py-[16px]">
-        <div className="customScrollbar flex max-h-[40vh] flex-col overflow-y-auto px-2">
+      <div className="z-20 min-h-[70vh] p-4 flg:py-6">
+        <div className="customScrollbar flex h-[calc(100vh-15.8rem)] flex-col gap-6 overflow-y-auto !pt-[40%] text-white md:!pt-[25%] flg:h-[calc(100vh-22rem)] flg:p-6">
           {subscriptionLoading ? (
             <>
               <MessageSkeleton />
@@ -185,7 +185,23 @@ const LiveView: React.FC<DynamicProps> = ({
           )}
         </div>
 
-        <div className="mt-[50px] flex gap-[8px]">
+        <div className="absolute bottom-3 left-1/2 flex w-[calc(100%-48px)] -translate-x-1/2 items-center  text-white mobile-max:w-[calc(100%-36px)]">
+          <div className="flex w-full items-center overflow-hidden rounded-[12px] bg-[#212329]">
+            <input
+              className="font-regular flex-grow border-0 bg-transparent text-[12px] text-white ring-0 focus:outline-none focus:ring-0"
+              placeholder="Type something"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+            />
+            <button
+              className="mr-[12px] h-[20px] w-[20px]"
+              onClick={(e) => onSend(e)}
+            >
+              <SendChatIcon />
+            </button>
+          </div>
+        </div>
+        {/* <div className="mt-[50px] flex gap-[8px]">
           <div className="flex w-[100%] max-w-[583px] items-center overflow-hidden rounded-[12px] bg-[#212329]">
             <input
               className="font-regular flex-grow border-0 bg-transparent text-[12px] text-white"
@@ -200,7 +216,7 @@ const LiveView: React.FC<DynamicProps> = ({
               <SendChatIcon />
             </button>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
