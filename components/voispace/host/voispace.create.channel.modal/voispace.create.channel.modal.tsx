@@ -59,6 +59,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
   const { createRoom: createLiveRoom, event: eventOnLive } = liveAgent;
   const { user } = useUser();
   const { getMediaPermissions, error: mediaError } = useMediaDevices();
+  const [currentModalIsOpen, setCurrentModalIsOpen] = useState(true);
 
   const [formState, setFormState] = useState<Room>({
     type: BroadcastTypeEnum.AMA,
@@ -96,6 +97,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
       setRoomData(newRoomData);
       setIsHostSettingsOpen(true);
       setRoomCreationLoader(false);
+      setCurrentModalIsOpen(false);
     }
 
     if (
@@ -107,6 +109,20 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
 
       onClose();
       setRoomCreationLoader(false);
+      setCurrentModalIsOpen(false);
+    }
+
+    if (
+      eventOnAMA?.type == StreamEventEnum.ON_FINISH_BROADCAST ||
+      eventOnLive?.type == StreamEventEnum.ON_FINISH_BROADCAST ||
+      eventOnAMA?.type == StreamEventEnum.ON_USER_KICKED ||
+      eventOnLive?.type == StreamEventEnum.ON_USER_KICKED
+    ) {
+      setRoomData(null);
+      setIsHostSettingsOpen(true);
+      setRoomCreationLoader(false);
+      setCurrentModalIsOpen(false);
+      onClose();
     }
   }, [eventOnLive, eventOnAMA, formState.accessMode]);
 
@@ -383,7 +399,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
     <ModalContainer
       modalId="create-room"
       onClose={onClose}
-      isOpen={true}
+      isOpen={currentModalIsOpen}
       modalContentClassName="max-w-[656px] p-0 rounded-3xl"
       shouldCloseOnEsc={true}
       shouldCloseOnOverlayClick={currentStep === CreatRoomSteps.AMA_OR_LIVE}

@@ -1,30 +1,23 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import * as mediasoupClient from "mediasoup-client";
-import { CentalkUserStatusEnum, ICentalkUser } from "@/stream/model";
 import { areStringsEquals } from "@/stream/utils/string.utils";
 import {
   getCurrentStream,
   getCurrentStreamUser,
   getHasTalkRequestStreamUsers,
+  getParticipatorsByBroadcastIdSubscription,
   getStreamMessages,
   getStreams,
   getStreamSpeakers,
 } from "@/stream/graphql/subscription";
-import {
-  ICentalkBroadcast,
-  Participator,
-  ParticipatorsResponse,
-} from "./cen-talk";
+import { ICentalkBroadcast, ParticipatorsResponse } from "./cen-talk";
 import { AMAStreamType, useAMA } from "./use.ama";
 import { LiveStreamType, useLive } from "./use.live";
 import { StreamHooksHelper } from "./helper";
 import { insertMessageToStream } from "@/stream/graphql/mutation";
 import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
 import useGetChatUsers from "../use.get.chat.users";
-import {
-  getInvitedUsersByBrooadcastId,
-  getParticipatorsByBroadcastId,
-} from "@/stream/graphql/query";
+import { getInvitedUsersByBrooadcastId } from "@/stream/graphql/query";
 import { BroadcastMessage } from "./dto/broadcast-inffo.dto";
 
 interface StreamContextType {
@@ -46,13 +39,7 @@ interface StreamContextType {
     data: any;
     loader: boolean;
   };
-  useQueryToGetParticipatorsByBroadcastId: (
-    id: string,
-    skip: number
-  ) => {
-    data: ParticipatorsResponse | undefined;
-    loader: boolean;
-  };
+  useSubscribeToParticipators: (id: string, skip: number) => any;
   amaAgent: AMAStreamType;
   liveAgent: LiveStreamType;
 }
@@ -80,54 +67,6 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
   const { getUsers } = useGetChatUsers();
 
   // QUERY
-  const useQueryToGetParticipatorsByBroadcastId = (
-    id: string,
-    skip: number = 0
-  ) => {
-    const [data, setData] = useState<ParticipatorsResponse | undefined>(
-      undefined
-    );
-    const [loader, setLoader] = useState<boolean>(false);
-    const helperRef = useRef<StreamHooksHelper>(helper.current);
-
-    useEffect(() => {
-      setLoader(true);
-
-      const setupQuery = async () => {
-        try {
-          const apollo = await helperRef.current.getApolloClientInstance();
-          const query = getParticipatorsByBroadcastId();
-
-          if (!query) {
-            throw new Error("invalid query");
-          }
-
-          const result = apollo.query({
-            query,
-            variables: {
-              broadcastId: id,
-              offset: skip,
-              limit: 25,
-            },
-          });
-
-          const finalResult = await result;
-          const mappedUsers = await aggregateParticipatorsUser(
-            finalResult.data
-          );
-          setData(mappedUsers);
-          setLoader(false);
-        } catch (error) {
-        } finally {
-          setLoader(false);
-        }
-      };
-
-      setupQuery();
-    }, [id]);
-
-    return { data, loader };
-  };
 
   const useQueryToGetInvitedUsersByBrooadcastId = (id: string) => {
     const [data, setData] = useState<any[]>([]);
@@ -171,6 +110,62 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
   };
 
   // SUBSCRIPTIONS
+
+  const useSubscribeToParticipators = (id: string, limit: number = 25) => {
+    const [data, setData] = useState<any>(null);
+    const [loader, setLoader] = useState<boolean>(false);
+    const subscriptionRef = useRef<any>();
+    const helperRef = useRef<StreamHooksHelper>(helper.current);
+
+    useEffect(() => {
+      let isSubscribed = true;
+      setLoader(true);
+      const setupSubscription = async () => {
+        try {
+          const apollo = await helperRef.current.getApolloClientInstance();
+          const query = getParticipatorsByBroadcastIdSubscription();
+
+          if (!query) {
+            throw new Error("invalid query");
+          }
+
+          const result = apollo.subscribe({
+            query,
+            variables: {
+              id: id,
+              offset: 0,
+              limit: limit,
+            },
+          });
+
+          subscriptionRef.current = result.subscribe(async (newData) => {
+            if (isSubscribed) {
+              const mappedUsers = await aggregateParticipatorsUser(
+                newData.data
+              );
+
+              setData(mappedUsers);
+              setLoader(false);
+            }
+          });
+        } catch (error) {
+          console.error("Subscription setup failed:", error);
+        }
+      };
+
+      setupSubscription();
+
+      return () => {
+        isSubscribed = false;
+        if (subscriptionRef.current) {
+          subscriptionRef.current.unsubscribe();
+        }
+      };
+    }, [id, limit]);
+
+    return { data, loader };
+  };
+
   const useSubscribeToAllBroadcasts = () => {
     const [data, setData] = useState<any>(null);
     const [loader, setLoader] = useState<boolean>(false);
@@ -279,7 +274,8 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
   };
 
   const useSubscribeToMessages = (
-    broadcastId: string
+    broadcastId: string,
+    limit: number = 5
   ): { messages: BroadcastMessage[]; loading: boolean } => {
     const [messages, setMessages] = useState<BroadcastMessage[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
@@ -303,6 +299,7 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
             query,
             variables: {
               broadcastId,
+              limit: limit,
             },
           });
 
@@ -585,15 +582,17 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
   };
   const aggregateSpeakers = async (speakers: any[]) => {
     const ids = speakers.map((p) => {
-      return p.user!.id;
+      return p.userId;
     });
 
     const users = await getUsers(ids);
 
-    return speakers.map(
-      (d) =>
-        users?.find((u) => areStringsEquals(u._id, d.user!.id)) || d.user?.id
-    );
+    return speakers.map((d) => {
+      return {
+        ...d,
+        user: users?.find((u) => areStringsEquals(u._id, d.userId)) || d.userId,
+      };
+    });
   };
   const aggregateUsersHaveTalkRequest = async (users: any[]) => {
     const ids = users.map((e) => e!.user?.id);
@@ -602,17 +601,19 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
       mappedUsers?.find((m) => areStringsEquals(u.user.id, m._id))
     );
   };
-  const aggregateParticipatorsUser = async (data: ParticipatorsResponse) => {
-    const ids = data?.participators?.map((e) => e.user.id);
+  const aggregateParticipatorsUser = async (data: any) => {
+    const ids = data?.broadcast?.[0]?.participators?.map((e: any) => e.userId);
     const users = await getUsers(ids);
-    data.participators = data.participators.map((e) => {
-      return {
-        ...e,
-        mappedUser: users?.find((u) => areStringsEquals(u._id, e.user.id)),
-      };
-    });
-
-    return data;
+    return {
+      participators: data?.broadcast?.[0]?.participators?.map((e: any) => {
+        return {
+          ...e,
+          user:
+            users?.find((u) => areStringsEquals(u._id, e.userId)) || e.userId,
+        };
+      }),
+      count: data?.broadcast?.[0]?.user_broadcasts_aggregate?.aggregate.count,
+    };
   };
   const aggregateInvitedUsers = async (data: any) => {
     const ids = data?.broadcast[0]?.invitedUsers;
@@ -630,7 +631,7 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
     useSubscribeToCurrentUser,
     useSubscribeToHasTalkRequestUsers,
     useQueryToGetInvitedUsersByBrooadcastId,
-    useQueryToGetParticipatorsByBroadcastId,
+    useSubscribeToParticipators,
     amaAgent,
     liveAgent,
   };

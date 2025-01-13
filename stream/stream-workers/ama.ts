@@ -72,7 +72,7 @@ export class AmaAgent<T extends IEventBus, K extends Socket> {
               routerRtpCapabilities: this.rtpCapabilities,
             });
           } catch (error) {
-            await this.leave();
+            this.leave();
             rej(error);
 
             return;

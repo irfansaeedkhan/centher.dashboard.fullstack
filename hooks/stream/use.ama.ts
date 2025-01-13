@@ -134,23 +134,23 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
 
       globalSocket.current!.on("broadcast-finished", async () => {
         close();
-        setToast("AMA has been finished");
+        setEvent({
+          data,
+          type: StreamEventEnum.ON_FINISH_BROADCAST,
+        });
       });
 
       globalSocket.current!.on("user-disconnected", async (data: any) => {
         if (areStringsEquals(globalUserId.current!, data.id)) {
           close();
-          setToast("AMA has been finished");
-        } else {
-          closeConsumer(data.id);
           setEvent({
             data: data,
             type: StreamEventEnum.ON_USER_DISCONNECTED_FROM_TALK,
           });
+        } else {
+          closeConsumer(data.id);
         }
       });
-
-      setToast("AMA started");
     });
   };
 
@@ -215,11 +215,8 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
               globalHasTalkRequest.current = false;
               await createProducerTransport();
               await connectSendTransport();
-              setToast("Owner opened your talk");
             } else {
               closeProducer();
-              // toast.showInfo("Owner muted you");
-              setToast("Owner muted you");
             }
           });
 
@@ -237,28 +234,32 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
 
           globalSocket.current!.on("broadcast-finished", async () => {
             close();
-            // toast.showInfo("AMA has been finished");
-            setToast("AMA has been finished");
+            setEvent({
+              data,
+              type: StreamEventEnum.ON_FINISH_BROADCAST,
+            });
           });
 
           globalSocket.current!.on("user-kicked", async () => {
             close();
-            // toast.showInfo("Owner has kicked you");
-            setToast("Owner has kicked you");
+            setEvent({
+              data,
+              type: StreamEventEnum.ON_USER_KICKED,
+            });
           });
 
           globalSocket.current!.on("user-disconnected", async (data) => {
             if (areStringsEquals(globalUserId.current!, data.id)) {
               close();
-              // toast.showInfo("AMA has been finished");
-              setToast("AMA has been finished");
+              setEvent({
+                data,
+                type: StreamEventEnum.ON_USER_DISCONNECTED_FROM_TALK,
+              });
             } else {
               closeConsumer(data.id);
             }
           });
 
-          // toast.showSuccess("Joined");
-          setToast("Joined");
           res(true);
         }
       );
@@ -314,7 +315,7 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
   // for owner it finished broadcast, for participants its leave room
   const leave = () => {
     globalSocket.current!.emit("leave-room", {
-      broadcastId: globalBroadcastId,
+      broadcastId: globalBroadcastId.current,
     });
   };
 
@@ -632,11 +633,6 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
     globalConsumersAudioStream.current.clear();
     globalSocket.current!.close();
     globalSocket.current!.disconnect();
-
-    setEvent({
-      data: null,
-      type: StreamEventEnum.ON_FINISH_BROADCAST,
-    });
   };
 
   const closeSubscription = (key: keyof typeof StreamSubscriptionEnum) => {

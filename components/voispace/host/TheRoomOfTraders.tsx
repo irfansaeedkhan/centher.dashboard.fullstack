@@ -69,7 +69,7 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
     roomData?.id || "",
     userId || ""
   );
-  console.log("currentUser", currentUser);
+
   const handleToggleTalkPermission = async (userId: string) => {
     try {
       toggleMemberTalkPermission(userId);
@@ -79,7 +79,6 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
       toast.error("Failed to toggle talk permission.");
     }
   };
-
   const handleToggleMessagePermission = async (userId: string) => {
     try {
       toggleMessagePermission(userId);
@@ -89,7 +88,6 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
       toast.error("Failed to toggle message permission.");
     }
   };
-
   const handleKickUser = async (userId: string) => {
     try {
       kickUser(userId);
@@ -99,7 +97,6 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
       toast.error("Failed to kick user.");
     }
   };
-
   const handleToggleMute = () => {
     try {
       toggleMute();
@@ -122,7 +119,6 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
   const handleLeaveRoom = () => {
     try {
       leave();
-      onClose();
     } catch (error) {
       console.error("Failed to leave the room:", error);
       toast.error("Failed to leave the room.");
@@ -194,7 +190,7 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
                   </div>
                 ))
               : speakers &&
-                speakers?.slice(0, 7).map((speaker: any, index: number) => (
+                speakers?.map((speaker: any, index: number) => (
                   <div key={index}>
                     <UserWithPopover
                       mode={globalIsOwner ? "admin" : "participant"}

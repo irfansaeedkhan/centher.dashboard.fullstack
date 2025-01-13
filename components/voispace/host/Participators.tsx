@@ -1,13 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 
 import Button from "@/components/button";
-import ClientCardView from "@/components/voispace/shared/profile";
 import HostModalHeader from "@/components/voispace/host/partials/HostModalHeader";
 
 import { useStream } from "@/hooks/stream/use.core";
 import { StreamAccessModeEnum } from "@/stream/enum/stream-access-mode.enum";
 
 import { Room } from "./voispace.create.channel.modal/voispace.create.channel.modal";
+import UserWithPopover from "./partials/UserWithPopover";
+import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
 
 interface DynamicProps {
   onClose: () => void;
@@ -20,27 +21,70 @@ const Participators: React.FC<DynamicProps> = ({
   setComponentName,
   roomData,
 }) => {
-  const { useQueryToGetParticipatorsByBroadcastId, amaAgent, liveAgent } =
-    useStream();
+  const { useSubscribeToParticipators, amaAgent, liveAgent } = useStream();
 
   const isOwner = amaAgent.globalIsOwner || liveAgent.globalIsOwner;
 
   const isPrivate =
     roomData.accessMode == StreamAccessModeEnum.ACCESS_BY_INVITATION;
 
-  const [limit, setLimit] = useState<number>(0);
+  const [limit, setLimit] = useState<number>(25);
   const [allParticipators, setAllParticipators] = useState<any[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const loaderRef = useRef<HTMLDivElement | null>(null);
 
-  const { data, loader } = useQueryToGetParticipatorsByBroadcastId(
+  const { data, loader } = useSubscribeToParticipators(
     roomData.id as string,
     limit
   );
 
+  const {
+    toggleMemberTalkPermission: amaTalkPerm,
+    toggleMessagePermission: amaMsgPerm,
+    kickUser: amaKick,
+  } = amaAgent;
+
+  const { toggleMessagePermission: liveMsgPerm, kickUser: liveKick } =
+    liveAgent;
+
+  const handleToggleTalkPermission = async (userId: string) => {
+    try {
+      if (roomData.type == BroadcastTypeEnum.AMA) {
+        amaTalkPerm(userId);
+      }
+    } catch (error) {
+      console.error("Failed to toggle talk permission:", error);
+    }
+  };
+  const handleToggleMessagePermission = async (userId: string) => {
+    try {
+      if (roomData.type == BroadcastTypeEnum.AMA) {
+        amaMsgPerm(userId);
+      } else {
+        liveMsgPerm(userId);
+      }
+    } catch (error) {
+      console.error("Failed to toggle message permission:", error);
+    }
+  };
+  const handleKickUser = async (userId: string) => {
+    try {
+      if (roomData.type == BroadcastTypeEnum.AMA) {
+        amaKick(userId);
+      } else {
+        liveKick(userId);
+      }
+    } catch (error) {
+      console.error("Failed to kick user:", error);
+    }
+  };
+
   useEffect(() => {
     if (data?.participators?.length) {
-      setAllParticipators(data.participators);
+      setAllParticipators(
+        data.participators.filter((e: any) => e.type != "HOST")
+      );
+
       if (data.participators.length < limit) {
         setHasMore(false);
       }
@@ -93,16 +137,15 @@ const Participators: React.FC<DynamicProps> = ({
           {allParticipators?.map((participator: any, index: number) => {
             return (
               <div className="" key={index}>
-                <ClientCardView
-                  className="w-18"
-                  name={participator.mappedUser.display_name}
-                  imageURL={participator.mappedUser.profile_image}
-                  isApproved={
-                    participator.mappedUser.membership.status == "citizen"
-                  }
-                  isSpeaking={participator.type?.toLowerCase() == "speaker"}
-                  position={participator.type}
-                />
+                <div key={index}>
+                  <UserWithPopover
+                    mode={isOwner ? "admin" : "participant"}
+                    client={participator}
+                    handleKickOff={handleKickUser}
+                    handleTalkPermission={handleToggleTalkPermission}
+                    handleMessagePermission={handleToggleMessagePermission}
+                  />
+                </div>
               </div>
             );
           })}
