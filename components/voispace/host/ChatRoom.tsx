@@ -118,7 +118,7 @@ const ChatRoom: React.FC<DynamicProps> = ({
           onBack={() => setComponentName("TheRoomOfTraders")}
         ></HostModalHeader>
         <div className="flex flex-col gap-[32px]">
-          <div className="customScrollbar flex max-h-[40vh] flex-col gap-6 overflow-y-auto p-6 text-white">
+          <div className="customScrollbar flex h-[calc(100vh-15rem)] flex-col gap-6 overflow-y-auto text-white md:h-[40vh] md:py-6">
             {subscriptionLoading ? (
               <>
                 <MessageSkeleton />
@@ -129,14 +129,14 @@ const ChatRoom: React.FC<DynamicProps> = ({
               </>
             ) : formattedMessages.length ? (
               formattedMessages.map((msg: any, index: number) => (
-                <div key={index} className="flex gap-3">
-                  <div className="relative h-10 w-10 flex-shrink-0">
+                <div key={index} className="flex items-start gap-3">
+                  <div className="relative flex h-12 w-12 shrink-0  object-cover">
                     <Image
                       src={msg.sender.profile_image}
                       alt={msg.sender.display_name}
                       width={48}
                       height={48}
-                      className="h-full w-full rounded-full"
+                      className="h-12 w-12 shrink-0 rounded-full object-cover"
                     />
                     <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-[#141416] bg-green-500" />
                   </div>
@@ -151,7 +151,9 @@ const ChatRoom: React.FC<DynamicProps> = ({
                         {getTimeLapsed(msg.createdAt)}
                       </span>
                     </div>
-                    <p className="text-xs">{msg.content}</p>
+                    <p className="overflow-wrap white-space w-[72vw] break-words text-xs flg:w-[40vw]">
+                      {msg.content}
+                    </p>
                   </div>
                 </div>
               ))
@@ -162,7 +164,8 @@ const ChatRoom: React.FC<DynamicProps> = ({
             )}
           </div>
         </div>
-        <div className="absolute bottom-0 left-0 m-6 flex min-h-[70px] w-[calc(100%-48px)] items-center rounded-[24px] border border-[#32343C] bg-[#141416] p-[16px] text-white">
+
+        <div className="absolute bottom-3 left-1/2 flex min-h-[70px] w-[calc(100%-48px)] -translate-x-1/2 items-center rounded-2xl border border-[#32343C] bg-[#141416] p-[16px] text-white mobile-max:w-[calc(100%-36px)]">
           <form
             id="messageForm"
             onSubmit={(e) => onSend(e)}

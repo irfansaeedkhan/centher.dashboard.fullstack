@@ -90,22 +90,30 @@ const Participators: React.FC<DynamicProps> = ({
         </HostModalHeader>
 
         <div className="customScrollbar flex max-h-[60vh] flex-wrap items-center gap-12 overflow-y-auto py-2 sm:px-2">
-          {allParticipators?.map((participator: any, index: number) => {
-            return (
-              <div className="" key={index}>
-                <ClientCardView
-                  className="w-18"
-                  name={participator.mappedUser.display_name}
-                  imageURL={participator.mappedUser.profile_image}
-                  isApproved={
-                    participator.mappedUser.membership.status == "citizen"
-                  }
-                  isSpeaking={participator.type?.toLowerCase() == "speaker"}
-                  position={participator.type}
-                />
-              </div>
-            );
-          })}
+          {allParticipators?.length ? (
+            allParticipators?.map((participator: any, index: number) => {
+              return (
+                <div className="" key={index}>
+                  <ClientCardView
+                    className="w-18"
+                    name={participator.mappedUser.display_name}
+                    imageURL={participator.mappedUser.profile_image}
+                    isApproved={
+                      participator.mappedUser.membership.status == "citizen"
+                    }
+                    isSpeaking={participator.type?.toLowerCase() == "speaker"}
+                    position={participator.type}
+                  />
+                </div>
+              );
+            })
+          ) : (
+            <div className="flex h-40 w-full items-center justify-center">
+              <p className="text-sm text-gray-shade-24">
+                No participators available
+              </p>
+            </div>
+          )}
 
           {loader &&
             Array.from({ length: 4 }).map((_, index) => (
