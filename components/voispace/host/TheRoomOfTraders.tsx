@@ -9,7 +9,14 @@ import { ICentalkBroadcast } from "@/hooks/stream/cen-talk";
 import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
 import { StreamAccessModeEnum } from "@/stream/enum/stream-access-mode.enum";
 import HostModalHeader from "@/components/voispace/host/partials/HostModalHeader";
-import { ChatProfile, GrabIcon, MicIcon2, ShareWhiteIcon } from "@/assets/svgs";
+import {
+  GrabIcon,
+  MutedChat,
+  MutedMic,
+  ShareWhiteIcon,
+  UnmutedChat,
+  UnmutedMic,
+} from "@/assets/svgs";
 
 import ClientCardView from "../shared/profile";
 import ActionButton from "./ui/ActionButton";
@@ -19,12 +26,14 @@ interface DynamicProps {
   onClose: () => void;
   setComponentName: (name: string) => any;
   roomData?: ICentalkBroadcast;
+  unreadMessages?: number;
 }
 
 const TheRoomOfTraders: React.FC<DynamicProps> = ({
   onClose,
   setComponentName,
   roomData,
+  unreadMessages,
 }) => {
   const {
     amaAgent,
@@ -127,8 +136,8 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
           subTitle="Voispace"
           title="The Room of Traders"
           onClose={handleLeaveRoom}
-          hasBackButton={false}
           onBack={() => null}
+          hasBackButton={true}
         >
           <button
             className="font-monto text-[14px] font-medium text-[#E34048]"
@@ -140,7 +149,7 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
 
         {/* Hosts Section */}
         <div className="flex flex-col gap-[24px]">
-          <div className="flex max-w-[83px] flex-col gap-[2px]">
+          <div className="flex max-w-[90px] flex-col items-center gap-[2px]">
             <span className="text-[14px]">Host</span>
           </div>
           <div className="flex flex-wrap gap-[28px]">
@@ -168,7 +177,7 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
 
         {/* Speakers Section */}
         <div className="flex flex-col gap-[24px]">
-          <div className="flex max-w-[83px] flex-col gap-[2px]">
+          <div className="flex max-w-[90px] flex-col items-center gap-[2px]">
             <span className="text-[14px]">Speakers</span>
             <span className="rounded-[1000px] bg-[#141416] px-3 py-2 text-[12px]">
               <span className="text-[#FAFAFA]">{speakers?.length}</span>
@@ -211,11 +220,21 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
                     className="text-medium relative text-[14px] text-[#E34048]"
                     onClick={() => setComponentName("ChatRoom")}
                   >
-                    <ChatProfile />
-                    <div className="absolute -top-1 right-0 h-3 w-3 rounded-full bg-gradient" />
+                    <UnmutedChat />
+                    <h6 className="font-monto text-xs font-medium">Chat</h6>
+                    {(unreadMessages ?? 0) > 0 && (
+                      <div className="absolute -top-1 right-0 h-3 w-3 rounded-full bg-gradient" />
+                    )}
                   </ActionButton>
                 ) : (
-                  "no chat access"
+                  <ActionButton
+                    text="Chat"
+                    className="text-medium relative cursor-not-allowed opacity-30"
+                    onClick={() => null}
+                  >
+                    <MutedChat />
+                    <h6 className="font-monto text-xs font-medium">Chat</h6>
+                  </ActionButton>
                 )}
 
                 {/* Share Button */}
@@ -229,26 +248,38 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
                   </ActionButton>
                 )}
               </div>
-              {/* TODO:show a small points on icon if
-                  currentStream?.hasTalkRequestUsers?.aggregate?.count > 0 */}
+
               <div className="flex items-center gap-[10px]">
                 {globalIsOwner && (
                   <ActionButton
-                    className="text-medium text-[14px] text-[#E34048]"
+                    className="text-medium relative text-[14px]"
                     onClick={() => setComponentName("Requests")}
                   >
-                    <GrabIcon />
-                    <span className="font-monto text-[11px] font-medium leading-[13px] tracking-[-0.4px]">
-                      {currentStream?.hasTalkRequestUsers?.aggregate?.count}
-                    </span>
+                    <div className="flex h-5 items-center justify-center  gap-[10px]">
+                      <GrabIcon />
+                      <span className="font-monto text-xs font-medium leading-[13px] tracking-[-0.4px]">
+                        {currentStream?.hasTalkRequestUsers?.aggregate?.count}
+                      </span>
+                      {(currentStream?.hasTalkRequestUsers?.aggregate?.count ??
+                        0) > 0 && (
+                        <div className="absolute -top-1 right-0 h-3 w-3 rounded-full bg-gradient" />
+                      )}
+                    </div>
                   </ActionButton>
                 )}
 
                 <ActionButton
-                  className="text-medium flex items-center text-[14px] text-[#E34048]"
+                  className="text-medium flex items-center text-[14px]"
                   onClick={() => setComponentName("Participators")}
                 >
-                  <div className="relative h-[20px] min-w-[40px] px-2">
+                  <div
+                    className={clsx(
+                      `relative flex h-5 items-center justify-center px-1`,
+                      currentStream?.latestParticipants &&
+                        currentStream.latestParticipants.length > 0 &&
+                        " min-w-10 px-2"
+                    )}
+                  >
                     {currentStream?.latestParticipants &&
                     currentStream.latestParticipants.length > 0 ? (
                       currentStream?.latestParticipants.map(
@@ -267,10 +298,16 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
                         )
                       )
                     ) : (
-                      <FaUser className="text-base" />
+                      <FaUser className="text-sm text-[#FAFAFA]" />
                     )}
                   </div>
-                  <span className="font-monto text-[11px] font-medium leading-[13px] tracking-[-0.4px]">
+                  {/* {(currentStream?.participatorsCount?.aggregate?.count ?? 0) >
+                    0 && (
+                    <span className="font-monto text-xs font-medium leading-[13px] tracking-[-0.4px]">
+                      {currentStream?.participatorsCount?.aggregate?.count}
+                    </span>
+                  )} */}
+                  <span className="font-monto text-xs font-medium leading-[13px] tracking-[-0.4px]">
                     {currentStream?.participatorsCount?.aggregate?.count}
                   </span>
                 </ActionButton>
@@ -279,10 +316,10 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
                   currentUser?.type == "LISTENER" &&
                   !currentUser?.hasTalkRequest && (
                     <ActionButton
-                      className="text-medium hidden text-[14px] text-[#E34048] md:flex"
+                      className="text-medium flex text-[14px] text-[#E34048]"
                       onClick={() => handleRequestToTalk(true)}
                     >
-                      <span className="font-monto text-[11px] font-medium leading-[13px] tracking-[-0.4px]">
+                      <span className="flex h-5 items-center justify-center font-monto text-xs font-medium leading-[13px] tracking-[-0.4px]">
                         Request to speak
                       </span>
                     </ActionButton>
@@ -292,37 +329,45 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
                   currentUser?.type == "LISTENER" &&
                   currentUser?.hasTalkRequest && (
                     <ActionButton
-                      className="text-medium hidden text-[14px] text-[#E34048] md:flex"
+                      className="text-medium flex text-[14px] text-[#E34048]"
                       onClick={() => handleRequestToTalk(false)}
                     >
-                      <span className="font-monto text-[11px] font-medium leading-[13px] tracking-[-0.4px]">
+                      <span className="flex h-5 items-center justify-center font-monto text-xs font-medium leading-[13px] tracking-[-0.4px]">
                         Cancel Request
                       </span>
                     </ActionButton>
                   )}
 
                 {/* Mute Button */}
-                {currentUser?.type == "SPEAKER" && !currentUser?.isMuted ? (
+                {currentUser?.type == "SPEAKER" && !currentUser?.isMuted && (
                   <ActionButton
                     text="Mute"
                     className="text-medium text-[14px] text-[#E34048]"
                     onClick={handleToggleMute}
                   >
-                    <MicIcon2 />
+                    <UnmutedMic />
                   </ActionButton>
-                ) : (
+                )}
+                {currentUser?.type == "SPEAKER" && currentUser?.isMuted && (
                   <ActionButton
                     text="Unmute"
                     className="text-medium text-[14px] text-[#E34048]"
                     onClick={handleToggleMute}
                   >
-                    <MicIcon2 />
+                    <MutedMic />
                   </ActionButton>
                 )}
               </div>
             </div>
           ) : (
-            "LOADING..."
+            <div className="flex items-center justify-between gap-4 p-4">
+              <div className="h-10 w-10 animate-pulse rounded-full bg-[#212228]"></div>
+              <div className="flex items-center gap-3">
+                <div className="relative h-8 w-14 animate-pulse rounded-full bg-[#212228]" />
+                <div className="relative h-8 w-18 animate-pulse rounded-full bg-[#212228]" />
+                <div className="relative h-8 w-28 animate-pulse rounded-full bg-[#212228]" />
+              </div>
+            </div>
           )}
         </div>
       </div>

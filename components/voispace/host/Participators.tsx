@@ -75,6 +75,7 @@ const Participators: React.FC<DynamicProps> = ({
           subTitle="The Room of Traders"
           title="Participators"
           onClose={onClose}
+          hasBackButton={true}
           onBack={() => setComponentName("TheRoomOfTraders")}
         >
           {isOwner && isPrivate && (

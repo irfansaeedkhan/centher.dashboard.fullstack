@@ -116,6 +116,7 @@ const InvitetoRoom: React.FC<DynamicProps> = ({
           subTitle="The Room of Traders"
           title="Invite to Room"
           onClose={onClose}
+          hasBackButton={true}
           onBack={() => setComponentName("TheRoomOfTraders")}
         />
 
