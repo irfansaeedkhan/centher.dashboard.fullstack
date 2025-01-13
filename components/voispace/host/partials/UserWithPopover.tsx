@@ -14,10 +14,9 @@ import {
   PopoverDescription,
   PopoverHeading,
 } from "../ui/Popover";
-import { User } from "@/models/user";
 
 interface UserWithPopoverProps {
-  client: User;
+  client: any;
   handleKickOff: (userId: string) => void;
   handleTalkPermission: (userId: string) => void;
   handleMessagePermission: (userId: string) => void;
@@ -35,10 +34,11 @@ const UserWithPopover: React.FC<UserWithPopoverProps> = ({
     <Popover placement="top">
       <PopoverTrigger>
         <ClientCardView
-          name={client?.display_name ?? "Unknown"}
-          imageURL={client?.profile_image ?? ""}
-          isApproved={client.membership.status == "citizen"}
-          isSpeaking={true}
+          name={client.user?.display_name ?? "Unknown"}
+          imageURL={client.user?.profile_image ?? ""}
+          isApproved={client.user?.membership?.status == "citizen"}
+          isSpeaking={client?.type == "SPEAKER"}
+          position={client?.type}
         />
       </PopoverTrigger>
       {mode == "admin" && (
@@ -56,8 +56,8 @@ const UserWithPopover: React.FC<UserWithPopoverProps> = ({
               <div className="flex items-center gap-[16px]">
                 <div className="h-[40px] w-[40px]">
                   <Image
-                    src={client?.profile_image ?? ""}
-                    alt={client?.display_name ?? "Unknown"}
+                    src={client.user?.profile_image ?? ""}
+                    alt={client.user?.display_name ?? "Unknown"}
                     width={40}
                     height={40}
                     objectFit="cover"
@@ -67,7 +67,7 @@ const UserWithPopover: React.FC<UserWithPopoverProps> = ({
 
                 <div className="flex flex-col gap-[4px]">
                   <span className="font-monto text-[14px] font-medium">
-                    {client?.display_name ?? "Unknown"}
+                    {client.user?.display_name ?? "Unknown"}
                   </span>
                   <Chips>
                     <span className="font-monto text-[12px] font-medium leading-[18px]">
@@ -79,27 +79,31 @@ const UserWithPopover: React.FC<UserWithPopoverProps> = ({
 
               <div className="flex items-center gap-[8px]">
                 {/* Mute Button */}
-                <ActionButton
-                  className="text-medium text-[14px] text-[#E34048]"
-                  onClick={() => handleTalkPermission(client._id)}
-                >
-                  <UnmutedMic />
-                  <MutedMic />
-                </ActionButton>
+                {client?.type == "SPEAKER" && (
+                  <ActionButton
+                    className="text-medium text-[14px] text-[#E34048]"
+                    onClick={() => handleTalkPermission(client.user._id)}
+                  >
+                    <MutedMic />
+                  </ActionButton>
+                )}
 
                 {/* Chat Button */}
                 <ActionButton
                   className="text-medium text-[14px] text-[#E34048]"
-                  onClick={() => handleMessagePermission(client._id)}
+                  onClick={() => handleMessagePermission(client.user._id)}
                 >
-                  <UnmutedChat />
-                  <MutedChat />
+                  {client.hasPermissionToMessage ? (
+                    <UnmutedChat />
+                  ) : (
+                    <MutedChat />
+                  )}
                 </ActionButton>
 
                 {/* Kick Off Button */}
                 <ActionButton
                   className="text-medium text-[14px] text-[#E34048]"
-                  onClick={() => handleKickOff(client._id)}
+                  onClick={() => handleKickOff(client.user._id)}
                 >
                   Kick off
                 </ActionButton>

@@ -29,48 +29,6 @@ function getMessagesByBroadcastId() {
   `;
 }
 
-function getParticipatorsByBroadcastId() {
-  return gql`
-    query getParticipatorsByBroadcastId(
-      $broadcastId: uuid!
-      $offset: Int!
-      $limit: Int!
-    ) {
-      participators: user_broadcast(
-        where: {
-          broadcastId: { _eq: $broadcastId }
-          type: { _nilike: "%HOST%" }
-        }
-        offset: $offset
-        limit: $limit
-      ) {
-        id
-        hasTalkRequest
-        createdAt
-        user {
-          citizenshipEnd
-          createdAt
-          id
-          lastSeen
-        }
-        type
-        hasPermissionToMessage
-        isMuted
-      }
-      aggregates: user_broadcast_aggregate(
-        where: {
-          broadcastId: { _eq: $broadcastId }
-          type: { _nilike: "%HOST%" }
-        }
-      ) {
-        aggregate {
-          count
-        }
-      }
-    }
-  `;
-}
-
 function getInvitedUsersByBrooadcastId() {
   return gql`
     query getInvitedUsersByBrooadcastId($id: uuid!) {
@@ -81,8 +39,4 @@ function getInvitedUsersByBrooadcastId() {
   `;
 }
 
-export {
-  getMessagesByBroadcastId,
-  getParticipatorsByBroadcastId,
-  getInvitedUsersByBrooadcastId,
-};
+export { getMessagesByBroadcastId, getInvitedUsersByBrooadcastId };

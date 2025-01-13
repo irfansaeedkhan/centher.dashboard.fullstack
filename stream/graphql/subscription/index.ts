@@ -107,11 +107,11 @@ function getCurrentStream() {
 
 function getStreamMessages() {
   return gql`
-    subscription getBroadcastMessages($broadcastId: uuid!) {
+    subscription getBroadcastMessages($broadcastId: uuid!, $limit: Int!) {
       messages(
         where: { broadcastId: { _eq: $broadcastId } }
         offset: 0
-        limit: 5
+        limit: $limit
         order_by: { createdAt: desc }
       ) {
         id
@@ -133,10 +133,10 @@ function getStreamSpeakers() {
         }
         order_by: { createdAt: asc }
       ) {
-        user {
-          id
-        }
+        userId
         type
+        isMuted
+        hasTalkRequest
         hasPermissionToMessage
       }
     }
@@ -188,6 +188,35 @@ function getHasTalkRequestStreamUsers() {
   `;
 }
 
+function getParticipatorsByBroadcastIdSubscription() {
+  return gql`
+    subscription getBroadcastParticipants(
+      $id: uuid!
+      $limit: Int = 10
+      $offset: Int = 0
+    ) {
+      broadcast(where: { id: { _eq: $id } }) {
+        participators: user_broadcasts(
+          order_by: { createdAt: desc }
+          limit: $limit
+          offset: $offset
+        ) {
+          userId
+          type
+          isMuted
+          hasTalkRequest
+          hasPermissionToMessage
+        }
+        user_broadcasts_aggregate {
+          aggregate {
+            count
+          }
+        }
+      }
+    }
+  `;
+}
+
 export {
   getStreams,
   getCurrentStream,
@@ -195,4 +224,5 @@ export {
   getStreamSpeakers,
   getCurrentStreamUser,
   getHasTalkRequestStreamUsers,
+  getParticipatorsByBroadcastIdSubscription,
 };

@@ -10,7 +10,7 @@ const StreamPage: NextPage = () => {
   const {
     useGetSubscribes,
     useQueryToGetInvitedUsersByBrooadcastId,
-    useQueryToGetParticipatorsByBroadcastId,
+    useSubscribeToParticipators,
     amaAgent,
     liveAgent,
   } = useStream();
@@ -23,11 +23,7 @@ const StreamPage: NextPage = () => {
       "9de4cb22-25f9-4191-9408-510b53cf0887"
     );
 
-  const { data: participators } = useQueryToGetParticipatorsByBroadcastId(
-    "9de4cb22-25f9-4191-9408-510b53cf0887",
-    0
-  );
-
+  const { data: participators } = { data: "" };
   useEffect(() => {
     const fetchStream = async () => {
       try {

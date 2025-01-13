@@ -10,6 +10,7 @@ import { CreateBroadcastDto } from "@/stream/types/Broadcast";
 import { StreamEventEnum, StreamSubscriptionEnum } from "@/stream/model";
 import { IStreamEvent } from "./interfaces";
 import { RtpCapabilities } from "mediasoup-client/lib/RtpParameters";
+import { areStringsEquals } from "@/stream/utils/string.utils";
 
 export interface LiveStreamType {
   toast: string;
@@ -154,17 +155,14 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
         }
 
         globalSocket.current!.on("broadcast-finished", async () => {
-          console.log("broadcast-finished");
           close();
-        });
-
-        globalSocket.current!.on("user-disconnected", async (data) => {
-          console.log("user-disconnected", data);
           setEvent({
             data,
-            type: StreamEventEnum.ON_USER_DISCONNECTED_FROM_TALK,
+            type: StreamEventEnum.ON_FINISH_BROADCAST,
           });
         });
+
+        globalSocket.current!.on("user-disconnected", async (data) => {});
       }
     );
   };
@@ -232,10 +230,18 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
 
           globalSocket.current!.on("broadcast-finished", async () => {
             close();
+            setEvent({
+              data,
+              type: StreamEventEnum.ON_FINISH_BROADCAST,
+            });
           });
 
           globalSocket.current!.on("user-kicked", async () => {
             close();
+            setEvent({
+              data,
+              type: StreamEventEnum.ON_USER_KICKED,
+            });
           });
 
           globalSocket.current!.on("user-disconnected", async (data) => {

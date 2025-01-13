@@ -62,11 +62,20 @@ export const VoiceSpaceFeedCard: React.FC = () => {
       setIsUserMainViewOpen(false);
       setSelectedRoomData(null);
     }
+
+    if (
+      eventOnAMA?.type == StreamEventEnum.ON_FINISH_BROADCAST ||
+      eventOnLive?.type == StreamEventEnum.ON_FINISH_BROADCAST ||
+      eventOnAMA?.type == StreamEventEnum.ON_USER_KICKED ||
+      eventOnLive?.type == StreamEventEnum.ON_USER_KICKED
+    ) {
+      setSelectedRoomData(null);
+      setIsUserMainViewOpen(false);
+    }
   }, [eventOnLive, eventOnAMA]);
 
   const handleRoomClick = (room: Room) => {
     try {
-      console.log({ room });
       if (room.type == BroadcastTypeEnum.AMA) {
         joinAMARoom(room.id as string, user?._id || "");
       } else {
