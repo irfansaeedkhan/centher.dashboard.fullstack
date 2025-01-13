@@ -91,6 +91,10 @@ jobs:
           echo "NEXT_PUBLIC_WALLET_SERVICE_URL=${{ vars.NEXT_PUBLIC_WALLET_SERVICE_URL }}" >> .env.staging
           echo "NEXT_PUBLIC_WALLET_SERVICE_API_KEY=${{ vars.NEXT_PUBLIC_WALLET_SERVICE_API_KEY }}" >> .env.staging
           echo "NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID=${{ vars.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID }}" >> .env.staging
+          echo "NEXT_PUBLIC_GQL_URL_MAIN=${{ vars.NEXT_PUBLIC_GQL_URL_MAIN }}" >> .env.staging
+          echo "NEXT_PUBLIC_GQL_URL_SUBGRAPH=${{ vars.NEXT_PUBLIC_GQL_URL_SUBGRAPH }}" >> .env.staging
+          echo "NEXT_PUBLIC_GQL_URL_BLOCKCHAIN=${{ vars.NEXT_PUBLIC_GQL_URL_BLOCKCHAIN }}" >> .env.staging
+          echo "NEXT_PUBLIC_GQL_URL_WEBSOCKET=${{ vars.NEXT_PUBLIC_GQL_URL_WEBSOCKET }}" >> .env.staging
 
       - name: Log in to Docker Hub
         id: login-docker-hub
