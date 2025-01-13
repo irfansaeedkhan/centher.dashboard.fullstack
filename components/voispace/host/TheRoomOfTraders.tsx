@@ -10,10 +10,12 @@ import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
 import { StreamAccessModeEnum } from "@/stream/enum/stream-access-mode.enum";
 import HostModalHeader from "@/components/voispace/host/partials/HostModalHeader";
 import {
+  CancelSpeechIcon,
   GrabIcon,
   MutedChat,
   MutedMic,
   ShareWhiteIcon,
+  SpeechIcon,
   UnmutedChat,
   UnmutedMic,
 } from "@/assets/svgs";
@@ -126,7 +128,7 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
   };
 
   return (
-    <div className="h-full px-[24px] py-[24px] text-white">
+    <div className="h-full  px-6 py-6 text-white mobile-max:px-4">
       <div className="flex h-full flex-col gap-[42px]">
         <HostModalHeader
           subTitle="Voispace"
@@ -144,7 +146,7 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
         </HostModalHeader>
 
         {/* Hosts Section */}
-        <div className="flex flex-col gap-[24px]">
+        <div className="flex flex-col items-start gap-6">
           <div className="flex max-w-[90px] flex-col items-center gap-[2px]">
             <span className="text-[14px]">Host</span>
           </div>
@@ -172,9 +174,9 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
         </div>
 
         {/* Speakers Section */}
-        <div className="flex flex-col gap-[24px]">
-          <div className="flex max-w-[90px] flex-col items-center gap-[2px]">
-            <span className="text-[14px]">Speakers</span>
+        <div className="flex flex-col items-start gap-6">
+          <div className="flex max-w-[90px] flex-col items-start gap-[2px]">
+            <span className="text-left text-[14px]">Speakers</span>
             <span className="rounded-[1000px] bg-[#141416] px-3 py-2 text-[12px]">
               <span className="text-[#FAFAFA]">{speakers?.length}</span>
               <span>&nbsp;</span>
@@ -205,7 +207,7 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
         </div>
 
         {/* Bottom Action Buttons */}
-        <div className="absolute bottom-0 left-0 m-6 flex min-h-[70px] w-[calc(100%-48px)] items-center rounded-[24px] border border-[#32343C] bg-[#141416] p-[16px] text-white">
+        <div className="absolute bottom-3 left-1/2 flex min-h-[70px] w-[calc(100%-48px)] -translate-x-1/2 items-center rounded-2xl border border-[#32343C] bg-[#141416] p-[16px] text-white mobile-max:w-[calc(100%-36px)]">
           {!currentUserLoader ? (
             <div className="flex w-[100%] justify-between">
               <div className="flex gap-[10px]">
@@ -315,9 +317,10 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
                       className="text-medium flex text-[14px] text-[#E34048]"
                       onClick={() => handleRequestToTalk(true)}
                     >
-                      <span className="flex h-5 items-center justify-center font-monto text-xs font-medium leading-[13px] tracking-[-0.4px]">
+                      <span className="hidden h-5 items-center justify-center font-monto text-xs font-medium leading-[13px] tracking-[-0.4px] flg:flex">
                         Request to speak
                       </span>
+                      <SpeechIcon className="block flg:hidden" />
                     </ActionButton>
                   )}
 
@@ -328,28 +331,21 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
                       className="text-medium flex text-[14px] text-[#E34048]"
                       onClick={() => handleRequestToTalk(false)}
                     >
-                      <span className="flex h-5 items-center justify-center font-monto text-xs font-medium leading-[13px] tracking-[-0.4px]">
+                      <span className="hidden h-5 items-center justify-center font-monto text-xs font-medium leading-[13px] tracking-[-0.4px] flg:flex">
                         Cancel Request
                       </span>
+                      <CancelSpeechIcon className="block flg:hidden" />
                     </ActionButton>
                   )}
 
                 {/* Mute Button */}
                 {currentUser?.type == "SPEAKER" && !currentUser?.isMuted && (
-                  <ActionButton
-                    text="Mute"
-                    className="text-medium text-[14px] text-[#E34048]"
-                    onClick={handleToggleMute}
-                  >
+                  <ActionButton text="Mute" onClick={handleToggleMute}>
                     <UnmutedMic />
                   </ActionButton>
                 )}
                 {currentUser?.type == "SPEAKER" && currentUser?.isMuted && (
-                  <ActionButton
-                    text="Unmute"
-                    className="text-medium text-[14px] text-[#E34048]"
-                    onClick={handleToggleMute}
-                  >
+                  <ActionButton text="Unmute" onClick={handleToggleMute}>
                     <MutedMic />
                   </ActionButton>
                 )}

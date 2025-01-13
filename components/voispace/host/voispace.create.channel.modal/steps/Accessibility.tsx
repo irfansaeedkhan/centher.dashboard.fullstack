@@ -23,10 +23,10 @@ const Accessibility = ({ formState, handleInputChange, loading }: any) => {
             loading && "pointer-events-none"
           )}
         >
-          <div className="px-4 pt-2 text-base font-medium text-white">
+          <div className="px-4 pt-3 text-base font-medium text-white">
             Public
           </div>
-          <div className={`px-4 pb-2 text-sm font-normal text-[#A0A4BB]`}>
+          <div className={`px-4 pb-3 text-sm font-normal text-[#A0A4BB]`}>
             Everyone can join this Voispace Room
           </div>
         </div>
@@ -48,10 +48,10 @@ const Accessibility = ({ formState, handleInputChange, loading }: any) => {
             loading && "pointer-events-none"
           )}
         >
-          <div className="px-4 pt-2 text-base font-medium text-white">
+          <div className="px-4 pt-3 text-base font-medium text-white">
             Private
           </div>
-          <div className={`px-4 pb-2 text-sm font-normal text-[#A0A4BB]`}>
+          <div className={`px-4 pb-3 text-sm font-normal text-[#A0A4BB]`}>
             In next step you will add people manually or by invite links
           </div>
         </div>
@@ -73,10 +73,10 @@ const Accessibility = ({ formState, handleInputChange, loading }: any) => {
             loading && "pointer-events-none"
           )}
         >
-          <div className="px-4 pt-2 text-base font-medium text-white">
+          <div className="px-4 pt-3 text-base font-medium text-white">
             Privilege
           </div>
-          <div className={`px-4 pb-2 text-sm font-normal text-[#A0A4BB]`}>
+          <div className={`px-4 pb-3 text-sm font-normal text-[#A0A4BB]`}>
             In next step you will add collection address to get started
           </div>
         </div>

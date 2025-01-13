@@ -30,7 +30,7 @@ const LiveMessage: React.FC<LiveMessageProps> = ({ message }) => {
 
   return (
     <div className="flex gap-3">
-      <div className="relative h-10 w-10 flex-shrink-0">
+      <div className="relative flex h-10 w-10 shrink-0">
         <Image
           src={message.sender.profile_image}
           alt={message.sender.display_name}
@@ -51,7 +51,9 @@ const LiveMessage: React.FC<LiveMessageProps> = ({ message }) => {
             {getTimeLapsed(message.createdAt)}
           </span>
         </div>
-        <p className="text-xs text-[#FAFAFA]">{message.content}</p>
+        <p className="overflow-wrap white-space w-[72vw] break-words text-xs text-[#FAFAFA] flg:w-[40vw]">
+          {message.content}
+        </p>
       </div>
     </div>
   );

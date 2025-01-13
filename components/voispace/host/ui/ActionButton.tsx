@@ -5,7 +5,7 @@ interface ActionButtonProps {
   form?: string;
   type?: any;
   text?: string;
-  className: string;
+  className?: string;
   onClick?: () => void;
   children?: React.ReactNode;
 }

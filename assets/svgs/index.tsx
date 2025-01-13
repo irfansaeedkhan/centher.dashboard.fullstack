@@ -207,6 +207,8 @@ export { default as MutedChat } from "./muted-chat.svg";
 export { default as MutedMic } from "./muted-mic.svg";
 export { default as UnmutedMic } from "./unmuted-mic.svg";
 export { default as UnmutedChat } from "./unmuted-chat.svg";
+export { default as SpeechIcon } from "./speech.svg";
+export { default as CancelSpeechIcon } from "./cancel-speech.svg";
 
 export const X369xIcon: React.FC<IconProps> = (props) => {
   return (

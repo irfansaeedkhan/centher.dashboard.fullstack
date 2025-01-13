@@ -24,6 +24,7 @@ module.exports = {
       "custom-height-oriented": {
         raw: "((min-height:390px) and (max-height:700px))",
       },
+      "mobile-max": { max: "765px" },
       ...defaultTheme.screens,
     },
     extend: {

@@ -23,6 +23,7 @@ import { CFSBaseURL } from "@/constants/base-urls";
 import { getUserImageUploadUrl } from "@/lib/user";
 import useMediaDevices from "@/hooks/use.get.media.devices";
 import clsx from "clsx";
+import { CrossIcon } from "@/assets/svgs";
 
 interface Props {
   onClose: () => void;
@@ -400,13 +401,13 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
       modalId="create-room"
       onClose={onClose}
       isOpen={currentModalIsOpen}
-      modalContentClassName="max-w-[656px] p-0 rounded-3xl"
+      modalContentClassName="mobile-max:h-[100vh] max-w-[656px] p-0 mobile-max:rounded-none mobile-max:mx-0 rounded-3xl"
       shouldCloseOnEsc={true}
       shouldCloseOnOverlayClick={currentStep === CreatRoomSteps.AMA_OR_LIVE}
     >
-      <div className="header border-b-2 border-[#141416]">
+      <div className="header relative border-b-2 border-[#141416]">
         <div className="mb-0 flex items-center justify-between rounded-t px-4 py-4 md:py-4">
-          <span>
+          <span className="flex items-center">
             {currentStep !== CreatRoomSteps.AMA_OR_LIVE && (
               <button
                 onClick={loading || roomCreationLoader ? undefined : handleBack}
@@ -419,8 +420,17 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
                 <MdOutlineExpandLess className="h-7 w-7 -rotate-90 text-white" />
               </button>
             )}
+            {currentStep === CreatRoomSteps.AMA_OR_LIVE && (
+              <span className="py-1 text-xl font-semibold text-white flg:hidden">
+                <CrossIcon
+                  className="mx-auto min-w-[20px] shrink-0 cursor-pointer [&>*]:stroke-white"
+                  onClick={onClose}
+                />
+              </span>
+            )}
           </span>
-          <span className="py-1 text-xl font-semibold text-white">
+
+          <span className="py-1 text-base font-semibold text-white flg:text-xl">
             Create New Room
           </span>
           <Button
