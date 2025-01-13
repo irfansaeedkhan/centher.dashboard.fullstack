@@ -574,7 +574,8 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
 
   const getAudioStream = (): MediaStream | null => {
     if (globalIsOwner.current) {
-      return globalLocalAudio.current;
+      // return globalLocalAudio.current;
+      return null;
     }
     const streams = Array.from(
       globalConsumersAudioStream.current,
@@ -585,6 +586,10 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
         };
       }
     );
+
+    if (streams.length === 0) {
+      return null;
+    }
 
     return streams[0].stream;
   };
