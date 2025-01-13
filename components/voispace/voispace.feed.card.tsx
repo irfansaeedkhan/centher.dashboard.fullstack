@@ -91,19 +91,21 @@ export const VoiceSpaceFeedCard: React.FC = () => {
   };
   return (
     <>
-      <div className={clsx(`relative max-w-[272px] select-none`)}>
+      <div className={clsx(`relative w-full select-none  flg:max-w-[272px]`)}>
         <div className={`relative rounded-10px bg-background-shade-3`}>
-          <div className={`flex items-center justify-between p-4`}>
-            <h5 className={`text-gradient-1 text-base font-semibold`}>
-              VoiceSpace
-            </h5>
-            <Button
-              title={"New"}
-              variant="primary"
-              onClick={() => setIsCreateModalOpen(true)}
-              borderRounded="10px"
-              className={`text-xs font-medium`}
-            />
+          <div className="border-b border-gray-shade-3">
+            <div className={`flex items-center justify-between p-4`}>
+              <h5 className={`text-gradient-1 text-base font-semibold`}>
+                VoiceSpace
+              </h5>
+              <Button
+                title={"New"}
+                variant="primary"
+                onClick={() => setIsCreateModalOpen(true)}
+                borderRounded="10px"
+                className={`text-xs font-medium`}
+              />
+            </div>
           </div>
           <div className="mx-auto grid grid-cols-4 gap-4 px-4 py-4">
             {loader
@@ -116,7 +118,7 @@ export const VoiceSpaceFeedCard: React.FC = () => {
               : rooms &&
                 rooms?.slice(0, 7).map((room) => (
                   <div
-                    className="relative cursor-pointer"
+                    className="relative w-12 cursor-pointer  items-center justify-center"
                     key={room.id}
                     onClick={() => handleRoomClick(room)}
                   >
@@ -125,7 +127,7 @@ export const VoiceSpaceFeedCard: React.FC = () => {
                       alt="voispace"
                       height={50}
                       width={50}
-                      className="absolute inset-0"
+                      className="absolute inset-0 h-12 w-12"
                     />
                     {room.type === "AMA" && (
                       <VoispaceLiveIcon className="absolute right-0 top-0 size-4" />

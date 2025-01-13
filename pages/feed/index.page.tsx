@@ -28,6 +28,7 @@ import useUser from "@/hooks/use.user";
 import { customLog } from "@/utils/custom.log";
 import { AppRoutes } from "@/constants/app.routes";
 import { NoPost } from "@/assets/svgs";
+import { VoiceSpaceFeedCard } from "@/components/voispace/voispace.feed.card";
 
 const Feed: NextPageWithLayout = () => {
   const { user } = useUser();
@@ -150,6 +151,11 @@ const Feed: NextPageWithLayout = () => {
                 onPostInViewport={() => handleCreatePostView(post._id)}
               />
             </div>
+            {(index + 1) / 1 === 1 && (
+              <div className="mt-3 block w-full flg:hidden">
+                <VoiceSpaceFeedCard />
+              </div>
+            )}
             {(index + 1) / 4 === 1 && (
               <div className="mt-3 block flg:hidden">
                 <AdsWrapper>

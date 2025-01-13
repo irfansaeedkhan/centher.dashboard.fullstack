@@ -131,9 +131,9 @@ const PermissionsAndDetails = ({
               <Image
                 src={preview}
                 alt="Uploaded Preview"
-                width={50}
-                height={50}
-                className="h-12 w-12 rounded-full object-cover"
+                width={64}
+                height={64}
+                className="h-16 w-16 rounded-full object-cover"
               />
             </div>
           )}
@@ -181,7 +181,7 @@ const PermissionsAndDetails = ({
           </div>
         </div>
       </div>
-      <div className="tabs flex flex-col gap-4">
+      <div className="tabs flex flex-col gap-2">
         <div className="flex items-center gap-4">
           {/* Audio Tab */}
           {formState.type === BroadcastTypeEnum.LIVE ? (
@@ -230,7 +230,7 @@ const PermissionsAndDetails = ({
         {/* Dropdown for Audio/Video Options */}
         <div className="relative">
           <select
-            className="mt-2 block w-full rounded-[10px] border-0 bg-[#141416] px-4 py-3 text-white focus:outline-none focus:ring-[#141416]"
+            className="mt-2 block w-full rounded-[10px] border-0 bg-[#141416] py-3 pl-4 pr-8 text-white focus:outline-none focus:ring-[#141416]"
             value={
               currentTab === "audio"
                 ? formState.audioDevice?.label

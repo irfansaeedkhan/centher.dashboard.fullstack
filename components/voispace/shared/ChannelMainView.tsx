@@ -78,7 +78,7 @@ const ChannelMainView: React.FC<ChannelMainViewInterface> = ({
       modalId="host-settings"
       onClose={onClose}
       isOpen={true}
-      modalContentClassName="max-w-[100%] h-[100%] md:h-auto md:max-w-[761px] min-h-[645px] p-0 md:rounded-3xl"
+      modalContentClassName="mobile-max:h-[100vh] mobile-max:rounded-none mobile-max:mx-0 max-w-[100%] h-[100%] md:h-auto md:max-w-[761px] min-h-[645px] p-0 md:rounded-3xl"
       shouldCloseOnEsc={true}
       shouldCloseOnOverlayClick={false}
     >

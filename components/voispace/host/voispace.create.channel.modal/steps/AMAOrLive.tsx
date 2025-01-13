@@ -23,9 +23,9 @@ const AMAOrLive = ({
             formState.type === BroadcastTypeEnum.AMA && "gradient-borders-div"
           )}
         >
-          <div className="px-4 pt-2 text-base font-medium text-white">AMA</div>
-          <div className="px-4 pb-2 text-sm text-[#A0A4BB]">
-            Ask Me Anything
+          <div className="px-4 pt-3 text-base font-medium text-white">AMA</div>
+          <div className="px-4 pb-3 text-sm text-[#A0A4BB]">
+            Explore the endless possibilities of conversation
           </div>
         </div>
         <div
@@ -35,9 +35,9 @@ const AMAOrLive = ({
             formState.type === BroadcastTypeEnum.LIVE && "gradient-borders-div"
           )}
         >
-          <div className="px-4 pt-2 text-base font-medium text-white">Live</div>
-          <div className="px-4 pb-2 text-sm text-[#A0A4BB]">
-            Real-time Discussions
+          <div className="px-4 pt-3 text-base font-medium text-white">Live</div>
+          <div className="px-4 pb-3 text-sm text-[#A0A4BB]">
+            Engage in real-time discussions, ask and experience
           </div>
         </div>
       </div>
