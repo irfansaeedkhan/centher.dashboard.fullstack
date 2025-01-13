@@ -1,21 +1,12 @@
-import React, { useEffect, useState } from "react";
-
-import {
-  SendChatIcon,
-  MicIcon,
-  MicIcon2,
-  VideoIcon2,
-  EyeIcon,
-} from "@/assets/svgs";
+import React, { useEffect, useState, useRef } from "react";
+import DOMPurify from "dompurify";
+import { SendChatIcon, EyeIcon } from "@/assets/svgs";
+import { useStream } from "@/hooks/stream/use.core";
+import { BroadcastMessage } from "@/hooks/stream/dto/broadcast-inffo.dto";
+import { StreamEventEnum } from "@/stream/model";
 import LiveMessage from "@/components/voispace/host/partials/LiveMessage";
-import DropdownButton from "@/components/voispace/host/ui/DropdownButton";
-
 import HostModalHeader from "./partials/HostModalHeader";
 import { Room } from "./voispace.create.channel.modal/voispace.create.channel.modal";
-import { useStream } from "@/hooks/stream/use.core";
-import DOMPurify from "dompurify";
-import { BroadcastMessage } from "@/hooks/stream/dto/broadcast-inffo.dto";
-import useMediaDevices from "@/hooks/use.get.media.devices";
 
 interface DynamicProps {
   onClose: () => void;
@@ -41,21 +32,28 @@ const LiveView: React.FC<DynamicProps> = ({
   setComponentName,
   roomData,
 }) => {
-  const { useSubscribeToMessages, insertMessage } = useStream();
+  const { useSubscribeToMessages, insertMessage, liveAgent } = useStream();
+  const { event, getAudioStream, getVideoStream } = liveAgent;
   const [inputValue, setInputValue] = useState("");
   const [formattedMessages, setFormattedMessages] = useState<
     BroadcastMessage[]
   >([]);
-  const { cameras, microphones, error, updateDevices, getMediaPermissions } =
-    useMediaDevices();
 
   const { messages, loading: subscriptionLoading } = useSubscribeToMessages(
     roomData?.id || ""
   );
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const videoStream = getVideoStream();
 
   useEffect(() => {
-    updateDevices();
-  }, [updateDevices]);
+    if (event && event.type == StreamEventEnum.ON_UPDATE_VIDEO_STREAM) {
+      const videoElement = videoRef.current;
+
+      if (!videoElement || !videoStream) return;
+
+      videoElement.srcObject = videoStream;
+    }
+  }, [event, videoStream]);
 
   useEffect(() => {
     if (messages.length) {
@@ -70,22 +68,14 @@ const LiveView: React.FC<DynamicProps> = ({
   }, [messages]);
 
   const leaveHandler = () => {
-    alert("Leave");
-  };
-
-  const onSelectCamera = (
-    value: MediaDeviceInfo,
-    e: React.MouseEvent<HTMLLIElement, MouseEvent>
-  ) => {
-    if (roomData) {
-      roomData.videoDevice = value;
+    const videoElement = videoRef.current;
+    if (videoElement) {
+      if (videoElement.srcObject) {
+        const tracks = (videoElement.srcObject as MediaStream).getTracks();
+        tracks.forEach((track) => track.stop());
+      }
     }
-  };
-
-  const onSelectMic = (value: MediaDeviceInfo) => {
-    if (roomData) {
-      roomData.audioDevice = value;
-    }
+    onClose();
   };
 
   const onSend = async (e: any) => {
@@ -129,8 +119,8 @@ const LiveView: React.FC<DynamicProps> = ({
             </div>
 
             <button
-              onClick={leaveHandler}
-              className="font-monto text-[14px] font-medium text-[#E34048]"
+              onClick={() => leaveHandler()}
+              className="cursor-pointer font-monto text-[14px] font-medium text-[#E34048]"
             >
               Leave
             </button>
@@ -138,98 +128,56 @@ const LiveView: React.FC<DynamicProps> = ({
         </div>
       </div>
 
-      <div className="h-[100%] min-h-[645px] bg-[url('/images/live-room-bg.svg')]">
-        <div className="flex h-[100%] min-h-[645px] flex-col justify-end px-[16px] py-[16px]">
-          <div className="customScrollbar flex max-h-[40vh] flex-col overflow-y-auto px-2">
-            {subscriptionLoading ? (
-              <>
-                <MessageSkeleton />
-                <MessageSkeleton />
-                <MessageSkeleton />
-                <MessageSkeleton />
-                <MessageSkeleton />
-              </>
-            ) : formattedMessages?.length ? (
-              formattedMessages.map((message, index) => {
-                return <LiveMessage message={message} key={index} />;
-              })
-            ) : (
-              <div className="mx-auto max-w-[350px] rounded-lg bg-black-shade-3/30 px-8 py-4 text-center">
-                <p className="text-center text-sm text-white">
-                  No messages yet
-                </p>
-              </div>
-            )}
-          </div>
+      <div className="absolute inset-0 mt-20 h-[80%] bg-center">
+        <div className="absolute inset-0  h-[100%]  w-full">
+          {videoStream && (
+            <video
+              ref={videoRef}
+              className="h-[80%] w-full"
+              autoPlay
+              playsInline
+              muted
+            />
+          )}
+        </div>
+      </div>
 
-          <div className="mt-[50px] flex gap-[8px]">
-            <div>
-              <DropdownButton
-                dropdownContent={() => (
-                  <ul className="flex flex-col gap-[8px] p-[8px]">
-                    {microphones.map((microphone, index) => (
-                      <li
-                        className={
-                          "flex cursor-pointer gap-[8px] rounded-[1000px] border border-[#32343C] bg-[#212228] p-2 px-[10px] py-[6px] text-[11px] font-medium" +
-                          (roomData?.audioDevice?.deviceId ===
-                          microphone.deviceId
-                            ? "border-black-shade-2 bg-black-shade-2"
-                            : "")
-                        }
-                        key={index}
-                        value={microphone.deviceId}
-                        onClick={() => onSelectMic(microphone)}
-                      >
-                        {/* <MicIcon /> */}
-                        {microphone.label}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              >
-                <MicIcon2 className="  [&>*]:stroke-[#A8ABBB]" />
-              </DropdownButton>
+      {/* <div className="absolute inset-0 h-[80%] bg-[url('/images/live-room-bg.svg')] bg-cover bg-center" /> */}
+      <div className="relative flex h-[80%] min-h-[645px] flex-col justify-end px-[16px] py-[16px]">
+        <div className="customScrollbar flex max-h-[40vh] flex-col overflow-y-auto px-2">
+          {subscriptionLoading ? (
+            <>
+              <MessageSkeleton />
+              <MessageSkeleton />
+              <MessageSkeleton />
+              <MessageSkeleton />
+              <MessageSkeleton />
+            </>
+          ) : formattedMessages?.length ? (
+            formattedMessages.map((message, index) => {
+              return <LiveMessage message={message} key={index} />;
+            })
+          ) : (
+            <div className="mx-auto max-w-[350px] rounded-lg bg-black-shade-3/30 px-8 py-4 text-center">
+              <p className="text-center text-sm text-white">No messages yet</p>
             </div>
-            <div>
-              <DropdownButton
-                dropdownContent={() => (
-                  <ul className="flex flex-col gap-[8px] p-[8px]">
-                    {cameras.map((camers, index) => (
-                      <li
-                        className={
-                          "flex cursor-pointer gap-[8px] rounded-[1000px] border border-[#32343C] bg-[#212228] p-2 px-[10px] py-[6px] text-[11px] font-medium" +
-                          (roomData?.videoDevice?.deviceId === camers.deviceId
-                            ? "border-black-shade-2 bg-black-shade-2"
-                            : "")
-                        }
-                        key={index}
-                        value={camers.deviceId}
-                        onClick={(e) => onSelectCamera(camers, e)}
-                      >
-                        {/* <VideoIcon2 /> */}
-                        {camers.label}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              >
-                <VideoIcon2 className="text-white [&>*]:fill-[#A8ABBB]" />
-              </DropdownButton>
-            </div>
-            <div className="flex w-[100%] max-w-[583px] items-center overflow-hidden rounded-[12px] bg-[#212329]">
-              <input
-                className="font-regular flex-grow border-0 bg-transparent text-[12px] text-white"
-                placeholder="Type something"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-              />
-              <button
-                className="mr-[12px] h-[20px] w-[20px]"
-                onClick={(e) => onSend(e)}
-              >
-                <SendChatIcon />
-              </button>
-            </div>
+          )}
+        </div>
+
+        <div className="mt-[50px] flex gap-[8px]">
+          <div className="flex w-[100%] max-w-[583px] items-center overflow-hidden rounded-[12px] bg-[#212329]">
+            <input
+              className="font-regular flex-grow border-0 bg-transparent text-[12px] text-white"
+              placeholder="Type something"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+            />
+            <button
+              className="mr-[12px] h-[20px] w-[20px]"
+              onClick={(e) => onSend(e)}
+            >
+              <SendChatIcon />
+            </button>
           </div>
         </div>
       </div>

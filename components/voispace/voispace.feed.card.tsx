@@ -35,7 +35,8 @@ export const VoiceSpaceFeedCard: React.FC = () => {
   const { user } = useUser();
   const { loader, data: broadcasts } = useSubscribeToAllBroadcasts();
 
-  const { leave } = amaAgent;
+  const { leave: leaveAMA } = amaAgent;
+  const { leave: leaveLive } = liveAgent;
 
   useEffect(() => {
     setRooms(broadcasts?.data?.broadcast);
@@ -65,6 +66,7 @@ export const VoiceSpaceFeedCard: React.FC = () => {
 
   const handleRoomClick = (room: Room) => {
     try {
+      console.log({ room });
       if (room.type == BroadcastTypeEnum.AMA) {
         joinAMARoom(room.id as string, user?._id || "");
       } else {
@@ -78,7 +80,14 @@ export const VoiceSpaceFeedCard: React.FC = () => {
   };
 
   const handleCloseModal = () => {
-    leave();
+    if (selectedRoomData?.type === BroadcastTypeEnum.AMA) {
+      leaveAMA();
+    }
+
+    if (selectedRoomData?.type === BroadcastTypeEnum.LIVE) {
+      leaveLive();
+    }
+
     setIsUserMainViewOpen(false);
     setSelectedRoomData(null);
   };
