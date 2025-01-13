@@ -21,6 +21,7 @@ export interface LiveStreamType {
   audioProducer: Producer | null;
   videoProducer: Producer | null;
   globalIsOwner: boolean;
+  userId: string;
   createRoom: (input: CreateBroadcastDto, userId: string) => Promise<any>;
   joinRoom: (id: string, userId: string) => Promise<any>;
   getStatuses: () => { sendStreamLoader: string; receiveStreamLoader: string };
@@ -31,7 +32,8 @@ export interface LiveStreamType {
   toggleMute: () => void;
   toggleMessagePermission: (userId: string) => void;
   closeSubscription: (key: keyof typeof StreamSubscriptionEnum) => void;
-  userId: string;
+  getVideoStream: () => MediaStream | null;
+  getAudioStream: () => MediaStream | null;
 }
 
 export interface LiveHookParams {
@@ -119,6 +121,7 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
         if (!data) {
           return;
         }
+        globalIsOwner.current = true;
 
         setEvent({
           data,
@@ -144,7 +147,6 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
           await createProducerTransport();
           await createConsumerTransport();
           await connectSendTransport();
-          globalIsOwner.current = true;
         } catch (error) {
           leave();
 
@@ -549,9 +551,50 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
     });
   };
 
+  const getVideoStream = (): MediaStream | null => {
+    if (globalIsOwner.current) {
+      return globalLocalVideo.current;
+    }
+    const streams = Array.from(
+      globalConsumersVideoStream.current,
+      ([userId, stream]) => {
+        return {
+          userId,
+          stream,
+        };
+      }
+    );
+
+    if (streams.length === 0) {
+      return null;
+    }
+
+    return streams[0].stream;
+  };
+
+  const getAudioStream = (): MediaStream | null => {
+    if (globalIsOwner.current) {
+      return globalLocalAudio.current;
+    }
+    const streams = Array.from(
+      globalConsumersAudioStream.current,
+      ([userId, stream]) => {
+        return {
+          userId,
+          stream,
+        };
+      }
+    );
+
+    return streams[0].stream;
+  };
   const connectSendTransport = async (): Promise<void> => {
     try {
+      console.log("step 1");
+
       if (globalDevice.current!.canProduce("audio")) {
+        console.log("step 2");
+
         if (!hasGetUserMedia()) {
           throw new Error(
             "Your browser does not support video chat. Please update your browser or use a different one."
@@ -572,14 +615,19 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
           },
         });
 
+        console.log("step 3");
         const localAudio = stream.getAudioTracks()[0];
         const localVideo = stream.getVideoTracks()[0];
 
         if (localAudio && localVideo) {
+          console.log("step 4");
+
           if (
             globalProducerTransport &&
             !globalProducerTransport.current!.closed
           ) {
+            console.log("step 5");
+
             globalAudioProducer.current =
               await globalProducerTransport.current!.produce({
                 track: localAudio,
@@ -594,6 +642,7 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
               });
 
             globalLocalVideo.current = new MediaStream([localVideo]);
+            console.log("step 6");
 
             globalAudioProducer.current.on("trackended", () => {
               globalSendStreamLoader.current = "trackEnded";
@@ -736,6 +785,8 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
     consumersAudioStream: globalConsumersAudioStream.current,
     consumersVideoStram: globalConsumersVideoStream.current,
     globalIsOwner: globalIsOwner.current,
+    getAudioStream,
+    getVideoStream,
     createRoom,
     joinRoom,
     getStatuses,
