@@ -65,6 +65,8 @@ jobs:
           echo "NEXT_PUBLIC_GQL_URL_SUBGRAPH=${{ vars.NEXT_PUBLIC_GQL_URL_SUBGRAPH }}" >> .env.staging
           echo "NEXT_PUBLIC_GQL_URL_BLOCKCHAIN=${{ vars.NEXT_PUBLIC_GQL_URL_BLOCKCHAIN }}" >> .env.staging
           echo "NEXT_PUBLIC_GQL_URL_WEBSOCKET=${{ vars.NEXT_PUBLIC_GQL_URL_WEBSOCKET }}" >> .env.staging
+          echo "NEXT_PUBLIC_BRAND_NAME=${{ vars.NEXT_PUBLIC_BRAND_NAME }}" >> .env.staging
+          echo "NEXT_PUBLIC_BRAND_DOMAIN=${{ vars.NEXT_PUBLIC_BRAND_DOMAIN }}" >> .env.staging
 
       - name: Build playground image
         id: build-image
