@@ -178,7 +178,7 @@ const LiveView: React.FC<DynamicProps> = ({
       </div>
 
       {/* <div className="absolute inset-0 h-[80%] bg-[url('/images/live-room-bg.svg')] bg-cover bg-center" /> */}
-      <div className="z-20 min-h-[70vh] p-4 flg:py-6">
+      <div className="z-20 min-h-[70vh] bg-[#00000042] p-4 flg:py-6">
         <div className="customScrollbar flex h-[calc(100vh-15.8rem)] flex-col gap-6 overflow-y-auto !pt-[40%] text-white md:!pt-[25%] flg:h-[calc(100vh-22rem)] flg:p-6">
           {subscriptionLoading ? (
             <>
