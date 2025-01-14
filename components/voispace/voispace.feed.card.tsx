@@ -182,7 +182,6 @@ export const VoiceSpaceFeedCard: React.FC = () => {
           </div>
         </div>
       </div>
-
       {isCreateModalOpen && (
         <VoispaceCreateChannelModal
           onClose={() => setIsCreateModalOpen(false)}
