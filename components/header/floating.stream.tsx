@@ -15,7 +15,7 @@ export const FloatingStreamComponent: React.FC<Props> = ({
   roomId,
   onClose,
 }) => {
-  const [floatStreamModal, setFloatStreamModal] = useState(true);
+  const [floatStreamModal, setFloatStreamModal] = useState(false);
   // const verificationTick = useVerificationTick({ user });
   return (
     <div className="fixed bottom-4 left-1/2 z-40 flex w-[90vw] -translate-x-1/2 flex-col items-center justify-center rounded-2xl bg-[#00000024]  backdrop-blur-lg md:bottom-8 md:w-[50vw]">
