@@ -142,7 +142,9 @@ const LiveView: React.FC<DynamicProps> = ({
               {/* //TODO : number of viewers   */}
               <div className="flex items-center justify-center gap-2 rounded-[5px] bg-[#1C1D21] px-1 py-[1px] text-white">
                 <EyeIcon className="scale-75" />
-                <span className="font-monto text-[11px] font-medium">549</span>
+                <span className="font-monto text-[11px] font-medium">
+                  {roomData.participatorsCount.aggregate.count || 0}
+                </span>
               </div>
             </div>
             <div className="bg-green-600">
