@@ -65,7 +65,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
   const [formState, setFormState] = useState<Room>({
     type: BroadcastTypeEnum.AMA,
     image: "",
-    name: "test",
+    name: "",
     accessMode: StreamAccessModeEnum.NONE,
     invitedPrivateUsers: [],
     invitedPrivilegeUsers: [],

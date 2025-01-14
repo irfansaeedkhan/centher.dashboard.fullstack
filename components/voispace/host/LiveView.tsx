@@ -33,7 +33,14 @@ const LiveView: React.FC<DynamicProps> = ({
   roomData,
 }) => {
   const { useSubscribeToMessages, insertMessage, liveAgent } = useStream();
-  const { event, getAudioStream, getVideoStream, globalIsOwner } = liveAgent;
+  const {
+    event,
+    globalIsOwner,
+    getAudioStream,
+    getVideoStream,
+    closeConsumer,
+    close,
+  } = liveAgent;
   const [inputValue, setInputValue] = useState("");
   const [formattedMessages, setFormattedMessages] = useState<
     BroadcastMessage[]
@@ -86,9 +93,16 @@ const LiveView: React.FC<DynamicProps> = ({
         tracks.forEach((track) => track.stop());
       }
     }
-    if (globalIsOwner) {
-      // liveAgent.c;
+    try {
+      if (globalIsOwner) {
+        close();
+      } else {
+        closeConsumer(roomData.id!);
+      }
+    } catch (error) {
+      console.log(error);
     }
+
     onClose();
   };
 
