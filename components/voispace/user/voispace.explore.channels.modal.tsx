@@ -24,7 +24,7 @@ export const VoispaceExploreChannelsModal: React.FC<Props> = ({
       modalId="more-rooms"
       onClose={onClose}
       isOpen={true}
-      modalContentClassName="max-w-[656px] p-0 rounded-3xl"
+      modalContentClassName="mobile-max:h-[100vh] max-w-[656px] p-0 mobile-max:rounded-none mobile-max:mx-0 rounded-3xl"
     >
       <div className="flex flex-col gap-6 p-6">
         <div className="flex flex-col gap-4">
@@ -48,7 +48,7 @@ export const VoispaceExploreChannelsModal: React.FC<Props> = ({
             />
           </div>
         </div>
-        <div className="customScrollbar grid max-h-[60vh] grid-cols-1 gap-4 overflow-y-auto fxm:grid-cols-2 fmd:grid-cols-3">
+        <div className="customScrollbar grid h-[calc(100vh-12rem)] grid-cols-1 gap-4 overflow-y-auto fxm:grid-cols-2 md:h-[60vh] fmd:grid-cols-3">
           {filteredRooms.map((channel) =>
             activeTab === "AMA" ? (
               <div key={channel.id} onClick={() => onChannelClick(channel)}>
