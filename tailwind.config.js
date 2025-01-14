@@ -24,11 +24,13 @@ module.exports = {
       "custom-height-oriented": {
         raw: "((min-height:390px) and (max-height:700px))",
       },
+      "mobile-max": { max: "765px" },
       ...defaultTheme.screens,
     },
     extend: {
       fontFamily: {
         monto: ["Montserrat Alternates", "san-serif"],
+        gravesend: ["Gravesend Sans Inline", "sans-serif"],
       },
       fontSize: {
         34: "2.125rem",
@@ -113,6 +115,7 @@ module.exports = {
           20: "#282A33",
           23: "#1E202B",
           24: "#17181A",
+          24: "#A8ABBB",
           "border-color": "#202027",
         },
         "white-shade": {

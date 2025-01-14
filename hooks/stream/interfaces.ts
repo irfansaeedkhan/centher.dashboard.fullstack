@@ -1,0 +1,57 @@
+import { StreamEventEnum } from "@/stream/model";
+
+export interface User {
+  _id: string;
+  display_name: string;
+  profile_image: string;
+  cover_image: string;
+  membership: {
+    last_status: "citizen" | "verified" | "none";
+    status: "citizen" | "verified" | "none";
+    endAt: number;
+  };
+  profile_bio: string;
+  social_media: SocialMedia;
+  organization: {
+    org_id: string;
+    title: string;
+    joined_at: string;
+  } | null;
+  createdAt: string;
+  updatedAt: string;
+  is_followed_by_loggedin_user?: boolean;
+  is_loggedin_user_followed_by_other_user?: boolean;
+}
+
+export interface SocialMedia {
+  website_url: string;
+  twitter_username: string;
+  facebook_username: string;
+  instagram_username: string;
+  twitch_username: string;
+  onlyfans_username: string;
+  youtube_url: string;
+  tiktok_username: string;
+  telegram_username: string;
+}
+
+export interface Me extends User {
+  has_seen_notifications_page: boolean;
+  first_name: string;
+  last_name: string;
+  pseudonym: string;
+  referrer_address: string;
+
+  [key: string]: any;
+}
+
+export interface IUserState {
+  currentUser: Me | null;
+  currentUserLastUpdateTime: number;
+  users: User[];
+}
+
+export interface IStreamEvent {
+  type: StreamEventEnum;
+  data: any;
+}

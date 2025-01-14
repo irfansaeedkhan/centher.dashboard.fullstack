@@ -174,7 +174,7 @@ export const RoundsBooking: React.FC<PresaleDataProps> = ({
 const textDays = "text-[8px] font-medium text-white";
 const textActive = "text-xs font-semibold text-white";
 const gradientRoundMain =
-  "gradient-borders-2 relative flex h-[22px] w-8 cursor-pointer items-center justify-center rounded-3xl p-px";
+  "gradient-borders-div relative flex h-[22px] w-8 cursor-pointer items-center justify-center rounded-3xl p-px";
 const gradientRoundInner = "text-gradient-1 py-1 font-medium";
 const simpleRoundMain =
   "relative flex h-[22px] w-8 cursor-pointer items-center justify-center rounded-3xl border border-gray-shade-14 p-px";

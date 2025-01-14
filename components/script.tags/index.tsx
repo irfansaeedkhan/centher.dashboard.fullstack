@@ -93,6 +93,7 @@ const ScriptTags = () => {
         />
         <meta name="theme-color" content="#000000" />
         <link rel="manifest" href="/favicons/site-new.webmanifest" />
+        <link rel="stylesheet" href="https://use.typekit.net/psu6dek.css" />
       </Head>
 
       {/* Google Tag Manager */}

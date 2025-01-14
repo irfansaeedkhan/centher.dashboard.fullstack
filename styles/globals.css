@@ -1,8 +1,47 @@
 @import url(https://fonts.googleapis.com/css2?family=Montserrat+Alternates:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap);
 
+@font-face {
+  font-family: "Gravesend Sans Inline";
+  src: url("/fonts/gravesend-sans-inline.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.Popover {
+  box-shadow: 0 2px 4px rgba(0, 10, 20, 0.1);
+  padding: 5px 20px;
+  border-radius: 20px;
+  box-sizing: border-box;
+  /* width: max-content; */
+  /* max-width: calc(100vw - 10px); */
+  z-index: 10000;
+  position: relative;
+}
+
+/* استایل فلش */
+.Popover .arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid black; /* رنگ فلش */
+  left: 50%;
+  transform: translateX(-50%); /* برای قرار دادن فلش در مرکز Popover */
+  top: -5px; /* برای قرار دادن فلش در بالای Popover */
+}
+
+/* اگر Popover در پایین قرار گیرد */
+.Popover[data-placement="bottom"] .arrow {
+  top: auto;
+  bottom: -5px; /* برای قرار دادن فلش در پایین Popover */
+  border-top: none; /* حذف فلش بالایی */
+  border-bottom: 5px solid black; /* اضافه کردن فلش به پایین */
+}
 
 @layer base {
   :root {
@@ -88,7 +127,10 @@
   }
 
   /* =============================== Scrollbars End =============================== */
-
+  .border-gradient-custom {
+    border-image: linear-gradient(to right, #115dcb, #21bf7f);
+    border-image-slice: 1;
+  }
   /* Reset default input styling to match the theme */
   input:-webkit-autofill,
   input:-webkit-autofill:active,
@@ -885,7 +927,7 @@
     background-clip: text;
     width: fit-content;
   }
-  .gradient-borders-2 {
+  .gradient-borders-div {
     border: 1px solid transparent;
     background-image: linear-gradient(#1b1c22, #1b1c22),
       radial-gradient(circle at top right, #115dcb 0%, #21bf7f 100%);
