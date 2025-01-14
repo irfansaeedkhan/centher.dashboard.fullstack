@@ -70,8 +70,6 @@ jobs:
         run: |
           echo "\n!! Staging\n"
           cat .env.staging
-          echo "\n!! Prining .env.production\n"
-          cat .env.production
 
       - name: Build playground image
         id: build-image
