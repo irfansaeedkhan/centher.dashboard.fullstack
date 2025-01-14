@@ -5,6 +5,7 @@ import { MdBackupTable } from "react-icons/md";
 import Button from "@/components/button";
 import { MutedMic, UnmutedMic } from "@/assets/svgs";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
+import clsx from "clsx";
 
 interface Props {
   onClose: () => void;
@@ -18,7 +19,12 @@ export const FloatingStreamComponent: React.FC<Props> = ({
   const [floatStreamModal, setFloatStreamModal] = useState(false);
   // const verificationTick = useVerificationTick({ user });
   return (
-    <div className="fixed bottom-4 left-1/2 z-40 flex w-[90vw] -translate-x-1/2 flex-col items-center justify-center rounded-2xl bg-[#00000024]  backdrop-blur-lg md:bottom-8 md:w-[50vw]">
+    <div
+      className={clsx(
+        `fixed bottom-4 left-1/2 z-40 flex w-[90vw] -translate-x-1/2 flex-col items-center justify-center rounded-2xl  bg-[#00000024] backdrop-blur-lg md:bottom-8 md:w-[50vw]`,
+        !floatStreamModal && "hidden"
+      )}
+    >
       <div className="flex w-full items-center justify-between gap-4  rounded-lg p-4 md:p-6">
         <div className={`flex items-center justify-center gap-3`}>
           <div className="relative flex h-10 w-10">
