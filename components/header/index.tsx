@@ -170,7 +170,7 @@ const Header = () => {
         connectWallet={connectWallet}
         onClose={() => setConnectWalletModal(false)}
       />
-      {/* <FloatingStreamComponent roomId="roomIdhere" onClose={() => {}} /> */}
+      <FloatingStreamComponent roomId="roomIdhere" onClose={() => {}} />
     </div>
   );
 };

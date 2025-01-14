@@ -18,7 +18,7 @@ export const FloatingStreamComponent: React.FC<Props> = ({
   const [floatStreamModal, setFloatStreamModal] = useState(true);
   // const verificationTick = useVerificationTick({ user });
   return (
-    <div className="fixed bottom-4 left-1/2 z-40 flex w-[90vw] -translate-x-1/2 items-center justify-center rounded-2xl bg-[#00000024] backdrop-blur-lg md:bottom-8 md:w-[50vw]">
+    <div className="fixed bottom-4 left-1/2 z-40 flex w-[90vw] -translate-x-1/2 flex-col items-center justify-center rounded-2xl bg-[#00000024]  backdrop-blur-lg md:bottom-8 md:w-[50vw]">
       <div className="flex w-full items-center justify-between gap-4  rounded-lg p-4 md:p-6">
         <div className={`flex items-center justify-center gap-3`}>
           <div className="relative flex h-10 w-10">
@@ -60,24 +60,32 @@ export const FloatingStreamComponent: React.FC<Props> = ({
         {/* action buttons */}
         <div className="flex items-center gap-4">
           <div className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-white/10">
-            <MutedMic />
-            {/* for unmuted state */}
-            {/* <UnmutedMic /> */}
+            <UnmutedMic />
+
+            {/* for muted state */}
+            {/*  <MutedMic /> */}
           </div>
 
-          <span>
+          <span className="hidden">
             <Button
               title={"Back to room"}
               variant="primary"
               onClick={() => {}}
               borderRounded="10px"
-              className="hidden text-sm font-medium md:block"
+              className="text-sm font-medium"
             />
-
-            <MdBackupTable className="block text-3xl font-medium text-[#d1d1d2] md:hidden" />
           </span>
         </div>
       </div>
+      <span className="flex w-full items-center justify-center pb-4 md:hidden md:pb-6">
+        <Button
+          title={"Back to room"}
+          variant="primary"
+          onClick={() => {}}
+          borderRounded="10px"
+          className="w-[90%] text-sm font-medium"
+        />
+      </span>
     </div>
   );
 };
