@@ -11,7 +11,7 @@ const AdsWrapper: React.FC<Props> = ({ children }) => {
       <div className="grid grid-cols-[auto_1fr] gap-x-3">
         <div className="flex h-12 w-12">
           <Image
-            alt="369x"
+            alt={`${process.env.NEXT_PUBLIC_BRAND_NAME}`}
             src="/images/vibra-token.png"
             width={48}
             height={48}
@@ -19,7 +19,9 @@ const AdsWrapper: React.FC<Props> = ({ children }) => {
           />
         </div>
         <div className="mb-2">
-          <p className="text-sm font-semibold text-white">369x Advertising</p>
+          <p className="text-sm font-semibold text-white">
+            {process.env.NEXT_PUBLIC_BRAND_NAME} Advertising
+          </p>
           <p className="gradient-border-3 mt-1 flex h-6 w-[100px] items-center justify-center rounded-xl p-[0.5px]">
             <span className="textGradient text-xs">Sponsorized</span>
           </p>
