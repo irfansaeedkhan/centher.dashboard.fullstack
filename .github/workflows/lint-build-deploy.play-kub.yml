@@ -66,6 +66,13 @@ jobs:
           echo "NEXT_PUBLIC_GQL_URL_BLOCKCHAIN=${{ vars.NEXT_PUBLIC_GQL_URL_BLOCKCHAIN }}" >> .env.staging
           echo "NEXT_PUBLIC_GQL_URL_WEBSOCKET=${{ vars.NEXT_PUBLIC_GQL_URL_WEBSOCKET }}" >> .env.staging
 
+      - name: Printing value
+        run: |
+          echo "\n!! Staging\n"
+          cat .env.staging
+          echo "\n!! Prining .env.production\n"
+          cat .env.production
+
       - name: Build playground image
         id: build-image
         uses: docker/build-push-action@v4
