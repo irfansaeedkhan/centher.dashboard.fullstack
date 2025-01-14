@@ -23,7 +23,7 @@ type ComponentMap = Map<
   React.ComponentType<{
     setComponentName: (name: string) => any;
     onClose: () => void;
-    roomData?: Room;
+    roomData: Room;
     unreadMessages: number;
   }>
 >;

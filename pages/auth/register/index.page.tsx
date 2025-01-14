@@ -26,7 +26,7 @@ Register.getLayout = (page) => {
           <Link href={AppRoutes.home}>
             <Image
               src="/images/logo.png"
-              alt="369x Logo"
+              alt="Flux Logo"
               width={75}
               height={39}
               className="w-18"
@@ -53,7 +53,6 @@ Register.getLayout = (page) => {
 export default Register;
 
 const signupLeftData = {
-  title: "Register to 369x",
-  content:
-    "Create an account to take advantage of the whole 369x SocialFi world",
+  title: `Register to ${process.env.NEXT_PUBLIC_BRAND_NAME}`,
+  content: `Create an account to take advantage of the whole ${process.env.NEXT_PUBLIC_BRAND_NAME} SocialFi world`,
 };

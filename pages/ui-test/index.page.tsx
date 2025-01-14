@@ -9,6 +9,7 @@ const UiTest: NextPage = () => {
         name="John Wedson"
         imageURL="/images/john-wedson.png"
         isApproved={true}
+        isSpeaking={false}
       />
 
       <UserProfileCard

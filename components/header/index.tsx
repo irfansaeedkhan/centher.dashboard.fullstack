@@ -16,6 +16,7 @@ import ConnectWalletModal from "../modal/connect-wallet-modal";
 import { useStream } from "@/hooks/stream/use.core";
 import { StreamEventEnum } from "@/stream/model";
 import AudioPlayer from "@/pages/marketplace/_components/audio.player";
+import { FloatingStreamComponent } from "./floating.stream";
 
 const Header = () => {
   const { width } = useWindowSize();
@@ -80,7 +81,7 @@ const Header = () => {
       >
         <Image
           src="/images/logo.png"
-          alt="369x Logo"
+          alt="Flux Logo"
           width={75}
           height={39}
           className="w-18"
@@ -169,6 +170,7 @@ const Header = () => {
         connectWallet={connectWallet}
         onClose={() => setConnectWalletModal(false)}
       />
+      <FloatingStreamComponent roomId="roomIdhere" onClose={() => {}} />
     </div>
   );
 };

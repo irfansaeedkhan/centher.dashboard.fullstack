@@ -23,7 +23,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = (props) => {
           >
             <Image
               src="/images/logo.png"
-              alt="369x Logo"
+              alt="Flux Logo"
               width={75}
               height={39}
               className="w-18"

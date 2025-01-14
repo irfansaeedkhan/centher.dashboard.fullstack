@@ -219,7 +219,9 @@ export const NFTImageCard: React.FC<NFTImageCardProps> = ({ data }) => {
                 <span className="flex size-4 flex-shrink-0 fsm:size-5">
                   <X369XIcon />
                 </span>
-                <span className="hidden f2xl:block">369x</span>
+                <span className="hidden f2xl:block">
+                  {process.env.NEXT_PUBLIC_BRAND_NAME}
+                </span>
               </div>
             </div>
           )}

@@ -19,7 +19,7 @@ export const PromotionCard2: React.FC<Props> = ({ className, ...props }) => {
         <p
           className={`w-full max-w-[220px] text-center text-sm font-bold uppercase leading-[17.07px] text-white`}
         >
-          Buy and stake DXC coin on 369x
+          Buy and stake DXC coin on {process.env.NEXT_PUBLIC_BRAND_NAME}
         </p>
         <Link
           href={AppRoutes.staking.index}

@@ -10,7 +10,7 @@ import { Room } from "./voispace.create.channel.modal/voispace.create.channel.mo
 
 interface DynamicProps {
   onClose: () => void;
-  roomData?: Room;
+  roomData: Room;
   setComponentName: (name: string) => string;
 }
 
@@ -33,7 +33,14 @@ const LiveView: React.FC<DynamicProps> = ({
   roomData,
 }) => {
   const { useSubscribeToMessages, insertMessage, liveAgent } = useStream();
-  const { event, getAudioStream, getVideoStream } = liveAgent;
+  const {
+    event,
+    globalIsOwner,
+    getAudioStream,
+    getVideoStream,
+    closeConsumer,
+    close,
+  } = liveAgent;
   const [inputValue, setInputValue] = useState("");
   const [formattedMessages, setFormattedMessages] = useState<
     BroadcastMessage[]
@@ -45,6 +52,17 @@ const LiveView: React.FC<DynamicProps> = ({
   );
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoStream = getVideoStream();
+  const audioStream = getAudioStream();
+
+  useEffect(() => {
+    const audioElement = document.getElementById(
+      "audioElement"
+    ) as HTMLAudioElement;
+    console.log({ audioElement, audioStream });
+    if (audioElement && audioStream) {
+      audioElement.srcObject = audioStream;
+    }
+  }, [audioStream]);
 
   useEffect(() => {
     if (event && event.type == StreamEventEnum.ON_UPDATE_VIDEO_STREAM) {
@@ -76,6 +94,16 @@ const LiveView: React.FC<DynamicProps> = ({
         tracks.forEach((track) => track.stop());
       }
     }
+    try {
+      if (globalIsOwner) {
+        close();
+      } else {
+        closeConsumer(roomData.id!);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
     onClose();
   };
 
@@ -118,6 +146,13 @@ const LiveView: React.FC<DynamicProps> = ({
                 <span className="font-monto text-[11px] font-medium">549</span>
               </div>
             </div>
+            <div className="bg-green-600">
+              <audio
+                id="audioElement"
+                autoPlay
+                className="h-4 w-4 bg-red-400 "
+              />
+            </div>
 
             <button
               onClick={() => leaveHandler()}
@@ -144,7 +179,7 @@ const LiveView: React.FC<DynamicProps> = ({
       </div>
 
       {/* <div className="absolute inset-0 h-[80%] bg-[url('/images/live-room-bg.svg')] bg-cover bg-center" /> */}
-      <div className="z-20 min-h-[70vh] p-4 flg:py-6">
+      <div className="z-20 min-h-[70vh] bg-[#00000042] p-4 flg:py-6">
         <div className="customScrollbar flex h-[calc(100vh-15.8rem)] flex-col gap-6 overflow-y-auto !pt-[40%] text-white md:!pt-[25%] flg:h-[calc(100vh-22rem)] flg:p-6">
           {subscriptionLoading ? (
             <>
@@ -172,6 +207,11 @@ const LiveView: React.FC<DynamicProps> = ({
               placeholder="Type something"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  onSend(e);
+                }
+              }}
             />
             <button
               className="mr-[12px] h-[20px] w-[20px]"
