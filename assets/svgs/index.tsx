@@ -54,7 +54,7 @@ export { default as Trash } from "./trash.svg";
 export { default as FollowerIcon } from "./follower.icon.svg";
 export { default as LinkIcon } from "./link.svg";
 export { default as WorldIcon } from "./world.svg";
-export { default as shareIcon } from "./shareIcon.svg";
+export { default as ShareWhiteIcon } from "./share-white.icon.svg";
 export { default as ArchiveEmptyIcon } from "./archive.icon.svg";
 export { default as BUSDIcon } from "./busd.icon.svg";
 export { default as BUSDIconBG } from "./busd.icon.bg.svg";
@@ -193,6 +193,22 @@ export { default as NewCalendarIcon } from "./new-calendar-icon.svg";
 export { default as CrownIcon } from "./crown-icon.svg";
 export { default as GiftIcon } from "./gift-icon.svg";
 export { default as X369XIcon } from "./369x.icon.svg";
+export { default as VoispaceLiveIcon } from "./voispace.live.icon.svg";
+export { default as VoispaceGradientRing } from "./voispace.gradient.ring.svg";
+export { default as VideoIcon2 } from "./video.svg";
+export { default as AmaLiveProfileIcon } from "./ama.live.svg";
+export { default as VipIcon } from "./vip.icon.svg";
+export { default as MicIcon } from "./mic.icon.svg";
+export { default as MicIcon2 } from "./mic.live.svg";
+export { default as BackButtonShiny } from "./back.button.svg";
+export { default as GrabIcon } from "./grab.icon.svg";
+export { default as ChevronDown } from "./chevron-down.icon.svg";
+export { default as MutedChat } from "./muted-chat.svg";
+export { default as MutedMic } from "./muted-mic.svg";
+export { default as UnmutedMic } from "./unmuted-mic.svg";
+export { default as UnmutedChat } from "./unmuted-chat.svg";
+export { default as SpeechIcon } from "./speech.svg";
+export { default as CancelSpeechIcon } from "./cancel-speech.svg";
 
 export const X369xIcon: React.FC<IconProps> = (props) => {
   return (

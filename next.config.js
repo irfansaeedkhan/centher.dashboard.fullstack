@@ -30,6 +30,7 @@ const nextConfig = {
             "centher-development.s3.eu-west-3.amazonaws.com",
             "devstatic.centher.io.s3.eu-west-3.amazonaws.com",
             "centher-staging.infura-ipfs.io",
+            "upload.wikimedia.org",
             "play.dapp.jedidev.com"
           ],
   },

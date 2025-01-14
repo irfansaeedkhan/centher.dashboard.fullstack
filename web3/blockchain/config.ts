@@ -103,7 +103,7 @@ export const BlockchainConfig: IBlockchainConfig = {
   rpcProvider:
     process.env.NEXT_PUBLIC_APP_ENV === "production"
       ? "https://bsc-dataseed1.binance.org"
-      : "https://sepolia.infura.io/v3/8ca3f33ab9a94790b1ebf1b734d19ba0",
+      : "https://ethereum-sepolia.core.chainstack.com/bfa8949f46986d75815e86ab166ce3ea",
   abis: {
     CENTHER_TOKEN: centherAbi,
     REGISTRATION: registrationAbi,
