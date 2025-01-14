@@ -211,8 +211,8 @@ const CreateNFTCollection: NextPageWithLayout = () => {
               <span className="word-break text-white">
                 {collectionData?.name}
               </span>{" "}
-              Collection on <b> 369x </b> platform, Click view on profile to
-              view your collection.
+              Collection on <b> {process.env.NEXT_PUBLIC_BRAND_NAME} </b>{" "}
+              platform, Click view on profile to view your collection.
             </p>
           }
           txStatus={txStatus}

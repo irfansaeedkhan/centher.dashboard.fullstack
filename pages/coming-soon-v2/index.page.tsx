@@ -25,7 +25,7 @@ const V2: NextPageWithLayout = () => {
             className="w-[137px] text-center text-sm"
           >
             <Button
-              title={"369x.io!"}
+              title={`${process.env.NEXT_PUBLIC_BRAND_DOMAIN}!`}
               variant="primary"
               className="w-full py-3 font-bold"
             />

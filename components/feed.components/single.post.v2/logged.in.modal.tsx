@@ -38,7 +38,7 @@ export const LoggedInModal: React.FC<Props> = ({ isOpen, onClose }) => {
               <h3 className="text-lg font-semibold">
                 <Image
                   src="/images/logo.png"
-                  alt="369x Logo"
+                  alt="Flux Logo"
                   width={75}
                   height={39}
                   className="w-18"
@@ -52,7 +52,8 @@ export const LoggedInModal: React.FC<Props> = ({ isOpen, onClose }) => {
             <main className="py-2 fmd:p-4">
               <div className="mt-4 space-y-8 text-center">
                 <h3 className="text-2xl font-semibold text-white">
-                  Register or login to <b>369x</b>
+                  Register or login to{" "}
+                  <b>{process.env.NEXT_PUBLIC_BRAND_NAME}</b>
                 </h3>
                 <div>
                   <Link href={AppRoutes.auth.login}>

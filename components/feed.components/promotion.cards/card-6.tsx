@@ -20,7 +20,8 @@ export const PromotionCard6: React.FC<Props> = ({ className, ...props }) => {
         <p
           className={`text-center text-sm font-medium leading-[17.07px] text-white`}
         >
-          Are you a 369x Citizen? Check out Staking as a Service!
+          Are you a {process.env.NEXT_PUBLIC_BRAND_NAME} Citizen? Check out
+          Staking as a Service!
         </p>
       </div>
       <Link
