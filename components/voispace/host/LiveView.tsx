@@ -139,11 +139,11 @@ const LiveView: React.FC<DynamicProps> = ({
                 <span className="h-[10px] w-[10px] rounded-[50%] bg-[#FF453A]"></span>
                 <span className="font-monto text-[11px] font-medium">Live</span>
               </div>
-              {/* //TODO : number of viewers   */}
+
               <div className="flex items-center justify-center gap-2 rounded-[5px] bg-[#1C1D21] px-1 py-[1px] text-white">
                 <EyeIcon className="scale-75" />
                 <span className="font-monto text-[11px] font-medium">
-                  {roomData.participatorsCount.aggregate.count || 0}
+                  {roomData.participatorsCount.aggregate.count}
                 </span>
               </div>
             </div>
@@ -179,7 +179,6 @@ const LiveView: React.FC<DynamicProps> = ({
         </div>
       </div>
 
-      {/* <div className="absolute inset-0 h-[80%] bg-[url('/images/live-room-bg.svg')] bg-cover bg-center" /> */}
       <div className="z-20 min-h-[70vh] bg-[#00000042] p-4 flg:py-6">
         <div className="customScrollbar flex h-[calc(100vh-15.8rem)] flex-col gap-6 overflow-y-auto !pt-[40%] text-white md:!pt-[25%] flg:h-[calc(100vh-22rem)] flg:p-6">
           {subscriptionLoading ? (
@@ -222,22 +221,6 @@ const LiveView: React.FC<DynamicProps> = ({
             </button>
           </div>
         </div>
-        {/* <div className="mt-[50px] flex gap-[8px]">
-          <div className="flex w-[100%] max-w-[583px] items-center overflow-hidden rounded-[12px] bg-[#212329]">
-            <input
-              className="font-regular flex-grow border-0 bg-transparent text-[12px] text-white"
-              placeholder="Type something"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-            />
-            <button
-              className="mr-[12px] h-[20px] w-[20px]"
-              onClick={(e) => onSend(e)}
-            >
-              <SendChatIcon />
-            </button>
-          </div>
-        </div> */}
       </div>
     </div>
   );
