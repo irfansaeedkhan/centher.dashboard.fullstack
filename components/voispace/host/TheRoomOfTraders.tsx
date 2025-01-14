@@ -23,12 +23,13 @@ import {
 import ClientCardView from "../shared/profile";
 import ActionButton from "./ui/ActionButton";
 import UserWithPopover from "./partials/UserWithPopover";
+import { Room } from "./voispace.create.channel.modal/voispace.create.channel.modal";
 
 interface DynamicProps {
   onClose: () => void;
   setComponentName: (name: string) => any;
-  roomData?: ICentalkBroadcast;
-  unreadMessages?: number;
+  roomData: Room;
+  unreadMessages: number;
 }
 
 const TheRoomOfTraders: React.FC<DynamicProps> = ({

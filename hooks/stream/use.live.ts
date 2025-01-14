@@ -35,6 +35,7 @@ export interface LiveStreamType {
   closeSubscription: (key: keyof typeof StreamSubscriptionEnum) => void;
   getVideoStream: () => MediaStream | null;
   getAudioStream: () => MediaStream | null;
+  closeConsumer: (userId: string) => void;
 }
 
 export interface LiveHookParams {
@@ -580,7 +581,8 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
 
   const getAudioStream = (): MediaStream | null => {
     if (globalIsOwner.current) {
-      return globalLocalAudio.current;
+      // return globalLocalAudio.current;
+      return null;
     }
     const streams = Array.from(
       globalConsumersAudioStream.current,
@@ -592,8 +594,13 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
       }
     );
 
+    if (streams.length === 0) {
+      return null;
+    }
+
     return streams[0].stream;
   };
+
   const connectSendTransport = async (): Promise<void> => {
     try {
       console.log("step 1");
@@ -791,6 +798,7 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
     consumersAudioStream: globalConsumersAudioStream.current,
     consumersVideoStram: globalConsumersVideoStream.current,
     globalIsOwner: globalIsOwner.current,
+    closeConsumer,
     getAudioStream,
     getVideoStream,
     createRoom,
