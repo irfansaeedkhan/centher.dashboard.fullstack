@@ -25,9 +25,9 @@ export const CentherTable: React.FC<CentherTableProps> = ({
   const [modal, setModal] = useState<ModalState>({
     isOpen: false,
     status: "warning",
-    title: "Claim 369x",
-    subtitle: `Do you want to claim 369x?`,
-    bodyText: `Click the button below to claim 369x.`,
+    title: `Claim ${process.env.NEXT_PUBLIC_BRAND_NAME}`,
+    subtitle: `Do you want to claim ${process.env.NEXT_PUBLIC_BRAND_NAME}?`,
+    bodyText: `Click the button below to claim ${process.env.NEXT_PUBLIC_BRAND_NAME}.`,
     confirmButtonText: "Claim Now",
     onClose: () => {
       setModal((prev) => ({
@@ -69,8 +69,8 @@ export const CentherTable: React.FC<CentherTableProps> = ({
       ...prev,
       isOpen: true,
       status: "warning",
-      title: "Claim 369x",
-      subtitle: `Do you want to claim 369x?`,
+      title: `Claim ${process.env.NEXT_PUBLIC_BRAND_NAME}`,
+      subtitle: `Do you want to claim ${process.env.NEXT_PUBLIC_BRAND_NAME}?`,
       bodyText: `Click the button below to claim CTHR.`,
       confirmButtonText: "Claim Now",
       onClickConfirm: () => handleClaim(claimFrom),

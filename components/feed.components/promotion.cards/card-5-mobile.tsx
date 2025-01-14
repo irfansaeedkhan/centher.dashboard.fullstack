@@ -23,7 +23,8 @@ export const PromotionCard5Mobile: React.FC<Props> = ({
         <p
           className={`text-center text-sm font-medium leading-[17.07px] text-white`}
         >
-          Get your Business Account with 369x Passport
+          Get your Business Account with {process.env.NEXT_PUBLIC_BRAND_NAME}{" "}
+          Passport
         </p>
       </div>
       <Link

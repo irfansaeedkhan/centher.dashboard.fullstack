@@ -34,7 +34,7 @@ const StakingComingSoon: NextPageWithLayout = () => {
           <div className="max-w-[300px] text-center text-sm text-gray-shade-7 md:max-w-[534px]">
             Get a Business Account and become a{" "}
             <Link className="text-gradient" href={AppRoutes.citizenship}>
-              369x Citizen
+              {process.env.NEXT_PUBLIC_BRAND_NAME} Citizen
             </Link>{" "}
             to enjoy the premium packages offered to Citizens. Stay tuned for
             more exciting news!

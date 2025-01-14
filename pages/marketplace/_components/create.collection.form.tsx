@@ -279,7 +279,7 @@ export const CreateNFTCollectionForm = ({
               id="url"
               autoComplete="off"
               {...register("url")}
-              placeholder="eg. https://369x.io/collection/skull-price"
+              placeholder={`eg. https://${process.env.NEXT_PUBLIC_BRAND_DOMAIN}/collection/skull-price`}
               className={!formState.errors.url ? inputField : inputFieldError}
             />
           </div>
