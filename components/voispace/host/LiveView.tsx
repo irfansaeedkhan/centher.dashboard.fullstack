@@ -206,6 +206,11 @@ const LiveView: React.FC<DynamicProps> = ({
               placeholder="Type something"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  onSend(e);
+                }
+              }}
             />
             <button
               className="mr-[12px] h-[20px] w-[20px]"
