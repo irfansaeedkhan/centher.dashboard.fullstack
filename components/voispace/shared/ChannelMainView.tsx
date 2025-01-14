@@ -41,7 +41,7 @@ const ChannelMainView: React.FC<ChannelMainViewInterface> = ({
   const [unreadMessages, setUnreadMessages] = useState(0);
 
   const { useSubscribeToMessages } = useStream();
-  const { messages } = useSubscribeToMessages(roomData?.id || "");
+  const { messages } = useSubscribeToMessages(roomData?.id || "", 5);
 
   const componentMap: ComponentMap = new Map([
     ["TheRoomOfTraders", TheRoomOfTraders],

@@ -73,7 +73,8 @@ const ChatRoom: React.FC<DynamicProps> = ({
   };
 
   const { messages, loading: subscriptionLoading } = useSubscribeToMessages(
-    roomData?.id || ""
+    roomData?.id || "",
+    5
   );
 
   const formattedMessages =

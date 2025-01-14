@@ -40,7 +40,8 @@ const LiveView: React.FC<DynamicProps> = ({
   >([]);
 
   const { messages, loading: subscriptionLoading } = useSubscribeToMessages(
-    roomData?.id || ""
+    roomData?.id || "",
+    5
   );
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoStream = getVideoStream();

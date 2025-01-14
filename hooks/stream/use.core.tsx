@@ -25,7 +25,10 @@ interface StreamContextType {
   insertMessage: (broadcastId: string, content: string) => Promise<void>;
   useSubscribeToAllBroadcasts: () => any;
   useSubscribeToSpeakers: (broadcastId: string) => any;
-  useSubscribeToMessages: (broadcastId: string) => {
+  useSubscribeToMessages: (
+    broadcastId: string,
+    limit: number
+  ) => {
     messages: BroadcastMessage[];
     loading: boolean;
   };
