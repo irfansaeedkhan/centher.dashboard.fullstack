@@ -17,7 +17,7 @@ export const PromotionCard1 = () => {
       />
       <div className="mb-[6px] mt-3 flex flex-col items-center justify-center">
         <h2 className="animationTextHeading !text-[21px] font-extrabold leading-[26px]">
-          369x DAO
+          {process.env.NEXT_PUBLIC_BRAND_NAME} DAO
         </h2>
         <h2 className="!text-[21px] font-extrabold leading-[26px] text-white">
           LAUNCHPAD

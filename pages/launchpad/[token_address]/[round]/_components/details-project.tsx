@@ -88,7 +88,7 @@ const DetailsProject = () => {
               <span className="h-5 w-5 flex-shrink-0">
                 <X369XIcon />
               </span>
-              <span>369x</span>
+              <span>{process.env.NEXT_PUBLIC_BRAND_NAME}</span>
             </a>
           </div>
         </div>

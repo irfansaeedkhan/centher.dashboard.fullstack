@@ -37,7 +37,8 @@ export const SwapLicenseModal = () => {
           <p className="text-center text-sm text-[#DBDDE6]">
             Your old DeXagon Real Estate Licenses are not compatible with the
             current version of our Marketplace. Please click the button below to
-            swap your license with a new version compatible with 369x.
+            swap your license with a new version compatible with{" "}
+            {process.env.NEXT_PUBLIC_BRAND_NAME}.
           </p>
         </div>
         {/* <Link
