@@ -10,7 +10,7 @@ import { Room } from "./voispace.create.channel.modal/voispace.create.channel.mo
 
 interface DynamicProps {
   onClose: () => void;
-  roomData?: Room;
+  roomData: Room;
   setComponentName: (name: string) => string;
 }
 
@@ -87,7 +87,7 @@ const LiveView: React.FC<DynamicProps> = ({
       }
     }
     if (globalIsOwner) {
-      liveAgent.c;
+      // liveAgent.c;
     }
     onClose();
   };
