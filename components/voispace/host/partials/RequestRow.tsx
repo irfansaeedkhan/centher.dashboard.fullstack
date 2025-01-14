@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Button from "@/components/button";
-import { VipIcon } from "@/assets/svgs";
+import { LoaderSpinner, VipIcon } from "@/assets/svgs";
 
 interface RequestProps {
   request: any;
@@ -42,12 +42,21 @@ const RequestRow: React.FC<RequestProps> = ({
 
       <div className="flex gap-[12px]">
         <Button
-          title={loading ? "Accepting..." : "Accept"}
+          title="Accept"
           variant="primary"
-          onClick={() => handler("accept")}
+          onClick={() => {
+            if (loading) return;
+            handler("accept");
+          }}
           className={`text-xs font-medium`}
           borderRounded="10px"
           disabled={loading}
+          loaderIcon={
+            loading &&
+            ((
+              <LoaderSpinner className="inline-block h-4 w-4 animate-spin" />
+            ) as any)
+          }
         />
 
         {/* <Button
