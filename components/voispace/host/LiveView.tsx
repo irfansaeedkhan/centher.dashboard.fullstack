@@ -128,7 +128,7 @@ const LiveView: React.FC<DynamicProps> = ({
       <div className="flex flex-col gap-[27px] px-[24px] py-[24px]">
         <HostModalHeader
           subTitle="Voispace"
-          title="Your room for China networks coming to defi"
+          title={roomData?.name || ""}
           onClose={onClose}
           onBack={() => setComponentName("Participators")}
         />
