@@ -1,3 +1,4 @@
+import cn from "@/utils/cn";
 import React, { useState } from "react";
 import { SlArrowUp, SlArrowDown } from "react-icons/sl";
 
@@ -11,6 +12,7 @@ interface DropdownProps {
   selectedValue?: string;
   onSelect: (label: string) => void;
   error?: string;
+  className?: string;
 }
 
 const CustomDropdownAll: React.FC<DropdownProps> = ({
@@ -18,6 +20,7 @@ const CustomDropdownAll: React.FC<DropdownProps> = ({
   selectedValue = "",
   onSelect,
   error,
+  className,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -35,13 +38,17 @@ const CustomDropdownAll: React.FC<DropdownProps> = ({
   return (
     <div className="relative">
       <div
-        className={`w-full cursor-pointer rounded-lg border-0 bg-gray-shade-24 px-4 py-4 text-sm font-semibold text-white shadow-md focus:outline-none ${
-          error ? "border-red-500" : ""
-        }`}
+        className={cn(
+          `w-full cursor-pointer rounded-lg border-0 bg-gray-shade-24 px-4 py-4 text-sm font-semibold text-white shadow-md focus:outline-none`,
+          error ? "border-red-500" : "",
+          className
+        )}
         onClick={() => setIsOpen(!isOpen)}
       >
         <div className="flex items-center justify-between">
-          <span className="word-break">{selectedLabel}</span>
+          <span className="max-w-[96%] overflow-hidden truncate text-ellipsis whitespace-nowrap mobile-max:w-[80vw]">
+            {selectedLabel}
+          </span>
           {isOpen ? (
             <SlArrowUp className="h-2 w-2 fill-gray-400  fsm:h-3 fsm:w-3" />
           ) : (

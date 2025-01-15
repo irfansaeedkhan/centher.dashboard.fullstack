@@ -10,6 +10,7 @@ import useMediaDevices from "hooks/use.get.media.devices/index";
 import toast from "react-hot-toast";
 import { Room } from "../voispace.create.channel.modal";
 import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
+import CustomDropdownAll from "@/components/shared/custom-dropdown";
 
 interface Fields {
   "Content-Type": string;
@@ -258,7 +259,7 @@ const PermissionsAndDetails = ({
         </div>
 
         {/* Dropdown for Audio/Video Options */}
-        <div className="relative">
+        {/* <div className="relative">
           <select
             className="mt-2 block w-full rounded-[10px] border-0 bg-[#141416] py-3 pl-4 pr-8 text-white focus:outline-none focus:ring-[#141416]"
             value={
@@ -297,6 +298,42 @@ const PermissionsAndDetails = ({
                 </option>
               ))}
           </select>
+        </div> */}
+
+        {/* Custom Dropdown */}
+        <div className="mt-2 rounded-[10px]">
+          {currentTab === "audio" && (
+            <CustomDropdownAll
+              className="rounded-[10px] bg-[#141416]"
+              options={microphones.map((mic) => ({
+                value: mic.deviceId,
+                label: mic.label,
+              }))}
+              selectedValue={formState.audioDevice?.deviceId || ""}
+              onSelect={(value) => {
+                const selectedDevice = microphones.find(
+                  (mic) => mic.deviceId === value
+                );
+                handleInputChange("audioDevice", selectedDevice);
+              }}
+            />
+          )}
+          {currentTab === "video" && (
+            <CustomDropdownAll
+              className="rounded-[10px] bg-[#141416]"
+              options={cameras.map((cam) => ({
+                value: cam.deviceId,
+                label: cam.label,
+              }))}
+              selectedValue={formState.videoDevice?.deviceId || ""}
+              onSelect={(value) => {
+                const selectedDevice = cameras.find(
+                  (cam) => cam.deviceId === value
+                );
+                handleInputChange("videoDevice", selectedDevice);
+              }}
+            />
+          )}
         </div>
       </div>
     </div>
