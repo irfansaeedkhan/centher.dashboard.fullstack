@@ -53,6 +53,7 @@ export interface IPeerStat {
 }
 
 export type TState =
+  | "none"
   | "new"
   | "connecting"
   | "connected"

@@ -53,20 +53,8 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
   const globalProducerTransport = useRef<Transport | null>(null);
   const globalConsumerTransport = useRef<Transport | null>(null);
   const globalLocalAudio = useRef<MediaStream | null>(null);
-  const [subscriptionAgents, setSubscriptionAgents] = useState<
-    Record<keyof typeof StreamSubscriptionEnum, any>
-  >({
-    [StreamSubscriptionEnum.SUBSCRIBE_ALL]: null,
-    [StreamSubscriptionEnum.SUBSCRIBE_SPEAKERS]: null,
-    [StreamSubscriptionEnum.SUBSCRIBE_MESSAGE]: null,
-    [StreamSubscriptionEnum.SUBSCRIBE_CURRENT_USER]: null,
-    [StreamSubscriptionEnum.SUBSCRIBE_HAS_TALK_REQUEST_USERS]: null,
-    [StreamSubscriptionEnum.SUBSCRIBE_CURRENT_STREAM]: null,
-  });
 
-  const globalReceiveStreamLoader = useRef<
-    "connecting" | "connected" | "failed" | "none"
-  >("none");
+  const globalReceiveStreamLoader = useRef<TState>();
 
   const globalSendStreamLoader = useRef<
     | "connecting"
@@ -437,9 +425,12 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
           (data: {
             params: mediasoupClient.types.TransportOptions<mediasoupClient.types.AppData>;
           }) => {
-            globalConsumerTransport.current! =
+            globalConsumerTransport.current =
               globalDevice.current!.createRecvTransport(data.params);
-
+            console.log(
+              "globalConsumerTransport.current",
+              globalConsumerTransport.current
+            );
             // 'connect' | 'connectionstatechange'
             globalConsumerTransport.current!.on(
               "connect",
@@ -476,14 +467,22 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
                     console.log("consumer connected");
                     globalReceiveStreamLoader.current = "connected";
                     break;
-                  case "failed":
-                    console.log("consumer failed");
-                    globalReceiveStreamLoader.current = "failed";
-                    globalConsumerTransport.current!.close();
-                    leave();
-                    rej();
-                    break;
+                  // case "failed":
+                  //   globalReceiveStreamLoader.current = "failed";
+                  //   globalConsumerTransport.current!.close();
+
+                  //   leave();
+                  //   rej();
+                  //   break;
                   default:
+                    if (globalConsumerTransport.current) {
+                      console.log("consumer connectionstatechange", state);
+                      globalReceiveStreamLoader.current = state;
+                      globalConsumerTransport.current!.close();
+
+                      leave();
+                      rej();
+                    }
                     break;
                 }
               }
@@ -572,7 +571,7 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
 
             // 'trackended' | 'transportclose'
             consumer.on("transportclose", () => {
-              console.log("remote producer closed.");
+              console.log("remote producer closed.", producerId);
               globalConsumersAudioStream.current.delete(producerId);
               globalConsumersAudio.current.delete(producerId);
             });
@@ -628,21 +627,34 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
     globalConsumersAudio.current.forEach((e) => {
       e.close();
     });
-
-    globalConsumersAudio.current.clear();
-    globalConsumersAudioStream.current.clear();
-    globalSocket.current!.close();
-    globalSocket.current!.disconnect();
+    try {
+      globalSocket.current!.close();
+      globalSocket.current!.disconnect();
+    } catch (error) {
+      console.log("close socket connection error. ", error);
+    } finally {
+      restartVariable();
+    }
   };
 
-  const closeSubscription = (key: keyof typeof StreamSubscriptionEnum) => {
-    if (subscriptionAgents[key]) {
-      subscriptionAgents[key].unsubscribe();
-      setSubscriptionAgents((prev) => ({
-        ...prev,
-        [key]: null,
-      }));
-    }
+  const restartVariable = () => {
+    globalConsumersAudioStream.current = new Map();
+    globalConsumersAudio.current = new Map();
+    globalAudioProducer.current = null;
+    globalSocket.current = null;
+    globalDevice.current = deviceInstance;
+    globalUserId.current = null;
+    globalBroadcastId.current = null;
+    globalRtpCapabilities.current = null;
+    globalIsOwner.current = false;
+    globalHasTalkRequest.current = false;
+    globalProducerTransport.current = null;
+    globalConsumerTransport.current = null;
+    globalLocalAudio.current = null;
+    globalReceiveStreamLoader.current = "none";
+    globalSendStreamLoader.current = "none";
+    setToast("");
+    setEvent(null);
   };
 
   const hasGetUserMedia = () => {
@@ -686,6 +698,5 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
     toggleMute,
     leave,
     requestToTalk,
-    closeSubscription,
   };
 };

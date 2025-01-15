@@ -7,7 +7,6 @@ import DOMPurify from "dompurify";
 import { useStream } from "@/hooks/stream/use.core";
 import { Room } from "./voispace.create.channel.modal/voispace.create.channel.modal";
 import EmojiPicker, { EmojiClickData, Theme } from "emoji-picker-react";
-import { format } from "path";
 
 interface DynamicProps {
   onClose: () => void;

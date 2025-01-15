@@ -10,7 +10,7 @@ import {
   getStreams,
   getStreamSpeakers,
 } from "@/stream/graphql/subscription";
-import { ICentalkBroadcast, ParticipatorsResponse } from "./cen-talk";
+import { ICentalkBroadcast } from "./cen-talk";
 import { AMAStreamType, useAMA } from "./use.ama";
 import { LiveStreamType, useLive } from "./use.live";
 import { StreamHooksHelper } from "./helper";

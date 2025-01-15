@@ -48,7 +48,6 @@ export const VoiSpaceFeedCard: React.FC = () => {
   const { user } = useUser();
 
   const checkCitizenship = (): boolean => {
-    console.log("User membership status:", user?.membership?.status);
     if (user?.membership?.status !== "citizen") {
       setShowBuyCitizenshipModal(true);
       return false;
@@ -80,7 +79,6 @@ export const VoiSpaceFeedCard: React.FC = () => {
   };
 
   const handleCloseCreateChannelModal = () => {
-    console.log("dasdasd");
     setIsCreateModalOpen(false);
   };
 
