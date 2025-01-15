@@ -62,7 +62,6 @@ const LiveView: React.FC<DynamicProps> = ({
     const audioElement = document.getElementById(
       "audioElement"
     ) as HTMLAudioElement;
-    console.log({ audioElement, audioStream });
     if (audioElement && audioStream) {
       audioElement.srcObject = audioStream;
     }

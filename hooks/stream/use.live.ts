@@ -559,11 +559,19 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
                     globalReceiveStreamLoader.current = "connected";
                     break;
                   default:
-                    console.log("consumer failed");
-                    globalReceiveStreamLoader.current = "failed";
-                    globalConsumerTransport.current!.close();
-                    leave();
-                    rej();
+                    if (globalConsumerTransport.current) {
+                      console.log("consumer failed", state);
+                      setEvent({
+                        data: null,
+                        type: StreamEventEnum.ON_NEED_TO_TRY_AGAIN,
+                      });
+                      leave();
+                      globalReceiveStreamLoader.current = "failed";
+                      globalConsumerTransport.current?.close();
+
+                      rej();
+                    }
+
                     break;
                 }
               }

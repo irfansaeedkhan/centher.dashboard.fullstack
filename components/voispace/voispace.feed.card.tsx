@@ -107,7 +107,6 @@ export const VoiSpaceFeedCard: React.FC = () => {
       eventOnAMA?.type === StreamEventEnum.ON_JOINED_TO_BROADCAST ||
       eventOnLive?.type === StreamEventEnum.ON_JOINED_TO_BROADCAST
     ) {
-      console.log("joined to room");
       setSelectedRoomData(selectedRoom);
       setIsUserMainViewOpen(true);
       setJoiningRoomLoader(false);
@@ -132,6 +131,13 @@ export const VoiSpaceFeedCard: React.FC = () => {
     ) {
       setSelectedRoomData(null);
       setIsUserMainViewOpen(false);
+    }
+
+    if (
+      eventOnAMA?.type == StreamEventEnum.ON_NEED_TO_TRY_AGAIN ||
+      eventOnLive?.type == StreamEventEnum.ON_NEED_TO_TRY_AGAIN
+    ) {
+      toast.error("Failed to join the room. Please try again.");
     }
   }, [eventOnLive, eventOnAMA]);
 

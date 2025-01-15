@@ -492,20 +492,17 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
                       type: StreamEventEnum.ON_UPDATE_CONSUMER,
                     });
                     break;
-                  // case "failed":
-                  //   globalReceiveStreamLoader.current = "failed";
-                  //   globalConsumerTransport.current!.close();
-
-                  //   leave();
-                  //   rej();
-                  //   break;
                   default:
                     if (globalConsumerTransport.current) {
+                      setEvent({
+                        data: null,
+                        type: StreamEventEnum.ON_NEED_TO_TRY_AGAIN,
+                      });
                       console.log("consumer connectionstatechange", state);
-                      globalReceiveStreamLoader.current = state;
-                      globalConsumerTransport.current!.close();
-
                       leave();
+                      globalReceiveStreamLoader.current = state;
+                      globalConsumerTransport.current?.close();
+
                       rej();
                     }
                     break;
