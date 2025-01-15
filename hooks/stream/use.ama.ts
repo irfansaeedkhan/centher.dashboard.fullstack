@@ -334,7 +334,6 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
             },
           },
           (data: { params: any }) => {
-            console.log("createWebRtcTransport", data);
             globalProducerTransport.current =
               globalDevice.current.createSendTransport(data.params);
 
@@ -437,10 +436,7 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
           }) => {
             globalConsumerTransport.current =
               globalDevice.current!.createRecvTransport(data.params);
-            console.log(
-              "globalConsumerTransport.current",
-              globalConsumerTransport.current
-            );
+
             // 'connect' | 'connectionstatechange'
             globalConsumerTransport.current!.on(
               "connect",
@@ -579,25 +575,29 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
           async (
             consumeData: mediasoupClient.types.ConsumerOptions<mediasoupClient.types.AppData>
           ) => {
-            const consumer = await globalConsumerTransport.current!.consume(
-              consumeData
-            );
+            if (globalConsumerTransport.current) {
+              const consumer = await globalConsumerTransport.current.consume(
+                consumeData
+              );
 
-            // 'trackended' | 'transportclose'
-            consumer.on("transportclose", () => {
-              console.log("remote producer closed.", producerId);
-              globalConsumersAudioStream.current.delete(producerId);
-              globalConsumersAudio.current.delete(producerId);
-            });
-            console.log("hamid oomad");
-            globalConsumersAudio.current.set(producerId, consumer);
-            const stream = new MediaStream();
-            stream.addTrack(consumer.track);
-            globalConsumersAudioStream.current.set(producerId, stream);
-            setEvent({
-              data: null,
-              type: StreamEventEnum.ON_UPDATE_CONSUMER,
-            });
+              // 'trackended' | 'transportclose'
+              consumer.on("transportclose", () => {
+                console.log("remote producer closed.", producerId);
+                globalConsumersAudioStream.current.delete(producerId);
+                globalConsumersAudio.current.delete(producerId);
+              });
+
+              globalConsumersAudio.current.set(producerId, consumer);
+              const stream = new MediaStream();
+              stream.addTrack(consumer.track);
+              globalConsumersAudioStream.current.set(producerId, stream);
+              setEvent({
+                data: null,
+                type: StreamEventEnum.ON_UPDATE_CONSUMER,
+              });
+            } else {
+              console.log("consumer transport is null");
+            }
           }
         );
       }

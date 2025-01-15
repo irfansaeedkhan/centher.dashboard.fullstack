@@ -268,25 +268,29 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
           async (
             consumeData: mediasoupClient.types.ConsumerOptions<mediasoupClient.types.AppData>
           ) => {
-            const consumer = await globalConsumerTransport.current!.consume(
-              consumeData
-            );
+            if (globalConsumerTransport.current) {
+              const consumer = await globalConsumerTransport.current!.consume(
+                consumeData
+              );
 
-            // 'trackended' | 'transportclose'
-            consumer.on("transportclose", () => {
-              console.log("remote producer closed");
-              globalConsumersVideo.current.delete(producerId);
-              globalConsumersVideo.current.delete(producerId);
-            });
+              // 'trackended' | 'transportclose'
+              consumer.on("transportclose", () => {
+                console.log("remote producer closed");
+                globalConsumersVideo.current.delete(producerId);
+                globalConsumersVideo.current.delete(producerId);
+              });
 
-            globalConsumersVideo.current.set(producerId, consumer);
-            const stream = new MediaStream();
-            stream.addTrack(consumer.track);
-            globalConsumersVideoStream.current.set(producerId, stream);
-            setEvent({
-              type: StreamEventEnum.ON_UPDATE_VIDEO_STREAM,
-              data: null,
-            });
+              globalConsumersVideo.current.set(producerId, consumer);
+              const stream = new MediaStream();
+              stream.addTrack(consumer.track);
+              globalConsumersVideoStream.current.set(producerId, stream);
+              setEvent({
+                type: StreamEventEnum.ON_UPDATE_VIDEO_STREAM,
+                data: null,
+              });
+            } else {
+              console.log("consumer transport is null");
+            }
           }
         );
       }
@@ -304,25 +308,29 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
           async (
             consumeData: mediasoupClient.types.ConsumerOptions<mediasoupClient.types.AppData>
           ) => {
-            const consumer = await globalConsumerTransport.current!.consume(
-              consumeData
-            );
+            if (globalConsumerTransport.current) {
+              const consumer = await globalConsumerTransport.current!.consume(
+                consumeData
+              );
 
-            // 'trackended' | 'transportclose'
-            consumer.on("transportclose", () => {
-              console.log("remote producer closed");
-              globalConsumersAudioStream.current.delete(producerId);
-              globalConsumersAudio.current.delete(producerId);
-            });
+              // 'trackended' | 'transportclose'
+              consumer.on("transportclose", () => {
+                console.log("remote producer closed");
+                globalConsumersAudioStream.current.delete(producerId);
+                globalConsumersAudio.current.delete(producerId);
+              });
 
-            globalConsumersAudio.current.set(producerId, consumer);
-            const stream = new MediaStream();
-            stream.addTrack(consumer.track);
-            globalConsumersAudioStream.current.set(producerId, stream);
-            setEvent({
-              type: StreamEventEnum.ON_UPDATE_VIDEO_STREAM,
-              data: null,
-            });
+              globalConsumersAudio.current.set(producerId, consumer);
+              const stream = new MediaStream();
+              stream.addTrack(consumer.track);
+              globalConsumersAudioStream.current.set(producerId, stream);
+              setEvent({
+                type: StreamEventEnum.ON_UPDATE_VIDEO_STREAM,
+                data: null,
+              });
+            } else {
+              console.log("consumer transport is null");
+            }
           }
         );
       }
@@ -451,14 +459,12 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
                     console.log("transport connected");
                     globalSendStreamLoader.current = "connected";
                     break;
-                  case "failed":
+                  default:
                     console.log("transport failed");
                     globalSendStreamLoader.current = "failed";
                     globalProducerTransport.current!.close();
                     leave();
                     rej();
-                    break;
-                  default:
                     break;
                 }
               }
@@ -488,7 +494,7 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
           (data: {
             params: mediasoupClient.types.TransportOptions<mediasoupClient.types.AppData>;
           }) => {
-            globalConsumerTransport.current! =
+            globalConsumerTransport.current =
               globalDevice.current!.createRecvTransport(data.params);
 
             // 'connect' | 'connectionstatechange'
@@ -531,14 +537,12 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
                     console.log("consumer connected");
                     globalReceiveStreamLoader.current = "connected";
                     break;
-                  case "failed":
+                  default:
                     console.log("consumer failed");
                     globalReceiveStreamLoader.current = "failed";
                     globalConsumerTransport.current!.close();
                     leave();
                     rej();
-                    break;
-                  default:
                     break;
                 }
               }
@@ -599,11 +603,7 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
 
   const connectSendTransport = async (): Promise<void> => {
     try {
-      console.log("step 1");
-
       if (globalDevice.current!.canProduce("audio")) {
-        console.log("step 2");
-
         if (!hasGetUserMedia()) {
           throw new Error(
             "Your browser does not support video chat. Please update your browser or use a different one."
@@ -624,19 +624,14 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
           },
         });
 
-        console.log("step 3");
         const localAudio = stream.getAudioTracks()[0];
         const localVideo = stream.getVideoTracks()[0];
 
         if (localAudio && localVideo) {
-          console.log("step 4");
-
           if (
             globalProducerTransport &&
             !globalProducerTransport.current!.closed
           ) {
-            console.log("step 5");
-
             globalAudioProducer.current =
               await globalProducerTransport.current!.produce({
                 track: localAudio,
@@ -651,7 +646,6 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
               });
 
             globalLocalVideo.current = new MediaStream([localVideo]);
-            console.log("step 6");
 
             globalAudioProducer.current.on("trackended", () => {
               globalSendStreamLoader.current = "trackEnded";
