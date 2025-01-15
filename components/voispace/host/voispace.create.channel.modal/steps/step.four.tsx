@@ -110,7 +110,7 @@ const StepFour: React.FC<StepFourProps> = ({
       )}
     >
       <div className={`text-xl font-medium text-white`}>
-        Dive into <span className={`text-gradient-1`}>VoiceSpace</span>
+        Dive into <span className={`text-gradient-1`}>VoiSpace</span>
       </div>
 
       {/* PRIVATE ROOMS */}

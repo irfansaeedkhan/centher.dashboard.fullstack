@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import Image from "next/image";
 import toast from "react-hot-toast";
@@ -38,6 +38,8 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
   roomData,
   unreadMessages,
 }) => {
+  const htmlBodyRef = useRef<HTMLBodyElement | null>(null);
+
   const {
     amaAgent,
     useSubscribeToCurrentStream,
@@ -55,6 +57,7 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
     globalIsOwner,
     userId,
   } = amaAgent;
+
   const { stream: currentStream, loader } = useSubscribeToCurrentStream(
     roomData?.id || "",
     roomData?.type === "AMA" ? BroadcastTypeEnum.AMA : BroadcastTypeEnum.LIVE
@@ -121,6 +124,9 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
 
   const handleLeaveRoom = () => {
     try {
+      if (htmlBodyRef.current) {
+        htmlBodyRef.current.style.overflow = "auto";
+      }
       leave();
     } catch (error) {
       console.error("Failed to leave the room:", error);
@@ -128,12 +134,15 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
     }
   };
 
+  useEffect(() => {
+    htmlBodyRef.current = document.body as HTMLBodyElement;
+  }, []);
   return (
     <div className="h-full  px-6 py-6 text-white mobile-max:px-4">
       <div className="flex h-full flex-col gap-[42px]">
         <HostModalHeader
           subTitle="Voispace"
-          title="The Room of Traders"
+          title={roomData?.name || "N/A"}
           onClose={handleLeaveRoom}
           onBack={() => null}
           hasBackButton={true}

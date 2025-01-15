@@ -38,6 +38,9 @@ const ModalContainer: React.FC<Props> = ({
     "keydown",
     (event: KeyboardEvent) => {
       if (event.key === "Escape" && shouldCloseOnEsc) {
+        if (htmlBodyRef.current) {
+          htmlBodyRef.current.style.overflow = "auto";
+        }
         onClose();
       }
     },
@@ -51,10 +54,14 @@ const ModalContainer: React.FC<Props> = ({
     } else {
       htmlBodyRef.current.style.overflow = "auto";
     }
-  }, [isOpen]);
+  }, [isOpen, onClose]);
 
   useOnClickOutside(modalContentRef, () => {
     if (!shouldCloseOnOverlayClick) return;
+    if (htmlBodyRef.current) {
+      htmlBodyRef.current.style.overflow = "auto";
+    }
+
     onClose();
   });
 

@@ -9,34 +9,105 @@ import {
   VoispaceLiveIcon,
 } from "@/assets/svgs";
 import Button from "../button";
-import ChannelMainView from "./shared/ChannelMainView";
 import { useStream } from "@/hooks/stream/use.core";
+
+import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
+import useUser from "@/hooks/use.user";
+import { useRouter } from "next/router";
+import { StreamEventEnum } from "@/stream/model";
+import toast, { LoaderIcon } from "react-hot-toast";
+import { BuyCitizenshipModal } from "@/components/modal/buy-citizenship-modal";
+
+import ChannelMainView from "./shared/ChannelMainView";
+import { VoispaceExploreChannelsModal } from "./user/voispace.explore.channels.modal";
 import {
   Room,
   VoispaceCreateChannelModal,
 } from "./host/voispace.create.channel.modal/voispace.create.channel.modal";
-import { VoispaceExploreChannelsModal } from "./user/voispace.explore.channels.modal";
-import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
-import useUser from "@/hooks/use.user";
-import { StreamEventEnum } from "@/stream/model";
-import toast, { LoaderIcon } from "react-hot-toast";
 
-export const VoiceSpaceFeedCard: React.FC = () => {
+export const VoiSpaceFeedCard: React.FC = () => {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isMoreModalOpen, setIsMoreModalOpen] = useState(false);
   const [selectedRoomData, setSelectedRoomData] = useState<Room | null>(null);
   const [isUserMainViewOpen, setIsUserMainViewOpen] = useState(false);
+  const [showBuyCitizenshipModal, setShowBuyCitizenshipModal] = useState(false);
+  const [joiningRoomLoader, setJoiningRoomLoader] = useState<boolean>(false);
+
   const { amaAgent, liveAgent, useSubscribeToAllBroadcasts } = useStream();
+
   const { joinRoom: joinAMARoom, event: eventOnAMA } = amaAgent;
   const { joinRoom: joinLiveRoom, event: eventOnLive } = liveAgent;
-  const [joiningRoomLoader, setJoiningRoomLoader] = useState<boolean>(false);
-  const { user } = useUser();
+
   const { loader, data: broadcasts } = useSubscribeToAllBroadcasts();
 
   const { leave: leaveAMA } = amaAgent;
   const { leave: leaveLive } = liveAgent;
+
+  const { user } = useUser();
+
+  const checkCitizenship = (): boolean => {
+    console.log("User membership status:", user?.membership?.status);
+    if (user?.membership?.status !== "citizen") {
+      setShowBuyCitizenshipModal(true);
+      return false;
+    }
+    return true;
+  };
+
+  const handleRoomClick = (room: Room) => {
+    if (!checkCitizenship()) return;
+    try {
+      if (room.type == BroadcastTypeEnum.AMA) {
+        joinAMARoom(room.id as string, user?._id || "");
+      } else {
+        joinLiveRoom(room.id as string, user?._id || "");
+      }
+      setSelectedRoom(room);
+      setJoiningRoomLoader(true);
+    } catch (error) {
+      toast.error("cannot join this room");
+    }
+  };
+
+  const handleCreateChannel = () => {
+    if (!checkCitizenship()) return;
+
+    if (!isCreateModalOpen) {
+      setIsCreateModalOpen(true);
+    }
+  };
+
+  const handleCloseCreateChannelModal = () => {
+    console.log("dasdasd");
+    setIsCreateModalOpen(false);
+  };
+
+  const handleMoreChannels = () => {
+    if (!checkCitizenship()) return;
+    setIsMoreModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    if (selectedRoomData?.type === BroadcastTypeEnum.AMA) {
+      leaveAMA();
+    }
+
+    if (selectedRoomData?.type === BroadcastTypeEnum.LIVE) {
+      leaveLive();
+    }
+
+    setIsUserMainViewOpen(false);
+    setSelectedRoomData(null);
+  };
+
+  const getValidImageUrl = (src: string) => {
+    if (src.startsWith("http://") || src.startsWith("https://")) {
+      return src;
+    }
+    return `/` + src.replace(/^\//, "");
+  };
 
   useEffect(() => {
     setRooms(broadcasts?.data?.broadcast);
@@ -74,39 +145,6 @@ export const VoiceSpaceFeedCard: React.FC = () => {
     }
   }, [eventOnLive, eventOnAMA]);
 
-  const handleRoomClick = (room: Room) => {
-    try {
-      if (room.type == BroadcastTypeEnum.AMA) {
-        joinAMARoom(room.id as string, user?._id || "");
-      } else {
-        joinLiveRoom(room.id as string, user?._id || "");
-      }
-      setSelectedRoom(room);
-      setJoiningRoomLoader(true);
-    } catch (error) {
-      toast.error("cannot join this room");
-    }
-  };
-
-  const handleCloseModal = () => {
-    if (selectedRoomData?.type === BroadcastTypeEnum.AMA) {
-      leaveAMA();
-    }
-
-    if (selectedRoomData?.type === BroadcastTypeEnum.LIVE) {
-      leaveLive();
-    }
-
-    setIsUserMainViewOpen(false);
-    setSelectedRoomData(null);
-  };
-
-  const getValidImageUrl = (src: string) => {
-    if (src.startsWith("http://") || src.startsWith("https://")) {
-      return src;
-    }
-    return `/` + src.replace(/^\//, "");
-  };
   return (
     <>
       <div className={clsx(`relative w-full select-none  flg:max-w-[272px]`)}>
@@ -114,12 +152,12 @@ export const VoiceSpaceFeedCard: React.FC = () => {
           <div className="border-b border-gray-shade-3">
             <div className={`flex items-center justify-between p-4`}>
               <h5 className={`text-gradient-1 text-base font-semibold`}>
-                VoiceSpace
+                VoiSpace
               </h5>
               <Button
                 title={"New"}
                 variant="primary"
-                onClick={() => setIsCreateModalOpen(true)}
+                onClick={handleCreateChannel}
                 borderRounded="10px"
                 className={`text-xs font-medium`}
               />
@@ -166,7 +204,7 @@ export const VoiceSpaceFeedCard: React.FC = () => {
             {!loader && rooms?.length > 7 && (
               <button
                 className="relative cursor-pointer"
-                onClick={() => setIsMoreModalOpen(true)}
+                onClick={handleMoreChannels}
               >
                 <Image
                   src="/images/voispace.more.png"
@@ -183,9 +221,7 @@ export const VoiceSpaceFeedCard: React.FC = () => {
         </div>
       </div>
       {isCreateModalOpen && (
-        <VoispaceCreateChannelModal
-          onClose={() => setIsCreateModalOpen(false)}
-        />
+        <VoispaceCreateChannelModal onClose={handleCloseCreateChannelModal} />
       )}
 
       {isMoreModalOpen && (
@@ -217,6 +253,13 @@ export const VoiceSpaceFeedCard: React.FC = () => {
             </span>
           </div>
         </div>
+      )}
+
+      {showBuyCitizenshipModal && (
+        <BuyCitizenshipModal
+          isOpen={showBuyCitizenshipModal}
+          onClickClose={() => setShowBuyCitizenshipModal(false)}
+        />
       )}
     </>
   );

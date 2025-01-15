@@ -13,7 +13,7 @@ const AMAOrLive = ({
   return (
     <div className="flex flex-col gap-6">
       <div className="text-xl font-medium text-white">
-        Dive into <span className="text-gradient-1">VoiceSpace</span>
+        Dive into <span className="text-gradient-1">VoiSpace</span>
       </div>
       <div className="flex flex-col gap-4">
         <div

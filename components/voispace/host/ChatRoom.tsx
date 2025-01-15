@@ -37,6 +37,24 @@ const ChatRoom: React.FC<DynamicProps> = ({
   const [inputValue, setInputValue] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [limit, setLimit] = useState(5);
+  const [allMessages, setAllMessages] = useState<any[]>([]);
+  const [isFetching, setIsFetching] = useState(false);
+
+  const { messages: fetchedMessages, loading: subscriptionLoading } =
+    useSubscribeToMessages(roomData?.id || "", limit);
+
+  useEffect(() => {
+    if (fetchedMessages) {
+      setAllMessages((prev) => {
+        const newMessages = fetchedMessages.filter(
+          (msg) => !prev.some((m) => m.id === msg.id)
+        );
+        return [...newMessages, ...prev];
+      });
+    }
+  }, [fetchedMessages]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -51,6 +69,19 @@ const ChatRoom: React.FC<DynamicProps> = ({
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  const handleScroll = () => {
+    if (
+      scrollRef.current &&
+      scrollRef.current.scrollTop === 0 &&
+      !subscriptionLoading &&
+      !isFetching
+    ) {
+      setIsFetching(true);
+      setLimit((prev) => prev + 5);
+      setTimeout(() => setIsFetching(false), 500);
+    }
+  };
 
   const handleInputChange = (e: any) => {
     setInputValue(e.target.value);
@@ -72,13 +103,8 @@ const ChatRoom: React.FC<DynamicProps> = ({
     }
   };
 
-  const { messages, loading: subscriptionLoading } = useSubscribeToMessages(
-    roomData?.id || "",
-    5
-  );
-
   const formattedMessages =
-    messages
+    allMessages
       ?.sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt))
       ?.reverse() || [];
 
@@ -119,7 +145,11 @@ const ChatRoom: React.FC<DynamicProps> = ({
           onBack={() => setComponentName("TheRoomOfTraders")}
         ></HostModalHeader>
         <div className="flex flex-col gap-[32px]">
-          <div className="customScrollbar flex h-[calc(100vh-15rem)] flex-col gap-6 overflow-y-auto text-white md:h-[40vh] md:py-6">
+          <div
+            className="customScrollbar flex h-[calc(100vh-15rem)] flex-col gap-6 overflow-y-auto text-white md:h-[40vh] md:py-6"
+            ref={scrollRef}
+            onScroll={handleScroll}
+          >
             {subscriptionLoading ? (
               <>
                 <MessageSkeleton />
@@ -128,8 +158,8 @@ const ChatRoom: React.FC<DynamicProps> = ({
                 <MessageSkeleton />
                 <MessageSkeleton />
               </>
-            ) : formattedMessages.length ? (
-              formattedMessages.map((msg: any, index: number) => (
+            ) : allMessages.length ? (
+              allMessages.map((msg: any, index: number) => (
                 <div key={index} className="flex items-start gap-3">
                   <div className="relative flex h-12 w-12 shrink-0  object-cover">
                     <Image

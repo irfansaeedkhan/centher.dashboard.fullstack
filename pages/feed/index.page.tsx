@@ -28,7 +28,7 @@ import useUser from "@/hooks/use.user";
 import { customLog } from "@/utils/custom.log";
 import { AppRoutes } from "@/constants/app.routes";
 import { NoPost } from "@/assets/svgs";
-import { VoiceSpaceFeedCard } from "@/components/voispace/voispace.feed.card";
+import { VoiSpaceFeedCard } from "@/components/voispace/voispace.feed.card";
 
 const Feed: NextPageWithLayout = () => {
   const { user } = useUser();
@@ -108,6 +108,11 @@ const Feed: NextPageWithLayout = () => {
       {((loading === "loaded" && posts.length === 0) || posts.length > 0) &&
         user && <CreatePostCard user={user} />}
 
+      {posts.length === 0 && (
+        <div className="mt-3 block w-full flg:hidden">
+          <VoiSpaceFeedCard />
+        </div>
+      )}
       {posts.map((post, index) => {
         return (
           <div key={post._id}>
@@ -151,9 +156,9 @@ const Feed: NextPageWithLayout = () => {
                 onPostInViewport={() => handleCreatePostView(post._id)}
               />
             </div>
-            {(index + 1) / 1 === 1 && (
+            {index === 0 && (
               <div className="mt-3 block w-full flg:hidden">
-                <VoiceSpaceFeedCard />
+                <VoiSpaceFeedCard />
               </div>
             )}
             {(index + 1) / 4 === 1 && (
