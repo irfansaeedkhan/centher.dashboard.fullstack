@@ -92,9 +92,11 @@ const Header = () => {
         const audioElement = document.getElementById(
           e.user
         ) as HTMLAudioElement;
+
         if (audioElement) {
           audioElement.srcObject = e.stream;
         }
+
         return <audio key={e.user} id={e.user} autoPlay />;
       })}
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { axiosApi369x } from "@/utils/axios";
 
 const useGetChatUsers = () => {

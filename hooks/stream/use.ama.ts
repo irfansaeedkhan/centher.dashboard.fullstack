@@ -9,7 +9,7 @@ import { areStringsEquals } from "@/stream/utils/string.utils";
 import { TState } from "@/stream/types/interfaces";
 import { SocketClientService } from "@/stream/clients/socket-client";
 import { RtpCapabilities } from "mediasoup-client/lib/RtpParameters";
-import { StreamEventEnum, StreamSubscriptionEnum } from "@/stream/model";
+import { StreamEventEnum } from "@/stream/model";
 import { IStreamEvent } from "./interfaces";
 
 export interface AMAStreamType {
@@ -65,7 +65,16 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
   >("none");
 
   const [toast, setToast] = useState<string>("");
-  const [event, setEvent] = useState<IStreamEvent | null>(null);
+  const [event, setPureEvent] = useState<IStreamEvent | null>(null);
+
+  const setEvent = (result: IStreamEvent | null) => {
+    if (result) {
+      setPureEvent({ data: result?.data, type: result?.type });
+      setTimeout(() => {
+        setPureEvent(null);
+      }, 1000);
+    }
+  };
 
   const createRoom = async (input: CreateBroadcastDto, userId: string) => {
     if (!globalSocket.current) {
@@ -467,6 +476,10 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
                   case "connected":
                     console.log("consumer connected");
                     globalReceiveStreamLoader.current = "connected";
+                    setEvent({
+                      data: null,
+                      type: StreamEventEnum.ON_UPDATE_CONSUMER,
+                    });
                     break;
                   // case "failed":
                   //   globalReceiveStreamLoader.current = "failed";
@@ -576,7 +589,7 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
               globalConsumersAudioStream.current.delete(producerId);
               globalConsumersAudio.current.delete(producerId);
             });
-
+            console.log("hamid oomad");
             globalConsumersAudio.current.set(producerId, consumer);
             const stream = new MediaStream();
             stream.addTrack(consumer.track);
@@ -589,7 +602,7 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
         );
       }
     } catch (error) {
-      console.error(error);
+      console.error("handle new producer error: ", error);
     }
   };
 
@@ -611,7 +624,6 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
 
   const closeConsumer = (producerId: string) => {
     const audioConsumer = globalConsumersAudio.current.get(producerId);
-
     if (audioConsumer) {
       audioConsumer.close();
       globalConsumersAudio.current.delete(producerId);
