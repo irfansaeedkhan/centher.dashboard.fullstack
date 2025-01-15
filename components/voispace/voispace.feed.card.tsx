@@ -139,6 +139,13 @@ export const VoiSpaceFeedCard: React.FC = () => {
     ) {
       toast.error("Failed to join the room. Please try again.");
     }
+
+    if (
+      eventOnAMA?.type == StreamEventEnum.ON_USER_KICKED ||
+      eventOnLive?.type == StreamEventEnum.ON_USER_KICKED
+    ) {
+      toast.error("You have been kicked from the room.");
+    }
   }, [eventOnLive, eventOnAMA]);
 
   return (
