@@ -22,7 +22,12 @@ export interface LiveStreamType {
   videoProducer: Producer | null;
   globalIsOwner: boolean;
   userId: string;
-  createRoom: (input: CreateBroadcastDto, userId: string) => Promise<any>;
+  createRoom: (
+    input: CreateBroadcastDto,
+    userId: string,
+    audioDevice?: MediaDeviceInfo,
+    videoDevice?: MediaDeviceInfo
+  ) => Promise<any>;
   joinRoom: (id: string, userId: string) => Promise<any>;
   getStatuses: () => { sendStreamLoader: string; receiveStreamLoader: string };
   invite: (users: string[]) => void;
@@ -82,6 +87,9 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
     | "none"
   >("none");
 
+  const globalAudioDevice = useRef<MediaDeviceInfo | null>(null);
+  const globalVideoDevice = useRef<MediaDeviceInfo | null>(null);
+
   const [toast, setToast] = useState<string>("");
   const [event, setPureEvent] = useState<IStreamEvent | null>(null);
 
@@ -104,7 +112,20 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
     };
   };
 
-  const createRoom = async (input: CreateBroadcastDto, userId: string) => {
+  const createRoom = async (
+    input: CreateBroadcastDto,
+    userId: string,
+    audioDevice?: MediaDeviceInfo,
+    videoDevice?: MediaDeviceInfo
+  ) => {
+    if (audioDevice) {
+      globalAudioDevice.current = audioDevice;
+    }
+
+    if (videoDevice) {
+      globalVideoDevice.current = videoDevice;
+    }
+
     if (!globalSocket.current) {
       await initSocketClient();
     }
@@ -611,8 +632,15 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
         }
 
         const stream = await navigator.mediaDevices.getUserMedia({
-          audio: true,
+          audio: {
+            deviceId: globalAudioDevice?.current?.deviceId
+              ? { exact: globalAudioDevice?.current?.deviceId }
+              : undefined,
+          },
           video: {
+            deviceId: globalVideoDevice?.current?.deviceId
+              ? { exact: globalVideoDevice?.current?.deviceId }
+              : undefined,
             width: {
               min: 640,
               max: 1920,

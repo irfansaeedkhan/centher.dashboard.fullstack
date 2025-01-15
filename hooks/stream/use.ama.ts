@@ -17,7 +17,12 @@ export interface AMAStreamType {
   event: IStreamEvent | null;
   consumersAudio: Map<string, MediaStream>;
   audioProducer: Producer | null;
-  createRoom: (input: CreateBroadcastDto, userId: string) => Promise<any>;
+  createRoom: (
+    input: CreateBroadcastDto,
+    userId: string,
+    audioDevice?: MediaDeviceInfo,
+    videoDevice?: MediaDeviceInfo
+  ) => Promise<any>;
   joinRoom: (id: string, userId: string) => Promise<any>;
   invite: (users: string[]) => void;
   toggleMemberTalkPermission: (userId: string) => void;
@@ -55,6 +60,8 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
 
   const globalReceiveStreamLoader = useRef<TState>();
 
+  const globalAudioDevice = useRef<MediaDeviceInfo | null>(null);
+
   const globalSendStreamLoader = useRef<
     | "connecting"
     | "connected"
@@ -76,7 +83,16 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
     }
   };
 
-  const createRoom = async (input: CreateBroadcastDto, userId: string) => {
+  const createRoom = async (
+    input: CreateBroadcastDto,
+    userId: string,
+    audioDevice?: MediaDeviceInfo,
+    _videoDevice?: MediaDeviceInfo
+  ) => {
+    if (audioDevice) {
+      globalAudioDevice.current = audioDevice;
+    }
+
     if (!globalSocket.current) {
       await initSocketClient();
     }
@@ -518,7 +534,11 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
         }
 
         const stream = await navigator.mediaDevices.getUserMedia({
-          audio: true,
+          audio: {
+            deviceId: globalAudioDevice?.current?.deviceId
+              ? { exact: globalAudioDevice?.current?.deviceId }
+              : undefined,
+          },
           video: false,
         });
 

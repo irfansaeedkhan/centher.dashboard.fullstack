@@ -12,18 +12,6 @@ import { Room } from "../voispace.create.channel.modal";
 import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
 import CustomDropdownAll from "@/components/shared/custom-dropdown";
 
-interface Fields {
-  "Content-Type": string;
-  Policy: string;
-  "X-Amz-Algorithm": string;
-  "X-Amz-Credential": string;
-  "X-Amz-Date": string;
-  "X-Amz-Signature": string;
-  acl: string;
-  bucket: string;
-  key: string;
-}
-
 const PermissionsAndDetails = ({
   formState,
   handleInputChange,
@@ -58,30 +46,36 @@ const PermissionsAndDetails = ({
     setPermissionsValid,
   ]);
 
-  useEffect(() => {
-    updateDevices().then(() => {
-      let showAudioError = false;
-      let showVideoError = false;
-      if (microphones.length === 0) {
-        showAudioError = true;
+  const setupDevices = async () => {
+    await updateDevices();
+    let showAudioError = false;
+    let showVideoError = false;
+
+    if (microphones.length === 0) {
+      showAudioError = true;
+    } else {
+      if (!formState.audioDevice) {
+        handleInputChange("audioDevice", microphones[0]);
+      }
+    }
+
+    if (formState.type === BroadcastTypeEnum.LIVE) {
+      if (cameras.length === 0) {
+        showVideoError = true;
       } else {
-        if (!formState.audioDevice) {
-          handleInputChange("audioDevice", microphones[0]);
+        if (!formState.videoDevice) {
+          handleInputChange("videoDevice", cameras[0]);
         }
       }
+    }
 
-      if (formState.type === BroadcastTypeEnum.LIVE) {
-        if (cameras.length === 0) {
-          showVideoError = true;
-        } else {
-          if (!formState.videoDevice) {
-            handleInputChange("videoDevice", cameras[0]);
-          }
-        }
-      }
+    setShowGetPermission(showAudioError || showVideoError);
+  };
 
-      setShowGetPermission(showAudioError || showVideoError);
-    });
+  setupDevices().then();
+
+  useEffect(() => {
+    setupDevices().then();
   }, [formState.type]);
 
   useEffect(() => {
