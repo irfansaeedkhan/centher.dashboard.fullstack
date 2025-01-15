@@ -238,7 +238,6 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
           });
 
           globalSocket.current!.on("consumer-closed", async (data) => {
-            console.log("consumer-closed", data);
             if (areStringsEquals(globalUserId.current!, data.user_id)) {
               closeProducer();
             } else {
@@ -633,7 +632,6 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
   };
 
   const closeProducer = () => {
-    console.log("closeProducer");
     if (globalAudioProducer.current) {
       globalAudioProducer.current.close();
       globalProducerTransport.current!.close();
@@ -705,6 +703,7 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
         });
 
         globalSocket.current.on("error", ({ data }: any) => {
+          console.log("server error", data);
           setEvent({
             data,
             type: StreamEventEnum.STREAM_INITIALIZATION_ERROR,

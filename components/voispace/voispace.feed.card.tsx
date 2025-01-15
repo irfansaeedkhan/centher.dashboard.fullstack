@@ -107,6 +107,7 @@ export const VoiSpaceFeedCard: React.FC = () => {
       eventOnAMA?.type === StreamEventEnum.ON_JOINED_TO_BROADCAST ||
       eventOnLive?.type === StreamEventEnum.ON_JOINED_TO_BROADCAST
     ) {
+      console.log("joined to room");
       setSelectedRoomData(selectedRoom);
       setIsUserMainViewOpen(true);
       setJoiningRoomLoader(false);
