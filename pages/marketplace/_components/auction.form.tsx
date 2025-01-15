@@ -210,7 +210,7 @@ const AuctionForm = ({
     <div className={formContainer}>
       <div className={fieldWrapper}>
         <label className={fieldTitle}>
-          Name Your NFT <span className="text-red-500">*</span>{" "}
+          Name Your NFT <span className="text-danger">*</span>{" "}
         </label>
         <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
           <input
@@ -224,14 +224,14 @@ const AuctionForm = ({
           />
         </div>
         {formState.errors.NFTName && (
-          <p className={`text-red-500 ${errMessage}`}>
+          <p className={`text-danger ${errMessage}`}>
             {formState.errors.NFTName.message}
           </p>
         )}
       </div>
       <div className={fieldWrapper}>
         <label className={fieldTitle}>
-          Description <span className="text-red-500">*</span>{" "}
+          Description <span className="text-danger">*</span>{" "}
         </label>
         <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
           <textarea
@@ -248,14 +248,14 @@ const AuctionForm = ({
           ></textarea>
         </div>
         {formState.errors.Description && (
-          <p className={`text-red-500 ${errMessage}`}>
+          <p className={`text-danger ${errMessage}`}>
             {formState.errors.Description.message}
           </p>
         )}
       </div>
       <div className={fieldWrapper}>
         <label className={fieldTitle}>
-          Set Auction End Time <span className="text-red-500">*</span>{" "}
+          Set Auction End Time <span className="text-danger">*</span>{" "}
         </label>
         <input
           type="date"
@@ -271,19 +271,19 @@ const AuctionForm = ({
           )}
         />
         {formState.errors.AuctionEndTime && (
-          <p className={`text-red-500 ${errMessage}`}>
+          <p className={`text-danger ${errMessage}`}>
             {formState.errors.AuctionEndTime.message}
           </p>
         )}
         {AuctionEndTimeErr && (
-          <p className={`text-red-500 ${errMessage}`}>
+          <p className={`text-danger ${errMessage}`}>
             Please select date & time from future
           </p>
         )}
       </div>
       <div className={fieldWrapper}>
         <label className={fieldTitle}>
-          Starting price for NFT <span className="text-red-500">*</span>{" "}
+          Starting price for NFT <span className="text-danger">*</span>{" "}
         </label>
         <div
           className={clsx(
@@ -306,14 +306,14 @@ const AuctionForm = ({
           </div>
         </div>
         {formState.errors.StartingNFTPrice && (
-          <p className={`text-red-500 ${errMessage}`}>
+          <p className={`text-danger ${errMessage}`}>
             {formState.errors.StartingNFTPrice.message}
           </p>
         )}
       </div>
       <div className={"z-50 flex w-full flex-col gap-2"}>
         <label htmlFor="textarea" className={fieldTitle}>
-          Collection <span className="text-red-500">*</span>{" "}
+          Collection <span className="text-danger">*</span>{" "}
         </label>
         <CustomDropdown
           options={collections.map((collection) => ({

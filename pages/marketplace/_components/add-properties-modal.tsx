@@ -56,7 +56,7 @@ const AddPropertiesModal: React.FC<Props> = ({
           </div>
         </div>
         {propertyErr && (
-          <p className={`text-red-500 ${errMessage}`}>{propertyErr}</p>
+          <p className={`text-danger ${errMessage}`}>{propertyErr}</p>
         )}
         <Button
           title={"Save"}

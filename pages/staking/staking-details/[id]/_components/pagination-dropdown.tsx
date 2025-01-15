@@ -95,7 +95,7 @@ const CustomDropdown: React.FC<DropdownProps> = ({
             />
           )}
         </div>
-        {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
+        {error && <p className="mt-1 text-xs text-danger">{error}</p>}
       </div>
       {isOpen && (
         <div className="absolute z-10 mt-2 w-full rounded-lg border border-gray-shade-3 bg-black-shade-3 text-white shadow-lg">

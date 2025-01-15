@@ -111,7 +111,7 @@ export const CollectionHeader: React.FC<Props> = ({
       )}
 
       {loadingCollection === "failed" && (
-        <div className="rounded-md border border-red-500 p-4 text-center text-base font-medium text-red-500">
+        <div className="rounded-md border border-red-500 p-4 text-center text-base font-medium text-danger">
           Could not load collection
         </div>
       )}

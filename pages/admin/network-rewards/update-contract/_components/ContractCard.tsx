@@ -402,7 +402,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
   //               className="text-white  rounded-md   py-3 px-3  !bg-black-shade-3   font-semibold text-xs  border-0 focus:outline-none   focus:ring-yellow-theme w-full max-w-[180px]"
   //             />
   //             {formState.errors.StartDate && (
-  //               <p className="text-red-500">
+  //               <p className="text-danger">
   //                 {formState.errors.StartDate.message}
   //               </p>
   //             )}
@@ -421,7 +421,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
   //               className="text-white  rounded-md   py-3 px-3  !bg-black-shade-3   font-semibold text-xs  border-0 focus:outline-none   focus:ring-yellow-theme w-full max-w-[180px]"
   //             />
   //             {formState.errors.EndDate && (
-  //               <p className="text-red-500">
+  //               <p className="text-danger">
   //                 {formState.errors.EndDate.message}
   //               </p>
   //             )}
@@ -440,7 +440,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
   //                 className="text-white  rounded-md   py-3 px-3  !bg-black-shade-3   font-semibold text-sm  border-0 focus:outline-none   focus:ring-yellow-theme w-full max-w-[180px]"
   //               />
   //               {formState.errors.CTHR_BUSD && (
-  //                 <p className="text-red-500">
+  //                 <p className="text-danger">
   //                   {formState.errors.CTHR_BUSD.message}
   //                 </p>
   //               )}
@@ -462,7 +462,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
   //               className="text-white  rounded-md   py-3 px-3  !bg-black-shade-3   font-semibold text-sm  border-0 focus:outline-none   focus:ring-yellow-theme w-full max-w-[180px]"
   //             />
   //             {formState.errors.MaxCTHR && (
-  //               <p className="text-red-500">
+  //               <p className="text-danger">
   //                 {formState.errors.MaxCTHR.message}
   //               </p>
   //             )}
@@ -480,7 +480,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
   //               className="text-white  rounded-md   py-3 px-3  !bg-black-shade-3   font-semibold text-sm  border-0 focus:outline-none   focus:ring-yellow-theme w-full max-w-[180px]"
   //             />
   //             {formState.errors.MinBUSD && (
-  //               <p className="text-red-500">
+  //               <p className="text-danger">
   //                 {formState.errors.MinBUSD.message}
   //               </p>
   //             )}
@@ -498,7 +498,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
   //               className="text-white  rounded-md   py-3 px-3  !bg-black-shade-3   font-semibold text-sm  border-0 focus:outline-none   focus:ring-yellow-theme w-full max-w-[180px]"
   //             />
   //             {formState.errors.MaxBUSD && (
-  //               <p className="text-red-500">
+  //               <p className="text-danger">
   //                 {formState.errors.MaxBUSD.message}
   //               </p>
   //             )}
@@ -520,7 +520,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
   //               <h6 className="text-gray-shade-7 text-sm">Enable</h6>
   //             </div>
   //             {formState.errors.BUSD && (
-  //               <p className="text-red-500">
+  //               <p className="text-danger">
   //                 {formState.errors.BUSD.message}
   //               </p>
   //             )}
@@ -541,7 +541,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
   //               <h6 className="text-gray-shade-7 text-sm">Enable</h6>
   //             </div>
   //             {formState.errors.NTR && (
-  //               <p className="text-red-500">
+  //               <p className="text-danger">
   //                 {formState.errors.NTR.message}
   //               </p>
   //             )}
@@ -562,7 +562,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
   //               <h6 className="text-gray-shade-7 text-sm">Enable</h6>
   //             </div>
   //             {formState.errors.BUSD && (
-  //               <p className="text-red-500">
+  //               <p className="text-danger">
   //                 {formState.errors.BUSD.message}
   //               </p>
   //             )}
@@ -583,7 +583,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
   //               <h6 className="text-gray-shade-7 text-sm">Enable</h6>
   //             </div>
   //             {formState.errors.NTR && (
-  //               <p className="text-red-500">
+  //               <p className="text-danger">
   //                 {formState.errors.NTR.message}
   //               </p>
   //             )}

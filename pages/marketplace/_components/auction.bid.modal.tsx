@@ -54,7 +54,7 @@ const AuctionBidModal = ({ onSubmit, onClose }: any) => {
             </h6>
           </div>
           {bidPriceErr && (
-            <p className={`text-red-500 ${errMessage}`}>
+            <p className={`text-danger ${errMessage}`}>
               Kindly fill the form using numbers
             </p>
           )}

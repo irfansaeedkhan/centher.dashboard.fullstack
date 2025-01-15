@@ -74,7 +74,7 @@ const RecommendedPeople: NextPageWithLayout = () => {
 
       {loading === "failed" && (
         <div className={`flex items-center justify-center`}>
-          <p className={`text-red-500`}>Failed to load</p>
+          <p className={`text-danger`}>Failed to load</p>
         </div>
       )}
     </div>

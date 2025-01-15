@@ -1030,7 +1030,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     recommended.
                   </p>
                   {profileErr && (
-                    <p className={`pb-2 text-xs font-medium text-red-500`}>
+                    <p className={`pb-2 text-xs font-medium text-danger`}>
                       Profile image is required
                     </p>
                   )}
@@ -1114,7 +1114,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     350 recommended.
                   </p>
                   {coverErr && (
-                    <p className={`pb-2 text-xs font-medium text-red-500`}>
+                    <p className={`pb-2 text-xs font-medium text-danger`}>
                       Cover image is required
                     </p>
                   )}
@@ -1185,7 +1185,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     />
                   </div>
                   {stakingForm.formState.errors.staking_name && (
-                    <p className={`pb-2 text-xs font-medium text-red-500`}>
+                    <p className={`pb-2 text-xs font-medium text-danger`}>
                       {stakingForm.formState.errors.staking_name.message}
                     </p>
                   )}
@@ -1212,7 +1212,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     />
                   </div>
                   {stakingForm.formState.errors.token_address && (
-                    <p className={`pb-2 text-xs font-medium text-red-500`}>
+                    <p className={`pb-2 text-xs font-medium text-danger`}>
                       {stakingForm.formState.errors.token_address.message}
                     </p>
                   )}
@@ -1240,7 +1240,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     token address
                   </p>
                   {stakingForm.formState.errors.reward_token_address && (
-                    <p className={`pb-2 text-xs font-medium text-red-500`}>
+                    <p className={`pb-2 text-xs font-medium text-danger`}>
                       {
                         stakingForm.formState.errors.reward_token_address
                           .message
@@ -1272,7 +1272,7 @@ const CreateStaking: NextPageWithLayout = () => {
                       </div>
                       {stakingForm.formState.errors
                         .staking_reward_token_price_ratio && (
-                        <p className={`pb-2 text-xs font-medium text-red-500`}>
+                        <p className={`pb-2 text-xs font-medium text-danger`}>
                           {
                             stakingForm.formState.errors
                               .staking_reward_token_price_ratio.message
@@ -1324,12 +1324,12 @@ const CreateStaking: NextPageWithLayout = () => {
                     </p>
                   )}
                   {stakingForm.formState.errors.multilevel_rewards && (
-                    <p className={`pb-2 text-xs font-medium text-red-500`}>
+                    <p className={`pb-2 text-xs font-medium text-danger`}>
                       {stakingForm.formState.errors.multilevel_rewards.message}
                     </p>
                   )}
                   {totalPercentageError && (
-                    <p className={`pb-2 text-xs font-medium text-red-500`}>
+                    <p className={`pb-2 text-xs font-medium text-danger`}>
                       Total percentage cannot exceed 100%
                     </p>
                   )}
@@ -1358,7 +1358,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     />
                   </div>
                   {stakingForm.formState.errors.staking_period && (
-                    <p className={`pb-2 text-xs font-medium text-red-500`}>
+                    <p className={`pb-2 text-xs font-medium text-danger`}>
                       {stakingForm.formState.errors.staking_period.message}
                     </p>
                   )}
@@ -1415,7 +1415,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     </div>
                   </div>
                   {stakingForm.formState.errors.is_cancelable && (
-                    <p className={`pb-2 text-xs font-medium text-red-500`}>
+                    <p className={`pb-2 text-xs font-medium text-danger`}>
                       {stakingForm.formState.errors.is_cancelable.message}
                     </p>
                   )}
@@ -1441,7 +1441,7 @@ const CreateStaking: NextPageWithLayout = () => {
                         />
                       </div>
                       {stakingForm.formState.errors.charge_fee_on_cancel && (
-                        <p className={`pb-2 text-xs font-medium text-red-500`}>
+                        <p className={`pb-2 text-xs font-medium text-danger`}>
                           {
                             stakingForm.formState.errors.charge_fee_on_cancel
                               .message
@@ -1470,7 +1470,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     />
                   </div>
                   {stakingForm.formState.errors.apy && (
-                    <p className={`pb-2 text-xs font-medium text-red-500`}>
+                    <p className={`pb-2 text-xs font-medium text-danger`}>
                       {stakingForm.formState.errors.apy.message}
                     </p>
                   )}
@@ -1495,7 +1495,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     />
                   </div>
                   {stakingForm.formState.errors.start_date && (
-                    <p className={`pb-2 text-xs font-medium text-red-500`}>
+                    <p className={`pb-2 text-xs font-medium text-danger`}>
                       {stakingForm.formState.errors.start_date.message}
                     </p>
                   )}
@@ -1529,7 +1529,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     />
                   </div>
                   {stakingForm.formState.errors.rewards_release_start && (
-                    <p className={`pb-2 text-xs font-medium text-red-500`}>
+                    <p className={`pb-2 text-xs font-medium text-danger`}>
                       {
                         stakingForm.formState.errors.rewards_release_start
                           .message
@@ -1558,7 +1558,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     />
                   </div>
                   {stakingForm.formState.errors.claim_period && (
-                    <p className={`pb-2 text-xs font-medium text-red-500`}>
+                    <p className={`pb-2 text-xs font-medium text-danger`}>
                       {stakingForm.formState.errors.claim_period.message}
                     </p>
                   )}
@@ -1584,7 +1584,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     By claiming your tokens X% of it will be burned
                   </p>
                   {stakingForm.formState.errors.burn_tax && (
-                    <p className={`pb-2 text-xs font-medium text-red-500`}>
+                    <p className={`pb-2 text-xs font-medium text-danger`}>
                       {stakingForm.formState.errors.burn_tax.message}
                     </p>
                   )}
@@ -1645,7 +1645,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     </p>
                   )}
                   {stakingForm.formState.errors.show_on_centher && (
-                    <p className={`pb-2 text-xs font-medium text-red-500`}>
+                    <p className={`pb-2 text-xs font-medium text-danger`}>
                       {stakingForm.formState.errors.show_on_centher.message}
                     </p>
                   )}
@@ -1701,7 +1701,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     </div>
                   </div>
                   {stakingForm.formState.errors.liquidity_pool_provided && (
-                    <p className={`pb-2 text-xs font-medium text-red-500`}>
+                    <p className={`pb-2 text-xs font-medium text-danger`}>
                       {
                         stakingForm.formState.errors.liquidity_pool_provided
                           .message
@@ -1733,7 +1733,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     then allowed amounts are 250,500,750,1000,etc
                   </p>
                   {stakingForm.formState.errors.min_staking_amount && (
-                    <p className={`pb-2 text-xs font-medium text-red-500`}>
+                    <p className={`pb-2 text-xs font-medium text-danger`}>
                       {stakingForm.formState.errors.min_staking_amount.message}
                     </p>
                   )}
@@ -1759,7 +1759,7 @@ const CreateStaking: NextPageWithLayout = () => {
                         />
                       </div>
                       {stakingForm.formState.errors.max_staking_amount && (
-                        <p className={`pb-2 text-xs font-medium text-red-500`}>
+                        <p className={`pb-2 text-xs font-medium text-danger`}>
                           {
                             stakingForm.formState.errors.max_staking_amount
                               .message
@@ -1797,7 +1797,7 @@ const CreateStaking: NextPageWithLayout = () => {
                         staking
                       </p>
                       {stakingForm.formState.errors.total_supply && (
-                        <p className={`pb-2 text-xs font-medium text-red-500`}>
+                        <p className={`pb-2 text-xs font-medium text-danger`}>
                           {stakingForm.formState.errors.total_supply.message}
                         </p>
                       )}
@@ -1826,7 +1826,7 @@ const CreateStaking: NextPageWithLayout = () => {
                   </div>
                   {metaDataErr && (
                     <p
-                      className={`pb-2 pt-[2px] text-xs font-medium text-red-500`}
+                      className={`pb-2 pt-[2px] text-xs font-medium text-danger`}
                     >
                       {metaDataErr}
                     </p>
@@ -1943,7 +1943,7 @@ const CreateStaking: NextPageWithLayout = () => {
                   </div>
                 </div>
                 {metaDataErr && (
-                  <p className={`pb-2 text-xs font-medium text-red-500`}>
+                  <p className={`pb-2 text-xs font-medium text-danger`}>
                     {metaDataErr}
                   </p>
                 )}
@@ -1986,7 +1986,7 @@ const CreateStaking: NextPageWithLayout = () => {
                       />
                     </div>
                     {stakingForm.formState.errors.whitepaper && (
-                      <p className={`pb-2 text-xs font-medium text-red-500`}>
+                      <p className={`pb-2 text-xs font-medium text-danger`}>
                         {stakingForm.formState.errors.whitepaper.message}
                       </p>
                     )}
@@ -2009,7 +2009,7 @@ const CreateStaking: NextPageWithLayout = () => {
                       />
                     </div>
                     {stakingForm.formState.errors.website_url && (
-                      <p className={`pb-2 text-xs font-medium text-red-500`}>
+                      <p className={`pb-2 text-xs font-medium text-danger`}>
                         {stakingForm.formState.errors.website_url.message}
                       </p>
                     )}
@@ -2034,7 +2034,7 @@ const CreateStaking: NextPageWithLayout = () => {
                       />
                     </div>
                     {stakingForm.formState.errors.facebook && (
-                      <p className={`pb-2 text-xs font-medium text-red-500`}>
+                      <p className={`pb-2 text-xs font-medium text-danger`}>
                         {stakingForm.formState.errors.facebook.message}
                       </p>
                     )}
@@ -2057,7 +2057,7 @@ const CreateStaking: NextPageWithLayout = () => {
                       />
                     </div>
                     {stakingForm.formState.errors.twitter && (
-                      <p className={`pb-2 text-xs font-medium text-red-500`}>
+                      <p className={`pb-2 text-xs font-medium text-danger`}>
                         {stakingForm.formState.errors.twitter.message}
                       </p>
                     )}
@@ -2080,7 +2080,7 @@ const CreateStaking: NextPageWithLayout = () => {
                       />
                     </div>
                     {stakingForm.formState.errors.github && (
-                      <p className={`pb-2 text-xs font-medium text-red-500`}>
+                      <p className={`pb-2 text-xs font-medium text-danger`}>
                         {stakingForm.formState.errors.github.message}
                       </p>
                     )}
@@ -2103,7 +2103,7 @@ const CreateStaking: NextPageWithLayout = () => {
                       />
                     </div>
                     {stakingForm.formState.errors.telegram && (
-                      <p className={`pb-2 text-xs font-medium text-red-500`}>
+                      <p className={`pb-2 text-xs font-medium text-danger`}>
                         {stakingForm.formState.errors.telegram.message}
                       </p>
                     )}
@@ -2126,7 +2126,7 @@ const CreateStaking: NextPageWithLayout = () => {
                       />
                     </div>
                     {stakingForm.formState.errors.instagram && (
-                      <p className={`pb-2 text-xs font-medium text-red-500`}>
+                      <p className={`pb-2 text-xs font-medium text-danger`}>
                         {stakingForm.formState.errors.instagram.message}
                       </p>
                     )}
@@ -2149,7 +2149,7 @@ const CreateStaking: NextPageWithLayout = () => {
                       />
                     </div>
                     {stakingForm.formState.errors.discord && (
-                      <p className={`pb-2 text-xs font-medium text-red-500`}>
+                      <p className={`pb-2 text-xs font-medium text-danger`}>
                         {stakingForm.formState.errors.discord.message}
                       </p>
                     )}
@@ -2172,7 +2172,7 @@ const CreateStaking: NextPageWithLayout = () => {
                       />
                     </div>
                     {stakingForm.formState.errors.reddit && (
-                      <p className={`pb-2 text-xs font-medium text-red-500`}>
+                      <p className={`pb-2 text-xs font-medium text-danger`}>
                         {stakingForm.formState.errors.reddit.message}
                       </p>
                     )}
@@ -2198,7 +2198,7 @@ const CreateStaking: NextPageWithLayout = () => {
                       />
                     </div>
                     {stakingForm.formState.errors.explorers && (
-                      <p className={`pb-2 text-xs font-medium text-red-500`}>
+                      <p className={`pb-2 text-xs font-medium text-danger`}>
                         {stakingForm.formState.errors.explorers.message}
                       </p>
                     )}
@@ -2237,7 +2237,7 @@ const CreateStaking: NextPageWithLayout = () => {
                       You can select multiple as categories
                     </p>
                     {stakingForm.formState.errors.category && (
-                      <p className={`pb-2 text-xs font-medium text-red-500`}>
+                      <p className={`pb-2 text-xs font-medium text-danger`}>
                         {stakingForm.formState.errors.category.message}
                       </p>
                     )}
@@ -2261,7 +2261,7 @@ const CreateStaking: NextPageWithLayout = () => {
                       />
                     </div>
                     {stakingForm.formState.errors.description && (
-                      <p className={`pb-2 text-xs font-medium text-red-500`}>
+                      <p className={`pb-2 text-xs font-medium text-danger`}>
                         {stakingForm.formState.errors.description.message}
                       </p>
                     )}
@@ -2319,7 +2319,7 @@ const CreateStaking: NextPageWithLayout = () => {
                         </div>
                       </div>
                       {memberError && (
-                        <p className={`pb-2 text-xs font-medium text-red-500`}>
+                        <p className={`pb-2 text-xs font-medium text-danger`}>
                           {memberError}
                         </p>
                       )}
@@ -2351,7 +2351,7 @@ const CreateStaking: NextPageWithLayout = () => {
                             <span>{member.walletAddress}</span>
                           </div>
                           <button
-                            className="ml-2 text-red-500"
+                            className="ml-2 text-danger"
                             onClick={() => handleRemoveMember(index)}
                           >
                             <IoClose className="ioCLose h-5 w-5 fill-[#E34048]" />

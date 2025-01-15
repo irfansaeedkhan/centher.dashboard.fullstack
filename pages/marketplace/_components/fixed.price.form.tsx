@@ -203,7 +203,7 @@ const FixedPriceForm = ({
     <div className={formContainer}>
       <div className={fieldWrapper}>
         <label className={fieldTitle}>
-          Name Your NFT <span className="text-red-500">*</span>{" "}
+          Name Your NFT <span className="text-danger">*</span>{" "}
         </label>
         <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
           <input
@@ -219,14 +219,14 @@ const FixedPriceForm = ({
           />
         </div>
         {formState.errors.NFTName && (
-          <p className={`text-red-500 ${errMessage}`}>
+          <p className={`text-danger ${errMessage}`}>
             {formState.errors.NFTName.message}
           </p>
         )}
       </div>
       <div className={fieldWrapper}>
         <label className={fieldTitle}>
-          Description <span className="text-red-500">*</span>{" "}
+          Description <span className="text-danger">*</span>{" "}
         </label>
         <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
           <textarea
@@ -243,14 +243,14 @@ const FixedPriceForm = ({
           ></textarea>
         </div>
         {formState.errors.Description && (
-          <p className={`text-red-500 ${errMessage}`}>
+          <p className={`text-danger ${errMessage}`}>
             {formState.errors.Description.message}
           </p>
         )}
       </div>
       <div className={fieldWrapper}>
         <label className={fieldTitle}>
-          NFT Price <span className="text-red-500">*</span>{" "}
+          NFT Price <span className="text-danger">*</span>{" "}
         </label>
         <div
           className={clsx(
@@ -297,12 +297,12 @@ const FixedPriceForm = ({
           </div>
         </div>
         {nftPriceError !== "" && (
-          <p className={`text-red-500 ${errMessage}`}>{nftPriceError}</p>
+          <p className={`text-danger ${errMessage}`}>{nftPriceError}</p>
         )}
       </div>
       <div className={"z-50 flex w-full flex-col gap-2"}>
         <label htmlFor="textarea" className={fieldTitle}>
-          Collection <span className="text-red-500">*</span>{" "}
+          Collection <span className="text-danger">*</span>{" "}
         </label>
         <CustomDropdown
           options={collections.map((collection) => ({
@@ -316,7 +316,7 @@ const FixedPriceForm = ({
       </div>
       <div className={fieldWrapper}>
         <label className={fieldTitle}>
-          Supply <span className="text-red-500">*</span>{" "}
+          Supply <span className="text-danger">*</span>{" "}
         </label>
         <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
           <input
@@ -331,7 +331,7 @@ const FixedPriceForm = ({
           />
         </div>
         {formState.errors.NFTSupply && (
-          <p className={`text-red-500 ${errMessage}`}>
+          <p className={`text-danger ${errMessage}`}>
             {formState.errors.NFTSupply.message}
           </p>
         )}
