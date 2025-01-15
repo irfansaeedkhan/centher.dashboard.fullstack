@@ -51,7 +51,7 @@ const LiveMessage: React.FC<LiveMessageProps> = ({ message }) => {
             {getTimeLapsed(message.createdAt)}
           </span>
         </div>
-        <p className="overflow-wrap white-space w-[72vw] break-words text-xs text-[#FAFAFA] flg:w-[40vw]">
+        <p className="overflow-wrap white-space break-words text-xs text-[#FAFAFA] flg:max-w-[35ch] mobile-max:w-[72vw]">
           {message.content}
         </p>
       </div>

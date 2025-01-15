@@ -137,7 +137,7 @@ export const VoiSpaceFeedCard: React.FC = () => {
 
   return (
     <>
-      <div className={clsx(`relative w-full select-none  flg:max-w-[272px]`)}>
+      <div className={clsx(`relative w-full select-none  f2xl:max-w-[272px]`)}>
         <div className={`relative rounded-10px bg-background-shade-3`}>
           <div className="border-b border-gray-shade-3">
             <div className={`flex items-center justify-between p-4`}>

@@ -108,11 +108,6 @@ const Feed: NextPageWithLayout = () => {
       {((loading === "loaded" && posts.length === 0) || posts.length > 0) &&
         user && <CreatePostCard user={user} />}
 
-      {posts.length === 0 && (
-        <div className="mt-3 block w-full flg:hidden">
-          <VoiSpaceFeedCard />
-        </div>
-      )}
       {posts.map((post, index) => {
         return (
           <div key={post._id}>
@@ -157,8 +152,13 @@ const Feed: NextPageWithLayout = () => {
               />
             </div>
             {index === 0 && (
-              <div className="mt-3 block w-full flg:hidden">
+              <div className="mt-3 block w-full f2xl:hidden">
                 <VoiSpaceFeedCard />
+              </div>
+            )}
+            {index === 0 && (
+              <div className="mt-4">
+                <SuggestedCardMobile className={`block f2xl:hidden`} />
               </div>
             )}
             {(index + 1) / 4 === 1 && (
@@ -233,7 +233,9 @@ const Feed: NextPageWithLayout = () => {
               Create a new post or follow someone
             </p>
           </div>
-
+          <div className="mt-3 block w-full f2xl:hidden">
+            <VoiSpaceFeedCard />
+          </div>
           <div className="mt-4">
             <SuggestedCardMobile className={`block f2xl:hidden`} />
           </div>
