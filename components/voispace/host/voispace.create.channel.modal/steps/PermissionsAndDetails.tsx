@@ -62,32 +62,27 @@ const PermissionsAndDetails = ({
     updateDevices().then(() => {
       let showAudioError = false;
       let showVideoError = false;
-
-      if (formState.type === BroadcastTypeEnum.LIVE) {
-        if (microphones.length === 0) {
-          showAudioError = true;
-        } else {
+      if (microphones.length === 0) {
+        showAudioError = true;
+      } else {
+        if (!formState.audioDevice) {
           handleInputChange("audioDevice", microphones[0]);
-        }
-
-        if (cameras.length === 0) {
-          showVideoError = true;
-        } else {
-          handleInputChange("videoDevice", cameras[0]);
         }
       }
 
-      if (formState.type === BroadcastTypeEnum.AMA) {
-        if (microphones.length === 0) {
-          showAudioError = true;
+      if (formState.type === BroadcastTypeEnum.LIVE) {
+        if (cameras.length === 0) {
+          showVideoError = true;
         } else {
-          handleInputChange("audioDevice", microphones[0]);
+          if (!formState.videoDevice) {
+            handleInputChange("videoDevice", cameras[0]);
+          }
         }
       }
 
       setShowGetPermission(showAudioError || showVideoError);
     });
-  }, [updateDevices, handleInputChange, formState.type]);
+  }, [formState.type]);
 
   useEffect(() => {
     if (showGetPermission) {
