@@ -563,10 +563,16 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
     });
   };
   const aggregateCurrentStreamUsers = async (stream: any) => {
-    const ids = stream?.latestParticipants?.map((e: any) => e.user.id) || [];
+    let ids = stream?.latestParticipants?.map((e: any) => e.user.id) || [];
     ids.push(stream?.hosts[0]?.user.id);
+    ids = ids.filter(Boolean);
+
+    if (!ids?.length) {
+      return stream;
+    }
+
     const users = await getUsers(ids);
-    stream.latestParticipants = stream.latestParticipants.map((e: any) => {
+    stream.latestParticipants = stream?.latestParticipants?.map((e: any) => {
       return {
         ...e,
         user:

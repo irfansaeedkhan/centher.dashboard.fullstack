@@ -2,20 +2,14 @@ import React, { useState, useEffect } from "react";
 import clsx from "clsx";
 import Image from "next/image";
 
-import {
-  LoaderSpinner,
-  SpinIcon3,
-  VoispaceGradientRing,
-  VoispaceLiveIcon,
-} from "@/assets/svgs";
+import { VoispaceGradientRing, VoispaceLiveIcon } from "@/assets/svgs";
 import Button from "../button";
 import { useStream } from "@/hooks/stream/use.core";
 
 import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
 import useUser from "@/hooks/use.user";
-import { useRouter } from "next/router";
 import { StreamEventEnum } from "@/stream/model";
-import toast, { LoaderIcon } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { BuyCitizenshipModal } from "@/components/modal/buy-citizenship-modal";
 
 import ChannelMainView from "./shared/ChannelMainView";
@@ -72,7 +66,6 @@ export const VoiSpaceFeedCard: React.FC = () => {
 
   const handleCreateChannel = () => {
     if (!checkCitizenship()) return;
-
     if (!isCreateModalOpen) {
       setIsCreateModalOpen(true);
     }

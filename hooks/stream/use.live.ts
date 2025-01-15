@@ -7,10 +7,9 @@ import { Transport } from "mediasoup-client/lib/Transport";
 import { TState } from "@/stream/types/interfaces";
 import { SocketClientService } from "@/stream/clients/socket-client";
 import { CreateBroadcastDto } from "@/stream/types/Broadcast";
-import { StreamEventEnum, StreamSubscriptionEnum } from "@/stream/model";
+import { StreamEventEnum } from "@/stream/model";
 import { IStreamEvent } from "./interfaces";
 import { RtpCapabilities } from "mediasoup-client/lib/RtpParameters";
-import { areStringsEquals } from "@/stream/utils/string.utils";
 
 export interface LiveStreamType {
   toast: string;
@@ -32,7 +31,6 @@ export interface LiveStreamType {
   kickUser: (userId: string) => void;
   toggleMute: () => void;
   toggleMessagePermission: (userId: string) => void;
-  closeSubscription: (key: keyof typeof StreamSubscriptionEnum) => void;
   getVideoStream: () => MediaStream | null;
   getAudioStream: () => MediaStream | null;
   closeConsumer: (userId: string) => void;
@@ -72,19 +70,8 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
 
   const globalLocalAudio = useRef<MediaStream | null>(null);
   const globalLocalVideo = useRef<MediaStream | null>(null);
-  const [subscriptionAgents, setSubscriptionAgents] = useState<
-    Record<keyof typeof StreamSubscriptionEnum, any>
-  >({
-    [StreamSubscriptionEnum.SUBSCRIBE_ALL]: null,
-    [StreamSubscriptionEnum.SUBSCRIBE_SPEAKERS]: null,
-    [StreamSubscriptionEnum.SUBSCRIBE_MESSAGE]: null,
-    [StreamSubscriptionEnum.SUBSCRIBE_CURRENT_USER]: null,
-    [StreamSubscriptionEnum.SUBSCRIBE_HAS_TALK_REQUEST_USERS]: null,
-    [StreamSubscriptionEnum.SUBSCRIBE_CURRENT_STREAM]: null,
-  });
-  const globalReceiveStreamLoader = useRef<
-    "connecting" | "connected" | "failed" | "none"
-  >("none");
+
+  const globalReceiveStreamLoader = useRef<TState>("none");
 
   const globalSendStreamLoader = useRef<
     | "connecting"
@@ -96,7 +83,16 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
   >("none");
 
   const [toast, setToast] = useState<string>("");
-  const [event, setEvent] = useState<IStreamEvent | null>(null);
+  const [event, setPureEvent] = useState<IStreamEvent | null>(null);
+
+  const setEvent = (result: IStreamEvent | null) => {
+    if (result) {
+      setPureEvent({ data: result?.data, type: result?.type });
+      setTimeout(() => {
+        setPureEvent(null);
+      }, 1000);
+    }
+  };
 
   const getStatuses = (): {
     sendStreamLoader: string;
@@ -759,16 +755,6 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
     }
   };
 
-  const closeSubscription = (key: keyof typeof StreamSubscriptionEnum) => {
-    if (subscriptionAgents[key]) {
-      subscriptionAgents[key].unsubscribe();
-      setSubscriptionAgents((prev) => ({
-        ...prev,
-        [key]: null,
-      }));
-    }
-  };
-
   const close = () => {
     closeProducer();
     globalConsumersAudio.current.forEach((consumer: Consumer) => {
@@ -783,8 +769,39 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
     globalConsumersAudio.current.clear();
     globalConsumersVideoStream.current.clear();
     globalConsumersVideoStream.current.clear();
-    globalSocket.current?.close();
-    globalSocket.current?.disconnect();
+
+    try {
+      globalSocket.current!.close();
+      globalSocket.current!.disconnect();
+    } catch (error) {
+      console.log("close socket connection error. ", error);
+    } finally {
+      restartVariable();
+    }
+  };
+
+  const restartVariable = () => {
+    globalSocket.current = null;
+    globalUserId.current = null;
+    globalBroadcastId.current = null;
+    globalRtpCapabilities.current = null;
+    globalDevice.current = deviceInstance;
+    globalConsumersAudioStream.current = new Map();
+    globalConsumersVideoStream.current = new Map();
+    globalConsumersAudio.current = new Map();
+    globalConsumersVideo.current = new Map();
+    globalAudioProducer.current = null;
+    globalVideoProducer.current = null;
+    globalIsOwner.current = false;
+    globalProducerTransport.current = null;
+    globalConsumerTransport.current = null;
+    globalLocalAudio.current = null;
+    globalLocalVideo.current = null;
+    globalReceiveStreamLoader.current = "none";
+    globalSendStreamLoader.current = "none";
+
+    setToast("");
+    setEvent(null);
   };
 
   return {
@@ -808,7 +825,6 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
     kickUser,
     toggleMute,
     toggleMessagePermission,
-    closeSubscription,
     close,
     leave,
   };

@@ -108,7 +108,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
     ) {
       const error = eventOnAMA?.data || eventOnLive?.data;
       toast.error(error);
-
+      console.log("on error");
       onClose();
       setRoomCreationLoader(false);
       setCurrentModalIsOpen(false);
@@ -120,6 +120,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
       eventOnAMA?.type == StreamEventEnum.ON_USER_KICKED ||
       eventOnLive?.type == StreamEventEnum.ON_USER_KICKED
     ) {
+      console.log("on finish");
       setRoomData(null);
       setIsHostSettingsOpen(true);
       setRoomCreationLoader(false);

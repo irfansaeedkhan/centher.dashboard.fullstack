@@ -99,6 +99,7 @@ const ChatRoom: React.FC<DynamicProps> = ({
     if (message.trim().length) {
       insertMessage(roomData?.id || "", message);
       setInputValue("");
+      setShowEmojiPicker(false);
     }
   };
 
@@ -130,7 +131,6 @@ const ChatRoom: React.FC<DynamicProps> = ({
 
   const onEmojiClick = (emojiData: EmojiClickData) => {
     setInputValue((prev) => prev + emojiData.emoji);
-    setShowEmojiPicker(false);
   };
 
   return (
