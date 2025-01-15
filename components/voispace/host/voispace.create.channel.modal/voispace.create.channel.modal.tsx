@@ -258,7 +258,10 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
       }
 
       if (formState.type === BroadcastTypeEnum.LIVE) {
-        if (!formState.audioDevice || !formState.videoDevice) {
+        if (
+          !formState.audioDevice?.deviceId ||
+          !formState.videoDevice?.deviceId
+        ) {
           toast.error(
             "Audio and video permissions are required for live sessions."
           );
