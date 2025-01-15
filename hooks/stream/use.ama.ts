@@ -26,7 +26,6 @@ export interface AMAStreamType {
   toggleMute: () => void;
   leave: () => void;
   requestToTalk: (request: boolean) => void;
-  closeSubscription: (key: keyof typeof StreamSubscriptionEnum) => void;
   globalIsOwner: boolean;
   userId: string | null;
 }
@@ -113,6 +112,7 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
       });
 
       globalSocket.current!.on("consumer-closed", async (data: any) => {
+        console.log("consumer-closed", data);
         if (areStringsEquals(globalUserId.current!, data.user_id)) {
           closeProducer();
         } else {
@@ -213,6 +213,7 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
           });
 
           globalSocket.current!.on("consumer-closed", async (data) => {
+            console.log("consumer-closed", data);
             if (areStringsEquals(globalUserId.current!, data.user_id)) {
               closeProducer();
             } else {
@@ -599,6 +600,7 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
   };
 
   const closeProducer = () => {
+    console.log("closeProducer");
     if (globalAudioProducer.current) {
       globalAudioProducer.current.close();
       globalProducerTransport.current!.close();
@@ -675,6 +677,7 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
             data,
             type: StreamEventEnum.STREAM_INITIALIZATION_ERROR,
           });
+          reject(data);
         });
       } catch (error) {
         reject(error);
