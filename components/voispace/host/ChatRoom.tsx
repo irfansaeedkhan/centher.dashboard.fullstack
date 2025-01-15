@@ -138,7 +138,7 @@ const ChatRoom: React.FC<DynamicProps> = ({
     <div className="px-[24px] py-[24px] text-white">
       <div className="flex flex-col gap-[42px]">
         <HostModalHeader
-          subTitle="The Room of Traders"
+          subTitle={roomData?.name || "N/A"}
           title="Chat Room"
           onClose={onClose}
           hasBackButton={true}
