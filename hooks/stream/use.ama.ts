@@ -26,7 +26,6 @@ export interface AMAStreamType {
   toggleMute: () => void;
   leave: () => void;
   requestToTalk: (request: boolean) => void;
-  closeSubscription: (key: keyof typeof StreamSubscriptionEnum) => void;
   globalIsOwner: boolean;
   userId: string | null;
 }
