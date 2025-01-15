@@ -74,7 +74,7 @@ const Accessibility = ({ formState, handleInputChange, loading }: any) => {
           )}
         >
           <div className="px-4 pt-3 text-base font-medium text-white">
-            Privilege
+            Privileged
           </div>
           <div className={`px-4 pb-3 text-sm font-normal text-[#A0A4BB]`}>
             In next step you will add collection address to get started

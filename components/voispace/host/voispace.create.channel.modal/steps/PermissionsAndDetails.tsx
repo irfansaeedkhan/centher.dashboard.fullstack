@@ -27,7 +27,10 @@ const PermissionsAndDetails = ({
     useMediaDevices();
   const [preview, setPreview] = useState<string | undefined>(undefined);
   const [rawImage, setRawImage] = useState<File | undefined>(undefined);
-  const [showGetPermission, setShowGetPermission] = useState(false);
+  const [showGetPermission, setShowGetPermission] = useState({
+    audioErr: false,
+    videoErr: false,
+  });
   const [currentTab, setCurrentTab] = useState<string>("audio");
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -69,7 +72,10 @@ const PermissionsAndDetails = ({
       }
     }
 
-    setShowGetPermission(showAudioError || showVideoError);
+    setShowGetPermission({
+      audioErr: showAudioError,
+      videoErr: showVideoError,
+    });
   };
 
   setupDevices().then();
@@ -143,7 +149,62 @@ const PermissionsAndDetails = ({
     }
   };
 
-  // audio video dropdowns
+  // audio video error handling logic here ::
+  useEffect(() => {
+    const updatePermissionsAndDevices = async () => {
+      try {
+        // Check browser permission statuses for audio and video
+        const audioPermission = await navigator.permissions.query({
+          name: "microphone" as PermissionName,
+        });
+        const videoPermission = await navigator.permissions.query({
+          name: "camera" as PermissionName,
+        });
+
+        console.log("audioPermission:", audioPermission.state);
+        console.log("videoPermission:", videoPermission.state);
+
+        // Fetch devices again if permissions are granted
+        if (
+          audioPermission.state === "granted" ||
+          videoPermission.state === "granted"
+        ) {
+          console.log("Refreshing devices...");
+          await updateDevices(); // Call the function to refresh the device list
+        }
+
+        // Log the devices after refreshing
+        console.log("Updated microphones:", microphones);
+        console.log("Updated cameras:", cameras);
+
+        // Determine errors based on permissions and device lists
+        const showAudioError =
+          microphones.length === 0 || audioPermission.state !== "granted";
+        const showVideoError =
+          cameras.length === 0 || videoPermission.state !== "granted";
+
+        setShowGetPermission({
+          audioErr: showAudioError,
+          videoErr: showVideoError,
+        });
+
+        // Assign default devices if permissions are granted
+        if (!showAudioError && microphones.length > 0) {
+          console.log("Assigning audio device:", microphones[0]);
+          handleInputChange("audioDevice", microphones[0]);
+        }
+        if (!showVideoError && cameras.length > 0) {
+          console.log("Assigning video device:", cameras[0]);
+          handleInputChange("videoDevice", cameras[0]);
+        }
+      } catch (err) {
+        console.error("Error checking permissions or updating devices:", err);
+      }
+    };
+
+    updatePermissionsAndDevices();
+  }, [microphones, cameras, updateDevices, handleInputChange]);
+
   const renderAudioDropdown = () => {
     if (!navigator.mediaDevices) {
       return (
@@ -153,8 +214,8 @@ const PermissionsAndDetails = ({
         </div>
       );
     }
-
-    if (microphones.length === 0) {
+    console.log("showGetPermission.audioErr::", showGetPermission.audioErr);
+    if (showGetPermission.audioErr) {
       return (
         <div className="text-sm text-danger">
           No audio devices found. Please allow microphone access or check your
@@ -181,6 +242,7 @@ const PermissionsAndDetails = ({
     );
   };
 
+  // Render video dropdown
   const renderVideoDropdown = () => {
     if (!navigator.mediaDevices) {
       return (
@@ -191,7 +253,7 @@ const PermissionsAndDetails = ({
       );
     }
 
-    if (error || cameras.length === 0 || showGetPermission) {
+    if (showGetPermission.videoErr) {
       return (
         <div className="text-sm text-danger">
           No video devices found. Please allow camera access or check your

@@ -68,6 +68,11 @@ jobs:
           echo "NEXT_PUBLIC_BRAND_NAME=${{ vars.NEXT_PUBLIC_BRAND_NAME }}" >> .env.staging
           echo "NEXT_PUBLIC_BRAND_DOMAIN=${{ vars.NEXT_PUBLIC_BRAND_DOMAIN }}" >> .env.staging
 
+      - name: Printing value
+        run: |
+          echo "\n!! Staging\n"
+          cat .env.staging
+
       - name: Build playground image
         id: build-image
         uses: docker/build-push-action@v4
