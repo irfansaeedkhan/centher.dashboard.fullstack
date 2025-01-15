@@ -56,6 +56,12 @@ const ChatRoom: React.FC<DynamicProps> = ({
   }, [fetchedMessages]);
 
   useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [allMessages]);
+
+  useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
         emojiPickerRef.current &&
