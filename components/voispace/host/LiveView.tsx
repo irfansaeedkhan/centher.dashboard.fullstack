@@ -45,12 +45,16 @@ const LiveView: React.FC<DynamicProps> = ({
   const [formattedMessages, setFormattedMessages] = useState<
     BroadcastMessage[]
   >([]);
+  const [limit, setLimit] = useState(10);
+  const [isFetching, setIsFetching] = useState(false);
 
   const { messages, loading: subscriptionLoading } = useSubscribeToMessages(
     roomData?.id || "",
-    5
+    limit
   );
+
   const videoRef = useRef<HTMLVideoElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
   const videoStream = getVideoStream();
   const audioStream = getAudioStream();
 
@@ -75,16 +79,11 @@ const LiveView: React.FC<DynamicProps> = ({
   }, [event, videoStream]);
 
   useEffect(() => {
-    if (messages.length) {
-      console.log({ messages });
-      const formattedMessages =
-        messages
-          ?.sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt))
-          ?.reverse() || [];
-
-      setFormattedMessages(formattedMessages);
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
     }
-  }, [messages]);
+  }, [formattedMessages]);
 
   const leaveHandler = () => {
     const videoElement = videoRef.current;
@@ -117,12 +116,50 @@ const LiveView: React.FC<DynamicProps> = ({
     });
     message = message.replace(pattenr, "[filtered]");
 
+    if (message.trim().length > 300) {
+      alert("Your message exceeds the 300-character limit.");
+      return;
+    }
     if (message.trim().length) {
       insertMessage(roomData?.id || "", message);
       setInputValue("");
     }
   };
 
+  useEffect(() => {
+    if (messages.length) {
+      const sortedMessages = [...messages].sort(
+        (a, b) => +new Date(a.createdAt) - +new Date(b.createdAt)
+      );
+
+      setFormattedMessages((prev) => {
+        const newMessages = sortedMessages.filter(
+          (msg) => !prev.some((m) => m.id === msg.id)
+        );
+        return [...prev, ...newMessages];
+      });
+    }
+  }, [messages]);
+
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
+    }
+  }, [formattedMessages]);
+
+  const handleScroll = () => {
+    if (
+      chatContainerRef.current &&
+      chatContainerRef.current.scrollTop === 0 &&
+      !isFetching &&
+      !subscriptionLoading
+    ) {
+      setIsFetching(true);
+      setLimit((prev) => prev + 10);
+      setTimeout(() => setIsFetching(false), 500);
+    }
+  };
   return (
     <div className="flex flex-col overflow-hidden">
       <div className="flex flex-col gap-[27px] px-[24px] py-[24px]">
@@ -136,12 +173,12 @@ const LiveView: React.FC<DynamicProps> = ({
         <div className="absolute right-[24px] top-[24px]">
           <div className="flex items-center gap-[20px]">
             <div className="flex items-center gap-[6px]">
-              <div className="flex items-center justify-center gap-2  rounded-[5px] bg-[#1C1D21] px-1 py-1 text-white">
+              <div className="flex items-center justify-center gap-2  rounded-[5px] bg-[#1C1D21] px-2 py-1 text-white">
                 <span className="h-[10px] w-[10px] rounded-[50%] bg-[#FF453A]"></span>
                 <span className="font-monto text-[11px] font-medium">Live</span>
               </div>
 
-              <div className="flex items-center justify-center gap-2 rounded-[5px] bg-[#1C1D21] px-1 py-[1px] text-white">
+              <div className="flex items-center justify-center gap-2 rounded-[5px] bg-[#1C1D21] px-2 py-[1px] text-white">
                 <EyeIcon className="scale-75" />
                 <span className="font-monto text-[11px] font-medium">
                   {roomData.participatorsCount.aggregate.count}
@@ -181,7 +218,11 @@ const LiveView: React.FC<DynamicProps> = ({
       </div>
 
       <div className="z-20 min-h-[70vh] bg-[#00000042] p-4 flg:py-6">
-        <div className="customScrollbar flex h-[calc(100vh-15.8rem)] flex-col gap-6 overflow-y-auto !pt-[40%] text-white md:!pt-[25%] flg:h-[calc(100vh-22rem)] flg:p-6">
+        <div
+          className="customScrollbar flex h-[calc(100vh-15.8rem)]  flex-col gap-6 overflow-y-auto !pt-[40%] text-white md:!pt-[25%] flg:h-[calc(100vh-22rem)] flg:p-6"
+          ref={chatContainerRef}
+          onScroll={handleScroll}
+        >
           {subscriptionLoading ? (
             <>
               <MessageSkeleton />
@@ -191,14 +232,15 @@ const LiveView: React.FC<DynamicProps> = ({
               <MessageSkeleton />
             </>
           ) : formattedMessages?.length ? (
-            formattedMessages.map((message, index) => {
-              return <LiveMessage message={message} key={index} />;
-            })
-          ) : (
-            <div className="mx-auto max-w-[350px] rounded-lg bg-black-shade-3/30 px-8 py-4 text-center">
-              <p className="text-center text-sm text-white">No messages yet</p>
-            </div>
-          )}
+            formattedMessages.map((message, index) => (
+              <div
+                key={index}
+                className="max-w-[40ch] break-words  rounded-xl bg-[#212329]/20 p-2 text-sm text-white"
+              >
+                <LiveMessage message={message} />
+              </div>
+            ))
+          ) : null}
         </div>
 
         <div className="absolute bottom-3 left-1/2 flex w-[calc(100%-48px)] -translate-x-1/2 items-center  text-white mobile-max:w-[calc(100%-36px)]">
@@ -213,6 +255,8 @@ const LiveView: React.FC<DynamicProps> = ({
                   onSend(e);
                 }
               }}
+              max={300}
+              maxLength={300}
             />
             <button
               className="mr-[12px] h-[20px] w-[20px]"
