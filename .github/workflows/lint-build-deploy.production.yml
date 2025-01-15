@@ -102,6 +102,8 @@ jobs:
           echo "NEXT_PUBLIC_GQL_URL_SUBGRAPH=${{ vars.NEXT_PUBLIC_GQL_URL_SUBGRAPH }}" >> .env.production
           echo "NEXT_PUBLIC_GQL_URL_BLOCKCHAIN=${{ vars.NEXT_PUBLIC_GQL_URL_BLOCKCHAIN }}" >> .env.production
           echo "NEXT_PUBLIC_GQL_URL_WEBSOCKET=${{ vars.NEXT_PUBLIC_GQL_URL_WEBSOCKET }}" >> .env.production
+          echo "NEXT_PUBLIC_BRAND_NAME=${{ vars.NEXT_PUBLIC_BRAND_NAME }}" >> .env.production
+          echo "NEXT_PUBLIC_BRAND_DOMAIN=${{ vars.NEXT_PUBLIC_BRAND_DOMAIN }}" >> .env.production
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1-node16
