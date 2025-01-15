@@ -182,7 +182,7 @@ const ChatRoom: React.FC<DynamicProps> = ({
                         {getTimeLapsed(msg.createdAt)}
                       </span>
                     </div>
-                    <p className="overflow-wrap white-space w-[72vw] break-words text-xs flg:max-w-[650px]">
+                    <p className="overflow-wrap white-space break-words text-xs flg:max-w-[650px] mobile-max:w-[72vw]">
                       {msg.content}
                     </p>
                   </div>
