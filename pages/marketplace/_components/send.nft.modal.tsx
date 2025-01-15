@@ -131,7 +131,7 @@ const SendNFTModal: React.FC<Props> = ({ handleSend, onClose, nft }) => {
                 />
               </div>
               {nftForm.formState.errors.ReceiverAddress && (
-                <p className="pb-2 text-xs font-medium text-red-500">
+                <p className="pb-2 text-xs font-medium text-danger">
                   {nftForm.formState.errors.ReceiverAddress.message}
                 </p>
               )}

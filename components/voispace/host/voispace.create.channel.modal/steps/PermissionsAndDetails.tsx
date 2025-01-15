@@ -28,10 +28,12 @@ const PermissionsAndDetails = ({
   formState,
   handleInputChange,
   loading,
+  setPermissionsValid,
 }: {
   formState: Room;
   handleInputChange: (key: keyof Room, value: any) => void;
   loading: boolean;
+  setPermissionsValid: (valid: boolean) => void;
 }) => {
   const { cameras, microphones, error, updateDevices, getMediaPermissions } =
     useMediaDevices();
@@ -43,30 +45,49 @@ const PermissionsAndDetails = ({
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
+    const isValid =
+      formState.type === BroadcastTypeEnum.AMA
+        ? !!formState.audioDevice
+        : !!formState.audioDevice && !!formState.videoDevice;
+
+    setPermissionsValid(isValid);
+  }, [
+    formState.audioDevice,
+    formState.videoDevice,
+    formState.type,
+    setPermissionsValid,
+  ]);
+
+  useEffect(() => {
     updateDevices().then(() => {
-      if (formState.type == BroadcastTypeEnum.LIVE) {
-        if (microphones.length == 0 || cameras.length == 0) {
-          setShowGetPermission(true);
+      let showAudioError = false;
+      let showVideoError = false;
+
+      if (formState.type === BroadcastTypeEnum.LIVE) {
+        if (microphones.length === 0) {
+          showAudioError = true;
+        } else {
+          handleInputChange("audioDevice", microphones[0]);
+        }
+
+        if (cameras.length === 0) {
+          showVideoError = true;
         } else {
           handleInputChange("videoDevice", cameras[0]);
+        }
+      }
+
+      if (formState.type === BroadcastTypeEnum.AMA) {
+        if (microphones.length === 0) {
+          showAudioError = true;
+        } else {
           handleInputChange("audioDevice", microphones[0]);
         }
       }
 
-      if (formState.type == BroadcastTypeEnum.AMA) {
-        if (microphones.length == 0) {
-          setShowGetPermission(true);
-        } else {
-          handleInputChange("audioDevice", microphones[0]);
-        }
-      }
+      setShowGetPermission(showAudioError || showVideoError);
     });
-  }, [
-    updateDevices,
-    handleInputChange,
-    formState.audioDevice,
-    formState.videoDevice,
-  ]);
+  }, [updateDevices, handleInputChange, formState.type]);
 
   useEffect(() => {
     if (showGetPermission) {
@@ -135,56 +156,74 @@ const PermissionsAndDetails = ({
 
   // audio video dropdowns
   const renderAudioDropdown = () => {
-    if (microphones.length > 0) {
+    if (!navigator.mediaDevices) {
       return (
-        <CustomDropdownAll
-          className="rounded-[10px] bg-[#141416]"
-          options={microphones.map((mic) => ({
-            value: mic.deviceId,
-            label: mic.label,
-          }))}
-          selectedValue={formState.audioDevice?.deviceId || ""}
-          onSelect={(value) => {
-            const selectedDevice = microphones.find(
-              (mic) => mic.deviceId === value
-            );
-            handleInputChange("audioDevice", selectedDevice);
-          }}
-        />
+        <div className="text-sm text-danger">
+          Your browser does not support media devices. Please use a compatible
+          browser.
+        </div>
       );
     }
+
+    if (microphones.length === 0) {
+      return (
+        <div className="text-sm text-danger">
+          No audio devices found. Please allow microphone access or check your
+          device settings.
+        </div>
+      );
+    }
+
     return (
-      <div className="text-sm text-red-500">
-        No audio devices found. Please allow microphone access or check your
-        device settings.
-      </div>
+      <CustomDropdownAll
+        className="rounded-[10px] bg-[#141416]"
+        options={microphones.map((mic) => ({
+          value: mic.deviceId,
+          label: mic.label,
+        }))}
+        selectedValue={formState.audioDevice?.deviceId || ""}
+        onSelect={(value) => {
+          const selectedDevice = microphones.find(
+            (mic) => mic.deviceId === value
+          );
+          handleInputChange("audioDevice", selectedDevice);
+        }}
+      />
     );
   };
 
   const renderVideoDropdown = () => {
-    if (cameras.length > 0) {
+    if (!navigator.mediaDevices) {
       return (
-        <CustomDropdownAll
-          className="rounded-[10px] bg-[#141416]"
-          options={cameras.map((cam) => ({
-            value: cam.deviceId,
-            label: cam.label,
-          }))}
-          selectedValue={formState.videoDevice?.deviceId || ""}
-          onSelect={(value) => {
-            const selectedDevice = cameras.find(
-              (cam) => cam.deviceId === value
-            );
-            handleInputChange("videoDevice", selectedDevice);
-          }}
-        />
+        <div className="text-sm text-danger">
+          Your browser does not support media devices. Please use a compatible
+          browser.
+        </div>
       );
     }
+
+    if (error || cameras.length === 0 || showGetPermission) {
+      return (
+        <div className="text-sm text-danger">
+          No video devices found. Please allow camera access or check your
+          device settings.
+        </div>
+      );
+    }
+
     return (
-      <div className="text-sm text-red-500">
-        No video devices found. Please allow camera access or check your device
-        settings.
-      </div>
+      <CustomDropdownAll
+        className="rounded-[10px] bg-[#141416]"
+        options={cameras.map((cam) => ({
+          value: cam.deviceId,
+          label: cam.label,
+        }))}
+        selectedValue={formState.videoDevice?.deviceId || ""}
+        onSelect={(value) => {
+          const selectedDevice = cameras.find((cam) => cam.deviceId === value);
+          handleInputChange("videoDevice", selectedDevice);
+        }}
+      />
     );
   };
 
@@ -258,7 +297,7 @@ const PermissionsAndDetails = ({
           className={clsx(
             "mt-2 block text-xs",
             formState?.name && formState?.name?.length >= 100
-              ? "text-red-500"
+              ? "text-danger"
               : "text-gray-shade-24"
           )}
         >

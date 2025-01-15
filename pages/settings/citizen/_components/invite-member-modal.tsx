@@ -185,7 +185,7 @@ export const InviteMemberModal: React.FC<Props> = ({ isOpen, onClose }) => {
             </div>
           </div>
           {newMemberError && (
-            <p className={`mt-5 text-xs font-medium text-red-500`}>
+            <p className={`mt-5 text-xs font-medium text-danger`}>
               {newMemberError}
             </p>
           )}

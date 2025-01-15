@@ -12,5 +12,5 @@ export const ErrorMessage: React.FC<ErrorMessageProps> = ({
 }) => {
   if (!message) return null;
 
-  return <p className={`text-red-500 ${className}`}>{message}</p>;
+  return <p className={`text-danger ${className}`}>{message}</p>;
 };

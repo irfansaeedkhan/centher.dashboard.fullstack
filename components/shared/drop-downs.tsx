@@ -77,7 +77,7 @@ export const Dropdowns: React.FC<DropdownProps> = ({
             </span>
           )}
         </div>
-        {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
+        {error && <p className="mt-1 text-xs text-danger">{error}</p>}
       </div>
       {isOpen && (
         <div className="absolute z-10 mt-2 flex w-full flex-col rounded-2xl border border-gray-shade-3 bg-black-shade-12 text-white shadow-lg">

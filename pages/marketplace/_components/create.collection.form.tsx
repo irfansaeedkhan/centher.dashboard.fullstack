@@ -185,7 +185,7 @@ export const CreateNFTCollectionForm = ({
       <div className="flex flex-col gap-5">
         <div className={fieldWrapper}>
           <label className={fieldTitle}>
-            Name Your Collection <span className="text-red-500">*</span>
+            Name Your Collection <span className="text-danger">*</span>
           </label>
           <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
             <input
@@ -199,14 +199,14 @@ export const CreateNFTCollectionForm = ({
             />
           </div>
           {formState.errors.name && (
-            <p className={`text-red-500 ${errMessage}`}>
+            <p className={`text-danger ${errMessage}`}>
               {formState.errors.name.message}
             </p>
           )}
         </div>
         <div className={fieldWrapper}>
           <label className={fieldTitle}>
-            Symbol <span className="text-red-500">*</span>
+            Symbol <span className="text-danger">*</span>
           </label>
           <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
             <input
@@ -222,14 +222,14 @@ export const CreateNFTCollectionForm = ({
             />
           </div>
           {formState.errors.symbol && (
-            <p className={`text-red-500 ${errMessage}`}>
+            <p className={`text-danger ${errMessage}`}>
               {formState.errors.symbol.message}
             </p>
           )}
         </div>
         <div className={fieldWrapper}>
           <label className={fieldTitle}>
-            Description <span className="text-red-500">*</span>
+            Description <span className="text-danger">*</span>
           </label>
           <span className="text-xs leading-4 text-[#B7BBCC]">
             The description will be included in the collection page underneath
@@ -250,14 +250,14 @@ export const CreateNFTCollectionForm = ({
             ></textarea>
           </div>
           {formState.errors.description && (
-            <p className={`text-red-500 ${errMessage}`}>
+            <p className={`text-danger ${errMessage}`}>
               {formState.errors.description.message}
             </p>
           )}
         </div>
         <div className={"z-50 flex w-full flex-col gap-2"}>
           <label htmlFor="category" className={fieldTitle}>
-            Category <span className="text-red-500">*</span>
+            Category <span className="text-danger">*</span>
           </label>
           <CustomDropdown
             options={categories.slice(1, categories.length).map((item) => ({
@@ -284,7 +284,7 @@ export const CreateNFTCollectionForm = ({
             />
           </div>
           {formState.errors.url && (
-            <p className={`text-red-500 ${errMessage}`}>
+            <p className={`text-danger ${errMessage}`}>
               {formState.errors.url.message}
             </p>
           )}
@@ -311,7 +311,7 @@ export const CreateNFTCollectionForm = ({
                 </div>
               </div>
               {formState.errors.yoursite && (
-                <p className={`text-red-500 ${errMessage}`}>
+                <p className={`text-danger ${errMessage}`}>
                   {formState.errors.yoursite.message}
                 </p>
               )}
@@ -333,7 +333,7 @@ export const CreateNFTCollectionForm = ({
                 </div>
               </div>
               {formState.errors.facebook && (
-                <p className={`text-red-500 ${errMessage}`}>
+                <p className={`text-danger ${errMessage}`}>
                   {formState.errors.facebook.message}
                 </p>
               )}
@@ -356,7 +356,7 @@ export const CreateNFTCollectionForm = ({
                 </div>
               </div>
               {formState.errors.twitter && (
-                <p className={`text-red-500 ${errMessage}`}>
+                <p className={`text-danger ${errMessage}`}>
                   {formState.errors.twitter.message}
                 </p>
               )}

@@ -68,7 +68,7 @@ export const UploadNFTCollection: React.FC<Props> = ({
     <div className={nftBoxContainer}>
       <div>
         <h4 className={title}>
-          Upload Logo Image <span className="text-red-500">*</span>
+          Upload Logo Image <span className="text-danger">*</span>
         </h4>
         <p className={clsx(`mb-3`, description)}>
           This image will also be used for navigation. 350 x 350 recommended.
@@ -145,7 +145,7 @@ export const UploadNFTCollection: React.FC<Props> = ({
       </div>
       <div>
         <h4 className={title}>
-          Upload banner image <span className="text-red-500">*</span>
+          Upload banner image <span className="text-danger">*</span>
         </h4>
         <p className={description}>
           This image will appear at the top of your collection page. Avoid

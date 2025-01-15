@@ -123,7 +123,7 @@ const AddMember: React.FC<FormStateProps> = ({ formState, setFormState }) => {
                 <span>{member.walletAddress}</span>
               </div>
               <button
-                className="ml-2 text-red-500"
+                className="ml-2 text-danger"
                 onClick={() => handleRemoveMember(index)}
               >
                 <IoClose className="ioCLose h-5 w-5 fill-[#E34048]" />

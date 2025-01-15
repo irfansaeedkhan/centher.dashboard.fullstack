@@ -61,6 +61,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
   const { user } = useUser();
   const { getMediaPermissions, error: mediaError } = useMediaDevices();
   const [currentModalIsOpen, setCurrentModalIsOpen] = useState(true);
+  const [permissionsValid, setPermissionsValid] = useState<boolean>(true);
 
   const [formState, setFormState] = useState<Room>({
     type: BroadcastTypeEnum.AMA,
@@ -80,7 +81,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
 
   useEffect(() => {
     if (mediaError) {
-      toast.error("Check your devices");
+      toast.error("Check your audio and video devices");
     }
   }, [mediaError]);
 
@@ -256,6 +257,15 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
         return;
       }
 
+      if (formState.type === BroadcastTypeEnum.LIVE) {
+        if (!formState.audioDevice || !formState.videoDevice) {
+          toast.error(
+            "Audio and video permissions are required for live sessions."
+          );
+          return;
+        }
+      }
+
       try {
         await getMediaPermissions(formState.type);
         await handleImageUpload();
@@ -373,6 +383,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
             formState={formState}
             handleInputChange={handleInputChange}
             loading={loading}
+            setPermissionsValid={setPermissionsValid}
           />
         );
       case CreatRoomSteps.ACCESSIBILITY:
@@ -447,6 +458,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
             disabled={
               loading ||
               roomCreationLoader ||
+              !permissionsValid ||
               (currentStep === CreatRoomSteps.PERMISSIONS_AND_DETAILS &&
                 (!formState.name || !formState.image))
             }

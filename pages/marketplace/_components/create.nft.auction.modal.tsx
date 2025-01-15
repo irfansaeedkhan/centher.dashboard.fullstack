@@ -62,7 +62,7 @@ const CreateNFTAuctionModal = ({
           className="h-[48px] w-full rounded-lg !border-0 !bg-black-shade-3 bg-transparent text-white !ring-0"
         />
         {auctionForm.formState.errors.AuctionEndTime && (
-          <p className="pb-2 text-xs font-medium text-red-500">
+          <p className="pb-2 text-xs font-medium text-danger">
             {auctionForm.formState.errors.AuctionEndTime.message}
           </p>
         )}
@@ -86,7 +86,7 @@ const CreateNFTAuctionModal = ({
         </div>
 
         {auctionForm.formState.errors.StartingNFTPrice && (
-          <p className="pb-2 text-xs font-medium text-red-500">
+          <p className="pb-2 text-xs font-medium text-danger">
             {auctionForm.formState.errors.StartingNFTPrice.message}
           </p>
         )}

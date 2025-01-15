@@ -94,7 +94,7 @@ const ChangePriceBidModal: React.FC<Props> = ({
           />
         </div>
         {nftPriceError !== "" && (
-          <p className={`pb-2 text-xs font-medium text-red-500`}>
+          <p className={`pb-2 text-xs font-medium text-danger`}>
             {nftPriceError}
           </p>
         )}
