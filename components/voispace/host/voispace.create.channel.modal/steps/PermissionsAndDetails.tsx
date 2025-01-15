@@ -41,7 +41,7 @@ const PermissionsAndDetails = ({
   const [rawImage, setRawImage] = useState<File | undefined>(undefined);
   const [showGetPermission, setShowGetPermission] = useState({
     audioErr: false,
-    VideoErr: false,
+    videoErr: false,
   });
   const [currentTab, setCurrentTab] = useState<string>("audio");
 
@@ -60,43 +60,6 @@ const PermissionsAndDetails = ({
     formState.type,
     setPermissionsValid,
   ]);
-
-  useEffect(() => {
-    updateDevices().then(() => {
-      let showAudioError = false;
-      let showVideoError = false;
-
-      if (formState.type === BroadcastTypeEnum.LIVE) {
-        // Check for audio devices
-        if (microphones.length === 0 || !navigator.permissions) {
-          showAudioError = true;
-        } else {
-          handleInputChange("audioDevice", microphones[0]);
-        }
-
-        // Check for video devices
-        if (cameras.length === 0 || !navigator.permissions) {
-          showVideoError = true;
-        } else {
-          handleInputChange("videoDevice", cameras[0]);
-        }
-      }
-
-      if (formState.type === BroadcastTypeEnum.AMA) {
-        // AMA mode only needs audio
-        if (microphones.length === 0 || !navigator.permissions) {
-          showAudioError = true;
-        } else {
-          handleInputChange("audioDevice", microphones[0]);
-        }
-      }
-
-      setShowGetPermission({
-        audioErr: showAudioError,
-        VideoErr: showVideoError,
-      });
-    });
-  }, [updateDevices, handleInputChange, formState.type]);
 
   useEffect(() => {
     if (showGetPermission) {
@@ -163,7 +126,62 @@ const PermissionsAndDetails = ({
     }
   };
 
-  // audio video dropdowns
+  // audio video error handling logic here ::
+  useEffect(() => {
+    const updatePermissionsAndDevices = async () => {
+      try {
+        // Check browser permission statuses for audio and video
+        const audioPermission = await navigator.permissions.query({
+          name: "microphone" as PermissionName,
+        });
+        const videoPermission = await navigator.permissions.query({
+          name: "camera" as PermissionName,
+        });
+
+        console.log("audioPermission:", audioPermission.state);
+        console.log("videoPermission:", videoPermission.state);
+
+        // Fetch devices again if permissions are granted
+        if (
+          audioPermission.state === "granted" ||
+          videoPermission.state === "granted"
+        ) {
+          console.log("Refreshing devices...");
+          await updateDevices(); // Call the function to refresh the device list
+        }
+
+        // Log the devices after refreshing
+        console.log("Updated microphones:", microphones);
+        console.log("Updated cameras:", cameras);
+
+        // Determine errors based on permissions and device lists
+        const showAudioError =
+          microphones.length === 0 || audioPermission.state !== "granted";
+        const showVideoError =
+          cameras.length === 0 || videoPermission.state !== "granted";
+
+        setShowGetPermission({
+          audioErr: showAudioError,
+          videoErr: showVideoError,
+        });
+
+        // Assign default devices if permissions are granted
+        if (!showAudioError && microphones.length > 0) {
+          console.log("Assigning audio device:", microphones[0]);
+          handleInputChange("audioDevice", microphones[0]);
+        }
+        if (!showVideoError && cameras.length > 0) {
+          console.log("Assigning video device:", cameras[0]);
+          handleInputChange("videoDevice", cameras[0]);
+        }
+      } catch (err) {
+        console.error("Error checking permissions or updating devices:", err);
+      }
+    };
+
+    updatePermissionsAndDevices();
+  }, [microphones, cameras, updateDevices, handleInputChange]);
+
   const renderAudioDropdown = () => {
     if (!navigator.mediaDevices) {
       return (
@@ -173,14 +191,8 @@ const PermissionsAndDetails = ({
         </div>
       );
     }
-
-    if (
-      error ||
-      microphones.length === 0 ||
-      ((formState.type === BroadcastTypeEnum.LIVE ||
-        formState.type === BroadcastTypeEnum.AMA) &&
-        showGetPermission.audioErr)
-    ) {
+    console.log("showGetPermission.audioErr::", showGetPermission.audioErr);
+    if (showGetPermission.audioErr) {
       return (
         <div className="text-sm text-danger">
           No audio devices found. Please allow microphone access or check your
@@ -207,6 +219,7 @@ const PermissionsAndDetails = ({
     );
   };
 
+  // Render video dropdown
   const renderVideoDropdown = () => {
     if (!navigator.mediaDevices) {
       return (
@@ -217,7 +230,7 @@ const PermissionsAndDetails = ({
       );
     }
 
-    if (error || cameras.length === 0 || showGetPermission.VideoErr) {
+    if (showGetPermission.videoErr) {
       return (
         <div className="text-sm text-danger">
           No video devices found. Please allow camera access or check your

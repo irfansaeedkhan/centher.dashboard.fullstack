@@ -461,7 +461,6 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
             disabled={
               loading ||
               roomCreationLoader ||
-              !permissionsValid ||
               (currentStep === CreatRoomSteps.PERMISSIONS_AND_DETAILS &&
                 (!formState.name || !formState.image))
             }
