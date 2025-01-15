@@ -47,14 +47,14 @@ const ModalContainer: React.FC<Props> = ({
     htmlBodyRef
   );
 
-  useEffect(() => {
-    if (!htmlBodyRef.current) return;
-    if (isOpen) {
-      htmlBodyRef.current.style.overflow = "hidden";
-    } else {
-      htmlBodyRef.current.style.overflow = "auto";
-    }
-  }, [isOpen, onClose]);
+  // useEffect(() => {
+  //   if (!htmlBodyRef.current) return;
+  //   if (isOpen) {
+  //     htmlBodyRef.current.style.overflow = "hidden";
+  //   } else {
+  //     htmlBodyRef.current.style.overflow = "auto";
+  //   }
+  // }, [isOpen, onClose]);
 
   useOnClickOutside(modalContentRef, () => {
     if (!shouldCloseOnOverlayClick) return;
