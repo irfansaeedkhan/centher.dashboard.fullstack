@@ -324,7 +324,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
         formState.accessMode === StreamAccessModeEnum.ACCESS_BY_TOKEN &&
         formState.invitedPrivilegeUsers.length === 0
       ) {
-        toast.error("Please add at least one privilege user.");
+        toast.error("Please add at least one privileged user.");
         return;
       }
 

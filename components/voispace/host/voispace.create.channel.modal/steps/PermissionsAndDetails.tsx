@@ -39,7 +39,10 @@ const PermissionsAndDetails = ({
     useMediaDevices();
   const [preview, setPreview] = useState<string | undefined>(undefined);
   const [rawImage, setRawImage] = useState<File | undefined>(undefined);
-  const [showGetPermission, setShowGetPermission] = useState(false);
+  const [showGetPermission, setShowGetPermission] = useState({
+    audioErr: false,
+    VideoErr: false,
+  });
   const [currentTab, setCurrentTab] = useState<string>("audio");
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -64,13 +67,15 @@ const PermissionsAndDetails = ({
       let showVideoError = false;
 
       if (formState.type === BroadcastTypeEnum.LIVE) {
-        if (microphones.length === 0) {
+        // Check for audio devices
+        if (microphones.length === 0 || !navigator.permissions) {
           showAudioError = true;
         } else {
           handleInputChange("audioDevice", microphones[0]);
         }
 
-        if (cameras.length === 0) {
+        // Check for video devices
+        if (cameras.length === 0 || !navigator.permissions) {
           showVideoError = true;
         } else {
           handleInputChange("videoDevice", cameras[0]);
@@ -78,14 +83,18 @@ const PermissionsAndDetails = ({
       }
 
       if (formState.type === BroadcastTypeEnum.AMA) {
-        if (microphones.length === 0) {
+        // AMA mode only needs audio
+        if (microphones.length === 0 || !navigator.permissions) {
           showAudioError = true;
         } else {
           handleInputChange("audioDevice", microphones[0]);
         }
       }
 
-      setShowGetPermission(showAudioError || showVideoError);
+      setShowGetPermission({
+        audioErr: showAudioError,
+        VideoErr: showVideoError,
+      });
     });
   }, [updateDevices, handleInputChange, formState.type]);
 
@@ -165,7 +174,13 @@ const PermissionsAndDetails = ({
       );
     }
 
-    if (microphones.length === 0) {
+    if (
+      error ||
+      microphones.length === 0 ||
+      ((formState.type === BroadcastTypeEnum.LIVE ||
+        formState.type === BroadcastTypeEnum.AMA) &&
+        showGetPermission.audioErr)
+    ) {
       return (
         <div className="text-sm text-danger">
           No audio devices found. Please allow microphone access or check your
@@ -202,7 +217,7 @@ const PermissionsAndDetails = ({
       );
     }
 
-    if (error || cameras.length === 0 || showGetPermission) {
+    if (error || cameras.length === 0 || showGetPermission.VideoErr) {
       return (
         <div className="text-sm text-danger">
           No video devices found. Please allow camera access or check your

@@ -147,7 +147,7 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
           title={roomData?.name || "N/A"}
           onClose={handleLeaveRoom}
           onBack={() => null}
-          hasBackButton={true}
+          hasBackButton={false}
         >
           <button
             className="font-monto text-[14px] font-medium text-[#E34048]"
