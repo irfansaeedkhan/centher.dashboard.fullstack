@@ -10,6 +10,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   borderRounded?: string;
   backgroundColor?: string;
   loaderIcon?: React.ReactNode;
+  important?: boolean;
 }
 interface CustomCSSProperties extends React.CSSProperties {
   "--border-rounded": string;
@@ -24,6 +25,7 @@ const Button: React.FC<ButtonProps> = ({
   loaderIcon,
   borderRounded = "14px",
   backgroundColor = "#17171A",
+  important = false,
   ...props
 }) => {
   const customStyles: CustomCSSProperties = {
@@ -58,6 +60,15 @@ const Button: React.FC<ButtonProps> = ({
         {loaderIcon ? loaderIcon : title}
       </span>
       {IconEnd && IconEnd}
+      {important && variant !== "danger" && (
+        <span
+          className={cn(
+            `text-gradient absolute -right-1 -top-1 h-5 w-5 text-xl`
+          )}
+        >
+          *
+        </span>
+      )}
     </button>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { clsx } from "clsx";
 import { TextLengthChecker } from "@/components/voispace/shared/text.length.checker";
 import { MicIcon2, VideoIcon2 } from "@/assets/svgs";
@@ -38,6 +38,8 @@ const PermissionsAndDetails = ({
   const [rawImage, setRawImage] = useState<File | undefined>(undefined);
   const [showGetPermission, setShowGetPermission] = useState(false);
   const [currentTab, setCurrentTab] = useState<string>("audio");
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     updateDevices().then(() => {
@@ -87,6 +89,11 @@ const PermissionsAndDetails = ({
     if (!file) return;
 
     try {
+      const MAX_FILE_SIZE = 2 * 1024 * 1024;
+      if (file.size > MAX_FILE_SIZE) {
+        toast.error("File size exceeds 2MB. Please upload a smaller image.");
+        return;
+      }
       if (
         !["image/jpeg", "image/png", "image/gif", "image/webp"].includes(
           file.type
@@ -98,7 +105,9 @@ const PermissionsAndDetails = ({
 
       setRawImage(file);
       handleInputChange("image", file);
-    } catch (error) {}
+    } catch (error) {
+      console.error("Error selecting image:", error);
+    }
   };
 
   const getFilePreview = (file: File | null) => {
@@ -117,13 +126,17 @@ const PermissionsAndDetails = ({
   const handleRemoveImage = () => {
     setRawImage(undefined);
     handleInputChange("image", null);
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   };
   //TODO: show a dialog when showGetPermission is true and ask user to allow device permission, in the same dialog we shoud show mediaError if it has value
   return (
     <div className={clsx(`flex flex-col gap-6`, loading && "opacity-50")}>
       <div className="flex flex-col items-start justify-between gap-4 ">
         <div className={`text-xl font-medium text-white`}>
-          Dive into <span className={`text-gradient-1`}>VoiceSpace</span>
+          Dive into <span className={`text-gradient-1`}>VoiSpace</span>
         </div>
         <div className="image-container flex items-center gap-3">
           {preview && (
@@ -145,6 +158,7 @@ const PermissionsAndDetails = ({
             style={{ display: "none" }}
             onChange={handleOnUserSelectedImage}
             disabled={loading}
+            ref={fileInputRef}
           />
           <Button
             title={preview ? "Remove Image" : "Upload Image"}
@@ -159,28 +173,44 @@ const PermissionsAndDetails = ({
             borderRounded="10px"
             className={`text-xs font-medium`}
             disabled={loading}
+            important={true}
           />
         </div>
       </div>
-      <div className="relative min-h-20 rounded-2xl bg-[#141416]">
-        <div className="flex items-center">
-          <textarea
-            className="w-full rounded-2xl border-none bg-[#141416] p-4 text-sm font-medium text-white focus:outline-none focus:ring-0"
-            placeholder="Write a smart title for your Room"
-            maxLength={100}
-            value={formState.name}
-            onChange={(e) => handleInputChange("name", e.target.value)}
-            disabled={loading}
-          ></textarea>
-
-          <div className="absolute bottom-2 right-2 z-[100] ml-4 h-7 w-7">
-            <TextLengthChecker
-              currentLength={formState.name!.length}
+      <div className="flex flex-col gap-2">
+        <div className="relative min-h-20 rounded-2xl bg-[#141416]">
+          <div className="flex items-center">
+            <textarea
+              className="w-full rounded-2xl border-none bg-[#141416] p-4 text-sm font-medium text-white focus:outline-none focus:ring-0"
+              placeholder="Write a smart title for your Room*"
               maxLength={100}
-            />
+              value={formState.name}
+              onChange={(e) => handleInputChange("name", e.target.value)}
+              disabled={loading}
+            ></textarea>
+
+            <div className="absolute bottom-2 right-2 z-[100] ml-4 h-7 w-7">
+              <TextLengthChecker
+                currentLength={formState.name!.length}
+                maxLength={100}
+              />
+            </div>
           </div>
         </div>
+        <span
+          className={clsx(
+            "mt-2 block text-xs",
+            formState?.name && formState?.name?.length >= 100
+              ? "text-red-500"
+              : "text-gray-shade-24"
+          )}
+        >
+          {formState?.name && formState.name.length >= 100
+            ? "You cannot exceed 100 characters."
+            : "A smart title is required. Max limit: 100 characters.*"}
+        </span>
       </div>
+
       <div className="tabs flex flex-col gap-2">
         <div className="flex items-center gap-4">
           {/* Audio Tab */}

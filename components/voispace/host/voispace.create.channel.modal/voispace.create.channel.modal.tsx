@@ -125,7 +125,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
       setCurrentModalIsOpen(false);
       onClose();
     }
-  }, [eventOnLive, eventOnAMA, formState.accessMode]);
+  }, [eventOnLive, eventOnAMA]);
 
   const generateImageUrl = (params: any): string => {
     if (params.type === "custom-image") {
@@ -403,7 +403,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
       isOpen={currentModalIsOpen}
       modalContentClassName="mobile-max:h-[100vh] max-w-[656px] p-0 mobile-max:rounded-none mobile-max:mx-0 rounded-3xl"
       shouldCloseOnEsc={true}
-      shouldCloseOnOverlayClick={currentStep === CreatRoomSteps.AMA_OR_LIVE}
+      shouldCloseOnOverlayClick={!roomCreationLoader}
     >
       <div className="header relative border-b-2 border-[#141416]">
         <div className="mb-0 flex items-center justify-between rounded-t px-4 py-4 md:py-4">
@@ -443,7 +443,12 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
                 ? "Submit"
                 : "Next"
             }
-            disabled={loading || roomCreationLoader}
+            disabled={
+              loading ||
+              roomCreationLoader ||
+              (currentStep === CreatRoomSteps.PERMISSIONS_AND_DETAILS &&
+                (!formState.name || !formState.image))
+            }
             variant="primary"
             onClick={handleNext}
             borderRounded="10px"

@@ -180,6 +180,7 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
                       <li className="list-item-with-image">
                         Staking as a service
                       </li>
+                      <li className="list-item-with-image">Voispace</li>
                       <li className="list-item-with-image">
                         Create collections
                       </li>
