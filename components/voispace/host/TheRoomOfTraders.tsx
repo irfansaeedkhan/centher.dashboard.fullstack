@@ -115,7 +115,9 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
   const handleRequestToTalk = (request: boolean) => {
     try {
       requestToTalk(request);
-      toast.success("Request to talk sent.");
+      toast.success(
+        request ? "Request to talk sent." : "Request to talk cancelled."
+      );
     } catch (error) {
       console.error("Failed to send Request to talk", error);
       toast.error("Failed to send Request to talk");

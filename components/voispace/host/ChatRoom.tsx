@@ -137,7 +137,7 @@ const ChatRoom: React.FC<DynamicProps> = ({
     <div className="px-[24px] py-[24px] text-white">
       <div className="flex flex-col gap-[42px]">
         <HostModalHeader
-          subTitle="The Room of Traders"
+          subTitle={roomData?.name || "N/A"}
           title="Chat Room"
           onClose={onClose}
           hasBackButton={true}
@@ -181,7 +181,7 @@ const ChatRoom: React.FC<DynamicProps> = ({
                         {getTimeLapsed(msg.createdAt)}
                       </span>
                     </div>
-                    <p className="overflow-wrap white-space w-[72vw] break-words text-xs flg:w-[40vw]">
+                    <p className="overflow-wrap white-space break-words text-xs flg:max-w-[650px] mobile-max:w-[72vw]">
                       {msg.content}
                     </p>
                   </div>

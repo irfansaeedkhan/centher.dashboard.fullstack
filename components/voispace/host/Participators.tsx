@@ -116,8 +116,8 @@ const Participators: React.FC<DynamicProps> = ({
     <div className="px-[24px] py-[24px] text-white">
       <div className="flex flex-col gap-[27px]">
         <HostModalHeader
-          subTitle="The Room of Traders"
-          title="Participators"
+          subTitle={roomData?.name || "N/A"}
+          title="Participants"
           onClose={onClose}
           hasBackButton={true}
           onBack={() => setComponentName("TheRoomOfTraders")}

@@ -113,7 +113,7 @@ const InvitetoRoom: React.FC<DynamicProps> = ({
     <div className="px-4 py-6 text-white md:p-6">
       <div className="flex flex-col gap-[27px]">
         <HostModalHeader
-          subTitle="The Room of Traders"
+          subTitle={roomData?.name || "N/A"}
           title="Invite to Room"
           onClose={onClose}
           hasBackButton={true}
