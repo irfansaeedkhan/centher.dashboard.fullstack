@@ -12,6 +12,7 @@ COPY . .
 
 # This will do the trick for public environment variables
 COPY .env.staging .env.production
+COPY .env.staging .env.staging
 
 RUN yarn build
 
