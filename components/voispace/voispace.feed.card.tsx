@@ -50,7 +50,6 @@ export const VoiSpaceFeedCard: React.FC = () => {
   };
 
   const handleRoomClick = (room: Room) => {
-    if (!checkCitizenship()) return;
     try {
       if (room.type == BroadcastTypeEnum.AMA) {
         joinAMARoom(room.id as string, user?._id || "");
@@ -76,7 +75,6 @@ export const VoiSpaceFeedCard: React.FC = () => {
   };
 
   const handleMoreChannels = () => {
-    if (!checkCitizenship()) return;
     setIsMoreModalOpen(true);
   };
 
