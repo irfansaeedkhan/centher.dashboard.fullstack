@@ -24,6 +24,7 @@ import { getUserImageUploadUrl } from "@/lib/user";
 import useMediaDevices from "@/hooks/use.get.media.devices";
 import clsx from "clsx";
 import { CrossIcon } from "@/assets/svgs";
+import { Collection } from "@/hooks/stream/types";
 
 interface Props {
   onClose: () => void;
@@ -31,7 +32,7 @@ interface Props {
 
 export interface Room extends ICentalkBroadcast {
   invitedPrivateUsers: SearchResultWithType[];
-  invitedPrivilegeUsers: CFSCollection[];
+  invitedPrivilegeUsers: Collection[];
   audioDevice: MediaDeviceInfo | null;
   videoDevice: MediaDeviceInfo | null;
 }

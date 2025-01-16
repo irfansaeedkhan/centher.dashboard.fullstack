@@ -7,6 +7,7 @@ import { areStringsEquals } from "@/stream/utils/string.utils";
 
 export class StreamHooksHelper {
   apolloClient: ApolloClient<unknown> | undefined;
+  subgraphApolloClient: ApolloClient<unknown> | undefined;
   apolloService: ApolloService | undefined;
 
   get apolloServiceInstance(): ApolloService {
@@ -26,6 +27,18 @@ export class StreamHooksHelper {
     }
 
     return this.apolloClient;
+  }
+
+  async getSubgraphInstance(): Promise<ApolloClient<unknown>> {
+    if (!this.subgraphApolloClient) {
+      const client = await this.apolloServiceInstance.getApolloClient(
+        GraphQLResourcesUrl.subgraphServer
+      );
+
+      this.subgraphApolloClient = client.client;
+    }
+
+    return this.subgraphApolloClient;
   }
 
   // getApolloClient = async (): Promise<ApolloClient<unknown>> => {
