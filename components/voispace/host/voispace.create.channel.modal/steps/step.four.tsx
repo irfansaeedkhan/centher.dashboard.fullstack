@@ -186,14 +186,17 @@ const StepFour: React.FC<StepFourProps> = ({
                 value={collectionAddress}
                 onChange={(e) => setCollectionAddress(e.target.value)}
               />
-
-              {privilegeCollections.map((collection: Collection) => (
-                <SearchedPrivilegeCollection
-                  key={collection.collection}
-                  collection={collection}
-                  onAddClick={handleAddCollection}
-                />
-              ))}
+              {!!privilegeCollections.length && (
+                <div className="absolute top-full z-10 mt-1.5 max-h-[195px] w-full overflow-y-auto rounded-xl bg-popup-0">
+                  {privilegeCollections.map((collection: Collection) => (
+                    <SearchedPrivilegeCollection
+                      key={collection.collection}
+                      collection={collection}
+                      onAddClick={handleAddCollection}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           </div>
           {formState.invitedPrivilegeUsers.length > 0 && (
