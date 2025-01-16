@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react";
 import clsx from "clsx";
 import Image from "next/image";
-
-import { VoispaceGradientRing, VoispaceLiveIcon } from "@/assets/svgs";
-import Button from "../button";
-import { useStream } from "@/hooks/stream/use.core";
-
-import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
-import useUser from "@/hooks/use.user";
-import { StreamEventEnum } from "@/stream/model";
 import toast from "react-hot-toast";
 import { BuyCitizenshipModal } from "@/components/modal/buy-citizenship-modal";
+import { VoispaceGradientRing, VoispaceLiveIcon } from "@/assets/svgs";
+
+import { useStream } from "@/hooks/stream/use.core";
+import useUser from "@/hooks/use.user";
+
+import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
+import { StreamEventEnum } from "@/stream/model";
 
 import ChannelMainView from "./shared/ChannelMainView";
 import { VoispaceExploreChannelsModal } from "./user/voispace.explore.channels.modal";
@@ -18,8 +17,12 @@ import {
   Room,
   VoispaceCreateChannelModal,
 } from "./host/voispace.create.channel.modal/voispace.create.channel.modal";
+import Button from "../button";
 
-export const VoiSpaceFeedCard: React.FC = () => {
+interface prop {
+  isRendered: boolean;
+}
+export const VoiSpaceFeedCard: React.FC<prop> = ({ isRendered }: prop) => {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -115,6 +118,9 @@ export const VoiSpaceFeedCard: React.FC = () => {
   }, [broadcasts]);
 
   useEffect(() => {
+    if (!isRendered) {
+      return;
+    }
     if (!eventOnLive && !eventOnAMA) {
       return;
     }
@@ -191,7 +197,7 @@ export const VoiSpaceFeedCard: React.FC = () => {
     ) {
       setNeedRetry(true);
     }
-  }, [eventOnLive, eventOnAMA]);
+  }, [eventOnLive, eventOnAMA, isRendered]);
 
   return (
     <>

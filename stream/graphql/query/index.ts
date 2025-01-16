@@ -41,8 +41,24 @@ function getInvitedUsersByBrooadcastId() {
 
 function getCollections() {
   return gql`
-    query findCollectionByAddress($collection: String = "") {
+    query findCollectionByAddress($collection: String!) {
       collections(where: { collection_contains: $collection }) {
+        category
+        collection
+        creatorUser {
+          publicKey
+        }
+        name
+        symbol
+      }
+    }
+  `;
+}
+
+function getCollectionsByName() {
+  return gql`
+    query findCollectionByAddress($collection: String!) {
+      collections(where: { name_contains_nocase: $collection }) {
         category
         collection
         creatorUser {
@@ -59,4 +75,5 @@ export {
   getMessagesByBroadcastId,
   getInvitedUsersByBrooadcastId,
   getCollections,
+  getCollectionsByName,
 };

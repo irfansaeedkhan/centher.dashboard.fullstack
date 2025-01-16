@@ -19,16 +19,10 @@ export const SearchedPrivilegeCollection: React.FC<Props> = ({
       key={collection.collection}
       className="flex cursor-pointer items-center gap-x-3 rounded-xl bg-black-shade-1 p-4 hover:bg-black-shade-2"
     >
-      {/* <Image
-        src={collection.name}
-        alt={collection.collection}
-        width={40}
-        height={40}
-        className="h-8 w-8 shrink-0 rounded-full"
-      /> */}
       <div className="flex-grow">
         <p className="word-break text-sm font-medium text-white">
-          {collection.collection}
+          {collection.name}
+          {" || "} {collection.collection}
         </p>
       </div>
       <button

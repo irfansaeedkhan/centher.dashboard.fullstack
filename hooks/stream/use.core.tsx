@@ -22,6 +22,7 @@ import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
 import useGetChatUsers from "../use.get.chat.users";
 import {
   getCollections,
+  getCollectionsByName,
   getInvitedUsersByBrooadcastId,
 } from "@/stream/graphql/query";
 import { BroadcastMessage } from "./dto/broadcast-inffo.dto";
@@ -135,7 +136,16 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
       const setupQuery = async () => {
         try {
           const apollo = await helperRef.current.getSubgraphInstance();
-          const query = getCollections();
+          let query;
+
+          const isAddress =
+            collection.startsWith("0x") && collection.length % 2 == 0;
+
+          if (isAddress) {
+            query = getCollections();
+          } else {
+            query = getCollectionsByName();
+          }
 
           if (!query) {
             throw new Error("invalid query");
@@ -149,7 +159,6 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
           });
 
           const finalResult = await result;
-          console.log(finalResult.data.collections);
           setData(finalResult.data.collections as Collection[]);
           setLoader(false);
         } catch (error) {
@@ -669,6 +678,7 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
       };
     });
   };
+
   const aggregateUsersHaveTalkRequest = async (users: any[]) => {
     const ids = users.map((e) => e!.user?.id);
     const mappedUsers = await getUsers(ids);
@@ -676,6 +686,7 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
       mappedUsers?.find((m) => areStringsEquals(u.user.id, m._id))
     );
   };
+
   const aggregateParticipatorsUser = async (data: any) => {
     const ids = data?.broadcast?.[0]?.participators?.map((e: any) => e.userId);
     const users = await getUsers(ids);
@@ -690,6 +701,7 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
       count: data?.broadcast?.[0]?.user_broadcasts_aggregate?.aggregate.count,
     };
   };
+
   const aggregateInvitedUsers = async (data: any) => {
     const ids = data?.broadcast[0]?.invitedUsers;
     const mappedUsers = await getUsers(ids);

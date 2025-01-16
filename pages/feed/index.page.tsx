@@ -34,6 +34,8 @@ const Feed: NextPageWithLayout = () => {
   const { user } = useUser();
   const router = useRouter();
   const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
+  const [is2XLScreen, setIs2XLScreen] = useState(false);
+
   const { openModal: openPostModal } = usePostEditorStore(
     useShallow((state) => state.actions)
   );
@@ -103,10 +105,22 @@ const Feed: NextPageWithLayout = () => {
     }
   };
 
+  useEffect(() => {
+    const handleResize = () => {
+      setIs2XLScreen(window.innerWidth >= 1440);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
   return (
     <>
       <div className="mt-3 block w-full f2xl:hidden">
-        <VoiSpaceFeedCard />
+        <VoiSpaceFeedCard isRendered={!is2XLScreen} />
       </div>
       {((loading === "loaded" && posts.length === 0) || posts.length > 0) &&
         user && <CreatePostCard user={user} />}

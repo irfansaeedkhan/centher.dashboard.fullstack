@@ -723,7 +723,7 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
             type: StreamEventEnum.STREAM_INITIALIZATION_ERROR,
           });
 
-          setToast(data);
+          // setToast(data);
         });
       } catch (error) {
         reject(error);

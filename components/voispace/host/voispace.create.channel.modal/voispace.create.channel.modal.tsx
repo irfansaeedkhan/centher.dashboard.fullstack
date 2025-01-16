@@ -10,7 +10,7 @@ import { StreamAccessModeEnum } from "@/stream/enum/stream-access-mode.enum";
 import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
 import { CreateBroadcastDto } from "@/stream/types/Broadcast";
 import axios from "axios";
-import * as mediasoupClient from "mediasoup-client";
+
 import AMAOrLive from "./steps/AMAOrLive";
 import PermissionsAndDetails from "./steps/PermissionsAndDetails";
 import Accessibility from "./steps/Accessibility";
@@ -41,11 +41,6 @@ export interface SearchResultWithType {
   _id: string;
   name: string;
   type: string;
-}
-
-export interface CFSCollection {
-  collection: string;
-  name: string;
 }
 
 export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
