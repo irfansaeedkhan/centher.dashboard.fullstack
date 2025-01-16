@@ -17,8 +17,12 @@ import { StreamHooksHelper } from "./helper";
 import { insertMessageToStream } from "@/stream/graphql/mutation";
 import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
 import useGetChatUsers from "../use.get.chat.users";
-import { getInvitedUsersByBrooadcastId } from "@/stream/graphql/query";
+import {
+  getCollections,
+  getInvitedUsersByBrooadcastId,
+} from "@/stream/graphql/query";
 import { BroadcastMessage } from "./dto/broadcast-inffo.dto";
+import { Collection } from "./types";
 
 interface StreamContextType {
   useGetSubscribes: () => Promise<any>;
@@ -40,6 +44,10 @@ interface StreamContextType {
   useSubscribeToHasTalkRequestUsers: (broadcastId: string) => any;
   useQueryToGetInvitedUsersByBrooadcastId: (id: string) => {
     data: any;
+    loader: boolean;
+  };
+  useQueryToGetCollections: (collection: string) => {
+    data: Collection[];
     loader: boolean;
   };
   useSubscribeToParticipators: (id: string, skip: number) => any;
@@ -108,6 +116,47 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
 
       setupQuery();
     }, [id]);
+
+    return { data, loader };
+  };
+
+  const useQueryToGetCollections = (collection: string) => {
+    const [data, setData] = useState<Collection[]>([]);
+    const [loader, setLoader] = useState<boolean>(false);
+    const helperRef = useRef<StreamHooksHelper>(helper.current);
+
+    useEffect(() => {
+      setLoader(true);
+
+      const setupQuery = async () => {
+        try {
+          const apollo = await helperRef.current.getSubgraphInstance();
+          const query = getCollections();
+
+          if (!query) {
+            throw new Error("invalid query");
+          }
+
+          const result = apollo.query({
+            query,
+            variables: {
+              collection,
+            },
+          });
+
+          const finalResult = await result;
+          console.log(finalResult.data.collections);
+          setData(finalResult.data.collections as Collection[]);
+          setLoader(false);
+        } catch (error) {
+          console.error("query setup failed:", error);
+        } finally {
+          setLoader(false);
+        }
+      };
+
+      setupQuery();
+    }, [collection]);
 
     return { data, loader };
   };
@@ -562,6 +611,7 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
       };
     });
   };
+
   const aggregateCurrentStreamUsers = async (stream: any) => {
     let ids = stream?.latestParticipants?.map((e: any) => e.user.id) || [];
     ids.push(stream?.hosts[0]?.user.id);
@@ -589,6 +639,7 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
 
     return stream;
   };
+
   const aggregateSpeakers = async (speakers: any[]) => {
     const ids = speakers.map((p) => {
       return p.userId;
@@ -641,6 +692,7 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
     useSubscribeToHasTalkRequestUsers,
     useQueryToGetInvitedUsersByBrooadcastId,
     useSubscribeToParticipators,
+    useQueryToGetCollections,
     amaAgent,
     liveAgent,
   };

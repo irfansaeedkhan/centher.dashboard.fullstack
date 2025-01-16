@@ -3,10 +3,11 @@ import Image from "next/image";
 
 import { SearchResultWithType } from "@/lib/search";
 import { CFSCollection } from "@/models/nft";
+import { Collection } from "@/hooks/stream/types";
 
 interface Props {
-  collection: CFSCollection;
-  onAddClick: (collection: CFSCollection) => void;
+  collection: Collection;
+  onAddClick: (collection: Collection) => void;
 }
 
 export const SearchedPrivilegeCollection: React.FC<Props> = ({
@@ -15,16 +16,16 @@ export const SearchedPrivilegeCollection: React.FC<Props> = ({
 }) => {
   return (
     <div
-      key={collection.id}
+      key={collection.collection}
       className="flex cursor-pointer items-center gap-x-3 rounded-xl bg-black-shade-1 p-4 hover:bg-black-shade-2"
     >
-      <Image
-        src={collection.ipfs_metadata.profileIPFSHash}
+      {/* <Image
+        src={collection.name}
         alt={collection.collection}
         width={40}
         height={40}
         className="h-8 w-8 shrink-0 rounded-full"
-      />
+      /> */}
       <div className="flex-grow">
         <p className="word-break text-sm font-medium text-white">
           {collection.collection}
