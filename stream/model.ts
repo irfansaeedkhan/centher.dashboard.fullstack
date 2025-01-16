@@ -40,6 +40,7 @@ export interface ICentalkMessage {
 }
 
 export enum StreamEventEnum {
+  ON_STREAM_CONNECTED = "ON_STREAM_CONNECTED",
   ON_NEED_WALLET_LIST = "ON_NEED_WALLET_LIST",
   ON_NEED_BUY = "ON_NEED_BUY",
   ON_NEED_SWAP = "ON_NEED_SWAP",

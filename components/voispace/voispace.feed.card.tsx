@@ -28,6 +28,12 @@ export const VoiSpaceFeedCard: React.FC = () => {
   const [isUserMainViewOpen, setIsUserMainViewOpen] = useState(false);
   const [showBuyCitizenshipModal, setShowBuyCitizenshipModal] = useState(false);
   const [joiningRoomLoader, setJoiningRoomLoader] = useState<boolean>(false);
+  const [needRetry, setNeedRetry] = useState<boolean>(false);
+  const [joinLoaderMessage, setJoinLoaderMessage] =
+    useState<string>("Joining Stream");
+
+  const [liveCreated, setLiveCreated] = useState<boolean>(false);
+  const [amaCreated, setAmaCreated] = useState<boolean>(false);
 
   const { amaAgent, liveAgent, useSubscribeToAllBroadcasts } = useStream();
 
@@ -50,6 +56,7 @@ export const VoiSpaceFeedCard: React.FC = () => {
   };
 
   const handleRoomClick = (room: Room) => {
+    console.log();
     try {
       if (room.type == BroadcastTypeEnum.AMA) {
         joinAMARoom(room.id as string, user?._id || "");
@@ -103,13 +110,33 @@ export const VoiSpaceFeedCard: React.FC = () => {
   }, [broadcasts]);
 
   useEffect(() => {
+    if (eventOnLive?.type === StreamEventEnum.ON_JOINED_TO_BROADCAST) {
+      setLiveCreated(true);
+    }
+    if (eventOnAMA?.type === StreamEventEnum.ON_JOINED_TO_BROADCAST) {
+      setAmaCreated(true);
+    }
+
     if (
-      eventOnAMA?.type === StreamEventEnum.ON_JOINED_TO_BROADCAST ||
-      eventOnLive?.type === StreamEventEnum.ON_JOINED_TO_BROADCAST
+      eventOnLive?.type === StreamEventEnum.ON_STREAM_CONNECTED &&
+      liveCreated
     ) {
       setSelectedRoomData(selectedRoom);
       setIsUserMainViewOpen(true);
       setJoiningRoomLoader(false);
+      setAmaCreated(false);
+      setJoinLoaderMessage("Joining Stream");
+    }
+
+    if (
+      eventOnAMA?.type === StreamEventEnum.ON_STREAM_CONNECTED &&
+      amaCreated
+    ) {
+      setSelectedRoomData(selectedRoom);
+      setIsUserMainViewOpen(true);
+      setJoiningRoomLoader(false);
+      setAmaCreated(false);
+      setJoinLoaderMessage("Joining Stream");
     }
 
     if (
@@ -118,9 +145,14 @@ export const VoiSpaceFeedCard: React.FC = () => {
     ) {
       const error = eventOnAMA?.data || eventOnLive?.data;
       toast.error(error);
-
+      setNeedRetry(false);
       setIsUserMainViewOpen(false);
       setSelectedRoomData(null);
+      setLiveCreated(false);
+      setJoiningRoomLoader(false);
+      setAmaCreated(false);
+      setLiveCreated(false);
+      setJoinLoaderMessage("Joining Stream");
     }
 
     if (
@@ -129,22 +161,26 @@ export const VoiSpaceFeedCard: React.FC = () => {
       eventOnAMA?.type == StreamEventEnum.ON_USER_KICKED ||
       eventOnLive?.type == StreamEventEnum.ON_USER_KICKED
     ) {
-      setSelectedRoomData(null);
-      setIsUserMainViewOpen(false);
+      if (needRetry && selectedRoom) {
+        setNeedRetry(false);
+        setJoinLoaderMessage("Retrying...");
+        handleRoomClick(selectedRoom);
+      } else {
+        setNeedRetry(false);
+        setSelectedRoomData(null);
+        setIsUserMainViewOpen(false);
+        setJoiningRoomLoader(false);
+        setAmaCreated(false);
+        setLiveCreated(false);
+        setJoinLoaderMessage("Joining Stream");
+      }
     }
 
     if (
       eventOnAMA?.type == StreamEventEnum.ON_NEED_TO_TRY_AGAIN ||
       eventOnLive?.type == StreamEventEnum.ON_NEED_TO_TRY_AGAIN
     ) {
-      toast.error("Failed to join the room. Please try again.");
-    }
-
-    if (
-      eventOnAMA?.type == StreamEventEnum.ON_USER_KICKED ||
-      eventOnLive?.type == StreamEventEnum.ON_USER_KICKED
-    ) {
-      toast.error("You have been kicked from the room.");
+      setNeedRetry(true);
     }
   }, [eventOnLive, eventOnAMA]);
 
@@ -251,7 +287,7 @@ export const VoiSpaceFeedCard: React.FC = () => {
           <div className="flex flex-col items-center gap-4 rounded-lg  px-14 py-8">
             <VoispaceGradientRing className="animate-spin text-2xl text-white" />
             <span className=" text-lg font-medium capitalize text-white">
-              Joining Stream{" "}
+              {joinLoaderMessage}{" "}
               <span className="textGradient animate-pulse">...</span>
             </span>
           </div>

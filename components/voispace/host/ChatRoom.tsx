@@ -7,6 +7,7 @@ import DOMPurify from "dompurify";
 import { useStream } from "@/hooks/stream/use.core";
 import { Room } from "./voispace.create.channel.modal/voispace.create.channel.modal";
 import EmojiPicker, { EmojiClickData, Theme } from "emoji-picker-react";
+import useUser from "@/hooks/use.user";
 
 interface DynamicProps {
   onClose: () => void;
@@ -40,9 +41,9 @@ const ChatRoom: React.FC<DynamicProps> = ({
   const [limit, setLimit] = useState(5);
   const [allMessages, setAllMessages] = useState<any[]>([]);
   const [isFetching, setIsFetching] = useState(false);
-
   const { messages: fetchedMessages, loading: subscriptionLoading } =
     useSubscribeToMessages(roomData?.id || "", limit);
+  const { user } = useUser();
 
   useEffect(() => {
     if (fetchedMessages) {
@@ -50,7 +51,12 @@ const ChatRoom: React.FC<DynamicProps> = ({
         const newMessages = fetchedMessages.filter(
           (msg) => !prev.some((m) => m.id === msg.id)
         );
-        return [...newMessages, ...prev];
+
+        const aggregatedMessage = [...newMessages, ...prev];
+
+        return aggregatedMessage
+          .filter((e) => "id" in e)
+          .sort((a, b) => +new Date(a.createdAt) - +new Date(b.createdAt));
       });
     }
   }, [fetchedMessages]);
@@ -92,6 +98,12 @@ const ChatRoom: React.FC<DynamicProps> = ({
     setInputValue(e.target.value);
   };
 
+  const addNewMessage = (message: any) => {
+    setAllMessages((prev) => {
+      return [...prev, message];
+    });
+  };
+
   const onSend = async (e: any) => {
     e.preventDefault();
     const pattenr =
@@ -106,13 +118,16 @@ const ChatRoom: React.FC<DynamicProps> = ({
       insertMessage(roomData?.id || "", message);
       setInputValue("");
       setShowEmojiPicker(false);
+      addNewMessage({
+        sender: {
+          display_name: user?.display_name,
+          profile_image: user?.profile_image,
+        },
+        content: message,
+        createdAt: new Date(),
+      });
     }
   };
-
-  const formattedMessages =
-    allMessages
-      ?.sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt))
-      ?.reverse() || [];
 
   const getTimeLapsed = (date: Date | string): string => {
     date = date instanceof Date ? date : new Date(date);

@@ -183,11 +183,6 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
             return;
           }
 
-          setEvent({
-            data,
-            type: StreamEventEnum.ON_JOINED_TO_BROADCAST,
-          });
-
           globalUserId.current = userId;
           globalBroadcastId.current = id;
           globalRtpCapabilities.current = data.rtpCapabilities;
@@ -271,6 +266,11 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
             } else {
               closeConsumer(data.id);
             }
+          });
+
+          setEvent({
+            data,
+            type: StreamEventEnum.ON_JOINED_TO_BROADCAST,
           });
 
           res(true);
@@ -491,6 +491,10 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
                       data: null,
                       type: StreamEventEnum.ON_UPDATE_CONSUMER,
                     });
+                    setEvent({
+                      data: null,
+                      type: StreamEventEnum.ON_STREAM_CONNECTED,
+                    });
                     break;
                   default:
                     if (globalConsumerTransport.current) {
@@ -499,11 +503,15 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
                         type: StreamEventEnum.ON_NEED_TO_TRY_AGAIN,
                       });
                       console.log("consumer connectionstatechange", state);
-                      leave();
-                      globalReceiveStreamLoader.current = state;
-                      globalConsumerTransport.current?.close();
 
-                      rej();
+                      try {
+                        globalReceiveStreamLoader.current = state;
+                        globalConsumerTransport.current?.close();
+                      } catch (error) {
+                      } finally {
+                        leave();
+                        rej();
+                      }
                     }
                     break;
                 }
@@ -592,25 +600,33 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
             consumeData: mediasoupClient.types.ConsumerOptions<mediasoupClient.types.AppData>
           ) => {
             if (globalConsumerTransport.current) {
-              const consumer = await globalConsumerTransport.current.consume(
-                consumeData
-              );
+              try {
+                const consumer = await globalConsumerTransport.current.consume(
+                  consumeData
+                );
 
-              // 'trackended' | 'transportclose'
-              consumer.on("transportclose", () => {
-                console.log("remote producer closed.", producerId);
-                globalConsumersAudioStream.current.delete(producerId);
-                globalConsumersAudio.current.delete(producerId);
-              });
+                // 'trackended' | 'transportclose'
+                consumer.on("transportclose", () => {
+                  console.log("remote producer closed.", producerId);
+                  globalConsumersAudioStream.current.delete(producerId);
+                  globalConsumersAudio.current.delete(producerId);
+                });
 
-              globalConsumersAudio.current.set(producerId, consumer);
-              const stream = new MediaStream();
-              stream.addTrack(consumer.track);
-              globalConsumersAudioStream.current.set(producerId, stream);
-              setEvent({
-                data: null,
-                type: StreamEventEnum.ON_UPDATE_CONSUMER,
-              });
+                globalConsumersAudio.current.set(producerId, consumer);
+                const stream = new MediaStream();
+                stream.addTrack(consumer.track);
+                globalConsumersAudioStream.current.set(producerId, stream);
+                setEvent({
+                  data: null,
+                  type: StreamEventEnum.ON_UPDATE_CONSUMER,
+                });
+              } catch (error) {
+                console.log("globalConsumerTransport is closed.", error);
+                setEvent({
+                  type: StreamEventEnum.ON_NEED_TO_TRY_AGAIN,
+                  data: null,
+                });
+              }
             } else {
               console.log("consumer transport is null");
             }
