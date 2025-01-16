@@ -699,7 +699,6 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
     globalReceiveStreamLoader.current = "none";
     globalSendStreamLoader.current = "none";
     setToast("");
-    setEvent(null);
   };
 
   const hasGetUserMedia = () => {
@@ -716,12 +715,15 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
         });
 
         globalSocket.current.on("error", ({ data }: any) => {
-          console.log("server error", data);
+          try {
+            close();
+          } catch (error) {}
           setEvent({
             data,
             type: StreamEventEnum.STREAM_INITIALIZATION_ERROR,
           });
-          reject(data);
+
+          setToast(data);
         });
       } catch (error) {
         reject(error);

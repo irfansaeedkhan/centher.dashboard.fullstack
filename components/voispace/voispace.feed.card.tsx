@@ -30,21 +30,27 @@ export const VoiSpaceFeedCard: React.FC = () => {
   const [joiningRoomLoader, setJoiningRoomLoader] = useState<boolean>(false);
   const [needRetry, setNeedRetry] = useState<boolean>(false);
   const [joinLoaderMessage, setJoinLoaderMessage] =
-    useState<string>("Joining Stream");
+    useState<string>("Joining Stream...");
 
   const [liveCreated, setLiveCreated] = useState<boolean>(false);
   const [amaCreated, setAmaCreated] = useState<boolean>(false);
 
   const { amaAgent, liveAgent, useSubscribeToAllBroadcasts } = useStream();
 
-  const { joinRoom: joinAMARoom, event: eventOnAMA } = amaAgent;
-  const { joinRoom: joinLiveRoom, event: eventOnLive } = liveAgent;
+  const {
+    joinRoom: joinAMARoom,
+    event: eventOnAMA,
+    toast: amaToast,
+    leave: leaveAMA,
+  } = amaAgent;
+
+  const {
+    joinRoom: joinLiveRoom,
+    event: eventOnLive,
+    leave: leaveLive,
+  } = liveAgent;
 
   const { loader, data: broadcasts } = useSubscribeToAllBroadcasts();
-
-  const { leave: leaveAMA } = amaAgent;
-  const { leave: leaveLive } = liveAgent;
-
   const { user } = useUser();
 
   const checkCitizenship = (): boolean => {
@@ -56,7 +62,6 @@ export const VoiSpaceFeedCard: React.FC = () => {
   };
 
   const handleRoomClick = (room: Room) => {
-    console.log();
     try {
       if (room.type == BroadcastTypeEnum.AMA) {
         joinAMARoom(room.id as string, user?._id || "");
@@ -110,6 +115,10 @@ export const VoiSpaceFeedCard: React.FC = () => {
   }, [broadcasts]);
 
   useEffect(() => {
+    if (!eventOnLive && !eventOnAMA) {
+      return;
+    }
+
     if (eventOnLive?.type === StreamEventEnum.ON_JOINED_TO_BROADCAST) {
       setLiveCreated(true);
     }
@@ -136,7 +145,7 @@ export const VoiSpaceFeedCard: React.FC = () => {
       setIsUserMainViewOpen(true);
       setJoiningRoomLoader(false);
       setAmaCreated(false);
-      setJoinLoaderMessage("Joining Stream");
+      setJoinLoaderMessage("Joining Stream...");
     }
 
     if (
@@ -152,7 +161,7 @@ export const VoiSpaceFeedCard: React.FC = () => {
       setJoiningRoomLoader(false);
       setAmaCreated(false);
       setLiveCreated(false);
-      setJoinLoaderMessage("Joining Stream");
+      setJoinLoaderMessage("Joining Stream...");
     }
 
     if (

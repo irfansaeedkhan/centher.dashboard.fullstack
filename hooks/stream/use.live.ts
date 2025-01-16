@@ -398,11 +398,13 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
         });
 
         globalSocket.current.on("error", ({ data }: any) => {
+          try {
+            close();
+          } catch (error) {}
           setEvent({
             data,
             type: StreamEventEnum.STREAM_INITIALIZATION_ERROR,
           });
-          console.log("socket error: ", data);
         });
       } catch (error) {
         reject(error);
