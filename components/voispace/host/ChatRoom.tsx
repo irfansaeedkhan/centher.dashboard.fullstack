@@ -47,16 +47,15 @@ const ChatRoom: React.FC<DynamicProps> = ({
 
   useEffect(() => {
     if (fetchedMessages) {
+      const sortedMessages = [...fetchedMessages].sort(
+        (a, b) => +new Date(a.createdAt) - +new Date(b.createdAt)
+      );
+
       setAllMessages((prev) => {
-        const newMessages = fetchedMessages.filter(
+        const newMessages = sortedMessages.filter(
           (msg) => !prev.some((m) => m.id === msg.id)
         );
-
-        const aggregatedMessage = [...newMessages, ...prev];
-
-        return aggregatedMessage
-          .filter((e) => "id" in e)
-          .sort((a, b) => +new Date(a.createdAt) - +new Date(b.createdAt));
+        return [...newMessages, ...prev];
       });
     }
   }, [fetchedMessages]);
@@ -66,6 +65,19 @@ const ChatRoom: React.FC<DynamicProps> = ({
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [allMessages]);
+
+  const handleScroll = () => {
+    if (
+      scrollRef.current &&
+      scrollRef.current.scrollTop === 0 &&
+      !subscriptionLoading &&
+      !isFetching
+    ) {
+      setIsFetching(true);
+      setLimit((prev) => prev + 5);
+      setTimeout(() => setIsFetching(false), 500);
+    }
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -80,19 +92,6 @@ const ChatRoom: React.FC<DynamicProps> = ({
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-  const handleScroll = () => {
-    if (
-      scrollRef.current &&
-      scrollRef.current.scrollTop === 0 &&
-      !subscriptionLoading &&
-      !isFetching
-    ) {
-      setIsFetching(true);
-      setLimit((prev) => prev + 5);
-      setTimeout(() => setIsFetching(false), 500);
-    }
-  };
 
   const handleInputChange = (e: any) => {
     setInputValue(e.target.value);
@@ -202,7 +201,7 @@ const ChatRoom: React.FC<DynamicProps> = ({
                         {getTimeLapsed(msg.createdAt)}
                       </span>
                     </div>
-                    <p className="overflow-wrap white-space break-words text-xs flg:max-w-[650px] mobile-max:w-[72vw]">
+                    <p className="overflow-wrap white-space max-w-[37.5rem] break-words text-xs mobile-max:w-[72vw]">
                       {msg.content}
                     </p>
                   </div>

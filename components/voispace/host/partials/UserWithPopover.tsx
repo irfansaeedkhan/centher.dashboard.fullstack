@@ -145,7 +145,7 @@ const UserWithPopover: React.FC<UserWithPopoverProps> = ({
                   </ActionButton>
                 )}
 
-                {/* Kick Off Button */}
+                {/* Kick out Button */}
                 {kickLoader ? (
                   <LoaderSpinner className="inline-block h-4 w-4 animate-spin" />
                 ) : (
@@ -153,7 +153,7 @@ const UserWithPopover: React.FC<UserWithPopoverProps> = ({
                     className="text-medium text-[14px] text-[#E34048]"
                     onClick={handleKickOffLocal}
                   >
-                    Kick off
+                    Kick out
                   </ActionButton>
                 )}
               </div>

@@ -166,7 +166,7 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
           hasBackButton={false}
         >
           <Button
-            title="Finish"
+            title={currentUser?.type == "HOST" ? "Finish" : "Leave"}
             className="font-monto text-[14px] font-medium text-[#E34048]"
             onClick={handleLeaveRoom}
             disabled={leaveLoader}

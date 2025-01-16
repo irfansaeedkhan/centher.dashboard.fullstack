@@ -31,6 +31,7 @@ const PermissionsAndDetails = ({
     getMediaPermissions,
   } = useMediaDevices();
   const [preview, setPreview] = useState<string | undefined>(undefined);
+  const [isLoadingDevices, setIsLoadingDevices] = useState(true);
   const [rawImage, setRawImage] = useState<File | undefined>(undefined);
   const [showGetPermission, setShowGetPermission] = useState({
     audioErr: false,
@@ -158,7 +159,29 @@ const PermissionsAndDetails = ({
     }
   };
 
+  useEffect(() => {
+    const loadDevices = async () => {
+      setIsLoadingDevices(true);
+      try {
+        await updateDevices();
+      } catch (error) {
+        console.error("Failed to load devices:", error);
+      } finally {
+        setTimeout(() => {
+          setIsLoadingDevices(false);
+        }, 1200);
+      }
+    };
+
+    loadDevices();
+  }, []);
+
   const renderAudioDropdown = () => {
+    if (isLoadingDevices) {
+      return (
+        <div className="text-sm text-gray-500">Loading audio devices...</div>
+      );
+    }
     if (!navigator.mediaDevices) {
       return (
         <div className="text-sm text-danger">
@@ -194,8 +217,12 @@ const PermissionsAndDetails = ({
     );
   };
 
-  // Render video dropdown
   const renderVideoDropdown = () => {
+    if (isLoadingDevices) {
+      return (
+        <div className="text-sm text-gray-500">Loading video devices...</div>
+      );
+    }
     if (!navigator.mediaDevices) {
       return (
         <div className="text-sm text-danger">
@@ -229,6 +256,18 @@ const PermissionsAndDetails = ({
       />
     );
   };
+
+  // useEffect(() => {
+  //   const loadDevices = async () => {
+  //     setIsLoadingDevices(true);
+  //     await updateDevices();
+  //     setTimeout(() => {
+  //       setIsLoadingDevices(false);
+  //     }, 500);
+  //   };
+
+  //   loadDevices();
+  // }, [updateDevices]);
 
   //TODO: show a dialog when showGetPermission is true and ask user to allow device permission, in the same dialog we shoud show mediaError if it has value
   return (

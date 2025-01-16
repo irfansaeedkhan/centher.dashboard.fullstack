@@ -64,35 +64,19 @@ const ScriptTags = () => {
         <meta name="google-site-verification" content="" />
 
         <link
+          rel="icon"
+          type="image/png"
+          href="/favicons/favicon-96x96.png"
+          sizes="96x96"
+        />
+        <link rel="icon" type="image/svg+xml" href="/favicons/favicon.svg" />
+        <link rel="shortcut icon" href="/favicons/favicon.ico" />
+        <link
           rel="apple-touch-icon"
           sizes="180x180"
-          href="/favicons/apple-touch-icon-180x180-new.png"
+          href="/favicons/apple-touch-icon.png"
         />
-        <link
-          rel="icon"
-          type="image/png"
-          sizes="32x32"
-          href="/favicons/favicon-32x32-new.png"
-        />
-        <link
-          rel="icon"
-          type="image/png"
-          sizes="16x16"
-          href="/favicons/favicon-16x16-new.png"
-        />
-        <link
-          rel="mask-icon"
-          href="/favicons/maskable-icon.png"
-          color="#000000"
-        />
-        <link rel="shortcut icon" href="/favicons/favicon-new.ico" />
-        <meta name="msapplication-TileColor" content="#000000" />
-        <meta
-          name="msapplication-config"
-          content="/favicons/browserconfig-new.xml"
-        />
-        <meta name="theme-color" content="#000000" />
-        <link rel="manifest" href="/favicons/site-new.webmanifest" />
+        <link rel="manifest" href="/favicons/site.webmanifest" />
         <link rel="stylesheet" href="https://use.typekit.net/psu6dek.css" />
       </Head>
 
