@@ -157,6 +157,7 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
               routerRtpCapabilities: globalRtpCapabilities.current!,
             });
           } catch (error) {
+            console.log("calling leave from create room 160", error);
             leave();
             return;
           }
@@ -167,6 +168,7 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
           await createConsumerTransport();
           await connectSendTransport();
         } catch (error) {
+          console.log("calling leave from create room 171", error);
           leave();
 
           return;
@@ -210,6 +212,7 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
                 routerRtpCapabilities: globalRtpCapabilities.current!,
               });
             } catch (error) {
+              console.log("calling leave from join room 215", error);
               leave();
               rej(error);
             }
@@ -218,6 +221,7 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
           try {
             await createConsumerTransport();
           } catch (error) {
+            console.log("calling leave from join room 224", error);
             leave();
 
             rej(error);
@@ -501,6 +505,9 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
                       console.log("producer transport failed");
                       globalSendStreamLoader.current = "failed";
                       globalProducerTransport.current!.close();
+                      console.log(
+                        "calling leave from createProducerTransport 509"
+                      );
                       leave();
                       rej();
                     }
@@ -598,6 +605,9 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
                         globalConsumerTransport.current?.close();
                       } catch (error) {
                       } finally {
+                        console.log(
+                          "calling leave from createConsumerTransport 609"
+                        );
                         leave();
                         rej();
                       }
