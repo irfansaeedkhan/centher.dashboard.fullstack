@@ -80,7 +80,12 @@ const LiveView: React.FC<DynamicProps> = ({
   }, [audioStream]);
 
   useEffect(() => {
-    if (event && event.type == StreamEventEnum.ON_UPDATE_VIDEO_STREAM) {
+    if (
+      event &&
+      (event.type == StreamEventEnum.ON_UPDATE_VIDEO_STREAM ||
+        event?.type == StreamEventEnum.ON_UPDATE_CONSUMER ||
+        event?.type == StreamEventEnum.ON_STREAM_CONNECTED)
+    ) {
       const videoElement = videoRef.current;
 
       if (!videoElement || !videoStream) return;
