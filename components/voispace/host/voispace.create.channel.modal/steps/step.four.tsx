@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import toast from "react-hot-toast";
 import clsx from "clsx";
 
 import { search, SearchResultWithType } from "@/lib/search";
 import { SearchIcon } from "@/assets/svgs";
-import { CFSCollection } from "@/models/nft";
-import { getSingleCollection } from "@/lib/get-single-collection";
 import { FindUsers } from "@/components/voispace/shared/search.user";
 import { RemoveUser } from "@/components/voispace/shared/remove.user";
 import { SearchedPrivilegeCollection } from "@/components/voispace/shared/search.privilege";
@@ -13,7 +11,6 @@ import { RemovePrivilegeCollection } from "@/components/voispace/shared/remove.p
 import { Room } from "../voispace.create.channel.modal";
 import { StreamAccessModeEnum } from "@/stream/enum/stream-access-mode.enum";
 import { useStream } from "@/hooks/stream/use.core";
-import { data } from "@/components/charts/bar.chart";
 import { Collection } from "@/hooks/stream/types";
 
 interface StepFourProps {
@@ -37,33 +34,22 @@ const StepFour: React.FC<StepFourProps> = ({
   const [privilegeCollections, setPrivilegeCollections] = useState<
     Collection[]
   >([]);
+  const [activePopup, setActivePopup] = useState<
+    "private" | "privilege" | null
+  >(null);
+
+  const privatePopupRef = useRef<HTMLDivElement | null>(null);
+  const privilegePopupRef = useRef<HTMLDivElement | null>(null);
 
   const { useQueryToGetCollections } = useStream();
-  const { data: validCollections, loader } =
+  const { data: validCollections } =
     useQueryToGetCollections(collectionAddress);
 
   useEffect(() => {
     if (validCollections) {
-      console.log({ validCollections });
       setPrivilegeCollections(validCollections);
     }
   }, [validCollections]);
-  // Fetch privilege collection when collectionAddress is updated
-  // useEffect(() => {
-  //   async function fetchPrivilegeCollection() {
-  //     try {
-  //       const collection = await collectionQuery;
-  //       setPrivilegeCollection(collection);
-  //     } catch (err: any) {
-  //       toast.error(err.message);
-  //       setPrivilegeCollection(null);
-  //     }
-  //   }
-
-  //   if (collectionAddress) {
-  //     fetchPrivilegeCollection();
-  //   }
-  // }, [collectionAddress]);
 
   const handleAddCollection = (collection: Collection) => {
     if (
@@ -80,6 +66,7 @@ const StepFour: React.FC<StepFourProps> = ({
     }));
     setCollectionAddress("");
     setPrivilegeCollections([]);
+    setActivePopup(null);
   };
 
   const handleInvitePrivateUser = async (value: string) => {
@@ -109,7 +96,39 @@ const StepFour: React.FC<StepFourProps> = ({
     }));
     setSearchResults([]);
     setSearchedValue("");
+    setActivePopup(null);
   };
+
+  const handlePopupOpen = (popupType: "private" | "privilege") => {
+    setActivePopup(popupType);
+
+    if (popupType === "privilege" && !privilegeCollections.length) {
+      setCollectionAddress((prev) => prev || "");
+    }
+  };
+
+  const handlePopupClose = (e: MouseEvent) => {
+    if (
+      activePopup === "private" &&
+      privatePopupRef.current &&
+      !privatePopupRef.current.contains(e.target as Node)
+    ) {
+      setActivePopup(null);
+    } else if (
+      activePopup === "privilege" &&
+      privilegePopupRef.current &&
+      !privilegePopupRef.current.contains(e.target as Node)
+    ) {
+      setActivePopup(null);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handlePopupClose);
+    return () => {
+      document.removeEventListener("mousedown", handlePopupClose);
+    };
+  }, [activePopup]);
 
   if (formState.accessMode === StreamAccessModeEnum.PUBLIC) {
     setIsHostSettingsOpen(true);
@@ -131,7 +150,10 @@ const StepFour: React.FC<StepFourProps> = ({
       {formState.accessMode === StreamAccessModeEnum.ACCESS_BY_INVITATION && (
         <>
           <div className="relative rounded-xl bg-[#141416] px-3 py-1">
-            <div className="flex items-center">
+            <div
+              className="flex items-center"
+              onFocus={() => handlePopupOpen("private")}
+            >
               <SearchIcon className="h-7 w-7 opacity-70" />
               <input
                 className="w-full border-none bg-[#141416] text-sm font-medium text-white focus:outline-none focus:ring-0"
@@ -139,8 +161,11 @@ const StepFour: React.FC<StepFourProps> = ({
                 value={searchedValue}
                 onChange={(e) => handleInvitePrivateUser(e.target.value)}
               />
-              {!!searchResults.length && (
-                <div className="absolute top-full z-10 mt-1.5 max-h-[195px] w-full overflow-y-auto rounded-xl bg-popup-0">
+              {activePopup === "private" && !!searchResults.length && (
+                <div
+                  className="absolute top-full z-10 mt-1.5 max-h-[195px] w-full overflow-y-auto rounded-xl bg-popup-0"
+                  ref={privatePopupRef}
+                >
                   {searchResults.map((result) => (
                     <FindUsers
                       key={result._id}
@@ -178,26 +203,32 @@ const StepFour: React.FC<StepFourProps> = ({
       {formState.accessMode === StreamAccessModeEnum.ACCESS_BY_TOKEN && (
         <>
           <div className="relative rounded-xl bg-[#141416] px-3 py-1">
-            <div className="flex items-center">
+            <div
+              className="flex items-center"
+              onFocus={() => handlePopupOpen("privilege")}
+            >
               <SearchIcon className="h-7 w-7 opacity-70" />
               <input
                 className="w-full border-none bg-[#141416] text-sm font-medium text-white focus:outline-none focus:ring-0"
                 placeholder="Paste collection address here"
                 value={collectionAddress}
-                onChange={(e) => setCollectionAddress(e.target.value)}
+                onChange={(e) => setCollectionAddress(e.target.value)} // Only change when user types
               />
-              {!!privilegeCollections.length && (
-                <div className="absolute top-full z-10 mt-1.5 max-h-[195px] w-full overflow-y-auto rounded-xl bg-popup-0">
-                  {privilegeCollections.map((collection: Collection) => (
-                    <SearchedPrivilegeCollection
-                      key={collection.collection}
-                      collection={collection}
-                      onAddClick={handleAddCollection}
-                    />
-                  ))}
-                </div>
-              )}
             </div>
+            {activePopup === "privilege" && !!privilegeCollections.length && (
+              <div
+                className="absolute top-full z-10 mt-1.5 max-h-[195px] w-full overflow-y-auto rounded-xl bg-popup-0"
+                ref={privilegePopupRef}
+              >
+                {privilegeCollections.map((collection: Collection) => (
+                  <SearchedPrivilegeCollection
+                    key={collection.collection}
+                    collection={collection}
+                    onAddClick={handleAddCollection}
+                  />
+                ))}
+              </div>
+            )}
           </div>
           {formState.invitedPrivilegeUsers.length > 0 && (
             <div className="mt-4">

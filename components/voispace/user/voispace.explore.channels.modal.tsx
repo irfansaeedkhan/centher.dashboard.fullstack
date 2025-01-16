@@ -24,7 +24,7 @@ export const VoispaceExploreChannelsModal: React.FC<Props> = ({
       modalId="more-rooms"
       onClose={onClose}
       isOpen={true}
-      modalContentClassName="mobile-max:h-[100vh] max-w-[656px] p-0 mobile-max:rounded-none mobile-max:mx-0 rounded-3xl"
+      modalContentClassName="mobile-max:h-dvh max-w-[656px] p-0 mobile-max:rounded-none mobile-max:mx-0 rounded-3xl"
     >
       <div className="flex flex-col gap-6 p-6">
         <div className="flex flex-col gap-4">

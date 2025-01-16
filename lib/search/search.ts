@@ -12,7 +12,7 @@ export const search = async (
   try {
     const response = await axiosApi369x.get<{
       search_results: SearchResult[];
-    }>(`/api/search?q=${query}&limit=5&offset=0`);
+    }>(`/api/search?q=${query}&limit=10&offset=0`);
 
     return response.data.search_results.map((searchResult) => ({
       response_type: SearchResponseType.search_result,

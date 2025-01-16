@@ -122,7 +122,7 @@ const ChannelMainView: React.FC<ChannelMainViewInterface> = ({
       onClose={onClose}
       isOpen={true}
       modalContentClassName={clsx(
-        `mobile-max:h-[100vh] mobile-max:rounded-none mobile-max:mx-0 max-w-[100%] h-[100%] md:h-auto md:max-w-[761px] min-h-[645px] p-0 md:rounded-3xl`,
+        `mobile-max:h-dvh mobile-max:rounded-none mobile-max:mx-0 max-w-[100%] h-[100%] md:h-auto md:max-w-[761px] min-h-[645px] p-0 md:rounded-3xl`,
         component === "LiveView" && "overflow-hidden"
       )}
       shouldCloseOnEsc={true}
