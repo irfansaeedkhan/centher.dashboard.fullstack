@@ -7,6 +7,8 @@ import { StreamEventEnum } from "@/stream/model";
 import LiveMessage from "@/components/voispace/host/partials/LiveMessage";
 import HostModalHeader from "./partials/HostModalHeader";
 import { Room } from "./voispace.create.channel.modal/voispace.create.channel.modal";
+import useUser from "@/hooks/use.user";
+import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
 
 interface DynamicProps {
   onClose: () => void;
@@ -32,7 +34,12 @@ const LiveView: React.FC<DynamicProps> = ({
   setComponentName,
   roomData,
 }) => {
-  const { useSubscribeToMessages, insertMessage, liveAgent } = useStream();
+  const {
+    useSubscribeToMessages,
+    insertMessage,
+    liveAgent,
+    useSubscribeToCurrentStream,
+  } = useStream();
   const {
     event,
     globalIsOwner,
@@ -47,10 +54,15 @@ const LiveView: React.FC<DynamicProps> = ({
   >([]);
   const [limit, setLimit] = useState(10);
   const [isFetching, setIsFetching] = useState(false);
-
+  const { user } = useUser();
   const { messages, loading: subscriptionLoading } = useSubscribeToMessages(
     roomData?.id || "",
     limit
+  );
+
+  const { stream: currentStream, loader } = useSubscribeToCurrentStream(
+    roomData?.id || "",
+    roomData?.type === "AMA" ? BroadcastTypeEnum.AMA : BroadcastTypeEnum.LIVE
   );
 
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -68,7 +80,12 @@ const LiveView: React.FC<DynamicProps> = ({
   }, [audioStream]);
 
   useEffect(() => {
-    if (event && event.type == StreamEventEnum.ON_UPDATE_VIDEO_STREAM) {
+    if (
+      event &&
+      (event.type == StreamEventEnum.ON_UPDATE_VIDEO_STREAM ||
+        event?.type == StreamEventEnum.ON_UPDATE_CONSUMER ||
+        event?.type == StreamEventEnum.ON_STREAM_CONNECTED)
+    ) {
       const videoElement = videoRef.current;
 
       if (!videoElement || !videoStream) return;
@@ -122,20 +139,34 @@ const LiveView: React.FC<DynamicProps> = ({
     if (message.trim().length) {
       insertMessage(roomData?.id || "", message);
       setInputValue("");
+      addNewMessage({
+        sender: {
+          display_name: user?.display_name,
+          profile_image: user?.profile_image,
+        },
+        content: message,
+        createdAt: new Date(),
+      });
     }
+  };
+
+  const addNewMessage = (message: any) => {
+    setFormattedMessages((prev) => {
+      return [...prev, message];
+    });
   };
 
   useEffect(() => {
     if (messages.length) {
-      const sortedMessages = [...messages].sort(
-        (a, b) => +new Date(a.createdAt) - +new Date(b.createdAt)
-      );
-
       setFormattedMessages((prev) => {
-        const newMessages = sortedMessages.filter(
+        const newMessages = messages.filter(
           (msg) => !prev.some((m) => m.id === msg.id)
         );
-        return [...prev, ...newMessages];
+
+        const aggregatedMessages = [...prev, ...newMessages]
+          .filter((e) => "id" in e)
+          .sort((a, b) => +new Date(a.createdAt) - +new Date(b.createdAt));
+        return aggregatedMessages;
       });
     }
   }, [messages]);
@@ -195,7 +226,7 @@ const LiveView: React.FC<DynamicProps> = ({
               <div className="flex items-center justify-center gap-2 rounded-[5px] bg-[#1C1D21] px-2 py-[1px] text-white">
                 <EyeIcon className="scale-75" />
                 <span className="font-monto text-[11px] font-medium">
-                  {roomData.participatorsCount.aggregate.count}
+                  {currentStream?.participatorsCount?.aggregate?.count || 0}
                 </span>
               </div>
             </div>

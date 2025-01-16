@@ -39,4 +39,24 @@ function getInvitedUsersByBrooadcastId() {
   `;
 }
 
-export { getMessagesByBroadcastId, getInvitedUsersByBrooadcastId };
+function getCollections() {
+  return gql`
+    query findCollectionByAddress($collection: String = "") {
+      collections(where: { collection_contains: $collection }) {
+        category
+        collection
+        creatorUser {
+          publicKey
+        }
+        name
+        symbol
+      }
+    }
+  `;
+}
+
+export {
+  getMessagesByBroadcastId,
+  getInvitedUsersByBrooadcastId,
+  getCollections,
+};

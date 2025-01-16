@@ -129,6 +129,7 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
       if (htmlBodyRef.current) {
         htmlBodyRef.current.style.overflow = "auto";
       }
+      console.log("cvalling leave from room of traders");
       leave();
     } catch (error) {
       console.error("Failed to leave the room:", error);

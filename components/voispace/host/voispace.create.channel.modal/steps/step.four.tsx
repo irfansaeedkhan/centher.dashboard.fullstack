@@ -12,6 +12,9 @@ import { SearchedPrivilegeCollection } from "@/components/voispace/shared/search
 import { RemovePrivilegeCollection } from "@/components/voispace/shared/remove.privilege.collection";
 import { Room } from "../voispace.create.channel.modal";
 import { StreamAccessModeEnum } from "@/stream/enum/stream-access-mode.enum";
+import { useStream } from "@/hooks/stream/use.core";
+import { data } from "@/components/charts/bar.chart";
+import { Collection } from "@/hooks/stream/types";
 
 interface StepFourProps {
   formState: Room;
@@ -31,27 +34,38 @@ const StepFour: React.FC<StepFourProps> = ({
   );
   const [searchedValue, setSearchedValue] = useState<string>("");
   const [collectionAddress, setCollectionAddress] = useState<string>("");
-  const [privilegeCollection, setPrivilegeCollection] =
-    useState<CFSCollection | null>(null);
+  const [privilegeCollections, setPrivilegeCollections] = useState<
+    Collection[]
+  >([]);
 
-  // Fetch privilege collection when collectionAddress is updated
+  const { useQueryToGetCollections } = useStream();
+  const { data: validCollections, loader } =
+    useQueryToGetCollections(collectionAddress);
+
   useEffect(() => {
-    async function fetchPrivilegeCollection() {
-      try {
-        const collection = await getSingleCollection(collectionAddress);
-        setPrivilegeCollection(collection);
-      } catch (err: any) {
-        toast.error(err.message);
-        setPrivilegeCollection(null);
-      }
+    if (validCollections) {
+      console.log({ validCollections });
+      setPrivilegeCollections(validCollections);
     }
+  }, [validCollections]);
+  // Fetch privilege collection when collectionAddress is updated
+  // useEffect(() => {
+  //   async function fetchPrivilegeCollection() {
+  //     try {
+  //       const collection = await collectionQuery;
+  //       setPrivilegeCollection(collection);
+  //     } catch (err: any) {
+  //       toast.error(err.message);
+  //       setPrivilegeCollection(null);
+  //     }
+  //   }
 
-    if (collectionAddress) {
-      fetchPrivilegeCollection();
-    }
-  }, [collectionAddress]);
+  //   if (collectionAddress) {
+  //     fetchPrivilegeCollection();
+  //   }
+  // }, [collectionAddress]);
 
-  const handleAddCollection = (collection: CFSCollection) => {
+  const handleAddCollection = (collection: Collection) => {
     if (
       formState.invitedPrivilegeUsers.find(
         (c: any) => c.collection === collection.collection
@@ -65,7 +79,7 @@ const StepFour: React.FC<StepFourProps> = ({
       invitedPrivilegeUsers: [...prev.invitedPrivilegeUsers, collection],
     }));
     setCollectionAddress("");
-    setPrivilegeCollection(null);
+    setPrivilegeCollections([]);
   };
 
   const handleInvitePrivateUser = async (value: string) => {
@@ -172,14 +186,14 @@ const StepFour: React.FC<StepFourProps> = ({
                 value={collectionAddress}
                 onChange={(e) => setCollectionAddress(e.target.value)}
               />
-              {privilegeCollection && (
-                <div className="absolute top-full z-10 mt-1.5 bg-popup-0">
-                  <SearchedPrivilegeCollection
-                    collection={privilegeCollection}
-                    onAddClick={handleAddCollection}
-                  />
-                </div>
-              )}
+
+              {privilegeCollections.map((collection: Collection) => (
+                <SearchedPrivilegeCollection
+                  key={collection.collection}
+                  collection={collection}
+                  onAddClick={handleAddCollection}
+                />
+              ))}
             </div>
           </div>
           {formState.invitedPrivilegeUsers.length > 0 && (

@@ -157,6 +157,7 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
               routerRtpCapabilities: globalRtpCapabilities.current!,
             });
           } catch (error) {
+            console.log("calling leave from create room 160", error);
             leave();
             return;
           }
@@ -167,6 +168,7 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
           await createConsumerTransport();
           await connectSendTransport();
         } catch (error) {
+          console.log("calling leave from create room 171", error);
           leave();
 
           return;
@@ -201,11 +203,6 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
             return;
           }
 
-          setEvent({
-            data,
-            type: StreamEventEnum.ON_JOINED_TO_BROADCAST,
-          });
-
           globalUserId.current = userId;
           globalBroadcastId.current = id;
           globalRtpCapabilities.current = data.rtpCapabilities;
@@ -215,6 +212,7 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
                 routerRtpCapabilities: globalRtpCapabilities.current!,
               });
             } catch (error) {
+              console.log("calling leave from join room 215", error);
               leave();
               rej(error);
             }
@@ -223,6 +221,7 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
           try {
             await createConsumerTransport();
           } catch (error) {
+            console.log("calling leave from join room 224", error);
             leave();
 
             rej(error);
@@ -266,6 +265,11 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
             closeConsumer(data.id);
           });
 
+          setEvent({
+            data,
+            type: StreamEventEnum.ON_JOINED_TO_BROADCAST,
+          });
+
           res(true);
         }
       );
@@ -289,26 +293,34 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
           async (
             consumeData: mediasoupClient.types.ConsumerOptions<mediasoupClient.types.AppData>
           ) => {
-            if (globalConsumerTransport.current) {
-              const consumer = await globalConsumerTransport.current!.consume(
-                consumeData
-              );
+            if (globalConsumerTransport?.current) {
+              try {
+                const consumer = await globalConsumerTransport.current.consume(
+                  consumeData
+                );
 
-              // 'trackended' | 'transportclose'
-              consumer.on("transportclose", () => {
-                console.log("remote producer closed");
-                globalConsumersVideo.current.delete(producerId);
-                globalConsumersVideo.current.delete(producerId);
-              });
+                // 'trackended' | 'transportclose'
+                consumer.on("transportclose", () => {
+                  console.log("remote producer closed");
+                  globalConsumersVideo.current.delete(producerId);
+                  globalConsumersVideo.current.delete(producerId);
+                });
 
-              globalConsumersVideo.current.set(producerId, consumer);
-              const stream = new MediaStream();
-              stream.addTrack(consumer.track);
-              globalConsumersVideoStream.current.set(producerId, stream);
-              setEvent({
-                type: StreamEventEnum.ON_UPDATE_VIDEO_STREAM,
-                data: null,
-              });
+                globalConsumersVideo.current.set(producerId, consumer);
+                const stream = new MediaStream();
+                stream.addTrack(consumer.track);
+                globalConsumersVideoStream.current.set(producerId, stream);
+                setEvent({
+                  type: StreamEventEnum.ON_UPDATE_VIDEO_STREAM,
+                  data: null,
+                });
+              } catch (e) {
+                console.log("globalConsumerTransport is closed.", e);
+                setEvent({
+                  type: StreamEventEnum.ON_NEED_TO_TRY_AGAIN,
+                  data: null,
+                });
+              }
             } else {
               console.log("consumer transport is null");
             }
@@ -330,25 +342,33 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
             consumeData: mediasoupClient.types.ConsumerOptions<mediasoupClient.types.AppData>
           ) => {
             if (globalConsumerTransport.current) {
-              const consumer = await globalConsumerTransport.current!.consume(
-                consumeData
-              );
+              try {
+                const consumer = await globalConsumerTransport.current!.consume(
+                  consumeData
+                );
 
-              // 'trackended' | 'transportclose'
-              consumer.on("transportclose", () => {
-                console.log("remote producer closed");
-                globalConsumersAudioStream.current.delete(producerId);
-                globalConsumersAudio.current.delete(producerId);
-              });
+                // 'trackended' | 'transportclose'
+                consumer.on("transportclose", () => {
+                  console.log("remote producer closed");
+                  globalConsumersAudioStream.current.delete(producerId);
+                  globalConsumersAudio.current.delete(producerId);
+                });
 
-              globalConsumersAudio.current.set(producerId, consumer);
-              const stream = new MediaStream();
-              stream.addTrack(consumer.track);
-              globalConsumersAudioStream.current.set(producerId, stream);
-              setEvent({
-                type: StreamEventEnum.ON_UPDATE_VIDEO_STREAM,
-                data: null,
-              });
+                globalConsumersAudio.current.set(producerId, consumer);
+                const stream = new MediaStream();
+                stream.addTrack(consumer.track);
+                globalConsumersAudioStream.current.set(producerId, stream);
+                setEvent({
+                  type: StreamEventEnum.ON_UPDATE_VIDEO_STREAM,
+                  data: null,
+                });
+              } catch (error) {
+                console.log("globalConsumerTransport is closed.", error);
+                setEvent({
+                  type: StreamEventEnum.ON_NEED_TO_TRY_AGAIN,
+                  data: null,
+                });
+              }
             } else {
               console.log("consumer transport is null");
             }
@@ -481,11 +501,17 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
                     globalSendStreamLoader.current = "connected";
                     break;
                   default:
-                    console.log("transport failed");
-                    globalSendStreamLoader.current = "failed";
-                    globalProducerTransport.current!.close();
-                    leave();
-                    rej();
+                    if (globalProducerTransport.current) {
+                      console.log("producer transport failed");
+                      globalSendStreamLoader.current = "failed";
+                      globalProducerTransport.current!.close();
+                      console.log(
+                        "calling leave from createProducerTransport 509"
+                      );
+                      leave();
+                      rej();
+                    }
+
                     break;
                 }
               }
@@ -557,19 +583,34 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
                   case "connected":
                     console.log("consumer connected");
                     globalReceiveStreamLoader.current = "connected";
+                    setEvent({
+                      data: null,
+                      type: StreamEventEnum.ON_UPDATE_CONSUMER,
+                    });
+                    setEvent({
+                      data: null,
+                      type: StreamEventEnum.ON_STREAM_CONNECTED,
+                    });
                     break;
                   default:
                     if (globalConsumerTransport.current) {
-                      console.log("consumer failed", state);
                       setEvent({
                         data: null,
                         type: StreamEventEnum.ON_NEED_TO_TRY_AGAIN,
                       });
-                      leave();
-                      globalReceiveStreamLoader.current = "failed";
-                      globalConsumerTransport.current?.close();
+                      console.log("consumer failed", state);
 
-                      rej();
+                      try {
+                        globalReceiveStreamLoader.current = "failed";
+                        globalConsumerTransport.current?.close();
+                      } catch (error) {
+                      } finally {
+                        console.log(
+                          "calling leave from createConsumerTransport 609"
+                        );
+                        leave();
+                        rej();
+                      }
                     }
 
                     break;
