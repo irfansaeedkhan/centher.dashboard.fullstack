@@ -11,11 +11,34 @@ import Requests from "../host/Requests";
 import ChatRoom from "../host/ChatRoom";
 import { Room } from "../host/voispace.create.channel.modal/voispace.create.channel.modal";
 import { useStream } from "@/hooks/stream/use.core";
+import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
 
 interface ChannelMainViewInterface {
   onClose: () => void;
   roomData: Room;
   component: string;
+}
+interface User {
+  citizenshipEnd: string;
+  createdAt: string;
+  id: string;
+  lastSeen: string;
+}
+
+interface CurrentUser {
+  id: string;
+  hasTalkRequest: boolean;
+  createdAt: string;
+  user: User;
+  broadcastId: string;
+  type: "HOST" | "LISTENER" | "SPEAKER";
+  hasPermissionToMessage: boolean;
+  isMuted: boolean;
+}
+
+export interface CurrentUserContainer {
+  currentUser: CurrentUser;
+  loader: boolean;
 }
 
 type ComponentMap = Map<
@@ -25,6 +48,7 @@ type ComponentMap = Map<
     onClose: () => void;
     roomData: Room;
     unreadMessages: number;
+    currentUserContainer: CurrentUserContainer;
   }>
 >;
 
@@ -33,6 +57,25 @@ const ChannelMainView: React.FC<ChannelMainViewInterface> = ({
   roomData,
   component,
 }) => {
+  const {
+    amaAgent,
+    liveAgent,
+    useSubscribeToMessages,
+    useSubscribeToCurrentUser,
+  } = useStream();
+
+  const userId =
+    roomData.type === BroadcastTypeEnum.AMA
+      ? amaAgent.userId
+      : liveAgent.userId;
+
+  const currentUserContainer = useSubscribeToCurrentUser(
+    roomData?.id || "",
+    userId || ""
+  );
+
+  console.log("currentUserContainer::", currentUserContainer);
+
   const [componentName, setComponentName] = useState<string>(
     component || "TheRoomOfTraders"
   );
@@ -40,7 +83,6 @@ const ChannelMainView: React.FC<ChannelMainViewInterface> = ({
   const [lastReadMessageCount, setLastReadMessageCount] = useState(0);
   const [unreadMessages, setUnreadMessages] = useState(0);
 
-  const { useSubscribeToMessages } = useStream();
   const { messages } = useSubscribeToMessages(roomData?.id || "", 5);
 
   const componentMap: ComponentMap = new Map([
@@ -93,6 +135,7 @@ const ChannelMainView: React.FC<ChannelMainViewInterface> = ({
             onClose,
             roomData,
             unreadMessages,
+            currentUserContainer,
           })}
       </div>
     </ModalContainer>

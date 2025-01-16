@@ -52,19 +52,21 @@ const ChatRoom: React.FC<DynamicProps> = ({
       );
 
       setAllMessages((prev) => {
-        const newMessages = sortedMessages.filter(
-          (msg) => !prev.some((m) => m.id === msg.id)
+        // Remove temporary messages that match fetched messages
+        const filteredPrev = prev.filter(
+          (msg) =>
+            !msg.isLocal ||
+            !sortedMessages.some((m) => m.content === msg.content)
         );
-        return [...newMessages, ...prev];
+
+        const uniqueMessages = sortedMessages.filter(
+          (msg) => !filteredPrev.some((m) => m.id === msg.id)
+        );
+
+        return [...filteredPrev, ...uniqueMessages];
       });
     }
   }, [fetchedMessages]);
-
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
-  }, [allMessages]);
 
   const handleScroll = () => {
     if (
@@ -78,7 +80,11 @@ const ChatRoom: React.FC<DynamicProps> = ({
       setTimeout(() => setIsFetching(false), 500);
     }
   };
-
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [allMessages]);
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -97,34 +103,48 @@ const ChatRoom: React.FC<DynamicProps> = ({
     setInputValue(e.target.value);
   };
 
-  const addNewMessage = (message: any) => {
-    setAllMessages((prev) => {
-      return [...prev, message];
-    });
-  };
-
   const onSend = async (e: any) => {
     e.preventDefault();
-    const pattenr =
+    const pattern =
       /((https?:\/\/|www\.)[^\s]+)|(\b\d{10}\b)|(\+\d{1,3}\s?\d+)/g;
     let message = DOMPurify.sanitize(inputValue, {
       ALLOWED_TAGS: [],
       ALLOWED_ATTR: [],
     });
-    message = message.replace(pattenr, "[filtered]");
+    message = message.replace(pattern, "[filtered]");
 
     if (message.trim().length) {
-      insertMessage(roomData?.id || "", message);
-      setInputValue("");
-      setShowEmojiPicker(false);
-      addNewMessage({
+      // Temporarily add the message locally
+      const tempMessage = {
+        id: `temp-${Date.now()}`, // Temporary unique ID
         sender: {
           display_name: user?.display_name,
           profile_image: user?.profile_image,
         },
         content: message,
-        createdAt: new Date(),
+        createdAt: new Date().toISOString(),
+        isLocal: true, // Mark as temporary
+      };
+
+      setAllMessages((prev) => {
+        const updatedMessages = [...prev, tempMessage];
+        return updatedMessages;
       });
+
+      setTimeout(() => {
+        if (scrollRef.current) {
+          scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+        }
+      }, 0);
+
+      setInputValue("");
+      setShowEmojiPicker(false);
+
+      try {
+        await insertMessage(roomData?.id || "", message);
+      } catch (error) {
+        console.error("Failed to send message:", error);
+      }
     }
   };
 

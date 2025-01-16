@@ -28,12 +28,14 @@ import UserWithPopover from "./partials/UserWithPopover";
 import { Room } from "./voispace.create.channel.modal/voispace.create.channel.modal";
 import { CgSpinner } from "react-icons/cg";
 import Button from "@/components/button";
+import { CurrentUserContainer } from "../shared/ChannelMainView";
 
 interface DynamicProps {
   onClose: () => void;
   setComponentName: (name: string) => any;
   roomData: Room;
   unreadMessages: number;
+  currentUserContainer: CurrentUserContainer;
 }
 
 const TheRoomOfTraders: React.FC<DynamicProps> = ({
@@ -41,6 +43,7 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
   setComponentName,
   roomData,
   unreadMessages,
+  currentUserContainer,
 }) => {
   const htmlBodyRef = useRef<HTMLBodyElement | null>(null);
   const [showMuteLoader, setShowMuteLoader] = useState(false);
@@ -80,11 +83,6 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
     roomData?.accessMode == StreamAccessModeEnum.ACCESS_BY_INVITATION &&
     globalIsOwner;
 
-  const { loader: currentUserLoader, currentUser } = useSubscribeToCurrentUser(
-    roomData?.id || "",
-    userId || ""
-  );
-
   const handleToggleTalkPermission = async (userId: string) => {
     try {
       toggleMemberTalkPermission(userId);
@@ -112,7 +110,10 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
         return;
       }
       setShowMuteLoader(true);
-      await updateUserStatus(userId, !currentUser?.isMuted);
+      await updateUserStatus(
+        userId,
+        !currentUserContainer?.currentUser?.isMuted
+      );
       toggleMute();
     } catch (error) {
       console.error("Failed to toggle mute:", error);
@@ -144,16 +145,16 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
   }, []);
 
   useEffect(() => {
-    if (currentUser) {
+    if (currentUserContainer?.currentUser) {
       setShowMuteLoader(false);
     }
-  }, [currentUser?.isMuted]);
+  }, [currentUserContainer?.currentUser?.isMuted]);
 
   useEffect(() => {
-    if (currentUser) {
+    if (currentUserContainer?.currentUser) {
       setShowSendTalkRequestLoader(false);
     }
-  }, [currentUser?.hasTalkRequest]);
+  }, [currentUserContainer?.currentUser?.hasTalkRequest]);
 
   return (
     <div className="h-full  px-6 py-6 text-white mobile-max:px-4">
@@ -166,7 +167,11 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
           hasBackButton={false}
         >
           <Button
-            title={currentUser?.type == "HOST" ? "Finish" : "Leave"}
+            title={
+              currentUserContainer?.currentUser?.type == "HOST"
+                ? "Finish"
+                : "Leave"
+            }
             className="font-monto text-[14px] font-medium text-[#E34048]"
             onClick={handleLeaveRoom}
             disabled={leaveLoader}
@@ -242,11 +247,11 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
 
         {/* Bottom Action Buttons */}
         <div className="absolute bottom-3 left-1/2 flex min-h-[70px] w-[calc(100%-48px)] -translate-x-1/2 items-center rounded-2xl border border-[#32343C] bg-[#141416] p-[16px] text-white mobile-max:w-[calc(100%-36px)]">
-          {!currentUserLoader ? (
+          {!currentUserContainer?.loader ? (
             <div className="flex w-[100%] justify-between">
               <div className="flex gap-[10px]">
                 {/* Chat Button */}
-                {currentUser?.hasPermissionToMessage ? (
+                {currentUserContainer?.currentUser?.hasPermissionToMessage ? (
                   <ActionButton
                     text="Chat"
                     className="text-medium relative text-[14px] text-[#E34048]"
@@ -345,8 +350,8 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
                   </ActionButton>
                 )}
                 {!globalIsOwner &&
-                  currentUser?.type == "LISTENER" &&
-                  !currentUser?.hasTalkRequest &&
+                  currentUserContainer?.currentUser?.type == "LISTENER" &&
+                  !currentUserContainer?.currentUser?.hasTalkRequest &&
                   !showSendTalkRequestLoader && (
                     <ActionButton
                       className="text-medium flex text-[14px] text-[#E34048]"
@@ -360,8 +365,8 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
                   )}
 
                 {!globalIsOwner &&
-                  currentUser?.type == "LISTENER" &&
-                  currentUser?.hasTalkRequest &&
+                  currentUserContainer?.currentUser?.type == "LISTENER" &&
+                  currentUserContainer?.currentUser?.hasTalkRequest &&
                   !showSendTalkRequestLoader && (
                     <ActionButton
                       className="text-medium flex text-[14px] text-[#E34048]"
@@ -380,17 +385,17 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
                     <CgSpinner className="h-5 w-5 animate-spin group-disabled:block" />{" "}
                   </ActionButton>
                 )}
-                {(currentUser?.type == "SPEAKER" ||
-                  currentUser?.type == "HOST") &&
-                  !currentUser?.isMuted &&
+                {(currentUserContainer?.currentUser?.type == "SPEAKER" ||
+                  currentUserContainer?.currentUser?.type == "HOST") &&
+                  !currentUserContainer?.currentUser?.isMuted &&
                   !showMuteLoader && (
                     <ActionButton text="Mute" onClick={handleToggleMute}>
                       <UnmutedMic />
                     </ActionButton>
                   )}
-                {(currentUser?.type == "SPEAKER" ||
-                  currentUser?.type == "HOST") &&
-                  currentUser?.isMuted &&
+                {(currentUserContainer?.currentUser?.type == "SPEAKER" ||
+                  currentUserContainer?.currentUser?.type == "HOST") &&
+                  currentUserContainer?.currentUser?.isMuted &&
                   !showMuteLoader && (
                     <ActionButton text="Unmute" onClick={handleToggleMute}>
                       <MutedMic />

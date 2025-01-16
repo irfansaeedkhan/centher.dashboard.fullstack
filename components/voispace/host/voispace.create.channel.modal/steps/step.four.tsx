@@ -201,7 +201,7 @@ const StepFour: React.FC<StepFourProps> = ({
           </div>
           {formState.invitedPrivilegeUsers.length > 0 && (
             <div className="mt-4">
-              <div className="text-[#A0A4BB]">Invited Privileged Users</div>
+              <div className="text-[#A0A4BB]">Privileged NFT Collection</div>
               {formState.invitedPrivilegeUsers.map((collection: any) => (
                 <RemovePrivilegeCollection
                   key={collection.collection}

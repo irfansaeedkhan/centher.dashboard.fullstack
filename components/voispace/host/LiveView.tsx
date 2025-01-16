@@ -9,11 +9,13 @@ import HostModalHeader from "./partials/HostModalHeader";
 import { Room } from "./voispace.create.channel.modal/voispace.create.channel.modal";
 import useUser from "@/hooks/use.user";
 import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
+import { CurrentUserContainer } from "../shared/ChannelMainView";
 
 interface DynamicProps {
   onClose: () => void;
   roomData: Room;
   setComponentName: (name: string) => string;
+  currentUserContainer: CurrentUserContainer;
 }
 
 const MessageSkeleton = () => (
@@ -33,6 +35,7 @@ const LiveView: React.FC<DynamicProps> = ({
   onClose,
   setComponentName,
   roomData,
+  currentUserContainer,
 }) => {
   const {
     useSubscribeToMessages,
@@ -68,11 +71,6 @@ const LiveView: React.FC<DynamicProps> = ({
   const { stream: currentStream, loader } = useSubscribeToCurrentStream(
     roomData?.id || "",
     roomData?.type === "AMA" ? BroadcastTypeEnum.AMA : BroadcastTypeEnum.LIVE
-  );
-
-  const { currentUser } = useSubscribeToCurrentUser(
-    roomData?.id || "",
-    userId || ""
   );
 
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -252,7 +250,9 @@ const LiveView: React.FC<DynamicProps> = ({
               onClick={() => leaveHandler()}
               className="cursor-pointer font-monto text-[14px] font-medium text-[#E34048]"
             >
-              {currentUser?.type == "HOST" ? "Finish" : "Leave"}
+              {currentUserContainer?.currentUser?.type == "HOST"
+                ? "Finish"
+                : "Leave"}
             </button>
           </div>
         </div>
