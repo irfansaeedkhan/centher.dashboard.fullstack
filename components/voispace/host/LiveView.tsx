@@ -161,16 +161,31 @@ const LiveView: React.FC<DynamicProps> = ({
   };
   return (
     <div className="flex flex-col overflow-hidden">
-      <div className="flex flex-col gap-[27px] px-[24px] py-[24px]">
-        <HostModalHeader
-          subTitle="Voispace"
-          title={roomData?.name || ""}
-          onClose={onClose}
-          onBack={() => setComponentName("Participators")}
-        />
-
-        <div className="absolute right-[24px] top-[24px]">
-          <div className="flex items-center gap-[20px]">
+      <div className="relative min-h-dvh w-full bg-[#0b0b0b] md:min-h-[645px]">
+        {/* Video  */}
+        <div className="absolute inset-0">
+          {videoStream && (
+            <video
+              className="h-full w-full object-cover"
+              autoPlay
+              muted
+              loop
+              ref={videoRef}
+            ></video>
+          )}
+        </div>
+        {/* Title  */}
+        <div className="absolute left-0 top-0 flex w-full flex-col items-center justify-between gap-2 bg-gradient-to-b from-[#0b0b0b] to-[#0b0b0b7e] p-4 md:flex-row md:gap-3">
+          <div className="flex flex-col gap-1 text-center md:items-start">
+            <span className="rounded bg-[#1C1D21] px-2 py-1 text-xs text-white">
+              Voispace
+            </span>
+            <span className="text-gradient text-lg font-bold"></span>
+            <span className="text-gradient-1 font-gravesend text-xl font-bold md:text-2xl">
+              {roomData?.name || ""}
+            </span>
+          </div>
+          <div className="flex items-center gap-[20px] mobile-max:w-full mobile-max:justify-between">
             <div className="flex items-center gap-[6px]">
               <div className="flex items-center justify-center gap-2  rounded-[5px] bg-[#1C1D21] px-2 py-1 text-white">
                 <span className="h-[10px] w-[10px] rounded-[50%] bg-[#FF453A]"></span>
@@ -200,49 +215,34 @@ const LiveView: React.FC<DynamicProps> = ({
             </button>
           </div>
         </div>
-      </div>
 
-      <div className="absolute inset-0 mt-[16%] h-full w-full overflow-hidden rounded-2xl bg-center flg:max-h-[calc(84%-7px)] mobile-max:bottom-0 mobile-max:mt-[35%]">
-        <div className="absolute inset-0 h-full w-full">
-          {videoStream && (
-            <video
-              ref={videoRef}
-              className="h-full w-full"
-              autoPlay
-              playsInline
-              muted
-            />
-          )}
-        </div>
-      </div>
-
-      <div className="z-20 min-h-[70vh] bg-[#00000042] p-4 flg:py-6">
-        <div
-          className="customScrollbar flex h-[calc(100vh-15.8rem)]  flex-col gap-6 overflow-y-auto !pt-[40%] text-white md:!pt-[25%] flg:h-[calc(100vh-22rem)] flg:p-6"
-          ref={chatContainerRef}
-          onScroll={handleScroll}
-        >
-          {subscriptionLoading ? (
-            <>
-              <MessageSkeleton />
-              <MessageSkeleton />
-              <MessageSkeleton />
-              <MessageSkeleton />
-              <MessageSkeleton />
-            </>
-          ) : formattedMessages?.length ? (
-            formattedMessages.map((message, index) => (
-              <div
-                key={index}
-                className="max-w-[40ch] break-words  rounded-xl bg-[#212329]/20 p-2 text-sm text-white"
-              >
-                <LiveMessage message={message} />
-              </div>
-            ))
-          ) : null}
-        </div>
-
-        <div className="absolute bottom-3 left-1/2 flex w-[calc(100%-48px)] -translate-x-1/2 items-center  text-white mobile-max:w-[calc(100%-36px)]">
+        {/* Messages */}
+        <div className="-bg-gradient-to-t -from-black -to-transparent absolute bottom-0 left-0 w-full space-y-2 p-4">
+          <div
+            className="customScrollbar flex h-48 flex-col gap-2 overflow-y-scroll"
+            ref={chatContainerRef}
+            onScroll={handleScroll}
+          >
+            {subscriptionLoading ? (
+              <>
+                <MessageSkeleton />
+                <MessageSkeleton />
+                <MessageSkeleton />
+                <MessageSkeleton />
+                <MessageSkeleton />
+              </>
+            ) : formattedMessages?.length ? (
+              formattedMessages.map((message, index) => (
+                <div
+                  key={index}
+                  className="max-w-[30ch] break-words text-sm text-white"
+                >
+                  <LiveMessage message={message} />
+                </div>
+              ))
+            ) : null}
+          </div>
+          {/* Input Bar */}
           <div className="flex w-full items-center overflow-hidden rounded-[12px] bg-[#212329]">
             <input
               className="font-regular flex-grow border-0 bg-transparent text-[12px] text-white ring-0 focus:outline-none focus:ring-0"
