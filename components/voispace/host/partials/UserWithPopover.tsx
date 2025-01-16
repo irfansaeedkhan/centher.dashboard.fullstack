@@ -1,7 +1,13 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
-import { MutedChat, MutedMic, UnmutedChat, UnmutedMic } from "@/assets/svgs";
+import {
+  LoaderSpinner,
+  MutedChat,
+  MutedMic,
+  UnmutedChat,
+  UnmutedMic,
+} from "@/assets/svgs";
 
 import ClientCardView from "../../shared/profile";
 import ActionButton from "../ui/ActionButton";
@@ -30,6 +36,37 @@ const UserWithPopover: React.FC<UserWithPopoverProps> = ({
   handleMessagePermission,
   mode,
 }) => {
+  const [kickLoader, setKickLoader] = useState<boolean>(false);
+  const [muteLoader, setMuteLoader] = useState<boolean>(false);
+  const [chatPermLoader, setChatPermLoader] = useState<boolean>(false);
+
+  const handleKickOffLocal = () => {
+    setKickLoader(true);
+    handleKickOff(client.user._id);
+  };
+
+  const handleTalkPermissionLocal = () => {
+    setMuteLoader(true);
+    handleTalkPermission(client.user._id);
+  };
+
+  const handleMessagePermissionlocal = () => {
+    setChatPermLoader(true);
+    handleMessagePermission(client.user._id);
+  };
+
+  useEffect(() => {
+    if (client) {
+      setChatPermLoader(false);
+    }
+  }, [client.hasPermissionToMessage]);
+
+  useEffect(() => {
+    if (client && client.type == "LISTENER") {
+      setMuteLoader(false);
+    }
+  }, [client.type]);
+
   return (
     <Popover placement="top">
       <PopoverTrigger>
@@ -79,34 +116,46 @@ const UserWithPopover: React.FC<UserWithPopoverProps> = ({
 
               <div className="flex items-center gap-[8px]">
                 {/* Mute Button */}
-                {client?.type == "SPEAKER" && (
-                  <ActionButton
-                    className="text-medium text-[14px] text-[#E34048]"
-                    onClick={() => handleTalkPermission(client.user._id)}
-                  >
-                    <MutedMic />
-                  </ActionButton>
+                {muteLoader ? (
+                  <LoaderSpinner className="inline-block h-4 w-4 animate-spin" />
+                ) : (
+                  client?.type == "SPEAKER" && (
+                    <ActionButton
+                      className="text-medium text-[14px] text-[#E34048]"
+                      onClick={handleTalkPermissionLocal}
+                    >
+                      <MutedMic />
+                    </ActionButton>
+                  )
                 )}
 
                 {/* Chat Button */}
-                <ActionButton
-                  className="text-medium text-[14px] text-[#E34048]"
-                  onClick={() => handleMessagePermission(client.user._id)}
-                >
-                  {client.hasPermissionToMessage ? (
-                    <UnmutedChat />
-                  ) : (
-                    <MutedChat />
-                  )}
-                </ActionButton>
+                {chatPermLoader ? (
+                  <LoaderSpinner className="inline-block h-4 w-4 animate-spin" />
+                ) : (
+                  <ActionButton
+                    className="text-medium text-[14px] text-[#E34048]"
+                    onClick={handleMessagePermissionlocal}
+                  >
+                    {client.hasPermissionToMessage ? (
+                      <UnmutedChat />
+                    ) : (
+                      <MutedChat />
+                    )}
+                  </ActionButton>
+                )}
 
                 {/* Kick Off Button */}
-                <ActionButton
-                  className="text-medium text-[14px] text-[#E34048]"
-                  onClick={() => handleKickOff(client.user._id)}
-                >
-                  Kick off
-                </ActionButton>
+                {kickLoader ? (
+                  <LoaderSpinner className="inline-block h-4 w-4 animate-spin" />
+                ) : (
+                  <ActionButton
+                    className="text-medium text-[14px] text-[#E34048]"
+                    onClick={handleKickOffLocal}
+                  >
+                    Kick off
+                  </ActionButton>
+                )}
               </div>
             </div>
           </PopoverDescription>

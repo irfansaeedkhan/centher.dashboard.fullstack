@@ -14,7 +14,10 @@ import { ICentalkBroadcast } from "./cen-talk";
 import { AMAStreamType, useAMA } from "./use.ama";
 import { LiveStreamType, useLive } from "./use.live";
 import { StreamHooksHelper } from "./helper";
-import { insertMessageToStream } from "@/stream/graphql/mutation";
+import {
+  insertMessageToStream,
+  updateUserVoiceStatus,
+} from "@/stream/graphql/mutation";
 import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
 import useGetChatUsers from "../use.get.chat.users";
 import {
@@ -53,6 +56,7 @@ interface StreamContextType {
   useSubscribeToParticipators: (id: string, skip: number) => any;
   amaAgent: AMAStreamType;
   liveAgent: LiveStreamType;
+  updateUserStatus: (userId: string, status: boolean) => Promise<void>;
 }
 
 const StreamContext = createContext<StreamContextType | null>(null);
@@ -599,6 +603,17 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
     });
   };
 
+  const updateUserStatus = async (userId: string, status: boolean) => {
+    const apollo = await helper.current.getApolloClientInstance();
+    await apollo.mutate({
+      mutation: updateUserVoiceStatus(),
+      variables: {
+        userId: userId,
+        status: status,
+      },
+    });
+  };
+
   //Utility
   const aggregateMessagesWithUsers = async (messages: any[]) => {
     const ids = messages.map((e) => e.sender);
@@ -683,6 +698,7 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
 
   const contextValue: StreamContextType = {
     useGetSubscribes,
+    updateUserStatus,
     insertMessage,
     useSubscribeToAllBroadcasts,
     useSubscribeToSpeakers,

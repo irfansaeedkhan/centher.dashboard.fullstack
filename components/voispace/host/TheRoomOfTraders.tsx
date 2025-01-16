@@ -12,18 +12,22 @@ import HostModalHeader from "@/components/voispace/host/partials/HostModalHeader
 import {
   CancelSpeechIcon,
   GrabIcon,
+  LoaderSpinner,
   MutedChat,
   MutedMic,
   ShareWhiteIcon,
   SpeechIcon,
   UnmutedChat,
   UnmutedMic,
+  VoispaceGradientRing,
 } from "@/assets/svgs";
 
 import ClientCardView from "../shared/profile";
 import ActionButton from "./ui/ActionButton";
 import UserWithPopover from "./partials/UserWithPopover";
 import { Room } from "./voispace.create.channel.modal/voispace.create.channel.modal";
+import { CgSpinner } from "react-icons/cg";
+import Button from "@/components/button";
 
 interface DynamicProps {
   onClose: () => void;
@@ -39,12 +43,17 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
   unreadMessages,
 }) => {
   const htmlBodyRef = useRef<HTMLBodyElement | null>(null);
+  const [showMuteLoader, setShowMuteLoader] = useState(false);
+  const [showSendTalkRequestLoader, setShowSendTalkRequestLoader] =
+    useState(false);
+  const [leaveLoader, setLeaveLoader] = useState<boolean>(false);
 
   const {
     amaAgent,
     useSubscribeToCurrentStream,
     useSubscribeToSpeakers,
     useSubscribeToCurrentUser,
+    updateUserStatus,
   } = useStream();
 
   const {
@@ -79,53 +88,47 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
   const handleToggleTalkPermission = async (userId: string) => {
     try {
       toggleMemberTalkPermission(userId);
-      toast.success("Toggled member talk permission.");
     } catch (error) {
       console.error("Failed to toggle talk permission:", error);
-      toast.error("Failed to toggle talk permission.");
     }
   };
   const handleToggleMessagePermission = async (userId: string) => {
     try {
       toggleMessagePermission(userId);
-      toast.success("Toggled message permission.");
     } catch (error) {
       console.error("Failed to toggle message permission:", error);
-      toast.error("Failed to toggle message permission.");
     }
   };
   const handleKickUser = async (userId: string) => {
     try {
       kickUser(userId);
-      toast.success("User has been kicked.");
     } catch (error) {
       console.error("Failed to kick user:", error);
-      toast.error("Failed to kick user.");
     }
   };
-  const handleToggleMute = () => {
+  const handleToggleMute = async () => {
     try {
+      if (!userId) {
+        return;
+      }
+      setShowMuteLoader(true);
+      await updateUserStatus(userId, !currentUser?.isMuted);
       toggleMute();
-      toast.success("Toggled mute/unmute.");
     } catch (error) {
       console.error("Failed to toggle mute:", error);
-      toast.error("Failed to toggle mute.");
     }
   };
   const handleRequestToTalk = (request: boolean) => {
     try {
+      setShowSendTalkRequestLoader(true);
       requestToTalk(request);
-      toast.success(
-        request ? "Request to talk sent." : "Request to talk cancelled."
-      );
     } catch (error) {
       console.error("Failed to send Request to talk", error);
-      toast.error("Failed to send Request to talk");
     }
   };
-
   const handleLeaveRoom = () => {
     try {
+      setLeaveLoader(true);
       if (htmlBodyRef.current) {
         htmlBodyRef.current.style.overflow = "auto";
       }
@@ -133,13 +136,25 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
       leave();
     } catch (error) {
       console.error("Failed to leave the room:", error);
-      toast.error("Failed to leave the room.");
     }
   };
 
   useEffect(() => {
     htmlBodyRef.current = document.body as HTMLBodyElement;
   }, []);
+
+  useEffect(() => {
+    if (currentUser) {
+      setShowMuteLoader(false);
+    }
+  }, [currentUser?.isMuted]);
+
+  useEffect(() => {
+    if (currentUser) {
+      setShowSendTalkRequestLoader(false);
+    }
+  }, [currentUser?.hasTalkRequest]);
+
   return (
     <div className="h-full  px-6 py-6 text-white mobile-max:px-4">
       <div className="flex h-full flex-col gap-[42px]">
@@ -150,12 +165,18 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
           onBack={() => null}
           hasBackButton={false}
         >
-          <button
+          <Button
+            title="Finish"
             className="font-monto text-[14px] font-medium text-[#E34048]"
             onClick={handleLeaveRoom}
-          >
-            Finish
-          </button>
+            disabled={leaveLoader}
+            loaderIcon={
+              leaveLoader &&
+              ((
+                <LoaderSpinner className="inline-block h-4 w-4 animate-spin" />
+              ) as any)
+            }
+          />
         </HostModalHeader>
 
         {/* Hosts Section */}
@@ -312,20 +333,21 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
                       <FaUser className="text-sm text-[#FAFAFA]" />
                     )}
                   </div>
-                  {/* {(currentStream?.participatorsCount?.aggregate?.count ?? 0) >
-                    0 && (
-                    <span className="font-monto text-xs font-medium leading-[13px] tracking-[-0.4px]">
-                      {currentStream?.participatorsCount?.aggregate?.count}
-                    </span>
-                  )} */}
+
                   <span className="font-monto text-xs font-medium leading-[13px] tracking-[-0.4px]">
                     {currentStream?.participatorsCount?.aggregate?.count}
                   </span>
                 </ActionButton>
 
+                {showSendTalkRequestLoader && (
+                  <ActionButton onClick={handleToggleMute}>
+                    <CgSpinner className="h-5 w-5 animate-spin group-disabled:block" />{" "}
+                  </ActionButton>
+                )}
                 {!globalIsOwner &&
                   currentUser?.type == "LISTENER" &&
-                  !currentUser?.hasTalkRequest && (
+                  !currentUser?.hasTalkRequest &&
+                  !showSendTalkRequestLoader && (
                     <ActionButton
                       className="text-medium flex text-[14px] text-[#E34048]"
                       onClick={() => handleRequestToTalk(true)}
@@ -339,7 +361,8 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
 
                 {!globalIsOwner &&
                   currentUser?.type == "LISTENER" &&
-                  currentUser?.hasTalkRequest && (
+                  currentUser?.hasTalkRequest &&
+                  !showSendTalkRequestLoader && (
                     <ActionButton
                       className="text-medium flex text-[14px] text-[#E34048]"
                       onClick={() => handleRequestToTalk(false)}
@@ -352,16 +375,27 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
                   )}
 
                 {/* Mute Button */}
-                {currentUser?.type == "SPEAKER" && !currentUser?.isMuted && (
-                  <ActionButton text="Mute" onClick={handleToggleMute}>
-                    <UnmutedMic />
+                {showMuteLoader && (
+                  <ActionButton onClick={handleToggleMute}>
+                    <CgSpinner className="h-5 w-5 animate-spin group-disabled:block" />{" "}
                   </ActionButton>
                 )}
-                {currentUser?.type == "SPEAKER" && currentUser?.isMuted && (
-                  <ActionButton text="Unmute" onClick={handleToggleMute}>
-                    <MutedMic />
-                  </ActionButton>
-                )}
+                {(currentUser?.type == "SPEAKER" ||
+                  currentUser?.type == "HOST") &&
+                  !currentUser?.isMuted &&
+                  !showMuteLoader && (
+                    <ActionButton text="Mute" onClick={handleToggleMute}>
+                      <UnmutedMic />
+                    </ActionButton>
+                  )}
+                {(currentUser?.type == "SPEAKER" ||
+                  currentUser?.type == "HOST") &&
+                  currentUser?.isMuted &&
+                  !showMuteLoader && (
+                    <ActionButton text="Unmute" onClick={handleToggleMute}>
+                      <MutedMic />
+                    </ActionButton>
+                  )}
               </div>
             </div>
           ) : (

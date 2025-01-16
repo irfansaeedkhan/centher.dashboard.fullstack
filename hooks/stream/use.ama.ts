@@ -137,7 +137,7 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
       });
 
       globalSocket.current!.on("consumer-closed", async (data: any) => {
-        console.log("consumer-closed", data);
+        console.log("consumer-closed");
         if (areStringsEquals(globalUserId.current!, data.user_id)) {
           closeProducer();
         } else {

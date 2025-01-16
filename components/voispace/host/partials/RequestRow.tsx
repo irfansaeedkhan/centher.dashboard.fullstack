@@ -17,7 +17,6 @@ const RequestRow: React.FC<RequestProps> = ({
   const handler = (action: string) => {
     setLoader(true);
     talkRequestHandler(request, action);
-    setLoader(false);
   };
 
   return (
