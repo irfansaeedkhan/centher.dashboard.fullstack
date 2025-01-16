@@ -109,7 +109,6 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
     ) {
       const error = eventOnAMA?.data || eventOnLive?.data;
       toast.error(error);
-      console.log("on error");
       onClose();
       setRoomCreationLoader(false);
       setCurrentModalIsOpen(false);
