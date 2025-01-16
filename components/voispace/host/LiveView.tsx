@@ -39,7 +39,9 @@ const LiveView: React.FC<DynamicProps> = ({
     insertMessage,
     liveAgent,
     useSubscribeToCurrentStream,
+    useSubscribeToCurrentUser,
   } = useStream();
+
   const {
     event,
     globalIsOwner,
@@ -47,13 +49,16 @@ const LiveView: React.FC<DynamicProps> = ({
     getVideoStream,
     closeConsumer,
     close,
+    userId,
   } = liveAgent;
+
   const [inputValue, setInputValue] = useState("");
   const [formattedMessages, setFormattedMessages] = useState<
     BroadcastMessage[]
   >([]);
   const [limit, setLimit] = useState(10);
   const [isFetching, setIsFetching] = useState(false);
+
   const { user } = useUser();
   const { messages, loading: subscriptionLoading } = useSubscribeToMessages(
     roomData?.id || "",
@@ -63,6 +68,11 @@ const LiveView: React.FC<DynamicProps> = ({
   const { stream: currentStream, loader } = useSubscribeToCurrentStream(
     roomData?.id || "",
     roomData?.type === "AMA" ? BroadcastTypeEnum.AMA : BroadcastTypeEnum.LIVE
+  );
+
+  const { currentUser } = useSubscribeToCurrentUser(
+    roomData?.id || "",
+    userId || ""
   );
 
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -242,7 +252,7 @@ const LiveView: React.FC<DynamicProps> = ({
               onClick={() => leaveHandler()}
               className="cursor-pointer font-monto text-[14px] font-medium text-[#E34048]"
             >
-              Leave
+              {currentUser?.type == "HOST" ? "Finish" : "Leave"}
             </button>
           </div>
         </div>

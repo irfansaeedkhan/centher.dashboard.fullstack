@@ -105,6 +105,9 @@ const Feed: NextPageWithLayout = () => {
 
   return (
     <>
+      <div className="mt-3 block w-full f2xl:hidden">
+        <VoiSpaceFeedCard />
+      </div>
       {((loading === "loaded" && posts.length === 0) || posts.length > 0) &&
         user && <CreatePostCard user={user} />}
 
@@ -151,11 +154,7 @@ const Feed: NextPageWithLayout = () => {
                 onPostInViewport={() => handleCreatePostView(post._id)}
               />
             </div>
-            {index === 0 && (
-              <div className="mt-3 block w-full f2xl:hidden">
-                <VoiSpaceFeedCard />
-              </div>
-            )}
+
             {index === 0 && (
               <div className="mt-4">
                 <SuggestedCardMobile className={`block f2xl:hidden`} />
@@ -232,9 +231,6 @@ const Feed: NextPageWithLayout = () => {
             <p className="text-gray-shade-7">
               Create a new post or follow someone
             </p>
-          </div>
-          <div className="mt-3 block w-full f2xl:hidden">
-            <VoiSpaceFeedCard />
           </div>
           <div className="mt-4">
             <SuggestedCardMobile className={`block f2xl:hidden`} />
