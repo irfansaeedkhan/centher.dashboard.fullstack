@@ -109,15 +109,9 @@ const StepFour: React.FC<StepFourProps> = ({
 
   const handlePopupClose = (e: MouseEvent) => {
     if (
-      activePopup === "private" &&
-      privatePopupRef.current &&
-      !privatePopupRef.current.contains(e.target as Node)
-    ) {
-      setActivePopup(null);
-    } else if (
-      activePopup === "privilege" &&
       privilegePopupRef.current &&
-      !privilegePopupRef.current.contains(e.target as Node)
+      !privilegePopupRef.current.contains(e.target as Node) &&
+      activePopup === "privilege"
     ) {
       setActivePopup(null);
     }
@@ -128,7 +122,7 @@ const StepFour: React.FC<StepFourProps> = ({
     return () => {
       document.removeEventListener("mousedown", handlePopupClose);
     };
-  }, [activePopup]);
+  }, [activePopup, privilegePopupRef]);
 
   if (formState.accessMode === StreamAccessModeEnum.PUBLIC) {
     setIsHostSettingsOpen(true);
@@ -205,14 +199,19 @@ const StepFour: React.FC<StepFourProps> = ({
           <div className="relative rounded-xl bg-[#141416] px-3 py-1">
             <div
               className="flex items-center"
-              onFocus={() => handlePopupOpen("privilege")}
+              onFocus={() => {
+                handlePopupOpen("privilege");
+                if (!privilegeCollections.length) {
+                  setCollectionAddress((prev) => prev || "");
+                }
+              }}
             >
               <SearchIcon className="h-7 w-7 opacity-70" />
               <input
                 className="w-full border-none bg-[#141416] text-sm font-medium text-white focus:outline-none focus:ring-0"
                 placeholder="Paste collection address here"
                 value={collectionAddress}
-                onChange={(e) => setCollectionAddress(e.target.value)} // Only change when user types
+                onChange={(e) => setCollectionAddress(e.target.value)}
               />
             </div>
             {activePopup === "privilege" && !!privilegeCollections.length && (
@@ -230,6 +229,7 @@ const StepFour: React.FC<StepFourProps> = ({
               </div>
             )}
           </div>
+
           {formState.invitedPrivilegeUsers.length > 0 && (
             <div className="mt-4">
               <div className="text-[#A0A4BB]">Privileged NFT Collection</div>
