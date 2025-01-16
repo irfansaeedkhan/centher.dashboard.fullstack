@@ -214,18 +214,20 @@ const LiveView: React.FC<DynamicProps> = ({
           )}
         </div>
         {/* Title  */}
-        <div className="absolute left-0 top-0 flex w-full flex-col items-center justify-between gap-2 bg-gradient-to-b from-[#0b0b0b] to-[#0b0b0b7e] p-4 md:flex-row md:gap-3">
-          <div className="flex flex-col gap-1 text-center md:items-start">
-            <span className="rounded bg-[#1C1D21] px-2 py-1 text-xs text-white">
+        <div className="absolute left-0 top-0 flex w-full flex-col-reverse items-start justify-between gap-2 bg-gradient-to-b from-[#0b0b0b] to-[#0b0b0b7e] p-4 md:flex-row md:gap-3">
+          <div className="flex flex-col items-start gap-2">
+            <span className="hidden max-w-max rounded bg-[#1C1D21] px-2 py-1 text-xs text-white md:block">
               Voispace
             </span>
-            <span className="text-gradient text-lg font-bold"></span>
             <span className="text-gradient-1 font-gravesend text-xl font-bold md:text-2xl">
               {roomData?.name || ""}
             </span>
           </div>
-          <div className="flex items-center gap-[20px] mobile-max:w-full mobile-max:justify-between">
+          <div className="flex items-center gap-[20px] mobile-max:w-full mobile-max:justify-between mobile-max:gap-2">
             <div className="flex items-center gap-[6px]">
+              <span className="max-w-max rounded bg-[#1C1D21] px-2 py-1 text-xs text-white md:hidden">
+                Voispace
+              </span>
               <div className="flex items-center justify-center gap-2  rounded-[5px] bg-[#1C1D21] px-2 py-1 text-white">
                 <span className="h-[10px] w-[10px] rounded-[50%] bg-[#FF453A]"></span>
                 <span className="font-monto text-[11px] font-medium">Live</span>
