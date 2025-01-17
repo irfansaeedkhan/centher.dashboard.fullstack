@@ -1,11 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import Image from "next/image";
-import toast from "react-hot-toast";
 import { FaUser } from "react-icons/fa";
 
 import { useStream } from "@/hooks/stream/use.core";
-import { ICentalkBroadcast } from "@/hooks/stream/cen-talk";
 import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
 import { StreamAccessModeEnum } from "@/stream/enum/stream-access-mode.enum";
 import HostModalHeader from "@/components/voispace/host/partials/HostModalHeader";
@@ -19,7 +17,6 @@ import {
   SpeechIcon,
   UnmutedChat,
   UnmutedMic,
-  VoispaceGradientRing,
 } from "@/assets/svgs";
 
 import ClientCardView from "../shared/profile";
@@ -160,19 +157,20 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
     <div className="h-full  px-6 py-6 text-white mobile-max:px-4">
       <div className="flex h-full flex-col gap-[42px]">
         <HostModalHeader
-          subTitle="Voispace"
+          subTitle="VoiSpace"
           title={roomData?.name || "N/A"}
           onClose={handleLeaveRoom}
           onBack={() => null}
           hasBackButton={false}
         >
           <Button
+            variant="danger"
             title={
               currentUserContainer?.currentUser?.type == "HOST"
                 ? "Finish"
                 : "Leave"
             }
-            className="font-monto text-[14px] font-medium text-[#E34048]"
+            className="cursor-pointer font-monto text-[14px] font-medium text-[#E34048]"
             onClick={handleLeaveRoom}
             disabled={leaveLoader}
             loaderIcon={
@@ -204,7 +202,7 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
                     name={host.user?.display_name ?? "Unknown"}
                     imageURL={host.user?.profile_image ?? ""}
                     isApproved={host.user?.membership?.status === "citizen"}
-                    isSpeaking={true}
+                    isSpeaking={false}
                   />
                 </div>
               ))

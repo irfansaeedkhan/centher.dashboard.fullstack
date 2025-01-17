@@ -705,6 +705,21 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
     return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
   };
 
+  const filterErrorMessage = (data: any): any => {
+    if (data) {
+      let errorMessage = data as string;
+      if (
+        errorMessage.includes("Modules are started already") ||
+        errorMessage.includes("This AMA/Live is exclusive for")
+      ) {
+        errorMessage = "You are not privileged to join";
+      }
+
+      return errorMessage;
+    }
+    return data;
+  };
+
   const initSocketClient = async (): Promise<void> => {
     return new Promise(async (resolve, reject) => {
       try {
@@ -716,6 +731,7 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
 
         globalSocket.current.on("error", ({ data }: any) => {
           try {
+            data = filterErrorMessage(data);
             close();
           } catch (error) {}
           setEvent({

@@ -388,6 +388,21 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
     } else throw new Error("forbidden");
   };
 
+  const filterErrorMessage = (data: any): any => {
+    if (data) {
+      let errorMessage = data as string;
+      if (
+        errorMessage.includes("Modules are started already") ||
+        errorMessage.includes("This AMA/Live is exclusive for")
+      ) {
+        errorMessage = "You are not privileged to join";
+      }
+
+      return errorMessage;
+    }
+    return data;
+  };
+
   const initSocketClient = async (): Promise<void> => {
     return new Promise(async (resolve, reject) => {
       try {
@@ -399,6 +414,7 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
 
         globalSocket.current.on("error", ({ data }: any) => {
           try {
+            data = filterErrorMessage(data);
             close();
           } catch (error) {}
           setEvent({

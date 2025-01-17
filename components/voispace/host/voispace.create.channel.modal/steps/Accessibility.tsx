@@ -27,7 +27,7 @@ const Accessibility = ({ formState, handleInputChange, loading }: any) => {
             Public
           </div>
           <div className={`px-4 pb-3 text-sm font-normal text-[#A0A4BB]`}>
-            Everyone can join this Voispace Room
+            Everyone can join this VoiSpace Room
           </div>
         </div>
         <div

@@ -4,11 +4,11 @@ import { SendChatIcon, EyeIcon } from "@/assets/svgs";
 import { useStream } from "@/hooks/stream/use.core";
 import { BroadcastMessage } from "@/hooks/stream/dto/broadcast-inffo.dto";
 import { StreamEventEnum } from "@/stream/model";
-import LiveMessage from "@/components/voispace/host/partials/LiveMessage";
-import HostModalHeader from "./partials/HostModalHeader";
-import { Room } from "./voispace.create.channel.modal/voispace.create.channel.modal";
-import useUser from "@/hooks/use.user";
 import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
+import LiveMessage from "@/components/voispace/host/partials/LiveMessage";
+import Button from "@/components/button";
+import useUser from "@/hooks/use.user";
+import { Room } from "./voispace.create.channel.modal/voispace.create.channel.modal";
 import { CurrentUserContainer } from "../shared/ChannelMainView";
 
 interface DynamicProps {
@@ -217,7 +217,7 @@ const LiveView: React.FC<DynamicProps> = ({
         <div className="absolute left-0 top-0 flex w-full flex-col-reverse items-start justify-between gap-2 bg-gradient-to-b from-[#0b0b0b] to-[#0b0b0b7e] p-4 md:flex-row md:gap-3">
           <div className="flex flex-col items-start gap-2">
             <span className="hidden max-w-max rounded bg-[#1C1D21] px-2 py-1 text-xs text-white md:block">
-              Voispace
+              VoiSpace
             </span>
             <span className="text-gradient-1 font-gravesend text-xl font-bold md:text-2xl">
               {roomData?.name || ""}
@@ -226,7 +226,7 @@ const LiveView: React.FC<DynamicProps> = ({
           <div className="flex items-center gap-[20px] mobile-max:w-full mobile-max:justify-between mobile-max:gap-2">
             <div className="flex items-center gap-[6px]">
               <span className="max-w-max rounded bg-[#1C1D21] px-2 py-1 text-xs text-white md:hidden">
-                Voispace
+                VoiSpace
               </span>
               <div className="flex items-center justify-center gap-2  rounded-[5px] bg-[#1C1D21] px-2 py-1 text-white">
                 <span className="h-[10px] w-[10px] rounded-[50%] bg-[#FF453A]"></span>
@@ -248,14 +248,16 @@ const LiveView: React.FC<DynamicProps> = ({
               />
             </div>
 
-            <button
-              onClick={() => leaveHandler()}
+            <Button
+              variant="danger"
+              title={
+                currentUserContainer?.currentUser?.type == "HOST"
+                  ? "Finish"
+                  : "Leave"
+              }
               className="cursor-pointer font-monto text-[14px] font-medium text-[#E34048]"
-            >
-              {currentUserContainer?.currentUser?.type == "HOST"
-                ? "Finish"
-                : "Leave"}
-            </button>
+              onClick={leaveHandler}
+            />
           </div>
         </div>
 
