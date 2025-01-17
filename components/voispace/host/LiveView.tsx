@@ -11,13 +11,6 @@ import useUser from "@/hooks/use.user";
 import { Room } from "./voispace.create.channel.modal/voispace.create.channel.modal";
 import { CurrentUserContainer } from "../shared/ChannelMainView";
 
-interface DynamicProps {
-  onClose: () => void;
-  roomData: Room;
-  setComponentName: (name: string) => string;
-  currentUserContainer: CurrentUserContainer;
-}
-
 const MessageSkeleton = () => (
   <div className="flex animate-pulse gap-3">
     <div className="relative h-10 w-10 flex-shrink-0 rounded-full bg-gray-700" />
@@ -31,9 +24,14 @@ const MessageSkeleton = () => (
   </div>
 );
 
+interface DynamicProps {
+  onClose: () => void;
+  roomData: Room;
+  currentUserContainer: CurrentUserContainer;
+}
+
 const LiveView: React.FC<DynamicProps> = ({
   onClose,
-  setComponentName,
   roomData,
   currentUserContainer,
 }) => {
@@ -42,7 +40,6 @@ const LiveView: React.FC<DynamicProps> = ({
     insertMessage,
     liveAgent,
     useSubscribeToCurrentStream,
-    useSubscribeToCurrentUser,
   } = useStream();
 
   const {
@@ -59,13 +56,10 @@ const LiveView: React.FC<DynamicProps> = ({
   const [formattedMessages, setFormattedMessages] = useState<
     BroadcastMessage[]
   >([]);
-  const [limit, setLimit] = useState(10);
-  const [isFetching, setIsFetching] = useState(false);
-
   const { user } = useUser();
   const { messages, loading: subscriptionLoading } = useSubscribeToMessages(
     roomData?.id || "",
-    limit
+    6
   );
 
   const { stream: currentStream, loader } = useSubscribeToCurrentStream(
@@ -74,7 +68,7 @@ const LiveView: React.FC<DynamicProps> = ({
   );
 
   const videoRef = useRef<HTMLVideoElement>(null);
-  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const messagesRef = useRef<HTMLDivElement[]>([]);
   const videoStream = getVideoStream();
   const audioStream = getAudioStream();
 
@@ -102,13 +96,6 @@ const LiveView: React.FC<DynamicProps> = ({
     }
   }, [event, videoStream]);
 
-  useEffect(() => {
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop =
-        chatContainerRef.current.scrollHeight;
-    }
-  }, [formattedMessages]);
-
   const leaveHandler = () => {
     const videoElement = videoRef.current;
     if (videoElement) {
@@ -132,36 +119,28 @@ const LiveView: React.FC<DynamicProps> = ({
 
   const onSend = async (e: any) => {
     e.preventDefault();
-    const pattenr =
+    const pattern =
       /((https?:\/\/|www\.)[^\s]+)|(\b\d{10}\b)|(\+\d{1,3}\s?\d+)/g;
     let message = DOMPurify.sanitize(inputValue, {
       ALLOWED_TAGS: [],
       ALLOWED_ATTR: [],
     });
-    message = message.replace(pattenr, "[filtered]");
-
-    if (message.trim().length > 300) {
-      alert("Your message exceeds the 300-character limit.");
-      return;
-    }
-    if (message.trim().length) {
+    message = message.replace(pattern, "[filtered]");
+    if (message.trim().length && message.length <= 300) {
       insertMessage(roomData?.id || "", message);
       setInputValue("");
-      addNewMessage({
-        sender: {
-          display_name: user?.display_name,
-          profile_image: user?.profile_image,
+      setFormattedMessages((prev: any) => [
+        ...prev.slice(-5),
+        {
+          sender: {
+            display_name: user?.display_name,
+            profile_image: user?.profile_image,
+          },
+          content: message,
+          createdAt: new Date(),
         },
-        content: message,
-        createdAt: new Date(),
-      });
+      ]);
     }
-  };
-
-  const addNewMessage = (message: any) => {
-    setFormattedMessages((prev) => {
-      return [...prev, message];
-    });
   };
 
   useEffect(() => {
@@ -170,7 +149,6 @@ const LiveView: React.FC<DynamicProps> = ({
         const newMessages = messages.filter(
           (msg) => !prev.some((m) => m.id === msg.id)
         );
-
         const aggregatedMessages = [...prev, ...newMessages]
           .filter((e) => "id" in e)
           .sort((a, b) => +new Date(a.createdAt) - +new Date(b.createdAt));
@@ -179,25 +157,6 @@ const LiveView: React.FC<DynamicProps> = ({
     }
   }, [messages]);
 
-  useEffect(() => {
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop =
-        chatContainerRef.current.scrollHeight;
-    }
-  }, [formattedMessages]);
-
-  const handleScroll = () => {
-    if (
-      chatContainerRef.current &&
-      chatContainerRef.current.scrollTop === 0 &&
-      !isFetching &&
-      !subscriptionLoading
-    ) {
-      setIsFetching(true);
-      setLimit((prev) => prev + 10);
-      setTimeout(() => setIsFetching(false), 500);
-    }
-  };
   return (
     <div className="flex flex-col overflow-hidden">
       <div className="relative min-h-dvh w-full bg-[#0b0b0b] md:min-h-[645px]">
@@ -247,7 +206,6 @@ const LiveView: React.FC<DynamicProps> = ({
                 className="h-4 w-4 bg-red-400 "
               />
             </div>
-
             <Button
               variant="danger"
               title={
@@ -263,11 +221,7 @@ const LiveView: React.FC<DynamicProps> = ({
 
         {/* Messages */}
         <div className="-bg-gradient-to-t -from-black -to-transparent absolute bottom-0 left-0 w-full space-y-2 p-4">
-          <div
-            className="customScrollbar flex h-48 flex-col gap-2 overflow-y-scroll"
-            ref={chatContainerRef}
-            onScroll={handleScroll}
-          >
+          <div className="flex flex-col gap-2">
             {subscriptionLoading ? (
               <>
                 <MessageSkeleton />
@@ -279,7 +233,17 @@ const LiveView: React.FC<DynamicProps> = ({
             ) : formattedMessages?.length ? (
               formattedMessages.map((message, index) => (
                 <div
-                  key={index}
+                  key={message.id || index}
+                  ref={(el) => {
+                    if (el) {
+                      messagesRef.current[index] = el;
+                    } else {
+                      delete messagesRef.current[index];
+                    }
+                  }}
+                  style={{
+                    opacity: (index + 1) / formattedMessages.length,
+                  }}
                   className="max-w-[30ch] break-words text-sm text-white"
                 >
                   <LiveMessage message={message} />
@@ -287,6 +251,7 @@ const LiveView: React.FC<DynamicProps> = ({
               ))
             ) : null}
           </div>
+
           {/* Input Bar */}
           <div className="flex w-full items-center overflow-hidden rounded-[12px] bg-[#212329]">
             <input
