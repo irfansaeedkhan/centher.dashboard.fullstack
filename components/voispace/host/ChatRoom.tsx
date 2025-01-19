@@ -8,11 +8,13 @@ import { useStream } from "@/hooks/stream/use.core";
 import { Room } from "./voispace.create.channel.modal/voispace.create.channel.modal";
 import EmojiPicker, { EmojiClickData, Theme } from "emoji-picker-react";
 import useUser from "@/hooks/use.user";
+import { CurrentUserContainer } from "../shared/ChannelMainView";
 
 interface DynamicProps {
   onClose: () => void;
   setComponentName: (name: string) => any;
   roomData: Room;
+  currentUserContainer: CurrentUserContainer;
 }
 
 const MessageSkeleton = () => (
@@ -32,6 +34,7 @@ const ChatRoom: React.FC<DynamicProps> = ({
   onClose,
   setComponentName,
   roomData,
+  currentUserContainer,
 }) => {
   const { useSubscribeToMessages, insertMessage } = useStream();
   const [inputValue, setInputValue] = useState("");
@@ -98,7 +101,13 @@ const ChatRoom: React.FC<DynamicProps> = ({
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
+  useEffect(() => {
+    if (currentUserContainer?.currentUser) {
+      if (!currentUserContainer?.currentUser?.hasPermissionToMessage) {
+        setComponentName("TheRoomOfTraders");
+      }
+    }
+  }, [currentUserContainer?.currentUser?.hasPermissionToMessage]);
   const handleInputChange = (e: any) => {
     setInputValue(e.target.value);
   };
