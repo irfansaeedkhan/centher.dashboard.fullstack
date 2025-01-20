@@ -1,0 +1,17 @@
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#bgblur_0_555_16562_clip_path)" data-figma-skip-parse="true"><foreignObject x="-5" y="-5" width="26" height="26"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(2.5px);height:100%;width:100%"></div></foreignObject></g><circle data-figma-bg-blur-radius="5" cx="8" cy="8" r="8" fill="#0D0D0D" fill-opacity="0.6"/>
+<g clip-path="url(#clip1_555_16562)">
+<path d="M11.4448 8.615C11.4809 8.41198 11.4993 8.20621 11.4998 8V7" stroke="white" stroke-width="0.866667" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M4.49988 7V8C4.48971 8.69958 4.68944 9.38616 5.0733 9.97112C5.45716 10.5561 6.00752 11.0126 6.65336 11.2817C7.2992 11.5508 8.01086 11.6201 8.69651 11.4808C9.38215 11.3415 10.0103 10.9998 10.4999 10.5" stroke="white" stroke-width="0.866667" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M9.50016 6.67V4.5C9.49813 4.16318 9.3828 3.83685 9.17274 3.57356C8.96268 3.31026 8.67012 3.12533 8.34217 3.04854C8.01422 2.97175 7.66996 3.00757 7.36485 3.15023C7.05973 3.29289 6.81151 3.5341 6.66016 3.835" stroke="white" stroke-width="0.866667" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M6.5 6.5V8C6.50026 8.29648 6.58838 8.58623 6.75322 8.83266C6.91806 9.0791 7.15223 9.27115 7.42615 9.38457C7.70008 9.498 8.00147 9.5277 8.29227 9.46993C8.58307 9.41216 8.85023 9.26951 9.06 9.06" stroke="white" stroke-width="0.866667" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M8 11.5V13" stroke="white" stroke-width="0.866667" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M3 3L13 13" stroke="#E34048" stroke-width="0.866667" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="bgblur_0_555_16562_clip_path"><circle cx="8" cy="8" r="8"/>
+</clipPath><clipPath id="clip1_555_16562">
+<rect width="12" height="12" fill="white" transform="translate(2 2)"/>
+</clipPath>
+</defs>
+</svg>

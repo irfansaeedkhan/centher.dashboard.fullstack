@@ -9,17 +9,20 @@ import { StreamAccessModeEnum } from "@/stream/enum/stream-access-mode.enum";
 import { Room } from "./voispace.create.channel.modal/voispace.create.channel.modal";
 import UserWithPopover from "./partials/UserWithPopover";
 import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
+import { CurrentUserContainer } from "../shared/ChannelMainView";
 
 interface DynamicProps {
   onClose: () => void;
   setComponentName: (name: string) => string;
   roomData: Room;
+  currentUserContainer: CurrentUserContainer;
 }
 
 const Participators: React.FC<DynamicProps> = ({
   onClose,
   setComponentName,
   roomData,
+  currentUserContainer,
 }) => {
   const { useSubscribeToParticipators, amaAgent, liveAgent } = useStream();
 
@@ -112,6 +115,7 @@ const Participators: React.FC<DynamicProps> = ({
     };
   }, [loaderRef.current, hasMore, loader]);
 
+  console.log("allParticipators::", allParticipators);
   return (
     <div className="px-[24px] py-[24px] text-white">
       <div className="flex flex-col gap-[27px]">
@@ -134,21 +138,31 @@ const Participators: React.FC<DynamicProps> = ({
         </HostModalHeader>
 
         <div className="customScrollbar flex max-h-[60vh] flex-wrap items-center gap-12 overflow-y-auto py-2 sm:px-2">
-          {allParticipators?.map((participator: any, index: number) => {
-            return (
-              <div className="" key={index}>
-                <div key={index}>
-                  <UserWithPopover
-                    mode={isOwner ? "admin" : "participant"}
-                    client={participator}
-                    handleKickOff={handleKickUser}
-                    handleTalkPermission={handleToggleTalkPermission}
-                    handleMessagePermission={handleToggleMessagePermission}
-                  />
+          {allParticipators?.length > 0 &&
+            allParticipators?.map((participator: any, index: number) => {
+              return (
+                <div className="" key={index}>
+                  <div key={index}>
+                    <UserWithPopover
+                      mode={isOwner ? "admin" : "participant"}
+                      client={participator}
+                      handleKickOff={handleKickUser}
+                      handleTalkPermission={handleToggleTalkPermission}
+                      handleMessagePermission={handleToggleMessagePermission}
+                      currentUserContainer={currentUserContainer}
+                    />
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+
+          {allParticipators?.length < 1 && (
+            <div className="flex h-full w-full items-center justify-center">
+              <p className="text-gay-300 text-sm md:text-base">
+                No Participants Found
+              </p>
+            </div>
+          )}
 
           {loader &&
             Array.from({ length: 4 }).map((_, index) => (

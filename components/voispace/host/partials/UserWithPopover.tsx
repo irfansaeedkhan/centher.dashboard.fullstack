@@ -20,12 +20,15 @@ import {
   PopoverDescription,
   PopoverHeading,
 } from "../ui/Popover";
+import { CurrentUserContainer } from "../../shared/ChannelMainView";
+import { CgSpinner } from "react-icons/cg";
 
 interface UserWithPopoverProps {
   client: any;
   handleKickOff: (userId: string) => void;
   handleTalkPermission: (userId: string) => void;
   handleMessagePermission: (userId: string) => void;
+  currentUserContainer: CurrentUserContainer;
   mode: "admin" | "participant";
 }
 
@@ -34,6 +37,7 @@ const UserWithPopover: React.FC<UserWithPopoverProps> = ({
   handleKickOff,
   handleTalkPermission,
   handleMessagePermission,
+  currentUserContainer,
   mode,
 }) => {
   const [kickLoader, setKickLoader] = useState<boolean>(false);
@@ -76,6 +80,7 @@ const UserWithPopover: React.FC<UserWithPopoverProps> = ({
           isApproved={client.user?.membership?.status == "citizen"}
           isSpeaking={client?.type == "SPEAKER"}
           position={client?.type}
+          currentUserContainer={currentUserContainer}
         />
       </PopoverTrigger>
       {mode == "admin" && (
@@ -117,7 +122,7 @@ const UserWithPopover: React.FC<UserWithPopoverProps> = ({
               <div className="flex items-center gap-[8px]">
                 {/* Mute Button */}
                 {muteLoader ? (
-                  <LoaderSpinner className="inline-block h-4 w-4 animate-spin" />
+                  <CgSpinner className="inline-block h-4 w-4 animate-spin" />
                 ) : (
                   client?.type == "SPEAKER" && (
                     <ActionButton
@@ -131,7 +136,7 @@ const UserWithPopover: React.FC<UserWithPopoverProps> = ({
 
                 {/* Chat Button */}
                 {chatPermLoader ? (
-                  <LoaderSpinner className="inline-block h-4 w-4 animate-spin" />
+                  <CgSpinner className="inline-block h-4 w-4 animate-spin" />
                 ) : (
                   <ActionButton
                     className="text-medium text-[14px] text-[#E34048]"
@@ -147,7 +152,7 @@ const UserWithPopover: React.FC<UserWithPopoverProps> = ({
 
                 {/* Kick out Button */}
                 {kickLoader ? (
-                  <LoaderSpinner className="inline-block h-4 w-4 animate-spin" />
+                  <CgSpinner className="inline-block h-4 w-4 animate-spin" />
                 ) : (
                   <ActionButton
                     className="text-medium text-[14px] text-[#E34048]"

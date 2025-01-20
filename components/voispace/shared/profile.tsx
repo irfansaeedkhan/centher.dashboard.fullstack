@@ -1,7 +1,8 @@
 import React from "react";
 import Image from "next/image";
 
-import { VipIcon, MicIcon } from "@/assets/svgs";
+import { VipIcon, MicIcon, SmMutedMicIcon, SmMicIcon } from "@/assets/svgs";
+import { CurrentUserContainer } from "./ChannelMainView";
 
 interface UserProfileCard {
   imageURL: string;
@@ -10,6 +11,7 @@ interface UserProfileCard {
   isSpeaking: boolean;
   position?: string;
   className?: string;
+  currentUserContainer: CurrentUserContainer;
 }
 
 const UserProfileCard: React.FC<UserProfileCard> = ({
@@ -18,6 +20,7 @@ const UserProfileCard: React.FC<UserProfileCard> = ({
   name,
   isSpeaking,
   position,
+  currentUserContainer,
   className = "w-[74px]",
 }) => {
   return (
@@ -36,11 +39,30 @@ const UserProfileCard: React.FC<UserProfileCard> = ({
           </span>
         )}
 
-        {isSpeaking && (
+        {/* {isSpeaking && (
           <span className="absolute right-[-5px] top-0 rounded-full">
             <MicIcon />
           </span>
         )}
+        <span className="absolute right-[-5px] top-0 rounded-full">
+          <SmMicIcon />
+          <SmMutedMicIcon />
+        </span> */}
+
+        {(currentUserContainer?.currentUser?.type == "SPEAKER" ||
+          currentUserContainer?.currentUser?.type == "HOST") &&
+          !currentUserContainer?.currentUser?.isMuted && (
+            <span className="absolute right-[-5px] top-0 rounded-full">
+              <SmMicIcon />
+            </span>
+          )}
+        {(currentUserContainer?.currentUser?.type == "SPEAKER" ||
+          currentUserContainer?.currentUser?.type == "HOST") &&
+          currentUserContainer?.currentUser?.isMuted && (
+            <span className="absolute right-[-5px] top-0 rounded-full">
+              <SmMutedMicIcon />
+            </span>
+          )}
       </div>
 
       <span className="text-center font-monto text-xs font-semibold">

@@ -213,7 +213,7 @@ const LiveView: React.FC<DynamicProps> = ({
                   ? "Finish"
                   : "Leave"
               }
-              className="cursor-pointer font-monto text-[14px] font-medium text-[#E34048]"
+              className="cursor-pointer px-2 py-1 font-monto text-[14px] font-medium text-[#E34048]"
               onClick={leaveHandler}
             />
           </div>

@@ -10,7 +10,6 @@ import HostModalHeader from "@/components/voispace/host/partials/HostModalHeader
 import {
   CancelSpeechIcon,
   GrabIcon,
-  LoaderSpinner,
   MutedChat,
   MutedMic,
   ShareWhiteIcon,
@@ -170,13 +169,13 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
                 ? "Finish"
                 : "Leave"
             }
-            className="cursor-pointer font-monto text-[14px] font-medium text-[#E34048]"
+            className="cursor-pointer px-2 py-1 font-monto text-[14px] font-medium text-[#E34048]"
             onClick={handleLeaveRoom}
             disabled={leaveLoader}
             loaderIcon={
               leaveLoader &&
               ((
-                <LoaderSpinner className="inline-block h-4 w-4 animate-spin" />
+                <CgSpinner className="h-5 w-5 animate-spin group-disabled:block" />
               ) as any)
             }
           />
@@ -203,6 +202,7 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
                     imageURL={host.user?.profile_image ?? ""}
                     isApproved={host.user?.membership?.status === "citizen"}
                     isSpeaking={false}
+                    currentUserContainer={currentUserContainer}
                   />
                 </div>
               ))
@@ -237,6 +237,7 @@ const TheRoomOfTraders: React.FC<DynamicProps> = ({
                       handleKickOff={handleKickUser}
                       handleTalkPermission={handleToggleTalkPermission}
                       handleMessagePermission={handleToggleMessagePermission}
+                      currentUserContainer={currentUserContainer}
                     />
                   </div>
                 ))}

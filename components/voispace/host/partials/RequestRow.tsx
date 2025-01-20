@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Button from "@/components/button";
 import { LoaderSpinner, VipIcon } from "@/assets/svgs";
+import { CgSpinner } from "react-icons/cg";
 
 interface RequestProps {
   request: any;
@@ -53,7 +54,7 @@ const RequestRow: React.FC<RequestProps> = ({
           loaderIcon={
             loading &&
             ((
-              <LoaderSpinner className="inline-block h-4 w-4 animate-spin" />
+              <CgSpinner className="inline-block h-5 w-5 animate-spin" />
             ) as any)
           }
         />
