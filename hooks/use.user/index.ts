@@ -15,9 +15,16 @@ const handleStaleSession = async () => {
   // Don't redirect from the auth pages themselves.
   if (window.location.pathname.startsWith("/auth/")) return;
   try {
+    // Same requirement as lib/auth/logout.ts: Better Auth rejects this
+    // endpoint without a JSON content-type (415) and without a parseable
+    // JSON body (400). If this silently fails, a dead-but-present session
+    // cookie traps the user in a /feed <-> /auth/login redirect loop with no
+    // logout button and no login form (middleware trusts cookie presence).
     await fetch("/api/auth/sign-out", {
       method: "POST",
       credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({}),
     });
   } catch {
     // Sign-out failing must not block the redirect below.
