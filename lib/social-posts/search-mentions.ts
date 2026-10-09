@@ -22,7 +22,7 @@ export const searchMentions = async ({
       },
     });
 
-    return response.data.mention_users;
+    return response.data.mention_users ?? [];
   } catch (error: any) {
     const errorMessage = "Failed to get search mention results";
     if (error.response?.status === 500) {

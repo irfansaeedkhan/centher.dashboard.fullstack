@@ -1,6 +1,11 @@
 import { BlockchainRead } from "@/web3/blockchain";
 
 export async function getAllUserGenealogy(userId: string): Promise<any[]> {
+  // Solo fullstack demo has no Hasura / The Graph genealogy backend
+  if (process.env.NEXT_PUBLIC_USE_SAME_ORIGIN_API !== "false") {
+    return [];
+  }
+
   let counter = 0;
   const levels: any[] = [];
   let referrersToFetch = [userId];

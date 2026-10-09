@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { z } from "zod";
-import { and, desc, eq, ne, sql } from "drizzle-orm";
+import { and, desc, eq, ilike, ne, or, sql } from "drizzle-orm";
 import { db } from "@/db";
 import {
   channels,
@@ -35,6 +35,123 @@ const paginationSchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(50).default(12),
 });
+
+const wrapPlainTextEditorState = (text: string) => ({
+  root: {
+    children: [
+      {
+        children: [
+          {
+            detail: 0,
+            format: 0,
+            mode: "normal",
+            style: "",
+            text,
+            type: "text",
+            version: 1,
+          },
+        ],
+        direction: "ltr",
+        format: "",
+        indent: 0,
+        type: "paragraph",
+        version: 1,
+      },
+    ],
+    direction: "ltr",
+    format: "",
+    indent: 0,
+    type: "root",
+    version: 1,
+  },
+});
+
+const extractTextFromEditorState = (state: unknown): string => {
+  const texts: string[] = [];
+  const walk = (nodes: unknown) => {
+    if (!Array.isArray(nodes)) return;
+    for (const node of nodes) {
+      if (!node || typeof node !== "object") continue;
+      const n = node as { type?: string; text?: string; children?: unknown };
+      if (
+        (n.type === "text" ||
+          n.type === "hashtag" ||
+          n.type === "mention" ||
+          n.type === "link") &&
+        typeof n.text === "string"
+      ) {
+        texts.push(n.text);
+      }
+      if (n.children) walk(n.children);
+    }
+  };
+  const root = (state as { root?: { children?: unknown } } | null)?.root;
+  walk(root?.children);
+  return texts.join(" ").trim();
+};
+
+const parseStoredPostBody = (body: string) => {
+  try {
+    const parsed = JSON.parse(body) as { root?: { children?: unknown } };
+    if (parsed?.root?.children) {
+      return {
+        text: extractTextFromEditorState(parsed) || body,
+        post_editor_state: parsed,
+      };
+    }
+  } catch {
+    // plain text seed posts
+  }
+  return {
+    text: body,
+    post_editor_state: wrapPlainTextEditorState(body),
+  };
+};
+
+const mapPostRow = (row: {
+  id: string;
+  body: string;
+  likeCount: number;
+  commentCount: number;
+  createdAt: Date | string;
+  authorId: string;
+  authorName: string | null;
+  authorAvatar: string | null;
+  membership: string | null;
+}) => {
+  const { post_editor_state } = parseStoredPostBody(row.body);
+  return {
+    _id: row.id,
+    user: {
+      _id: row.authorId,
+      display_name: row.authorName || "Centher Demo",
+      profile_image: row.authorAvatar || "/images/centher.logo.favicon.png",
+      membership: {
+        last_status:
+          (row.membership as "citizen" | "verified" | "none") || "citizen",
+        status:
+          (row.membership as "citizen" | "verified" | "none") || "citizen",
+        endAt: 0,
+      },
+    },
+    viewed_by_loggedin_user: false,
+    liked_by_loggedin_user: false,
+    replies_count: row.commentCount,
+    likes_count: row.likeCount,
+    is_thread: false,
+    thread_id: undefined,
+    thread_index: undefined,
+    createdAt:
+      row.createdAt instanceof Date
+        ? row.createdAt.toISOString()
+        : String(row.createdAt),
+    version: 2,
+    status: "complete" as const,
+    parent_post: undefined,
+    post_editor_state,
+    media: [],
+  };
+};
 
 export const createHonoApp = () => {
   const app = new Hono<AppEnv>().basePath("/api");
@@ -304,65 +421,7 @@ export const createHonoApp = () => {
       .limit(limit)
       .offset(offset);
 
-    const mapped = rows.map((row) => ({
-      _id: row.id,
-      user: {
-        _id: row.authorId,
-        display_name: row.authorName || "Centher Demo",
-        profile_image: row.authorAvatar || "/images/centher.logo.favicon.png",
-        membership: {
-          last_status:
-            (row.membership as "citizen" | "verified" | "none") || "citizen",
-          status:
-            (row.membership as "citizen" | "verified" | "none") || "citizen",
-          endAt: 0,
-        },
-      },
-      viewed_by_loggedin_user: false,
-      liked_by_loggedin_user: false,
-      replies_count: row.commentCount,
-      likes_count: row.likeCount,
-      is_thread: false,
-      thread_id: undefined,
-      thread_index: undefined,
-      createdAt:
-        row.createdAt instanceof Date
-          ? row.createdAt.toISOString()
-          : String(row.createdAt),
-      version: 2,
-      status: "complete" as const,
-      parent_post: undefined,
-      post_editor_state: {
-        root: {
-          children: [
-            {
-              children: [
-                {
-                  detail: 0,
-                  format: 0,
-                  mode: "normal",
-                  style: "",
-                  text: row.body,
-                  type: "text",
-                  version: 1,
-                },
-              ],
-              direction: "ltr",
-              format: "",
-              indent: 0,
-              type: "paragraph",
-              version: 1,
-            },
-          ],
-          direction: "ltr",
-          format: "",
-          indent: 0,
-          type: "root",
-          version: 1,
-        },
-      },
-      media: [],
-    }));
+    const mapped = rows.map(mapPostRow);
 
     return c.json({
       posts: mapped,
@@ -372,20 +431,130 @@ export const createHonoApp = () => {
     });
   });
 
+  app.get("/socials/posts/mention", async (c) => {
+    const q = (c.req.query("q") || "").trim();
+    const limit = z.coerce
+      .number()
+      .int()
+      .min(1)
+      .max(20)
+      .default(5)
+      .parse(c.req.query("limit") ?? 5);
+
+    const pattern = `%${q}%`;
+    const rows = await db
+      .select({
+        userId: profiles.userId,
+        displayName: profiles.displayName,
+        avatarUrl: profiles.avatarUrl,
+        membership: profiles.membership,
+        username: profiles.username,
+      })
+      .from(profiles)
+      .where(
+        q
+          ? or(
+              ilike(profiles.displayName, pattern),
+              ilike(profiles.username, pattern)
+            )
+          : undefined
+      )
+      .limit(limit);
+
+    return c.json({
+      mention_users: rows.map((row) => ({
+        _id: row.userId,
+        display_name: row.displayName || row.username,
+        profile_image: row.avatarUrl || "/images/centher.logo.favicon.png",
+        membership: {
+          last_status:
+            (row.membership as "citizen" | "verified" | "none") || "citizen",
+          status:
+            (row.membership as "citizen" | "verified" | "none") || "citizen",
+          endAt: 0,
+        },
+        mention_permission: "everyone" as const,
+      })),
+    });
+  });
+
   app.post("/socials/posts", async (c) => {
     const userId = c.get("userId");
     if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
 
-    const body = z
-      .object({ body: z.string().min(1).max(2000) })
-      .parse(await c.req.json());
+    const payload = await c.req.json();
 
-    const [created] = await db
-      .insert(posts)
-      .values({ authorId: userId!, body: body.body })
-      .returning();
+    // Simple demo body: { body: "text" }
+    if (typeof payload?.body === "string") {
+      const text = z.string().min(1).max(5000).parse(payload.body);
+      const [created] = await db
+        .insert(posts)
+        .values({ authorId: userId!, body: text })
+        .returning();
+      return c.json({ data: created }, 201);
+    }
 
-    return c.json({ data: created }, 201);
+    // UI create-post payload: { replying_to, posts: [{ uuid, post_editor_state, media }] }
+    const postsInput = z
+      .array(
+        z.object({
+          uuid: z.string().optional(),
+          post_editor_state: z.any(),
+          media: z.array(z.any()).optional().default([]),
+        })
+      )
+      .min(1)
+      .parse(payload.posts);
+
+    const [authorProfile] = await db
+      .select()
+      .from(profiles)
+      .where(eq(profiles.userId, userId!))
+      .limit(1);
+
+    const createdMapped = [];
+    for (const item of postsInput) {
+      const text =
+        extractTextFromEditorState(item.post_editor_state) || "(empty post)";
+      const storedBody = item.post_editor_state?.root
+        ? JSON.stringify(item.post_editor_state)
+        : text;
+
+      const [created] = await db
+        .insert(posts)
+        .values({
+          authorId: userId!,
+          body: storedBody.slice(0, 20000),
+        })
+        .returning();
+
+      createdMapped.push(
+        mapPostRow({
+          id: created.id,
+          body: created.body,
+          likeCount: created.likeCount,
+          commentCount: created.commentCount,
+          createdAt: created.createdAt,
+          authorId: userId!,
+          authorName: authorProfile?.displayName || "Centher Demo",
+          authorAvatar:
+            authorProfile?.avatarUrl || "/images/centher.logo.favicon.png",
+          membership: authorProfile?.membership || "citizen",
+        })
+      );
+    }
+
+    return c.json({ posts: createdMapped, data: createdMapped }, 201);
+  });
+
+  // Demo: skip S3; client only hits this when media is attached
+  app.post("/socials/posts/media/presigned-urls", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    return c.json({
+      presignedUrls: [],
+      message: "Media upload is stubbed in demo — post text only",
+    });
   });
 
   app.get("/chat/conversations", async (c) => {

@@ -22,11 +22,70 @@ import {
 const DEMO_EMAIL = process.env.NEXT_PUBLIC_DEMO_EMAIL || "demo@centher.io";
 const DEMO_PASSWORD = process.env.NEXT_PUBLIC_DEMO_PASSWORD || "Demo1234!";
 
-async function ensureDemoUser() {
+const DUMMY_USERS = [
+  {
+    email: "maya.chen@centher.io",
+    name: "Maya Chen",
+    username: "maya_chen",
+    bio: "Builder · SocialFi early adopter",
+    membership: "citizen",
+  },
+  {
+    email: "leo.park@centher.io",
+    name: "Leo Park",
+    username: "leo_park",
+    bio: "Trader hanging out in VoiSpace",
+    membership: "verified",
+  },
+  {
+    email: "nina.ross@centher.io",
+    name: "Nina Ross",
+    username: "nina_ross",
+    bio: "NFT curator on Centher Marketplace",
+    membership: "citizen",
+  },
+  {
+    email: "omar.hassan@centher.io",
+    name: "Omar Hassan",
+    username: "omar_hassan",
+    bio: "Staking maxi · Prospera enjoyer",
+    membership: "citizen",
+  },
+  {
+    email: "sofia.blake@centher.io",
+    name: "Sofia Blake",
+    username: "sofia_blake",
+    bio: "Launchpad hunter",
+    membership: "verified",
+  },
+  {
+    email: "kai.mendez@centher.io",
+    name: "Kai Mendez",
+    username: "kai_mendez",
+    bio: "Community mod · mention me anytime",
+    membership: "citizen",
+  },
+  {
+    email: "aisha.khan@centher.io",
+    name: "Aisha Khan",
+    username: "aisha_khan",
+    bio: "Product designer at Centher",
+    membership: "citizen",
+  },
+  {
+    email: "diego.santos@centher.io",
+    name: "Diego Santos",
+    username: "diego_santos",
+    bio: "Voice room host",
+    membership: "none",
+  },
+] as const;
+
+async function ensureAuthUser(email: string, name: string, password: string) {
   const existing = await db
     .select()
     .from(user)
-    .where(eq(user.email, DEMO_EMAIL))
+    .where(eq(user.email, email))
     .limit(1);
 
   if (existing[0]) {
@@ -35,17 +94,52 @@ async function ensureDemoUser() {
 
   const result = await auth.api.signUpEmail({
     body: {
-      email: DEMO_EMAIL,
-      password: DEMO_PASSWORD,
-      name: "Centher Demo",
+      email,
+      password,
+      name,
     },
   });
 
   if (!result?.user?.id) {
-    throw new Error("Failed to create demo user via Better Auth");
+    throw new Error(`Failed to create user ${email}`);
   }
 
   return result.user;
+}
+
+async function ensureDemoUser() {
+  return ensureAuthUser(DEMO_EMAIL, "Centher Demo", DEMO_PASSWORD);
+}
+
+async function ensureDummyUsers() {
+  const created: { id: string; username: string; name: string }[] = [];
+
+  for (const dummy of DUMMY_USERS) {
+    const authUser = await ensureAuthUser(
+      dummy.email,
+      dummy.name,
+      DEMO_PASSWORD
+    );
+    await db
+      .insert(profiles)
+      .values({
+        userId: authUser.id,
+        displayName: dummy.name,
+        username: dummy.username,
+        bio: dummy.bio,
+        membership: dummy.membership,
+        avatarUrl: "/images/centher.logo.favicon.png",
+      })
+      .onConflictDoNothing();
+
+    created.push({
+      id: authUser.id,
+      username: dummy.username,
+      name: dummy.name,
+    });
+  }
+
+  return created;
 }
 
 async function main() {
@@ -53,6 +147,7 @@ async function main() {
 
   const demo = await ensureDemoUser();
   const demoId = demo.id;
+  const dummyUsers = await ensureDummyUsers();
 
   await db
     .insert(profiles)
@@ -75,15 +170,19 @@ async function main() {
     })
     .onConflictDoNothing();
 
-  const postBodies = Array.from({ length: 14 }, (_, i) => ({
-    authorId: demoId,
-    body: `Centher demo post #${
-      i + 1
-    } — SocialFi feed sample with yellow brand vibes.`,
-    likeCount: (i * 3) % 17,
-    commentCount: i % 5,
-  }));
-  await db.insert(posts).values(postBodies);
+  const existingPosts = await db.select({ id: posts.id }).from(posts).limit(1);
+  if (existingPosts.length === 0) {
+    const authors = [demoId, ...dummyUsers.map((u) => u.id)];
+    const postBodies = Array.from({ length: 14 }, (_, i) => ({
+      authorId: authors[i % authors.length],
+      body: `Centher demo post #${
+        i + 1
+      } — SocialFi feed sample with yellow brand vibes.`,
+      likeCount: (i * 3) % 17,
+      commentCount: i % 5,
+    }));
+    await db.insert(posts).values(postBodies);
+  }
 
   const [convo] = await db
     .insert(conversations)
@@ -209,6 +308,12 @@ async function main() {
 
   console.error("Seed complete.");
   console.error(`Demo login: ${DEMO_EMAIL} / ${DEMO_PASSWORD}`);
+  console.error(
+    `Mentionable users: ${[
+      "centher_demo",
+      ...DUMMY_USERS.map((u) => u.username),
+    ].join(", ")}`
+  );
 }
 
 main().catch((err) => {

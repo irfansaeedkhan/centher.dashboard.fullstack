@@ -238,6 +238,16 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
     const helperRef = useRef<StreamHooksHelper>(helper.current);
 
     useEffect(() => {
+      // Solo demo: skip Hasura WS (empty/relative URLs become wss://app/feed)
+      if (
+        process.env.NEXT_PUBLIC_USE_SAME_ORIGIN_API !== "false" ||
+        !process.env.NEXT_PUBLIC_GQL_URL_MAIN
+      ) {
+        setData({ data: { broadcast: [] } });
+        setLoader(false);
+        return;
+      }
+
       let isSubscribed = true;
       setLoader(true);
       // Subscription handling
@@ -270,6 +280,10 @@ export const StreamProvider: React.FC<StreamProviderProps> = ({
           });
         } catch (error) {
           console.error("Subscription setup failed:", error);
+          if (isSubscribed) {
+            setData({ data: { broadcast: [] } });
+            setLoader(false);
+          }
         }
       };
 
