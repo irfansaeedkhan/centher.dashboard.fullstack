@@ -7,15 +7,14 @@ export const getPostById = async (
   isAuthenticated: boolean
 ): Promise<Post> => {
   try {
-    let url = `/api/socials/posts/${postId}`;
-
-    if (isAuthenticated && process.env.NEXT_PUBLIC_APP_ENV !== "development") {
-      url += "/with-auth";
-    }
+    const withAuth =
+      isAuthenticated && process.env.NEXT_PUBLIC_APP_ENV !== "development"
+        ? "/with-auth"
+        : "";
 
     const response = await axiosApi369x.get<{
       posts: [Post];
-    }>(`${url}?exact_post=true`);
+    }>(`/api/socials/posts/${postId}${withAuth}?exact_post=true`);
 
     return response.data.posts[0];
   } catch (error: any) {

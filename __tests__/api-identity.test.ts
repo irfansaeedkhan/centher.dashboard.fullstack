@@ -38,7 +38,7 @@ function* walk(dir: string): Generator<string> {
 }
 
 const AXIOS_CALL =
-  /axios[A-Za-z]*\.(get|post|patch|put|delete)(<[^>]*>)?\(\s*(`[^`]*`|"[^"]*"|'[^']*')/g;
+  /axios[A-Za-z0-9]*\.(get|post|patch|put|delete)(<[^>]*>)?\(\s*(`[^`]*`|"[^"]*"|'[^']*')/g;
 const FETCH_CALL = /fetch\(\s*(`[^`]*`|"[^"]*"|'[^']*')/g;
 
 function isAllowed(url: string): boolean {
