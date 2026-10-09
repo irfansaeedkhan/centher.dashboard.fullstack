@@ -1,4 +1,5 @@
 import type { NextRequest } from "next/server";
+import { getSessionCookie } from "better-auth/cookies";
 import {
   AuthTokens,
   ACCESS_TOKEN_STORAGE_KEY,
@@ -6,8 +7,19 @@ import {
 } from "@/lib/auth";
 import { validateTokens } from "./validate-tokens";
 
+/** Edge-safe: cookie presence only (no Node crypto in middleware). */
+const hasBetterAuthSession = (request: NextRequest) => {
+  try {
+    return !!getSessionCookie(request);
+  } catch {
+    return false;
+  }
+};
+
 export const isAuthenticated = async (request: NextRequest) => {
   try {
+    if (hasBetterAuthSession(request)) return true;
+
     const authTokens = getAuthTokensFromRequest(request);
 
     if (!authTokens) return false;
@@ -23,6 +35,8 @@ export const isAuthenticated = async (request: NextRequest) => {
 
 export const isCitizen = async (request: NextRequest) => {
   try {
+    if (hasBetterAuthSession(request)) return true;
+
     const authTokens = getAuthTokensFromRequest(request);
 
     if (!authTokens) return false;

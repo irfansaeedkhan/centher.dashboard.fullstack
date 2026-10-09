@@ -11,7 +11,7 @@ interface UserProfileCard {
   isSpeaking: boolean;
   position?: string;
   className?: string;
-  currentUserContainer: CurrentUserContainer;
+  currentUserContainer?: CurrentUserContainer;
 }
 
 const UserProfileCard: React.FC<UserProfileCard> = ({

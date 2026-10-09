@@ -28,10 +28,10 @@ const sepolia = {
 
 // 3. Create modal
 const metadata = {
-  name: "369x",
-  description: "369x",
+  name: "Centher",
+  description: "Centher",
   url: "https://dapp.396x.io",
-  icons: ["https://dapp.369x.io/images/369x.logo.favicon.png"],
+  icons: ["/images/centher.logo.favicon.png"],
 };
 
 createWeb3Modal({

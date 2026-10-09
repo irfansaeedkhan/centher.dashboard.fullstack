@@ -37,8 +37,8 @@ export const LoggedInModal: React.FC<Props> = ({ isOpen, onClose }) => {
             <header className="flex items-center justify-between text-white">
               <h3 className="text-lg font-semibold">
                 <Image
-                  src="/images/logo.png"
-                  alt="Flux Logo"
+                  src="/images/centher.logo.png"
+                  alt="Centher Logo"
                   width={75}
                   height={39}
                   className="w-18"

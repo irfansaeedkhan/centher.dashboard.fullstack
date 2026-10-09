@@ -94,7 +94,9 @@ const Citizenship: NextPageWithLayout = () => {
 };
 
 Citizenship.getLayout = (page) => {
-  return <AllPagesWrapper pageTitle="Flux Citizenship">{page}</AllPagesWrapper>;
+  return (
+    <AllPagesWrapper pageTitle="Centher Citizenship">{page}</AllPagesWrapper>
+  );
 };
 
 export default Citizenship;

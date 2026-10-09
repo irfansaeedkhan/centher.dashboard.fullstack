@@ -94,7 +94,7 @@
   /* Handle */
   .rainbow-scroll::-webkit-scrollbar-thumb {
     border: 0 !important;
-    background: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
+    background: linear-gradient(270.23deg, #5691ff -9.34%, #72f6d1 17.09%, #76e268 48.54%, #ffd505 78.11%, #ff5e52 107.63%);
   }
 
   /* Firefox */
@@ -128,7 +128,7 @@
 
   /* =============================== Scrollbars End =============================== */
   .border-gradient-custom {
-    border-image: linear-gradient(to right, #115dcb, #21bf7f);
+    border-image: linear-gradient(to right, #5691ff, #ffd505);
     border-image-slice: 1;
   }
   /* Reset default input styling to match the theme */
@@ -276,7 +276,7 @@
     top: 0;
     width: 20px;
     height: 20px;
-    border: 1.5px solid #21bf7f;
+    border: 1.5px solid #FEBF32;
     border-radius: 50%;
     background: transparent;
     transition: all 0.2s ease;
@@ -290,9 +290,9 @@
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    border: 1.5px solid #21bf7f;
-    outline: #21bf7f;
-    background: #21bf7f;
+    border: 1.5px solid #FEBF32;
+    outline: #FEBF32;
+    background: #FEBF32;
     transform: scale(0);
     transition: all 0.2s ease;
   }
@@ -386,7 +386,7 @@
 
   .textGradient {
     animation: animate 2s linear infinite;
-    background: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
+    background: linear-gradient(270.23deg, #5691ff -9.34%, #72f6d1 17.09%, #76e268 48.54%, #ffd505 78.11%, #ff5e52 107.63%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -396,7 +396,7 @@
     width: fit-content;
   }
   .text-gradient-hover:hover {
-    background: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
+    background: linear-gradient(270.23deg, #5691ff -9.34%, #72f6d1 17.09%, #76e268 48.54%, #ffd505 78.11%, #ff5e52 107.63%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -405,7 +405,7 @@
 
   .animationTextHeading {
     animation: animate 2s linear infinite;
-    background-image: linear-gradient(to left, #21bf7f, #115dcb) !important;
+    background-image: linear-gradient(to left, #ffd505, #5691ff) !important;
     background-size: 300%;
     background-clip: text;
     -webkit-background-clip: text;
@@ -415,7 +415,7 @@
   }
 
   .gradient-border {
-    background-image: linear-gradient(90deg, #115dcb 0%, #21bf7f 100%);
+    background-image: linear-gradient(270.23deg, #5691ff -9.34%, #72f6d1 17.09%, #76e268 48.54%, #ffd505 78.11%, #ff5e52 107.63%);
     padding: 2px;
     border-radius: 8px;
   }
@@ -424,7 +424,7 @@
     animation: animate 2s linear infinite;
     border: 1px transparent;
     background-image: linear-gradient(#1b1c22, #1b1c22),
-      radial-gradient(circle at bottom left, #115dcb 0%, #21bf7f 100%);
+      radial-gradient(circle at bottom left, #5691ff 0%, #ffd505 100%);
     background-origin: border-box;
     background-clip: content-box, border-box;
   }
@@ -433,7 +433,7 @@
     border: 2px transparent;
     border-radius: 100%;
     background-image: linear-gradient(#1b1c22, #1b1c22),
-      radial-gradient(circle at top right, #115dcb 0%, #21bf7f 100%);
+      radial-gradient(circle at top right, #5691ff 0%, #ffd505 100%);
     background-origin: border-box;
     background-clip: content-box, border-box;
   }
@@ -442,7 +442,7 @@
     border: 2px transparent;
     border-radius: 100%;
     background-image: linear-gradient(#1b1c22, #1b1c22),
-      radial-gradient(circle at top right, #115dcb 0%, #21bf7f 100%);
+      radial-gradient(circle at top right, #5691ff 0%, #ffd505 100%);
     background-origin: border-box;
     background-clip: content-box, border-box;
   }
@@ -450,7 +450,7 @@
     border: 2px transparent;
     border-radius: 100%;
     background-image: linear-gradient(#0b0b0b, #0b0b0b),
-      radial-gradient(circle at top right, #115dcb 0%, #21bf7f 100%);
+      radial-gradient(circle at top right, #5691ff 0%, #ffd505 100%);
     background-origin: border-box;
     background-clip: content-box, border-box;
   }
@@ -474,7 +474,7 @@
     border-radius: var(--border-rounded) !important;
     transition: all 0.2s linear !important;
     border: none;
-    background-image: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
+    background-image: linear-gradient(270.23deg, #5691ff -9.34%, #72f6d1 17.09%, #76e268 48.54%, #ffd505 78.11%, #ff5e52 107.63%);
   }
 
   .primary-gradient-btn::before {
@@ -490,7 +490,7 @@
   .primary-gradient-btn:after {
     content: "";
     animation: primary-button-animation 2s linear infinite;
-    background-image: linear-gradient(to left, #21bf7f, #115dcb);
+    background-image: linear-gradient(to left, #ffd505, #5691ff);
     position: absolute;
     top: 0;
     left: 0;
@@ -519,7 +519,7 @@
 
   .primary-gradient-btn:hover {
     animation: primary-button-animation 2s linear infinite;
-    background-image: linear-gradient(to left, #21bf7f, #115dcb);
+    background-image: linear-gradient(to left, #ffd505, #5691ff);
     background-size: 300%;
     color: #fefefe;
   }
@@ -527,7 +527,7 @@
   .primary-gradient-btn:hover span {
     cursor: pointer;
     animation: primary-button-animation 2s linear infinite;
-    background-image: linear-gradient(to left, #21bf7f, #115dcb);
+    background-image: linear-gradient(to left, #ffd505, #5691ff);
     background-size: 300%;
     color: #fefefe;
   }
@@ -537,7 +537,7 @@
   }
 
   .primary-gradient-btn .primary-gradient-btn-text {
-    background: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
+    background: linear-gradient(270.23deg, #5691ff -9.34%, #72f6d1 17.09%, #76e268 48.54%, #ffd505 78.11%, #ff5e52 107.63%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -548,7 +548,7 @@
 
   /* only text gradient */
   .text-gradient {
-    background: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
+    background: linear-gradient(270.23deg, #5691ff -9.34%, #72f6d1 17.09%, #76e268 48.54%, #ffd505 78.11%, #ff5e52 107.63%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -557,13 +557,13 @@
   .text-gradient:hover {
     cursor: pointer;
     animation: primary-button-animation 2s linear infinite;
-    background-image: linear-gradient(to left, #21bf7f, #115dcb);
+    background-image: linear-gradient(to left, #ffd505, #5691ff);
     background-size: 300%;
     color: #fefefe;
     -webkit-animation: primary-button-animation 2s linear infinite;
   }
   .primary-btn-text-gradient {
-    background: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
+    background: linear-gradient(270.23deg, #5691ff -9.34%, #72f6d1 17.09%, #76e268 48.54%, #ffd505 78.11%, #ff5e52 107.63%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -586,7 +586,7 @@
     border-left: 0;
     border-right: 0;
     border-bottom: 0;
-    border-image-source: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
+    border-image-source: linear-gradient(270.23deg, #5691ff -9.34%, #72f6d1 17.09%, #76e268 48.54%, #ffd505 78.11%, #ff5e52 107.63%);
   }
   .border-gradient-left {
     border: 1px solid;
@@ -595,7 +595,7 @@
     border-top: 0;
     border-right: 0;
     border-bottom: 0;
-    border-image-source: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
+    border-image-source: linear-gradient(270.23deg, #5691ff -9.34%, #72f6d1 17.09%, #76e268 48.54%, #ffd505 78.11%, #ff5e52 107.63%);
   }
 
   .product-social-button:hover span {
@@ -748,7 +748,7 @@
     left: -3px;
     right: -3px;
     bottom: -3px;
-    background: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
+    background: linear-gradient(270.23deg, #5691ff -9.34%, #72f6d1 17.09%, #76e268 48.54%, #ffd505 78.11%, #ff5e52 107.63%);
     border-radius: 50%;
     z-index: -1;
     opacity: 0; /* Initially set to transparent */
@@ -775,7 +775,7 @@
     border-right: transparent;
 
     border-bottom: 3px solid transparent;
-    border-image: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
+    border-image: linear-gradient(270.23deg, #5691ff -9.34%, #72f6d1 17.09%, #76e268 48.54%, #ffd505 78.11%, #ff5e52 107.63%);
     border-image-slice: 1;
     width: 100%;
   }
@@ -810,7 +810,7 @@
     border-left: 0;
     border-right: 0;
     border-bottom: 0;
-    border-image-source: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
+    border-image-source: linear-gradient(270.23deg, #5691ff -9.34%, #72f6d1 17.09%, #76e268 48.54%, #ffd505 78.11%, #ff5e52 107.63%);
   }
   .border-gradient-left {
     border: 1px solid;
@@ -819,7 +819,7 @@
     border-top: 0;
     border-right: 0;
     border-bottom: 0;
-    border-image-source: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
+    border-image-source: linear-gradient(270.23deg, #5691ff -9.34%, #72f6d1 17.09%, #76e268 48.54%, #ffd505 78.11%, #ff5e52 107.63%);
   }
 
   div.DraftEditor-root {
@@ -873,14 +873,14 @@
   }
 
   .text-gradient-orange {
-    background: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
+    background: linear-gradient(270.23deg, #5691ff -9.34%, #72f6d1 17.09%, #76e268 48.54%, #ffd505 78.11%, #ff5e52 107.63%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     width: fit-content;
   }
   .text-gradient-blue {
-    background: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
+    background: linear-gradient(270.23deg, #5691ff -9.34%, #72f6d1 17.09%, #76e268 48.54%, #ffd505 78.11%, #ff5e52 107.63%);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -890,7 +890,7 @@
     border: 2px transparent;
     border-radius: 100%;
     background-image: linear-gradient(#1b1c22, #1b1c22),
-      radial-gradient(circle at top right, #21bf7f 0%, #115dcb 100%);
+      radial-gradient(circle at top right, #ffd505 0%, #5691ff 100%);
     background-origin: border-box;
     background-clip: content-box, border-box;
   }
@@ -899,29 +899,29 @@
     border: 2px transparent;
     border-radius: 100%;
     background-image: linear-gradient(#1b1c22, #1b1c22),
-      radial-gradient(circle at top right, #21bf7f 0%, #115dcb 100%);
+      radial-gradient(circle at top right, #ffd505 0%, #5691ff 100%);
     background-origin: border-box;
     background-clip: content-box, border-box;
   }
   .staking-text-gradient-live {
-    background: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
+    background: linear-gradient(270.23deg, #5691ff -9.34%, #72f6d1 17.09%, #76e268 48.54%, #ffd505 78.11%, #ff5e52 107.63%);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
 
   .staking-text-gradient-unstakable {
-    background: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
+    background: linear-gradient(270.23deg, #5691ff -9.34%, #72f6d1 17.09%, #76e268 48.54%, #ffd505 78.11%, #ff5e52 107.63%);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
   .background-gradient-color {
-    background: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
+    background: linear-gradient(270.23deg, #5691ff -9.34%, #72f6d1 17.09%, #76e268 48.54%, #ffd505 78.11%, #ff5e52 107.63%);
   }
   .text-gradient-1 {
     animation: animate 2s linear infinite;
-    background: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
+    background: linear-gradient(270.23deg, #5691ff -9.34%, #72f6d1 17.09%, #76e268 48.54%, #ffd505 78.11%, #ff5e52 107.63%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -930,7 +930,7 @@
   .gradient-borders-div {
     border: 1px solid transparent;
     background-image: linear-gradient(#1b1c22, #1b1c22),
-      radial-gradient(circle at top right, #115dcb 0%, #21bf7f 100%);
+      radial-gradient(circle at top right, #5691ff 0%, #ffd505 100%);
     background-origin: border-box;
     background-clip: content-box, border-box;
   }
@@ -939,19 +939,19 @@
     backdrop-filter: blur(20px);
   }
   .staking-text-gradient-staked {
-    background: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
+    background: linear-gradient(270.23deg, #5691ff -9.34%, #72f6d1 17.09%, #76e268 48.54%, #ffd505 78.11%, #ff5e52 107.63%);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
   .staking-text-gradient-unstaked {
-    background: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
+    background: linear-gradient(270.23deg, #5691ff -9.34%, #72f6d1 17.09%, #76e268 48.54%, #ffd505 78.11%, #ff5e52 107.63%);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
   .staking-text-gradient-unstakable {
-    background: linear-gradient(90deg, #21bf7f 0%, #115dcb 100%);
+    background: linear-gradient(270.23deg, #5691ff -9.34%, #72f6d1 17.09%, #76e268 48.54%, #ffd505 78.11%, #ff5e52 107.63%);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;

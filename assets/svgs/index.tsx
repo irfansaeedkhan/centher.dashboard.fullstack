@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
-import X369xIconImgBg from "./369x.icon.bg.png";
-import X369xIconImg from "./369x.icon.png";
+import X369xIconImgBg from "./centher.icon.bg.png";
+import X369xIconImg from "./centher.icon.png";
 import NTRIconImgBg from "./ntr.icon.bg.png";
 import NTRIconImg from "./ntr.icon.png";
 import DXCIconImg from "./dexa-logo.png";
@@ -217,7 +217,7 @@ export const X369xIcon: React.FC<IconProps> = (props) => {
     <img
       className={props.className}
       src={X369xIconImg.src}
-      alt="Flux Icon"
+      alt="Centher Icon"
       sizes="256px"
       width={40}
       height={40}
@@ -230,7 +230,7 @@ export const X369xIconBG: React.FC<IconProps> = (props) => {
     <img
       className={props.className}
       src={X369xIconImgBg.src}
-      alt="Flux Icon BG"
+      alt="Centher Icon BG"
       sizes="256px"
       width={40}
       height={40}

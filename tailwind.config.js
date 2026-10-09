@@ -61,16 +61,15 @@ module.exports = {
       },
       backgroundImage: {
         "buydao-pattern": "url('/images/buyntrdaoBackground.png')",
-        "gradient-pattern": "linear-gradient(90deg, #21BF7F 0%, #115DCB 100%)",
+        "gradient-pattern":
+          "linear-gradient(270.23deg,#5691ff -9.34%,#72f6d1 17.09%,#76e268 48.54%,#ffd505 78.11%,#ff5e52 107.63%)",
         "gradient-pattern-current":
-          "linear-gradient(90deg, #21BF7F 0%, #115DCB 100%)",
-        gradient: "linear-gradient(90deg, #21BF7F 0%, #115DCB 100%)",
+          "linear-gradient(90deg,#76E268, #72BFF6, #5691FF)",
+        gradient:
+          "linear-gradient(270.23deg,#5691ff -9.34%,#72f6d1 17.09%,#76e268 48.54%,#ffd505 78.11%,#ff5e52 107.63%)",
       },
 
-      // linear-gradient(90deg, #21BF7F 0%, #115DCB 100%)
-      // linear-gradient(90deg, #21BF7F 0%, #115DCB 100%);
-      // linear-gradient(90deg, #21BF7F 0%, #115DCB 100%);
-      // #21BF7F to #21BF7F
+      // Centher theme gradients restored from centher-app era
 
       colors: {
         app: {
@@ -149,7 +148,7 @@ module.exports = {
           0: "#0B0B0B",
         },
         "green-shade": {
-          1: "#21BF7F",
+          1: "#76E268",
           2: "#4AFF89",
         },
       },

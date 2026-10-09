@@ -25,8 +25,8 @@ Login.getLayout = (page) => {
         <div className="mb-10 flex w-fit md:hidden">
           <Link href={AppRoutes.home}>
             <Image
-              src="/images/logo.png"
-              alt="Flux Logo"
+              src="/images/centher.logo.png"
+              alt="Centher Logo"
               width={75}
               height={39}
               className="w-18"

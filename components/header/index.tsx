@@ -80,8 +80,8 @@ const Header = () => {
         className="flex items-center justify-start gap-4"
       >
         <Image
-          src="/images/logo.png"
-          alt="Flux Logo"
+          src="/images/centher.logo.png"
+          alt="Centher Logo"
           width={75}
           height={39}
           className="w-18"

@@ -36,7 +36,7 @@ const ScriptTags = () => {
           property="og:description"
           content={`${process.env.NEXT_PUBLIC_BRAND_DOMAIN} is worlds best and reliable Web3 token and NFT Marketplace`}
         />
-        <meta property="og:url" content="https://dapp.369x.io/" />
+        <meta property="og:url" content="https://app.centher.io/" />
         <meta
           property="og:site_name"
           content={process.env.NEXT_PUBLIC_BRAND_DOMAIN}
@@ -44,7 +44,7 @@ const ScriptTags = () => {
         <meta
           property="og:image"
           itemProp="image"
-          content="/images/logo.bg.550.420.png"
+          content="/images/centher.logo.bg.550.420.png"
         />
         <meta property="og:image:width" content="550" />
         <meta property="og:image:height" content="420" />
@@ -58,7 +58,10 @@ const ScriptTags = () => {
           name="twitter:title"
           content={process.env.NEXT_PUBLIC_BRAND_DOMAIN}
         />
-        <meta name="twitter:image" content="/images/369x.logo.bg.550.420.png" />
+        <meta
+          name="twitter:image"
+          content="/images/centher.logo.bg.550.420.png"
+        />
 
         {/* TODO: Shivam - Need google site verification content */}
         <meta name="google-site-verification" content="" />

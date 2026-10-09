@@ -17,7 +17,7 @@ const nextConfig = {
             "static.centher.io.s3.eu-west-3.amazonaws.com",
             "s3.eu-west-3.amazonaws.com",
             "dapi.369x.io",
-            "static.369x.io"
+            "static.369x.io",
           ]
         : [
             "localhost",
@@ -31,16 +31,27 @@ const nextConfig = {
             "devstatic.centher.io.s3.eu-west-3.amazonaws.com",
             "centher-staging.infura-ipfs.io",
             "upload.wikimedia.org",
-            "play.dapp.jedidev.com"
+            "play.dapp.jedidev.com",
           ],
   },
   pageExtensions: ["page.tsx", "page.ts", "api.ts"],
-  webpack(config) {
+  webpack(config, { isServer, webpack }) {
     config.module.rules.push({
       test: /\.svg$/i,
       issuer: /\.[jt]sx?$/,
       use: ["@svgr/webpack"],
     });
+
+    // better-auth and similar packages import "node:crypto"; Next 13 webpack needs this alias
+    config.plugins.push(
+      new webpack.NormalModuleReplacementPlugin(/^node:/, (resource) => {
+        resource.request = resource.request.replace(/^node:/, "");
+      })
+    );
+
+    if (isServer) {
+      config.externals = config.externals || [];
+    }
 
     return config;
   },
