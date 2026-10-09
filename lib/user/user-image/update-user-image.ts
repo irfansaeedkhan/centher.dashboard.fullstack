@@ -6,7 +6,7 @@ export const updateUserImage = async (
   userImage: UpdateImage
 ): Promise<void> => {
   try {
-    await axiosCFS.patch("/users/image", userImage);
+    await axiosCFS.patch("/api/users/image", userImage);
   } catch (error: any) {
     let errorMessage = "Can not update user image";
     if (error.response?.status === 500) {

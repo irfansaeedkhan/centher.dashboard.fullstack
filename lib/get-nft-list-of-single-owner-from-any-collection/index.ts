@@ -19,7 +19,7 @@ export const getNFTListOfSingleOwnerFromAnyCollection = async ({
   try {
     const { data } =
       await axiosCFS.get<GetNFTListOfSingleOwnerFromAnyCollectionResponse>(
-        `/marketplace/nfts/owner/${owner_address}`,
+        `/api/marketplace/nfts/owner/${owner_address}`,
         {
           params: {
             limit,

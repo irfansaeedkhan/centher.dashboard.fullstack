@@ -2,13 +2,14 @@ import { Post } from "@/models/post";
 import { axiosApi369x } from "@/utils/axios";
 
 export const getPost = async (postId: string, isAuthenticated: boolean) => {
-  let url = `/api/socials/posts/${postId}`;
+  const withAuth =
+    isAuthenticated && process.env.NEXT_PUBLIC_APP_ENV !== "development"
+      ? "/with-auth"
+      : "";
 
-  if (isAuthenticated && process.env.NEXT_PUBLIC_APP_ENV !== "development") {
-    url += "/with-auth";
-  }
-
-  const { data } = await axiosApi369x.get(`${url}?exact_post=true`);
+  const { data } = await axiosApi369x.get(
+    `/api/socials/posts/${postId}${withAuth}?exact_post=true`
+  );
   return data.posts[0] as Post;
 };
 
@@ -28,7 +29,7 @@ export const likePost = async (
   postId: string,
   actionType: "like" | "unlike"
 ) => {
-  await axiosApi369x.post("api/socials/analytics/likes", {
+  await axiosApi369x.post("/api/socials/analytics/likes", {
     postId,
     actionType: actionType,
   });

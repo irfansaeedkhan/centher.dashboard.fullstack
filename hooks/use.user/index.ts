@@ -4,6 +4,30 @@ import { LoggedInUser } from "@/models/user";
 import { axiosCIS } from "@/utils/axios";
 import { updateMe } from "@/lib/user";
 
+/**
+ * Phase 1 session resilience: a 401 from `/api/users/me` means the Better Auth
+ * session is stale/invalid. We clear it server-side via sign-out (so the
+ * cookie-presence middleware can't bounce us into a login→feed→login loop)
+ * and redirect to `/auth/login` — no boot loop, no silent broken render.
+ */
+const handleStaleSession = async () => {
+  if (typeof window === "undefined") return;
+  // Don't redirect from the auth pages themselves.
+  if (window.location.pathname.startsWith("/auth/")) return;
+  try {
+    await fetch("/api/auth/sign-out", {
+      method: "POST",
+      credentials: "include",
+    });
+  } catch {
+    // Sign-out failing must not block the redirect below.
+  }
+  window.location.replace("/auth/login");
+};
+
+const isUnauthorized = (error: any) =>
+  error?.response?.status === 401 || error?.code === "UNAUTHORIZED";
+
 const useUser = () => {
   const {
     data: user,
@@ -16,10 +40,14 @@ const useUser = () => {
         const { data } = await axiosCIS.get<LoggedInUser>(url);
         return data;
       } catch (error: any) {
+        if (isUnauthorized(error)) {
+          // Fire-and-forget: clear the stale session, then bounce to login.
+          void handleStaleSession();
+        }
         throw (
-          error.response.data ?? {
+          error.response?.data ?? {
             status: "error",
-            message: "server_error",
+            message: isUnauthorized(error) ? "unauthenticated" : "server_error",
             message_description: "Something went wrong",
           }
         );
@@ -27,11 +55,10 @@ const useUser = () => {
     },
     {
       onErrorRetry(err, _, _2, revalidate, { retryCount }) {
-        if (err.message === "unauthenticated") {
-          // Only retry up to 2 times if user is unauthenticated
-          if (retryCount >= 2) {
-            return;
-          }
+        // Never retry a 401 — the session is gone; retrying just delays the
+        // redirect and hammers the API.
+        if (isUnauthorized(err) || err.message === "unauthenticated") {
+          return;
         }
 
         // Retry up to 5 times if there is any other error
@@ -52,7 +79,7 @@ const useUser = () => {
         mutate(updatedUser, false);
       } catch (error: any) {
         throw (
-          error.response.data ?? {
+          error.response?.data ?? {
             status: "error",
             message: "server_error",
             message_description: "Something went wrong",

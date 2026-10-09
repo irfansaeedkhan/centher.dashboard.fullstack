@@ -6,7 +6,7 @@ export const acceptReceivedInvite = async (
   inviteId: PendingInvite["_id"]
 ): Promise<void> => {
   try {
-    await axiosCIS.post(`/orgs/members/invites/${inviteId}/accept`);
+    await axiosCIS.post(`/api/orgs/members/invites/${inviteId}/accept`);
   } catch (error: any) {
     const errorMessage = "Failed to accept received invite";
     if (error.response?.status === 500) {

@@ -12,7 +12,7 @@ export const toggleAutoRestakeStatus = async (
 ): Promise<AutoRestakeStatus> => {
   try {
     const { data } = await axiosCIS.patch<AutoRestakeStatus>(
-      `/auto-restake`,
+      `/api/auto-restake`,
       params
     );
     return data;

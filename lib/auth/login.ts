@@ -14,7 +14,7 @@ export const login = async (
   signature: string
 ): Promise<LoginResponse> => {
   try {
-    const { data } = await axiosCIS.post<LoginResponse>(`/auth/login`, {
+    const { data } = await axiosCIS.post<LoginResponse>(`/api/wallet/login`, {
       account_address,
       signature,
     });

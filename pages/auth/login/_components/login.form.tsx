@@ -63,7 +63,11 @@ export const LoginForm: React.FC = () => {
       }
       toast.success("Welcome back");
       setEmailLoading("loaded");
-      await mutate("/api/users/me", data.user, false);
+      // Phase 1: do NOT seed `/api/users/me` with Better Auth's raw user —
+      // its shape (`{id, email, name}`) is not `LoggedInUser`, and seeding it
+      // crashed first paint (`user.display_name.includes` on undefined).
+      // Revalidate from the server instead; the feed shows a loader meanwhile.
+      await mutate("/api/users/me");
       router.push(AppRoutes.feed.index);
     } catch (error: unknown) {
       setEmailLoading("failed");
@@ -92,7 +96,8 @@ export const LoginForm: React.FC = () => {
       toast.success(loginResponse.message);
       setIsLoading("loaded");
 
-      await mutate("/api/users/me", loginResponse.user, false);
+      // Phase 1: same as email login — revalidate, never seed a wrong shape.
+      await mutate("/api/users/me");
 
       router.push(AppRoutes.feed.index);
     } catch (error: any) {

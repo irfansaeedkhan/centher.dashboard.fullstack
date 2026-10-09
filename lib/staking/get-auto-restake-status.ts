@@ -4,7 +4,7 @@ import { AutoRestakeStatus } from "./types";
 
 export const getAutoRestakeStatus = async (): Promise<AutoRestakeStatus> => {
   try {
-    const { data } = await axiosCIS.get<AutoRestakeStatus>(`/auto-restake`);
+    const { data } = await axiosCIS.get<AutoRestakeStatus>(`/api/auto-restake`);
     return data;
   } catch (error: any) {
     const errorMessage = "Failed to get auto restake status";

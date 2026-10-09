@@ -11,7 +11,7 @@ export const getSingleCollection = async (
 ): Promise<CFSCollection> => {
   try {
     const response = await axiosCFS.get<CFSCollection>(
-      `/marketplace/collections/${collection_address}`
+      `/api/marketplace/collections/${collection_address}`
     );
 
     if (isOld(response.data.collection)) {

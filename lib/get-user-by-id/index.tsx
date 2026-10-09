@@ -4,7 +4,7 @@ import { AppError } from "@/utils/app-error";
 
 export const getUserByIdFromDB = async (userId: string): Promise<User> => {
   try {
-    const { data } = await axiosCIS.get<User>(`/users/${userId}`);
+    const { data } = await axiosCIS.get<User>(`/api/users/${userId}`);
     return data;
   } catch (error: any) {
     throw new AppError(error, "Can not get user", "getUserByIdFromDB");

@@ -8,7 +8,7 @@ export const inviteOrgMember = async (newMember: {
 }): Promise<PendingInvite> => {
   try {
     const { data } = await axiosCIS.post<PendingInvite>(
-      "/orgs/members/invites",
+      "/api/orgs/members/invites",
       newMember
     );
 

@@ -715,15 +715,24 @@ export const createHonoApp = () => {
     return c.json({ data: profile });
   });
 
-  /** Catch-all stub so unmatched demo calls do not hang the UI */
-  app.all("*", (c) =>
-    c.json({
-      data: [],
-      message: "Demo stub — endpoint not fully mapped yet",
-      code: "STUB",
-      path: c.req.path,
-    })
-  );
+  /**
+   * Phase 1: honest 501 for unmapped API routes — no mock-backed 200s.
+   * Real endpoints are added phase by phase (see centher-plan.md); genuinely
+   * unknown calls are logged server-side so they show up in Vercel/Node logs.
+   */
+  app.all("*", (c) => {
+    const method = c.req.method;
+    const path = c.req.path;
+    console.warn(`[api] 501 unmapped route: ${method} ${path}`);
+    return c.json(
+      {
+        message: "Endpoint not implemented yet",
+        code: "NOT_IMPLEMENTED",
+        path,
+      },
+      501
+    );
+  });
 
   return app;
 };

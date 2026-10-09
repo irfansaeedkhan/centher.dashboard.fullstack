@@ -39,7 +39,7 @@ export async function fetchUsers(
   if (userIds && userIds.length > 0 && !userIds.includes(ZeroAddress)) {
     const userIdsString = userIds.join(",");
     const { data } = await axiosCIS.get<{ users: User[] }>(
-      `/users?user_ids=${userIdsString}`
+      `/api/users?user_ids=${userIdsString}`
     );
     return data.users;
   } else throw new Error("Invalid params");

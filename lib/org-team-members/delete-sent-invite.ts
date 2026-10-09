@@ -3,7 +3,7 @@ import { AppError } from "@/utils/app-error";
 
 export const deleteSentInvite = async (invite_id: string): Promise<void> => {
   try {
-    await axiosCIS.delete("/orgs/members/invites/" + invite_id);
+    await axiosCIS.delete("/api/orgs/members/invites/" + invite_id);
   } catch (error: any) {
     const errorMessage = "Cannot delete sent invite";
     if (error.response?.status === 500) {

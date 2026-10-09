@@ -9,7 +9,7 @@ export type AuthNonce = {
 export const getNonce = async (account_address: string): Promise<AuthNonce> => {
   try {
     const { data } = await axiosCIS.get<AuthNonce>(
-      `/auth/nonce/${account_address}`
+      `/api/wallet/nonce/${account_address}`
     );
     return data;
   } catch (error: any) {

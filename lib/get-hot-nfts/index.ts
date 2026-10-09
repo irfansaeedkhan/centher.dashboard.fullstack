@@ -12,7 +12,7 @@ export const getHotNFTs = async ({
   try {
     const { data } = await axiosCFS.get<{
       nfts: CFSNFT[];
-    }>(`/marketplace/nfts/hot-nfts`, {
+    }>(`/api/marketplace/nfts/hot-nfts`, {
       params: {
         first: limit,
         skip,

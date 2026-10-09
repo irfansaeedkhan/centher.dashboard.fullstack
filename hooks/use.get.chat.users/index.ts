@@ -46,7 +46,7 @@ const useGetChatUsers = () => {
   };
 
   const getUsersRequest = (users: string[]): Promise<any> => {
-    return axiosApi369x.get(`/cis/users?user_ids=${users.join(",")}`);
+    return axiosApi369x.get(`/api/users?user_ids=${users.join(",")}`);
   };
 
   return {

@@ -5,7 +5,7 @@ import { OrgMember } from "./types";
 export const getOrgMembers = async (orgId: string): Promise<OrgMember[]> => {
   try {
     const { data } = await axiosCIS.get<{ members: OrgMember[] }>(
-      `/orgs/members/${orgId}`
+      `/api/orgs/members/${orgId}`
     );
 
     return data.members;

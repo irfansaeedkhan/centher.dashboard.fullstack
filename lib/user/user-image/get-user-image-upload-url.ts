@@ -30,7 +30,7 @@ export const getUserImageUploadUrl = async (
 ): Promise<UserImageUploadUrlResponse> => {
   try {
     const { data } = await axiosCFS.get<UserImageUploadUrlResponse>(
-      "/users/image-upload-url?filename=" + filename + "&type=" + type
+      "/api/users/image-upload-url?filename=" + filename + "&type=" + type
     );
 
     return data;

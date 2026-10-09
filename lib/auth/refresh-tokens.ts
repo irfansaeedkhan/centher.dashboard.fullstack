@@ -15,7 +15,7 @@ export const refreshTokens =
       }
 
       const { data } = await axiosCIS.post<RefreshTokensResponse>(
-        `/auth/refresh-tokens`,
+        "/api/wallet/refresh-tokens",
         {},
         {
           headers: {

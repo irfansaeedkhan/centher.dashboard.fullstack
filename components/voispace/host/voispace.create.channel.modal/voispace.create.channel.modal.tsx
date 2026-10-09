@@ -19,7 +19,6 @@ import ChannelMainView from "../../shared/ChannelMainView";
 import { StreamEventEnum } from "@/stream/model";
 import { CreatRoomSteps } from "./enums";
 import { ICentalkBroadcast } from "@/hooks/stream/cen-talk";
-import { CFSBaseURL } from "@/constants/base-urls";
 import { getUserImageUploadUrl } from "@/lib/user";
 import useMediaDevices from "@/hooks/use.get.media.devices";
 import clsx from "clsx";
@@ -126,7 +125,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
 
   const generateImageUrl = (params: any): string => {
     if (params.type === "custom-image") {
-      return `${CFSBaseURL}/users?key=${params.object_name}`;
+      return `/api/users?key=${params.object_name}`;
     } else {
       throw new Error("Invalid params");
     }
