@@ -10,7 +10,10 @@ export const config = {
 const app = createHonoApp();
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const origin = `http://${req.headers.host}`;
+  const protoHeader = req.headers["x-forwarded-proto"];
+  const proto =
+    (Array.isArray(protoHeader) ? protoHeader[0] : protoHeader) || "http";
+  const origin = `${proto}://${req.headers.host}`;
   const url = new URL(req.url || "/api", origin);
 
   const headers = new Headers();

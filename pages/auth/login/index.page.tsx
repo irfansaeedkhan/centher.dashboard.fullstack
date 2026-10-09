@@ -27,9 +27,10 @@ Login.getLayout = (page) => {
             <Image
               src="/images/centher.logo.png"
               alt="Centher Logo"
-              width={75}
-              height={39}
-              className="w-18"
+              width={160}
+              height={64}
+              className="h-auto w-40"
+              priority
             />
           </Link>
         </div>
@@ -54,5 +55,7 @@ export default Login;
 
 const signupLeftData = {
   title: "Connect wallet",
-  content: `Log into your account to take advantage of the whole ${process.env.NEXT_PUBLIC_BRAND_NAME} SocialFi world`,
+  content: `Log into your account to take advantage of the whole ${
+    process.env.NEXT_PUBLIC_BRAND_NAME || "Centher"
+  } SocialFi world`,
 };

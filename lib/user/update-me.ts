@@ -15,7 +15,7 @@ export const updateMe = async (
     };
 
     const { data } = await axiosCIS.patch<LoggedInUser>(
-      `/users/me`,
+      `/api/users/me`,
       userUpdateObject
     );
 

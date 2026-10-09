@@ -65,4 +65,17 @@ Voice/stream UI uses seeded channel state; live WebRTC is simulated for demo.
 ## Deploy
 
 - GitHub: push to your `centher.dashboard.fullstack` remote
-- Vercel: import that repo, set the same env vars in the Vercel project (not in git), then deploy
+- Vercel: import that repo, set env vars in the Vercel project (not in git), then deploy
+
+### Required Vercel env
+
+| Name | Value |
+| ---- | ----- |
+| `DATABASE_URL` | Neon connection string |
+| `BETTER_AUTH_SECRET` | long random secret |
+| `BETTER_AUTH_URL` | `https://centher-app.vercel.app` (your production URL, **https**, not localhost) |
+| `NEXT_PUBLIC_BRAND_NAME` | `Centher` |
+
+Optional: `NEXT_PUBLIC_DEMO_EMAIL` / `NEXT_PUBLIC_DEMO_PASSWORD` — if set, password **must** be `Demo1234!` (with `!`) to match the seed. Prefer leaving them unset; the login form uses the seed credentials.
+
+API clients default to same-origin `/api/*`. Set `NEXT_PUBLIC_USE_SAME_ORIGIN_API=false` only if you intentionally point at external CAPI/CIS hosts.

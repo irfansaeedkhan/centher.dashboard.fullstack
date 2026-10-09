@@ -3,6 +3,12 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "@/db";
 import * as schema from "@/db/schema";
 
+const appUrl =
+  process.env.BETTER_AUTH_URL ||
+  (process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : "http://localhost:3002");
+
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "pg",
@@ -17,11 +23,13 @@ export const auth = betterAuth({
     enabled: true,
   },
   secret: process.env.BETTER_AUTH_SECRET,
-  baseURL: process.env.BETTER_AUTH_URL,
+  baseURL: appUrl,
   trustedOrigins: [
-    process.env.BETTER_AUTH_URL || "http://localhost:3002",
+    appUrl,
+    "https://centher-app.vercel.app",
     "http://localhost:3000",
     "http://localhost:3001",
+    "http://localhost:3002",
   ],
 });
 

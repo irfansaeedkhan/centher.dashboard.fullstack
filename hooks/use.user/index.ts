@@ -10,7 +10,7 @@ const useUser = () => {
     error,
     mutate,
   } = useSWR(
-    `/users/me`,
+    `/api/users/me`,
     async (url) => {
       try {
         const { data } = await axiosCIS.get<LoggedInUser>(url);

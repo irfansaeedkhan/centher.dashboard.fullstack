@@ -83,20 +83,72 @@ export const createHonoApp = () => {
       .where(eq(user.id, userId!))
       .limit(1);
 
+    const membershipStatus =
+      profile?.membership === "citizen" || profile?.membership === "verified"
+        ? profile.membership
+        : "citizen";
+
+    // Shape matches LoggedInUser used by useUser / header
     return c.json({
-      id: userId,
+      _id: userId,
+      display_name: profile?.displayName || authUser?.name || "Centher Demo",
+      profile_image: profile?.avatarUrl || "/images/centher.logo.favicon.png",
+      cover_image: "",
+      membership: {
+        last_status: membershipStatus,
+        status: membershipStatus,
+        endAt: 0,
+      },
+      profile_bio: profile?.bio || "",
+      social_media: {
+        website_url: "",
+        twitter_username: "",
+        facebook_username: "",
+        instagram_username: "",
+        twitch_username: "",
+        onlyfans_username: "",
+        youtube_url: "",
+        tiktok_username: "",
+        telegram_username: "",
+      },
+      organization: null,
+      createdAt:
+        authUser?.createdAt?.toISOString?.() || new Date().toISOString(),
+      updatedAt:
+        authUser?.updatedAt?.toISOString?.() || new Date().toISOString(),
+      first_name: authUser?.name?.split(" ")[0] || "Centher",
+      last_name: authUser?.name?.split(" ").slice(1).join(" ") || "Demo",
+      pseudonym: profile?.username || "centher_demo",
+      referrer_address: null,
+      display_name_field: "pseudonym",
+      has_seen_notifications_page: true,
+      cookies_consent: undefined,
       email: authUser?.email,
-      name: authUser?.name,
-      profile: profile ?? null,
     });
   });
 
   app.get("/socials/posts", async (c) => {
-    const { page, limit } = paginationSchema.parse({
-      page: c.req.query("page") ?? c.req.query("Page"),
-      limit: c.req.query("limit") ?? c.req.query("pageSize") ?? 12,
-    });
-    const offset = (page - 1) * limit;
+    const limit = z.coerce
+      .number()
+      .int()
+      .min(1)
+      .max(50)
+      .default(10)
+      .parse(c.req.query("limit") ?? 10);
+
+    const offsetParam = c.req.query("offset");
+    const pageParam = c.req.query("page") ?? c.req.query("Page");
+    const offset =
+      offsetParam != null
+        ? z.coerce.number().int().min(0).parse(offsetParam)
+        : (z.coerce
+            .number()
+            .int()
+            .min(1)
+            .default(1)
+            .parse(pageParam ?? 1) -
+            1) *
+          limit;
 
     const rows = await db
       .select({
@@ -109,6 +161,7 @@ export const createHonoApp = () => {
         authorName: profiles.displayName,
         authorUsername: profiles.username,
         authorAvatar: profiles.avatarUrl,
+        membership: profiles.membership,
       })
       .from(posts)
       .leftJoin(profiles, eq(posts.authorId, profiles.userId))
@@ -116,16 +169,71 @@ export const createHonoApp = () => {
       .limit(limit)
       .offset(offset);
 
-    const [{ count }] = await db
-      .select({ count: sql<number>`count(*)::int` })
-      .from(posts);
+    const mapped = rows.map((row) => ({
+      _id: row.id,
+      user: {
+        _id: row.authorId,
+        display_name: row.authorName || "Centher Demo",
+        profile_image: row.authorAvatar || "/images/centher.logo.favicon.png",
+        membership: {
+          last_status:
+            (row.membership as "citizen" | "verified" | "none") || "citizen",
+          status:
+            (row.membership as "citizen" | "verified" | "none") || "citizen",
+          endAt: 0,
+        },
+      },
+      viewed_by_loggedin_user: false,
+      liked_by_loggedin_user: false,
+      replies_count: row.commentCount,
+      likes_count: row.likeCount,
+      is_thread: false,
+      thread_id: undefined,
+      thread_index: undefined,
+      createdAt:
+        row.createdAt instanceof Date
+          ? row.createdAt.toISOString()
+          : String(row.createdAt),
+      version: 2,
+      status: "complete" as const,
+      parent_post: undefined,
+      post_editor_state: {
+        root: {
+          children: [
+            {
+              children: [
+                {
+                  detail: 0,
+                  format: 0,
+                  mode: "normal",
+                  style: "",
+                  text: row.body,
+                  type: "text",
+                  version: 1,
+                },
+              ],
+              direction: "ltr",
+              format: "",
+              indent: 0,
+              type: "paragraph",
+              version: 1,
+            },
+          ],
+          direction: "ltr",
+          format: "",
+          indent: 0,
+          type: "root",
+          version: 1,
+        },
+      },
+      media: [],
+    }));
 
     return c.json({
-      data: rows,
-      page,
+      posts: mapped,
+      data: mapped,
+      offset,
       limit,
-      total: count,
-      totalPages: Math.max(1, Math.ceil(count / limit)),
     });
   });
 

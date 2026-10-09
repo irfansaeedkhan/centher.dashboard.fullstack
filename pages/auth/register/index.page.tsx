@@ -27,9 +27,10 @@ Register.getLayout = (page) => {
             <Image
               src="/images/centher.logo.png"
               alt="Centher Logo"
-              width={75}
-              height={39}
-              className="w-18"
+              width={160}
+              height={64}
+              className="h-auto w-40"
+              priority
             />
           </Link>
         </div>
@@ -53,6 +54,8 @@ Register.getLayout = (page) => {
 export default Register;
 
 const signupLeftData = {
-  title: `Register to ${process.env.NEXT_PUBLIC_BRAND_NAME}`,
-  content: `Create an account to take advantage of the whole ${process.env.NEXT_PUBLIC_BRAND_NAME} SocialFi world`,
+  title: `Register to ${process.env.NEXT_PUBLIC_BRAND_NAME || "Centher"}`,
+  content: `Create an account to take advantage of the whole ${
+    process.env.NEXT_PUBLIC_BRAND_NAME || "Centher"
+  } SocialFi world`,
 };

@@ -7,6 +7,7 @@ import {
 
 export const axiosApi369x = axios.create({
   baseURL: CAPIBaseURL,
+  withCredentials: true,
 });
 
 registerAuthTokenRequestInterceptor(axiosApi369x);

@@ -20,9 +20,10 @@ export const AuthLeft: React.FC<SignupProps> = (props) => {
             <Image
               src="/images/centher.logo.png"
               alt="Centher Logo"
-              width={75}
-              height={39}
-              className="w-20"
+              width={180}
+              height={72}
+              className="h-auto w-44"
+              priority
             />
           </Link>
         </div>
@@ -33,8 +34,10 @@ export const AuthLeft: React.FC<SignupProps> = (props) => {
             <Image
               src="/images/centher.logo.png"
               alt="Centher Logo"
-              width={209}
-              height={68}
+              width={280}
+              height={96}
+              className="h-auto w-64"
+              priority
             />
             <div className={`flex flex-col items-center gap-6 md:pt-20`}>
               <h1 className={`text-center text-2xl font-semibold text-white`}>

@@ -9,6 +9,7 @@ import {
 // TODO: Change CIS to IS
 export const axiosCIS = axios.create({
   baseURL: CISBaseURL,
+  withCredentials: true,
 });
 
 registerAuthTokenRequestInterceptor(axiosCIS);

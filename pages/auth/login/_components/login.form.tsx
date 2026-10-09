@@ -13,12 +13,16 @@ import { ConnectWalletComp } from "@/components/connect.wallet";
 const ButtonsText = {
   connect_metamask: "Connect to Metamask",
   login_metamask: "Continue",
-  connect_wallet: `Connect To ${process.env.NEXT_PUBLIC_BRAND_NAME} Wallet`,
+  connect_wallet: `Connect To ${
+    process.env.NEXT_PUBLIC_BRAND_NAME || "Centher"
+  } Wallet`,
   loading: "Continue...",
 };
 
-const DEMO_EMAIL = process.env.NEXT_PUBLIC_DEMO_EMAIL || "demo@centher.io";
-const DEMO_PASSWORD = process.env.NEXT_PUBLIC_DEMO_PASSWORD || "Demo1234!";
+// Must match scripts/seed.ts. Do not trust a mismatched NEXT_PUBLIC_DEMO_* env
+// (e.g. Demo1234 without !) — that causes 401 "Login failed" on Vercel.
+const DEMO_EMAIL = "demo@centher.io";
+const DEMO_PASSWORD = "Demo1234!";
 
 export const LoginForm: React.FC = () => {
   const { mutate } = useSWRConfig();
