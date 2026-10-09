@@ -14,7 +14,7 @@ import {
   createPostView,
 } from "@/components/feed.components";
 import { CreatePostCard } from "@/components/post-editor/create-post-card";
-import { PostModal } from "@/components/feed.components/create.post/post.modal";
+import { PostEditorModal } from "@/components/post-editor/post-editor-modal";
 import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
 import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
 import AdsWrapper from "@/components/wrappers/ads-wrapper";
@@ -287,7 +287,9 @@ const Feed: NextPageWithLayout = () => {
         </p>
       )}
 
-      {isReplyModalOpen && <PostModal modalTitle="Reply" />}
+      {isReplyModalOpen && user && (
+        <PostEditorModal modalTitle="Reply" user={user} />
+      )}
     </>
   );
 };

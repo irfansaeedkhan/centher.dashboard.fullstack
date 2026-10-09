@@ -13,6 +13,8 @@ export interface BasePost {
   thread_index: number | undefined;
   createdAt: string;
   version: number;
+  /** Plain-text extracted from the stored editor state (Phase 2). */
+  text_content: string;
 }
 
 export interface DeletedPost extends BasePost {

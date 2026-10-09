@@ -22,7 +22,7 @@ import {
 } from "@/components/feed.components";
 import AdsWrapper from "@/components/wrappers/ads-wrapper";
 import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
-import { PostModal } from "@/components/feed.components/create.post/post.modal";
+import { PostEditorModal } from "@/components/post-editor/post-editor-modal";
 import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
 import { CreatePostCard } from "@/components/post-editor/create-post-card";
 import { SuggestedCardMobile } from "@/components/feed.components/suggested-card-mobile";
@@ -282,7 +282,9 @@ const Profile: NextPageWithLayout = () => {
         </div>
       )}
 
-      {isReplyModalOpen && <PostModal modalTitle="Reply" />}
+      {isReplyModalOpen && loggedInUser && (
+        <PostEditorModal modalTitle="Reply" user={loggedInUser} />
+      )}
     </>
   );
 };

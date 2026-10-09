@@ -184,29 +184,21 @@ export const SinglePostV2: React.FC<Props> = ({
           onClickRestore={onClickRestore}
           onClickDelete={onClickDelete}
           onClickEdit={() => {
-            // setIsEditModalOpen(true);
-            // openPostModal({
-            //   modalType: "edit",
-            //   postId: post._id,
-            //   posts: [
-            //     {
-            //       uuid: post._id,
-            //       post_text: post.text_content ?? "",
-            //       entities: post.entities,
-            //       media:
-            //         post.media?.map((media) => {
-            //           return {
-            //             type: "edit",
-            //             uuid: media.url,
-            //             original: media,
-            //             isDeleted: false,
-            //           };
-            //         }) ?? [],
-            //     },
-            //   ],
-            //   shouldAddNewPost: false,
-            //   onCloseModal: () => setIsEditModalOpen(false),
-            // });
+            setIsEditModalOpen(true);
+            openPostModal({
+              modalType: "edit",
+              postId: post._id,
+              posts: [
+                {
+                  uuid: post._id,
+                  post_text: post.text_content ?? "",
+                  entities: { mentions: [], hashtags: [] },
+                  media: [],
+                },
+              ],
+              shouldAddNewPost: false,
+              onCloseModal: () => setIsEditModalOpen(false),
+            });
           }}
         />
 

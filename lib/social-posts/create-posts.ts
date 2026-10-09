@@ -1,5 +1,6 @@
 import { SerializedEditorState, SerializedLexicalNode } from "lexical";
 import axios from "axios";
+import toast from "react-hot-toast";
 import { axiosApi369x } from "@/utils/axios";
 import { AppError } from "@/utils/app-error";
 import { MediaFileNew } from "@/components/post-editor/shared/types";
@@ -56,14 +57,24 @@ export const createPosts = async ({
         )
         .flat();
 
-      const response = await axiosApi369x.post(
-        `/api/socials/posts/media/presigned-urls`,
-        {
-          media_list: mediaList,
-        }
-      );
+      // Phase 2: the backend has no media pipeline (honest 501). Post
+      // text-only instead of failing the whole post.
+      try {
+        const response = await axiosApi369x.post(
+          `/api/socials/posts/media/presigned-urls`,
+          {
+            media_list: mediaList,
+          }
+        );
 
-      presignedUrls.push(...response.data.presignedUrls);
+        presignedUrls.push(...response.data.presignedUrls);
+      } catch (error: any) {
+        if (error.response?.status === 501) {
+          toast.error("Media uploads aren't available yet — posting text only");
+        } else {
+          throw error;
+        }
+      }
     }
 
     if (presignedUrls.length > 0) {
