@@ -18,9 +18,14 @@ export type LogoutResponse = {
  */
 export const logout = async (): Promise<LogoutResponse> => {
   try {
+    // Better Auth requires a JSON content-type AND a parseable JSON body on
+    // this endpoint: no header → 415, empty body → 400. Browsers send Origin
+    // automatically (curl needs it explicitly).
     const response = await fetch("/api/auth/sign-out", {
       method: "POST",
       credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({}),
     });
 
     // 401 here just means there was no active session left — still logged out.
