@@ -221,17 +221,13 @@ export class ApolloService {
     }
   }
   private async getToken(): Promise<string> {
-    return new Promise((res, rej) => {
-      try {
-        const tokens = getAuthTokens();
-        if (tokens?.access_token) {
-          res(tokens.access_token);
-        } else {
-          rej(new Error("Access token is undefined"));
-        }
-      } catch (error) {
-        rej(error);
-      }
-    });
+    // Solo cookie auth has no local JWT; return empty so HTTP links still work
+    // without rejecting Apollo setup (WS may still fail if origin is denied).
+    try {
+      const tokens = getAuthTokens();
+      return tokens?.access_token ?? "";
+    } catch {
+      return "";
+    }
   }
 }

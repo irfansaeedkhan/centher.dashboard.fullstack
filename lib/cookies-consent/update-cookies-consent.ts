@@ -7,7 +7,7 @@ export const updateCookiesConsent = async (
 ): Promise<LoggedInUser> => {
   try {
     const { data } = await axiosCIS.patch<LoggedInUser>(
-      "/users/cookies-consent",
+      "/api/users/cookies-consent",
       {
         consent_given: cookiesConsent,
       }

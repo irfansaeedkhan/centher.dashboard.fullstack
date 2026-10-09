@@ -77,7 +77,10 @@ export const PostTextContent: React.FC<Props> = ({ post }) => {
       });
     };
 
-    addNodesToData(post.post_editor_state.root.children);
+    const children = post.post_editor_state?.root?.children;
+    if (Array.isArray(children)) {
+      addNodesToData(children);
+    }
 
     return post_content;
   }, [post.post_editor_state]);

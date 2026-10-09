@@ -35,7 +35,8 @@ export const SuggestedCardMobile: React.FC<Props> = ({
       });
   }, []);
 
-  if (loading === "loaded" && recommendedPeople.length === 0) return null;
+  if (loading === "loaded" && (recommendedPeople?.length ?? 0) === 0)
+    return null;
 
   return (
     <div

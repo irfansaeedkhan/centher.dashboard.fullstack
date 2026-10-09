@@ -12,6 +12,9 @@ export const CookiesConstentModal: React.FC = () => {
 
   const updateGTMConsent = useCallback(
     (consentStatus: "granted" | "denied") => {
+      if (typeof window === "undefined" || typeof window.gtag !== "function") {
+        return;
+      }
       window.gtag("consent", "update", {
         ad_storage: consentStatus,
         analytics_storage: consentStatus,

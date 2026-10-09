@@ -122,10 +122,11 @@ const Feed: NextPageWithLayout = () => {
       <div className="mt-3 block w-full f2xl:hidden">
         <VoiSpaceFeedCard isRendered={!is2XLScreen} />
       </div>
-      {((loading === "loaded" && posts.length === 0) || posts.length > 0) &&
+      {((loading === "loaded" && (posts?.length ?? 0) === 0) ||
+        (posts?.length ?? 0) > 0) &&
         user && <CreatePostCard user={user} />}
 
-      {posts.map((post, index) => {
+      {(posts ?? []).map((post, index) => {
         return (
           <div key={post._id}>
             <div
@@ -223,7 +224,7 @@ const Feed: NextPageWithLayout = () => {
         );
       })}
 
-      {!!posts.length && <div ref={lastPostRef} />}
+      {!!(posts?.length ?? 0) && <div ref={lastPostRef} />}
 
       {(loading === "loading" || loading === "idle") && (
         <>
@@ -233,7 +234,7 @@ const Feed: NextPageWithLayout = () => {
         </>
       )}
 
-      {loading === "loaded" && posts.length === 0 && (
+      {loading === "loaded" && (posts?.length ?? 0) === 0 && (
         <div>
           <div className="mt-[60px] flex justify-center">
             <NoPost />

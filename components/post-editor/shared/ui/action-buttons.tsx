@@ -33,7 +33,11 @@ export const ActionButtons: React.FC<Props> = ({
   );
   const lastActivePost = getLastActivePost();
   const activeMedia = useMemo<"image" | "video" | null>(() => {
-    if (!lastActivePost || lastActivePost.media.length === 0 || !isModalOpen) {
+    if (
+      !lastActivePost ||
+      (lastActivePost.media?.length ?? 0) === 0 ||
+      !isModalOpen
+    ) {
       return null;
     }
     if (lastActivePost.media[0]?.original.type.startsWith("image")) {

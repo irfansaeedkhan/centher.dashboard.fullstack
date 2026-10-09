@@ -12,10 +12,10 @@ export interface RecommendedPeople {
 
 export const getRecommendedPeople = async (): Promise<RecommendedPeople[]> => {
   try {
-    const res = await axiosApi369x.get<{ users: RecommendedPeople[] }>(
+    const res = await axiosApi369x.get<{ users?: RecommendedPeople[] }>(
       "/api/socials/recommended-people"
     );
-    return res.data.users;
+    return res.data.users ?? [];
   } catch (err: any) {
     throw new AppError(
       err,

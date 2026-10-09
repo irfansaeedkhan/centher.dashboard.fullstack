@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { z } from "zod";
-import { and, desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, ne, sql } from "drizzle-orm";
 import { db } from "@/db";
 import {
   channels,
@@ -122,8 +122,143 @@ export const createHonoApp = () => {
       referrer_address: null,
       display_name_field: "pseudonym",
       has_seen_notifications_page: true,
-      cookies_consent: undefined,
+      // Default granted so cookies banner does not block demo sessions
+      cookies_consent: {
+        consent_given: true,
+        timestamp: new Date().toISOString(),
+      },
       email: authUser?.email,
+    });
+  });
+
+  app.patch("/users/cookies-consent", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const body = z
+      .object({ consent_given: z.boolean() })
+      .parse(await c.req.json().catch(() => ({})));
+    return c.json({
+      cookies_consent: {
+        consent_given: body.consent_given,
+        timestamp: new Date().toISOString(),
+      },
+    });
+  });
+
+  app.get("/users/:userId", async (c) => {
+    const userId = c.req.param("userId");
+    const [profile] = await db
+      .select()
+      .from(profiles)
+      .where(eq(profiles.userId, userId))
+      .limit(1);
+    const [authUser] = await db
+      .select()
+      .from(user)
+      .where(eq(user.id, userId))
+      .limit(1);
+    if (!profile && !authUser) apiError("User not found", "NOT_FOUND", 404);
+    const membershipStatus =
+      profile?.membership === "citizen" || profile?.membership === "verified"
+        ? profile.membership
+        : "citizen";
+    return c.json({
+      _id: userId,
+      display_name: profile?.displayName || authUser?.name || "Centher User",
+      profile_image: profile?.avatarUrl || "/images/centher.logo.favicon.png",
+      cover_image: "",
+      membership: {
+        last_status: membershipStatus,
+        status: membershipStatus,
+        endAt: 0,
+      },
+      profile_bio: profile?.bio || "",
+      social_media: {
+        website_url: "",
+        twitter_username: "",
+        facebook_username: "",
+        instagram_username: "",
+        twitch_username: "",
+        onlyfans_username: "",
+        youtube_url: "",
+        tiktok_username: "",
+        telegram_username: "",
+      },
+      organization: null,
+      createdAt:
+        authUser?.createdAt?.toISOString?.() || new Date().toISOString(),
+      updatedAt:
+        authUser?.updatedAt?.toISOString?.() || new Date().toISOString(),
+    });
+  });
+
+  app.get("/socials/recommended-people", async (c) => {
+    const userId = c.get("userId");
+    const rows = await db
+      .select({
+        userId: profiles.userId,
+        displayName: profiles.displayName,
+        avatarUrl: profiles.avatarUrl,
+        membership: profiles.membership,
+      })
+      .from(profiles)
+      .where(userId ? ne(profiles.userId, userId) : undefined)
+      .limit(8);
+
+    return c.json({
+      users: rows.map((row) => ({
+        _id: row.userId,
+        display_name: row.displayName || "Centher User",
+        profile_image: row.avatarUrl || "/images/centher.logo.favicon.png",
+        membership: {
+          last_status:
+            (row.membership as "citizen" | "verified" | "none") || "citizen",
+          status:
+            (row.membership as "citizen" | "verified" | "none") || "citizen",
+          endAt: 0,
+        },
+        is_followed_by_loggedin_user: false,
+      })),
+    });
+  });
+
+  app.get("/socials/analytics/profile-card/:userId", async (c) => {
+    const userId = c.req.param("userId");
+    const [{ count: postsCount }] = await db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(posts)
+      .where(eq(posts.authorId, userId));
+
+    return c.json({
+      profileCardDetails: {
+        _id: userId,
+        posts_count: postsCount ?? 0,
+        followers_count: 12,
+        following_count: 8,
+        total_referrees: 0,
+        posts_views_count: 42,
+        profile_views_count: 18,
+      },
+    });
+  });
+
+  app.get("/socials/analytics/profile-card/:userId/with-auth", async (c) => {
+    const userId = c.req.param("userId");
+    const [{ count: postsCount }] = await db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(posts)
+      .where(eq(posts.authorId, userId));
+
+    return c.json({
+      profileCardDetails: {
+        _id: userId,
+        posts_count: postsCount ?? 0,
+        followers_count: 12,
+        following_count: 8,
+        total_referrees: 0,
+        posts_views_count: 42,
+        profile_views_count: 18,
+      },
     });
   });
 
