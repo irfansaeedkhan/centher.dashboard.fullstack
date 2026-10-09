@@ -6,8 +6,8 @@ import { useMyRepliesStore } from "@/store/my.replies.store";
 import { useCreateUserProfileView } from "@/hooks/user.profile.views";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import { useNewPostStore } from "@/store/new.post.store";
-import { PostModal } from "@/components/feed.components/create.post/post.modal";
+import { usePostEditorStore } from "@/store/post-editor-store";
+import { PostEditorModal } from "@/components/post-editor/post-editor-modal";
 import {
   archivePost,
   createPostView,
@@ -27,7 +27,7 @@ const Replies: NextPageWithLayout = () => {
 
   const router = useRouter();
   const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
-  const { openModal: openPostModal } = useNewPostStore(
+  const { openModal: openPostModal } = usePostEditorStore(
     useShallow((state) => state.actions)
   );
   const { user } = useUser();
@@ -186,7 +186,9 @@ const Replies: NextPageWithLayout = () => {
           <p className="text-gray-500">Something went wrong!</p>
         </div>
       )}
-      {isReplyModalOpen && <PostModal modalTitle="Reply" />}
+      {isReplyModalOpen && user && (
+        <PostEditorModal modalTitle="Reply" user={user} />
+      )}
     </>
   );
 };

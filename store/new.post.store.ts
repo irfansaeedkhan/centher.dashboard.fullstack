@@ -656,7 +656,7 @@ export const useNewPostStore = create<NewPostStore>()(
 
             set({ isPostModalLoading: true });
 
-            await axiosApi369x.patch(`/api/socials/posts/${postId}/edit`, {
+            await axiosApi369x.patch(`/api/socials/posts/${postId}`, {
               text: post.post_text,
               deleted_media: post.media
                 .filter((file) => file.type === "edit" && file.isDeleted)
