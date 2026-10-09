@@ -34,7 +34,7 @@ export const RecommendedCard: React.FC<Props> = ({
         })
       );
 
-      await axiosApi369x.post("api/socials/followers", {
+      await axiosApi369x.post("/api/socials/followers", {
         following_id,
       });
     } catch (error: any) {

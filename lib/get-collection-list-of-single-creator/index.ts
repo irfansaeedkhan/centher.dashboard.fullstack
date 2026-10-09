@@ -17,7 +17,7 @@ export const getCollectionListOfSingleCreator = async ({
 }): Promise<CFSCollection[]> => {
   try {
     const response = await axiosCFS.get<{ collections: CFSCollection[] }>(
-      `/marketplace/collections/creator/${creator_address}`,
+      `/api/marketplace/collections/creator/${creator_address}`,
       {
         params: {
           first: limit,

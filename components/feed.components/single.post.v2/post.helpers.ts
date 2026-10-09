@@ -28,7 +28,7 @@ export const likePost = async (
   postId: string,
   actionType: "like" | "unlike"
 ) => {
-  await axiosApi369x.post("api/socials/analytics/likes", {
+  await axiosApi369x.post("/api/socials/analytics/likes", {
     postId,
     actionType: actionType,
   });

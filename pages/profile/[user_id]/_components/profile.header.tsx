@@ -260,7 +260,7 @@ const ProfileHeader: React.FC<Props> = ({
   const followUser = async (following_id: string) => {
     try {
       setLoadingState(true);
-      const response = await axiosApi369x.post("api/socials/followers", {
+      const response = await axiosApi369x.post("/api/socials/followers", {
         following_id,
       });
       if (response.data.message == "follow_success") {

@@ -1,19 +1,15 @@
 /**
- * Solo fullstack stack serves APIs from this Next app under `/api/*`.
- * Same-origin (empty base) avoids stale staging hosts baked into Vercel env.
- * Set NEXT_PUBLIC_USE_SAME_ORIGIN_API=false to use external CAPI/CIS hosts.
+ * Phase 1 API identity (Captain decision 2026-10-10): the solo fullstack stack
+ * serves ALL APIs from this Next app under same-origin `/api/*`. The legacy
+ * external CAPI/CIS/CFS hosts are decommissioned as a client path — every
+ * client call site uses a `/api/*` path (see `__tests__/api-identity.test.ts`).
+ *
+ * NOTE: `NEXT_PUBLIC_USE_SAME_ORIGIN_API` is still read directly by
+ * `hooks/stream/use.core.tsx` and `lib/get-user-genealogy/index.ts` as a
+ * solo-demo feature flag. It no longer controls these base URLs.
  */
-const useSameOriginApi =
-  process.env.NEXT_PUBLIC_USE_SAME_ORIGIN_API !== "false";
-
-export const CAPIBaseURL = useSameOriginApi
-  ? ""
-  : process.env.NEXT_PUBLIC_CAPI_HOST || "";
-export const CISBaseURL = useSameOriginApi
-  ? ""
-  : process.env.NEXT_PUBLIC_CIS_HOST || "";
-export const CFSBaseURL = useSameOriginApi
-  ? ""
-  : process.env.NEXT_PUBLIC_CFS_HOST || "";
+export const CAPIBaseURL = "";
+export const CISBaseURL = "";
+export const CFSBaseURL = "";
 export const WalletServiceBaseURL =
   process.env.NEXT_PUBLIC_WALLET_SERVICE_URL || "";

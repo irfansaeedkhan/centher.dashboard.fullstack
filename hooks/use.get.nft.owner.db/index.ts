@@ -16,7 +16,7 @@ const useGetNftOwnerDb = (userId?: string) => {
       setLoading("loading");
       (async () => {
         try {
-          const { data } = await axiosCIS.get<User>(`/users/${userId}`);
+          const { data } = await axiosCIS.get<User>(`/api/users/${userId}`);
           setUser(data);
           setLoading("loaded");
         } catch (error) {

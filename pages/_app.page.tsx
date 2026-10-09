@@ -12,6 +12,7 @@ import { CookiesConstentModal } from "@/components/modal/cookies-consent.modal";
 import { Web3ModalProvider } from "@/web3/context/web3-modal";
 import { GlobalModal } from "@/components/modal/global-modal/global-modal";
 import { StreamProvider } from "@/hooks/stream/use.core";
+import { ErrorBoundary } from "@/components/error-boundary";
 
 import "@/styles/globals.css";
 
@@ -50,7 +51,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   }
 
   return (
-    <>
+    <ErrorBoundary>
       <ScriptTags />
       <CookiesConstentModal />
 
@@ -86,7 +87,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
           </GlobalModal>
         </RefreshContextProvider>
       </StreamProvider>
-    </>
+    </ErrorBoundary>
   );
 }
 

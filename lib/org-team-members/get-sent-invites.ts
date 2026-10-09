@@ -5,7 +5,7 @@ import { PendingInvite } from "./types";
 export const getSentInvites = async (): Promise<PendingInvite[]> => {
   try {
     const { data } = await axiosCIS.get<PendingInvite[]>(
-      `/orgs/members/invites/sent`
+      `/api/orgs/members/invites/sent`
     );
 
     return data;

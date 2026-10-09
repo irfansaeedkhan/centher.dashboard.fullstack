@@ -29,7 +29,7 @@ const UserWithFollow = React.forwardRef<HTMLDivElement, SingleSearchUserProps>(
           is_followed_by_loggedin_user: !prev.is_followed_by_loggedin_user,
         }));
 
-        await axiosApi369x.post("api/socials/followers", {
+        await axiosApi369x.post("/api/socials/followers", {
           following_id,
         });
       } catch (error: any) {

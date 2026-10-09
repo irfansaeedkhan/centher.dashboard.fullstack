@@ -3,7 +3,7 @@ import { AppError } from "@/utils/app-error";
 
 export const removeOrgMembers = async (user_id: string): Promise<void> => {
   try {
-    await axiosCIS.delete("/orgs/members/" + user_id);
+    await axiosCIS.delete("/api/orgs/members/" + user_id);
   } catch (error: any) {
     const errorMessage = "Cannot remove organization member";
     if (error.response?.status === 500) {

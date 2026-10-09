@@ -3,7 +3,7 @@ import { AppError } from "@/utils/app-error";
 
 export const getMentionPermission = async () => {
   try {
-    const response = await axiosCIS.get("/users/mention-permission");
+    const response = await axiosCIS.get("/api/users/mention-permission");
     return response.data.mention_permission;
   } catch (error: any) {
     throw new AppError(

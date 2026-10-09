@@ -15,7 +15,7 @@ export const getCollections = async ({
 }): Promise<CFSCollection[]> => {
   try {
     const response = await axiosCFS.get<{ collections: CFSCollection[] }>(
-      `/marketplace/collections`,
+      `/api/marketplace/collections`,
       {
         params: {
           first: limit,
@@ -43,7 +43,7 @@ export const getHotCollections = async ({
 }): Promise<CFSCollection[]> => {
   try {
     const response = await axiosCFS.get<{ collections: CFSCollection[] }>(
-      `/marketplace/collections/hot-collections`,
+      `/api/marketplace/collections/hot-collections`,
       {
         params: {
           first: limit,

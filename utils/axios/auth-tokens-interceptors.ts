@@ -1,7 +1,7 @@
 import { AxiosInstance } from "axios";
 import { getAuthTokens, refreshTokens } from "@/lib/auth";
 
-const refreshTokenPath = "/auth/refresh-tokens";
+const refreshTokenPath = "/api/wallet/refresh-tokens";
 
 // Interceptor for passing access token to request header
 export const registerAuthTokenRequestInterceptor = (

@@ -9,7 +9,7 @@ export const uploadFileToIPFS = async (
   formData.append("file", file);
   try {
     const { data } = await axiosCFS.post<UploadToIPFSResponse>(
-      `/ipfs/upload/file`,
+      `/api/ipfs/upload/file`,
       formData
     );
     return data;

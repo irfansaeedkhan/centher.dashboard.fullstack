@@ -7,7 +7,7 @@ export const updateMentionPermission = async (
 ): Promise<LoggedInUser> => {
   try {
     const response = await axiosCIS.patch<LoggedInUser>(
-      "/users/mention-permission",
+      "/api/users/mention-permission",
       {
         mention_permission: mentionPermission,
       }

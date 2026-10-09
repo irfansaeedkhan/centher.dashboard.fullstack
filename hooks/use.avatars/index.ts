@@ -10,7 +10,7 @@ export const useAvatars = () => {
   useEffect(() => {
     setLoading("loading");
     axiosCFS
-      .get("/avatars")
+      .get("/api/avatars")
       .then(({ data }) => {
         setAvatars(data as AvatarList);
         setLoading("loaded");

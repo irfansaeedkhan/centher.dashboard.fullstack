@@ -7,7 +7,7 @@ export const updateTitle = async (
   userId: PendingInvite["_id"]
 ): Promise<void> => {
   try {
-    await axiosCIS.patch(`/orgs/members/${userId}`, { title });
+    await axiosCIS.patch(`/api/orgs/members/${userId}`, { title });
   } catch (error: any) {
     const errorMessage = "Failed to update title";
     if (error.response?.status === 500) {

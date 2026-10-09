@@ -3,7 +3,7 @@ import { AppError } from "@/utils/app-error";
 
 export const leaveOrg = async (): Promise<void> => {
   try {
-    await axiosCIS.delete("/orgs/leave");
+    await axiosCIS.delete("/api/orgs/leave");
   } catch (error: any) {
     const errorMessage = "Cannot leave organization";
     if (error.response?.status === 500) {

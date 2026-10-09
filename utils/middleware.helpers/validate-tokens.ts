@@ -1,9 +1,8 @@
 import { AuthTokens } from "@/lib/auth";
-import { CISBaseURL } from "@/constants/base-urls";
 import { customLog } from "../custom.log";
 
-const validateAccessTokenRoute = `${CISBaseURL}/auth/validate/access-token`;
-const validateRefreshTokenRoute = `${CISBaseURL}/auth/validate/refresh-token`;
+const validateAccessTokenRoute = "/api/wallet/validate/access-token";
+const validateRefreshTokenRoute = "/api/wallet/validate/refresh-token";
 
 type ValidateTokenResponse = {
   sub: string;
