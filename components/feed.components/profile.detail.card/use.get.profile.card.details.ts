@@ -19,10 +19,19 @@ export const useGetProfileCardDetails = (user: User) => {
     if (userId) {
       (async () => {
         try {
-          const users = await getAllUserGenealogy(userId);
           const res = await getProfileCardDetails(userId, !!loggedInUser);
-          res.profileCardDetails.total_referrees = users.flat().length || 0;
-          setProfileCard(res.profileCardDetails);
+          let totalReferrees = 0;
+          try {
+            const users = await getAllUserGenealogy(userId);
+            totalReferrees = users?.flat?.()?.length || 0;
+          } catch (genealogyError: any) {
+            // Solo demo has no on-chain genealogy — keep card stats from API
+            customLog(["development"], genealogyError);
+          }
+          setProfileCard({
+            ...res.profileCardDetails,
+            total_referrees: totalReferrees,
+          });
         } catch (error: any) {
           customLog(["development"], error);
           setProfileCard(initialProfileCard);
