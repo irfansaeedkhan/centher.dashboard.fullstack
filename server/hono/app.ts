@@ -10,12 +10,15 @@ import {
   collections,
   comments,
   conversations,
+  follows,
   launchpads,
   messages,
   nfts,
+  notifications,
   postLikes,
   posts,
   profiles,
+  recentSearches,
   stakingPools,
   user,
 } from "@/db/schema";
@@ -270,6 +273,136 @@ const parseListQuery = (c: {
   return { limit, offset };
 };
 
+/** Phase 3: map a profile+user row to the user-card shape the UI expects. */
+const mapUserCard = (
+  row: {
+    userId: string;
+    displayName: string | null;
+    avatarUrl: string | null;
+    membership: string | null;
+  },
+  opts?: { isFollowedByLoggedInUser?: boolean }
+) => ({
+  _id: row.userId,
+  display_name: row.displayName || "Centher User",
+  profile_image: row.avatarUrl || "/images/centher.logo.favicon.png",
+  membership: {
+    last_status:
+      (row.membership as "citizen" | "verified" | "none") || "citizen",
+    status: (row.membership as "citizen" | "verified" | "none") || "citizen",
+    endAt: 0,
+  },
+  is_followed_by_loggedin_user: opts?.isFollowedByLoggedInUser ?? false,
+});
+
+/** Phase 3: which of these user ids the viewer follows. */
+const getFollowedUserIds = async (
+  viewerId: string | null,
+  targetIds: string[]
+): Promise<Set<string>> => {
+  if (!viewerId || targetIds.length === 0) return new Set<string>();
+  const rows = await db
+    .select({ followingId: follows.followingId })
+    .from(follows)
+    .where(
+      and(
+        eq(follows.followerId, viewerId),
+        inArray(follows.followingId, targetIds)
+      )
+    );
+  return new Set(rows.map((r) => r.followingId));
+};
+
+/** Phase 3: follower/following counts for a user. */
+const getFollowCounts = async (userId: string) => {
+  const [followersRow] = await db
+    .select({ count: sql<number>`count(*)::int` })
+    .from(follows)
+    .where(eq(follows.followingId, userId));
+  const [followingRow] = await db
+    .select({ count: sql<number>`count(*)::int` })
+    .from(follows)
+    .where(eq(follows.followerId, userId));
+  return {
+    followersCount: followersRow?.count ?? 0,
+    followingCount: followingRow?.count ?? 0,
+  };
+};
+
+/** Phase 3: fetch profile rows for a list of user ids (single query). */
+const fetchUserCards = async (userIds: string[], viewerId: string | null) => {
+  if (userIds.length === 0) return [];
+  const rows = await db
+    .select({
+      userId: profiles.userId,
+      displayName: profiles.displayName,
+      avatarUrl: profiles.avatarUrl,
+      membership: profiles.membership,
+    })
+    .from(profiles)
+    .where(inArray(profiles.userId, userIds));
+  const followed = await getFollowedUserIds(viewerId, userIds);
+  // Preserve the requested order.
+  const byId = new Map(rows.map((r) => [r.userId, r]));
+  return userIds
+    .map((id) => byId.get(id))
+    .filter((r): r is NonNullable<typeof r> => !!r)
+    .map((r) =>
+      mapUserCard(r, { isFollowedByLoggedInUser: followed.has(r.userId) })
+    );
+};
+
+/** Phase 3: create an in-app notification (never notifies self). */
+const createNotification = async (input: {
+  userId: string;
+  type: string;
+  actorId: string | null;
+  postId?: string | null;
+}) => {
+  if (input.actorId && input.actorId === input.userId) return;
+  await db.insert(notifications).values({
+    userId: input.userId,
+    type: input.type,
+    actorId: input.actorId,
+    postId: input.postId ?? null,
+    status: "unread",
+  });
+};
+
+/** Phase 3: map a notification row to the shape the notifications UI reads. */
+const mapNotificationRow = (row: {
+  id: string;
+  type: string;
+  status: string | null;
+  createdAt: Date | string;
+  postId: string | null;
+  actorId: string | null;
+  actorName: string | null;
+  actorAvatar: string | null;
+  actorMembership: string | null;
+}) => ({
+  _id: row.id,
+  type: row.type,
+  status: row.status || "unread",
+  createdAt:
+    row.createdAt instanceof Date
+      ? row.createdAt.toISOString()
+      : String(row.createdAt),
+  post_id: row.postId,
+  by: {
+    _id: row.actorId || "",
+    display_name: row.actorName || "Centher User",
+    profile_image: row.actorAvatar || "/images/centher.logo.favicon.png",
+    membership: {
+      last_status:
+        (row.actorMembership as "citizen" | "verified" | "none") || "citizen",
+      status:
+        (row.actorMembership as "citizen" | "verified" | "none") || "citizen",
+      endAt: 0,
+    },
+  },
+});
+
 export const createHonoApp = () => {
   const app = new Hono<AppEnv>().basePath("/api");
 
@@ -284,6 +417,21 @@ export const createHonoApp = () => {
       } catch {
         return c.json({ message: err.message, code: "HTTP_ERROR" }, err.status);
       }
+    }
+    // Phase 3 carry-forward: invalid params (bad UUIDs, bad query values)
+    // are client errors, not 500s.
+    if (err instanceof z.ZodError) {
+      return c.json(
+        {
+          message: "Invalid request",
+          code: "VALIDATION_ERROR",
+          issues: err.issues.map((i) => ({
+            path: i.path.join("."),
+            message: i.message,
+          })),
+        },
+        400
+      );
     }
     console.error(err);
     return c.json({ message: "Internal server error", code: "INTERNAL" }, 500);
@@ -379,6 +527,23 @@ export const createHonoApp = () => {
     });
   });
 
+  /**
+   * Phase 3: batch user read for chat user resolution.
+   * `GET /users?user_ids=a,b,c` → `{ users: [...] }`.
+   * Registered before `/users/:userId` (static wins, but explicit is safer).
+   */
+  app.get("/users", async (c) => {
+    const raw = c.req.query("user_ids") ?? "";
+    const ids = raw
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean)
+      .slice(0, 100);
+    const viewerId = c.get("userId");
+    const users = await fetchUserCards(ids, viewerId);
+    return c.json({ users });
+  });
+
   app.get("/users/:userId", async (c) => {
     const userId = c.req.param("userId");
     const [profile] = await db
@@ -456,45 +621,46 @@ export const createHonoApp = () => {
     });
   });
 
-  app.get("/socials/analytics/profile-card/:userId", async (c) => {
-    const userId = c.req.param("userId");
+  /**
+   * Phase 3: profile-card stats are real now (follows table + view counters).
+   * The `/with-auth` variant the client calls when logged in shares the same
+   * handler — the old copy-pasted duplicate handler is gone.
+   */
+  const handleProfileCard = async (c: any) => {
+    const userId = z.string().min(1).parse(c.req.param("userId"));
     const [{ count: postsCount }] = await db
       .select({ count: sql<number>`count(*)::int` })
       .from(posts)
+      .where(and(eq(posts.authorId, userId), eq(posts.isArchived, false)));
+    const [{ views: postsViews }] = await db
+      .select({ views: sql<number>`coalesce(sum(${posts.viewCount}),0)::int` })
+      .from(posts)
       .where(eq(posts.authorId, userId));
+    const [profile] = await db
+      .select({ viewCount: profiles.viewCount })
+      .from(profiles)
+      .where(eq(profiles.userId, userId))
+      .limit(1);
+    const { followersCount, followingCount } = await getFollowCounts(userId);
 
     return c.json({
       profileCardDetails: {
         _id: userId,
         posts_count: postsCount ?? 0,
-        followers_count: 12,
-        following_count: 8,
+        followers_count: followersCount,
+        following_count: followingCount,
         total_referrees: 0,
-        posts_views_count: 42,
-        profile_views_count: 18,
+        posts_views_count: postsViews ?? 0,
+        profile_views_count: profile?.viewCount ?? 0,
       },
     });
-  });
-
-  app.get("/socials/analytics/profile-card/:userId/with-auth", async (c) => {
-    const userId = c.req.param("userId");
-    const [{ count: postsCount }] = await db
-      .select({ count: sql<number>`count(*)::int` })
-      .from(posts)
-      .where(eq(posts.authorId, userId));
-
-    return c.json({
-      profileCardDetails: {
-        _id: userId,
-        posts_count: postsCount ?? 0,
-        followers_count: 12,
-        following_count: 8,
-        total_referrees: 0,
-        posts_views_count: 42,
-        profile_views_count: 18,
-      },
-    });
-  });
+  };
+  app.get("/socials/analytics/profile-card/:userId", (c) =>
+    handleProfileCard(c)
+  );
+  app.get("/socials/analytics/profile-card/:userId/with-auth", (c) =>
+    handleProfileCard(c)
+  );
 
   app.get("/socials/posts", async (c) => {
     const limit = z.coerce
@@ -742,6 +908,11 @@ export const createHonoApp = () => {
 
     const parent = await fetchPostRow(id);
     if (!parent) apiError("Post not found", "NOT_FOUND", 404);
+    // Phase 3 carry-forward: archived posts are invisible to non-owners —
+    // same guard as GET /:id.
+    const viewerId = c.get("userId") as string | null;
+    if (parent!.isArchived && parent!.authorId !== viewerId)
+      apiError("Post not found", "NOT_FOUND", 404);
 
     const rows = await db
       .select({
@@ -878,6 +1049,13 @@ export const createHonoApp = () => {
         .insert(postLikes)
         .values({ postId, userId: userId! })
         .onConflictDoNothing();
+      // Phase 3: notify the post author (never self — helper guards it).
+      await createNotification({
+        userId: target!.authorId,
+        type: "post_like",
+        actorId: userId!,
+        postId,
+      });
     } else {
       await db
         .delete(postLikes)
@@ -919,6 +1097,444 @@ export const createHonoApp = () => {
     return c.json({ view_count: updated!.viewCount, post_id });
   });
 
+  // ---------------------------------------------------------------------------
+  // Phase 3: social graph — follows, counts, profile views, search,
+  // notifications. All zod-validated, auth-gated, user-scoped.
+  // ---------------------------------------------------------------------------
+
+  // Profile view tracking (mirrors post-views; feeds profile-card stats)
+  app.post("/socials/analytics/profile-views", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const { user_id } = z
+      .object({ user_id: z.string().min(1) })
+      .parse(await c.req.json());
+
+    const [updated] = await db
+      .update(profiles)
+      .set({ viewCount: sql`${profiles.viewCount} + 1` })
+      .where(eq(profiles.userId, user_id))
+      .returning({ viewCount: profiles.viewCount });
+    if (!updated) apiError("User not found", "NOT_FOUND", 404);
+    return c.json({ profile_views_count: updated.viewCount, user_id });
+  });
+
+  // Follow / unfollow toggle. The client (profile.header) keys its UI off
+  // the exact `message` values below — keep them stable.
+  app.post("/socials/followers", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const { following_id } = z
+      .object({ following_id: z.string().min(1) })
+      .parse(await c.req.json());
+
+    if (following_id === userId)
+      apiError("You cannot follow yourself", "BAD_REQUEST", 400);
+    const [target] = await db
+      .select({ id: user.id })
+      .from(user)
+      .where(eq(user.id, following_id))
+      .limit(1);
+    if (!target) apiError("User not found", "NOT_FOUND", 404);
+
+    const [existing] = await db
+      .select()
+      .from(follows)
+      .where(
+        and(
+          eq(follows.followerId, userId!),
+          eq(follows.followingId, following_id)
+        )
+      )
+      .limit(1);
+
+    if (existing) {
+      await db
+        .delete(follows)
+        .where(
+          and(
+            eq(follows.followerId, userId!),
+            eq(follows.followingId, following_id)
+          )
+        );
+      return c.json({ message: "unfollow_success" });
+    }
+
+    await db.insert(follows).values({
+      followerId: userId!,
+      followingId: following_id,
+    });
+    await createNotification({
+      userId: following_id,
+      type: "follow",
+      actorId: userId!,
+    });
+    return c.json({ message: "follow_success" });
+  });
+
+  // Is the viewer following this user? (+ /with-auth variant the client
+  // appends outside development)
+  const handleIsFollowed = async (c: any) => {
+    const viewerId = c.get("userId");
+    const targetId = z.string().min(1).parse(c.req.param("id"));
+    if (!viewerId) return c.json({ is_followed: false });
+    const [row] = await db
+      .select()
+      .from(follows)
+      .where(
+        and(eq(follows.followerId, viewerId), eq(follows.followingId, targetId))
+      )
+      .limit(1);
+    return c.json({ is_followed: !!row });
+  };
+  app.get("/socials/followers/is-followed/:id", (c) => handleIsFollowed(c));
+  app.get("/socials/followers/is-followed/:id/with-auth", (c) =>
+    handleIsFollowed(c)
+  );
+
+  // Users following me / users I follow (chat sidebar + followers pages).
+  // Registered before the `:userId` param route below.
+  app.get("/socials/users/my-followers", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const { limit, offset } = parseListQuery(c);
+    const rows = await db
+      .select({ followerId: follows.followerId })
+      .from(follows)
+      .where(eq(follows.followingId, userId!))
+      .orderBy(desc(follows.createdAt))
+      .limit(limit)
+      .offset(offset);
+    const followers = await fetchUserCards(
+      rows.map((r) => r.followerId),
+      userId!
+    );
+    return c.json({ followers });
+  });
+
+  app.get("/socials/users/my-following", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const { limit, offset } = parseListQuery(c);
+    const rows = await db
+      .select({ followingId: follows.followingId })
+      .from(follows)
+      .where(eq(follows.followerId, userId!))
+      .orderBy(desc(follows.createdAt))
+      .limit(limit)
+      .offset(offset);
+    const following = await fetchUserCards(
+      rows.map((r) => r.followingId),
+      userId!
+    );
+    return c.json({ following });
+  });
+
+  // Sidebar/header badge counts: unread notifications + active chats.
+  app.get("/socials/users/counts", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const [{ count: unread }] = await db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(notifications)
+      .where(
+        and(
+          eq(notifications.userId, userId!),
+          eq(notifications.status, "unread")
+        )
+      );
+    // Chats with inbound activity (messages from someone else) — the best
+    // "needs attention" proxy without per-conversation read state.
+    const [{ count: chats }] = await db
+      .select({
+        count: sql<number>`count(distinct ${messages.conversationId})::int`,
+      })
+      .from(messages)
+      .where(ne(messages.senderId, userId!));
+    return c.json({
+      counts: { notifications: unread ?? 0, chats: chats ?? 0, none: 0 },
+    });
+  });
+
+  // "Followed by X, Y and N others" — people the viewer follows who also
+  // follow the target profile.
+  app.get("/socials/users/:userId/mutual-followers", async (c) => {
+    const viewerId = c.get("userId");
+    const targetUserId = z.string().min(1).parse(c.req.param("userId"));
+    if (!viewerId)
+      return c.json({ mutual_followers: { other_users_count: 0, users: [] } });
+
+    const mine = db
+      .select({ id: follows.followingId })
+      .from(follows)
+      .where(eq(follows.followerId, viewerId));
+    const rows = await db
+      .select({ userId: follows.followerId })
+      .from(follows)
+      .where(
+        and(
+          eq(follows.followingId, targetUserId),
+          inArray(follows.followerId, mine)
+        )
+      )
+      .orderBy(desc(follows.createdAt))
+      .limit(4);
+    const users = await fetchUserCards(
+      rows.map((r) => r.userId),
+      viewerId
+    );
+    const [{ count: total }] = await db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(follows)
+      .where(
+        and(
+          eq(follows.followingId, targetUserId),
+          inArray(follows.followerId, mine)
+        )
+      );
+    return c.json({
+      mutual_followers: {
+        other_users_count: Math.max(0, (total ?? 0) - users.length),
+        users: users.map((u) => ({
+          _id: u._id,
+          display_name: u.display_name,
+          profile_image: u.profile_image,
+        })),
+      },
+    });
+  });
+
+  // Search users by display name / username.
+  app.get("/search", async (c) => {
+    const viewerId = c.get("userId");
+    const q = z
+      .string()
+      .min(1)
+      .max(100)
+      .parse(c.req.query("q") ?? "");
+    const { limit, offset } = parseListQuery(c);
+    const like = `%${q.replace(/[%_]/g, "")}%`;
+
+    const rows = await db
+      .select({
+        userId: profiles.userId,
+        displayName: profiles.displayName,
+        avatarUrl: profiles.avatarUrl,
+        membership: profiles.membership,
+      })
+      .from(profiles)
+      .where(
+        or(ilike(profiles.displayName, like), ilike(profiles.username, like))
+      )
+      .orderBy(desc(profiles.createdAt))
+      .limit(limit)
+      .offset(offset);
+    const followed = await getFollowedUserIds(
+      viewerId,
+      rows.map((r) => r.userId)
+    );
+    return c.json({
+      search_results: rows.map((r) =>
+        mapUserCard(r, { isFollowedByLoggedInUser: followed.has(r.userId) })
+      ),
+    });
+  });
+
+  // Recent-search history (search popup).
+  app.get("/search/recent", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const rows = await db
+      .select({
+        id: recentSearches.id,
+        searchType: recentSearches.searchType,
+        query: recentSearches.query,
+        searchedUserId: recentSearches.searchedUserId,
+        resultCount: recentSearches.resultCount,
+        createdAt: recentSearches.createdAt,
+        updatedAt: recentSearches.updatedAt,
+      })
+      .from(recentSearches)
+      .where(eq(recentSearches.userId, userId!))
+      .orderBy(desc(recentSearches.updatedAt))
+      .limit(20);
+
+    const userIds = rows
+      .map((r) => r.searchedUserId)
+      .filter((id): id is string => !!id);
+    const cards = await fetchUserCards(userIds, userId!);
+    const byId = new Map(cards.map((u) => [u._id, u]));
+
+    return c.json({
+      recent_search: rows.map((r) => {
+        const base = {
+          _id: r.id,
+          user: userId!,
+          result_count: r.resultCount,
+          createdAt:
+            r.createdAt instanceof Date
+              ? r.createdAt.toISOString()
+              : String(r.createdAt),
+          updatedAt:
+            r.updatedAt instanceof Date
+              ? r.updatedAt.toISOString()
+              : String(r.updatedAt),
+        };
+        if (r.searchType === "user" && r.searchedUserId) {
+          const u = byId.get(r.searchedUserId);
+          return {
+            ...base,
+            search_type: "user" as const,
+            searched_user: r.searchedUserId,
+            user_data: u
+              ? {
+                  _id: u._id,
+                  display_name: u.display_name,
+                  profile_image: u.profile_image,
+                  membership: u.membership,
+                }
+              : null,
+          };
+        }
+        return { ...base, search_type: "query" as const, query: r.query ?? "" };
+      }),
+    });
+  });
+
+  app.post("/search/recent", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const payload = z
+      .object({
+        search_type: z.enum(["user", "query"]),
+        searched_user: z.string().min(1).optional(),
+        query: z.string().max(100).optional(),
+        result_count: z.coerce.number().int().min(0).optional().default(0),
+      })
+      .parse(await c.req.json());
+
+    if (payload.search_type === "user" && !payload.searched_user)
+      apiError("searched_user is required", "BAD_REQUEST", 400);
+    if (payload.search_type === "query" && !payload.query)
+      apiError("query is required", "BAD_REQUEST", 400);
+
+    // Upsert-ish: bump the existing row for the same query/user instead of
+    // duplicating history.
+    const [existing] = await db
+      .select({ id: recentSearches.id })
+      .from(recentSearches)
+      .where(
+        and(
+          eq(recentSearches.userId, userId!),
+          payload.search_type === "user"
+            ? eq(recentSearches.searchedUserId, payload.searched_user!)
+            : eq(recentSearches.query, payload.query!)
+        )
+      )
+      .limit(1);
+
+    if (existing) {
+      const [updated] = await db
+        .update(recentSearches)
+        .set({
+          resultCount: payload.result_count,
+          updatedAt: new Date(),
+        })
+        .where(eq(recentSearches.id, existing.id))
+        .returning();
+      return c.json(updated);
+    }
+
+    const [created] = await db
+      .insert(recentSearches)
+      .values({
+        userId: userId!,
+        searchType: payload.search_type,
+        query: payload.query ?? null,
+        searchedUserId: payload.searched_user ?? null,
+        resultCount: payload.result_count,
+      })
+      .returning();
+    return c.json(created, 201);
+  });
+
+  app.delete("/search/recent/:searchId", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const searchId = z.string().uuid().parse(c.req.param("searchId"));
+    const [existing] = await db
+      .select({ id: recentSearches.id })
+      .from(recentSearches)
+      .where(
+        and(eq(recentSearches.id, searchId), eq(recentSearches.userId, userId!))
+      )
+      .limit(1);
+    if (!existing) apiError("Recent search not found", "NOT_FOUND", 404);
+    await db.delete(recentSearches).where(eq(recentSearches.id, searchId));
+    return c.json({ deleted: true });
+  });
+
+  app.delete("/search/recent", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    await db.delete(recentSearches).where(eq(recentSearches.userId, userId!));
+    return c.json({ deleted: true });
+  });
+
+  // Notifications inbox.
+  app.get("/notifications", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const { limit, offset } = parseListQuery(c);
+    const rows = await db
+      .select({
+        id: notifications.id,
+        type: notifications.type,
+        status: notifications.status,
+        createdAt: notifications.createdAt,
+        postId: notifications.postId,
+        actorId: notifications.actorId,
+        actorName: profiles.displayName,
+        actorAvatar: profiles.avatarUrl,
+        actorMembership: profiles.membership,
+      })
+      .from(notifications)
+      .leftJoin(user, eq(notifications.actorId, user.id))
+      .leftJoin(profiles, eq(notifications.actorId, profiles.userId))
+      .where(eq(notifications.userId, userId!))
+      .orderBy(desc(notifications.createdAt))
+      .limit(limit)
+      .offset(offset);
+    return c.json({ notifications: rows.map(mapNotificationRow) });
+  });
+
+  app.patch("/notifications/:id", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const id = z.string().uuid().parse(c.req.param("id"));
+    const [existing] = await db
+      .select({ id: notifications.id })
+      .from(notifications)
+      .where(and(eq(notifications.id, id), eq(notifications.userId, userId!)))
+      .limit(1);
+    if (!existing) apiError("Notification not found", "NOT_FOUND", 404);
+    await db
+      .update(notifications)
+      .set({ status: "read" })
+      .where(eq(notifications.id, id));
+    return c.json({ marked_read: true });
+  });
+
+  app.patch("/notifications", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    await db
+      .update(notifications)
+      .set({ status: "read" })
+      .where(eq(notifications.userId, userId!));
+    return c.json({ marked_all_read: true });
+  });
+
   app.post("/socials/posts", async (c) => {
     const userId = c.get("userId");
     if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
@@ -945,6 +1561,10 @@ export const createHonoApp = () => {
     if (replyingTo) {
       parentRow = await fetchPostRow(replyingTo);
       if (!parentRow) apiError("Parent post not found", "NOT_FOUND", 404);
+      // Phase 3 carry-forward: archived posts are invisible to non-owners —
+      // same guard as GET /:id (no reading or replying to them).
+      if (parentRow!.isArchived && parentRow!.authorId !== userId)
+        apiError("Parent post not found", "NOT_FOUND", 404);
     }
 
     const postsInput = z
@@ -986,6 +1606,13 @@ export const createHonoApp = () => {
           .update(posts)
           .set({ commentCount: sql`${posts.commentCount} + 1` })
           .where(eq(posts.id, parentRow.id));
+        // Phase 3: notify the parent post author.
+        await createNotification({
+          userId: parentRow.authorId,
+          type: "post_reply",
+          actorId: userId!,
+          postId: parentRow.id,
+        });
         createdMapped.push(
           mapCommentRow(
             {

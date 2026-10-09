@@ -29,8 +29,11 @@ export const ProfilePageWrapper: React.FC<AllPagesWrapperProps> = ({
   const router = useRouter();
 
   const { user: loggedInUser } = useUser();
+  // Phase 3: do NOT lowercase the id — Better Auth user ids are
+  // case-sensitive (e.g. `X2adS8HrUUOnYbdoO26TCcNlw6SHLdak`); lowercasing
+  // made every profile page 404 with "User not found".
   const { user, loading: loadingGetUser } = useGetUser(
-    router.query.user_id?.toString()?.toLowerCase()
+    router.query.user_id?.toString()
   );
 
   const [mutualFollowersData, setMutualFollowersData] =
