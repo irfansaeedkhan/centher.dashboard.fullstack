@@ -16,6 +16,35 @@ const hasBetterAuthSession = (request: NextRequest) => {
   }
 };
 
+/**
+ * Validate the Better Auth session for real instead of trusting cookie
+ * presence. A dead-but-present session cookie (e.g. after a failed sign-out
+ * or an expired server-side session) must NOT count as authenticated —
+ * otherwise the login page 307s to /feed and the login form becomes
+ * unreachable (the auth trap).
+ *
+ * Edge-safe: plain fetch, no Node crypto. `/api/auth/get-session` returns
+ * `{ session, user }` or `null` (HTTP 200 in both cases).
+ *
+ * Returns `undefined` when the validator itself is unreachable — the caller
+ * must fail open to the presence-based check in that case.
+ */
+export const hasValidSession = async (
+  request: NextRequest
+): Promise<boolean | undefined> => {
+  try {
+    const url = new URL("/api/auth/get-session", request.url);
+    const res = await fetch(url, {
+      headers: { cookie: request.headers.get("cookie") ?? "" },
+    });
+    if (!res.ok) return undefined;
+    const data = await res.json().catch(() => null);
+    return !!data?.session;
+  } catch {
+    return undefined;
+  }
+};
+
 export const isAuthenticated = async (request: NextRequest) => {
   try {
     if (hasBetterAuthSession(request)) return true;

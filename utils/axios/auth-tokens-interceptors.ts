@@ -47,7 +47,10 @@ export const registerAuthTokenResponseInterceptor = (
                 "Bearer " + newAuthTokens.access_token;
               return axiosInstance(originalRequest);
             }
-          } catch (error: any) {
+          } catch {
+            // A failed token refresh must NOT mask the original 401: callers
+            // (e.g. useUser's stale-session self-healing) key off the 401.
+            // Reject with the original error, not the refresh error.
             return Promise.reject(error);
           }
         }
