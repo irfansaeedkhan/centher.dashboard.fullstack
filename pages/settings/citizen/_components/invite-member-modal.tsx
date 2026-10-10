@@ -3,7 +3,6 @@ import { IoClose } from "react-icons/io5";
 import { CgSpinner } from "react-icons/cg";
 import toast from "react-hot-toast";
 import ModalContainer from "@/components/modal/modal-container";
-import { ZeroAddress } from "@/web3/constants/common";
 import { OrgMember, inviteOrgMember } from "@/lib/org-team-members";
 import { SearchResultWithType, search } from "@/lib/search";
 import { SearchedUser } from "./searched-user";
@@ -61,12 +60,8 @@ export const InviteMemberModal: React.FC<Props> = ({ isOpen, onClose }) => {
         throw new Error("Title must be at most 100 characters.");
       }
 
-      if (
-        !newOrgMember.user_id.trim().startsWith("0x") ||
-        newOrgMember.user_id.trim().length !== 42
-      ) {
-        throw new Error("Account address is incorrect.");
-      }
+      // Phase 4: user ids are Better Auth ids (not only 0x addresses) — the
+      // server 404s unknown users honestly, so any non-empty id is accepted.
     } catch (e: any) {
       setNewMemberError(e.message);
       if (button) {
@@ -131,7 +126,7 @@ export const InviteMemberModal: React.FC<Props> = ({ isOpen, onClose }) => {
         <form onSubmit={handleSendInvite}>
           <div className="relative space-y-1.5">
             <label htmlFor="user_id" className="text-sm font-normal text-white">
-              Account Address
+              Search and select a user
             </label>
             <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
               <input
@@ -139,7 +134,7 @@ export const InviteMemberModal: React.FC<Props> = ({ isOpen, onClose }) => {
                 name="user_id"
                 id="user_id"
                 className="w-full rounded-lg border-none bg-black-shade-3 px-4 py-3 text-sm font-medium text-white focus:outline-none focus:ring-0"
-                placeholder={ZeroAddress}
+                placeholder="Type to search users…"
                 value={newOrgMember.user_id}
                 onChange={handleNewMemberUserIdChange}
                 autoComplete="off"

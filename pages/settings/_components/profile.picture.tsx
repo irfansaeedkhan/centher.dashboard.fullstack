@@ -144,6 +144,9 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
           "Profile image is too large. Please upload an image less than 5MB.";
       } else if (error.response?.data?.message_description) {
         errorMsg = error.response.data.message_description;
+      } else if (typeof error.response?.data?.message === "string") {
+        // Phase 4: surface the API's honest message (e.g. 501 NOT_IMPLEMENTED).
+        errorMsg = error.response.data.message;
       }
 
       toast.error(errorMsg);
