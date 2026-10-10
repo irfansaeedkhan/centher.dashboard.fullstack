@@ -1332,7 +1332,12 @@ export const createHonoApp = () => {
   });
 
   app.get("/socials/posts/mention", async (c) => {
-    const q = (c.req.query("q") || "").trim();
+    // Sanitize BEFORE use: LIKE wildcards (% / _) and the escape char (\)
+    // are stripped first, so q="%" or "_" can never dump the user directory
+    // (this endpoint is intentionally public for the compose mention picker).
+    const sanitized = (c.req.query("q") ?? "").replace(/[%_\\]/g, "").trim();
+    if (!sanitized) return c.json({ mention_users: [] });
+    const q = z.string().min(1).max(100).parse(sanitized);
     const limit = z.coerce
       .number()
       .int()
@@ -1349,15 +1354,14 @@ export const createHonoApp = () => {
         avatarUrl: profiles.avatarUrl,
         membership: profiles.membership,
         username: profiles.username,
+        mentionPermission: profiles.mentionPermission,
       })
       .from(profiles)
       .where(
-        q
-          ? or(
-              ilike(profiles.displayName, pattern),
-              ilike(profiles.username, pattern)
-            )
-          : undefined
+        or(
+          ilike(profiles.displayName, pattern),
+          ilike(profiles.username, pattern)
+        )
       )
       .limit(limit);
 
@@ -1373,7 +1377,8 @@ export const createHonoApp = () => {
             (row.membership as "citizen" | "verified" | "none") || "citizen",
           endAt: 0,
         },
-        mention_permission: "everyone" as const,
+        mention_permission: (row.mentionPermission ??
+          "everyone") as (typeof MENTION_PERMISSIONS)[number],
       })),
     });
   });
