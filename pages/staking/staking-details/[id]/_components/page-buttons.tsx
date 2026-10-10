@@ -32,15 +32,8 @@ const PageButtonsWrapper: FC<Props> = ({ children, stakingPool }) => {
         >
           My Staking
         </Link>
-        <Link
-          href={`/staking/staking-details/${poolId}/rewards`}
-          className={clsx(
-            router.pathname.includes("rewards") && "myBox font-medium",
-            "w-fit flex-shrink-0 px-4 py-1.5 text-xs leading-5 text-white fxm:text-sm fxm:leading-6"
-          )}
-        >
-          Claim Rewards
-        </Link>
+        {/* Claim Rewards lives on this page (RewardsTabs below) — the old
+            /rewards sub-route never existed, so the tab was link-dead. */}
         {stakingPool?.multilevel_rewards != "No referral" && (
           <Link
             href={`/staking/staking-details/${poolId}/referrals`}
