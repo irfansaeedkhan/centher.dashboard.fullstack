@@ -3,6 +3,7 @@ import type { NextRequest } from "next/server";
 import {
   changePaths,
   checkMatch,
+  hasValidSession,
   isAdmin,
   isAuthenticated,
   isCitizen,
@@ -46,8 +47,18 @@ export async function middleware(request: NextRequest) {
     }
   }
 
+  // Only-public pages (login/register): validate the session for real instead
+  // of trusting cookie presence. A dead-but-present session cookie must NOT
+  // bounce the user to /feed — the login form has to stay reachable so the
+  // trap can never form, no matter what the client does. Fail open to the
+  // presence-based check if the validator itself is unreachable.
   if (checkMatch(request.nextUrl, onlyPublicPages)) {
-    if (await isAuthenticated(request)) {
+    const validSession = await hasValidSession(request);
+    const authenticated =
+      validSession === undefined
+        ? await isAuthenticated(request)
+        : validSession;
+    if (authenticated) {
       return NextResponse.redirect(
         `${request.nextUrl.origin}${AppRoutes.feed.index}`
       );
