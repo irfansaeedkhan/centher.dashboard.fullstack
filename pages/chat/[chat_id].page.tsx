@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import clsx from "clsx";
 import toast from "react-hot-toast";
 import { NextPageWithLayout } from "@/pages/_app.page";
-import { ChatPagesWrapper } from "@/components/all.pages.wrapper/chat.pages.wrapper";
+import { ChatLayout } from "./_components/chat.layout";
 import { BackButton } from "@/components/button/back-button";
 import { useChatMessages } from "@/hooks/chat/useChat";
 import { chatApi } from "@/lib/chat/api";
@@ -130,14 +130,12 @@ const SingleChat: NextPageWithLayout = () => {
               key={m.id}
               message={m}
               mine={m.sender_id === myId}
-              onReact={() =>
-                setReactionFor(reactionFor === m.id ? null : m.id)
-              }
+              onReact={() => setReactionFor(reactionFor === m.id ? null : m.id)}
               showReactions={reactionFor === m.id}
               onPickEmoji={(emoji) => {
                 setReactionFor(null);
                 toggleReaction(m.id, emoji).catch((e: any) =>
-                  toast.error(e?.message || "Could not react")
+                  toast.error(e?.message || "Could not react"),
                 );
               }}
               onEdit={() => {
@@ -154,7 +152,9 @@ const SingleChat: NextPageWithLayout = () => {
       <div className="border-t border-gray-shade-3 px-4 py-3">
         {editing && (
           <div className="mb-2 flex items-center justify-between rounded-lg bg-elevation-1 px-3 py-2">
-            <p className="truncate text-xs text-gray-shade-7">Editing message</p>
+            <p className="truncate text-xs text-gray-shade-7">
+              Editing message
+            </p>
             <button
               className="text-xs text-gray-shade-7 hover:text-white"
               onClick={() => {
@@ -192,7 +192,9 @@ const SingleChat: NextPageWithLayout = () => {
       {confirmDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
           <div className="w-full max-w-sm rounded-2xl bg-elevation-2 p-6">
-            <h3 className="text-lg font-semibold text-white">Delete message?</h3>
+            <h3 className="text-lg font-semibold text-white">
+              Delete message?
+            </h3>
             <p className="mt-2 text-sm text-gray-shade-7">
               This message will be permanently removed.
             </p>
@@ -244,7 +246,10 @@ const MessageBubble: React.FC<{
 }) => {
   return (
     <div
-      className={clsx("group mb-3 flex", mine ? "justify-end" : "justify-start")}
+      className={clsx(
+        "group mb-3 flex",
+        mine ? "justify-end" : "justify-start",
+      )}
     >
       <div className="max-w-[75%] sm:max-w-[60%]">
         {!mine && (
@@ -257,7 +262,7 @@ const MessageBubble: React.FC<{
             "relative rounded-2xl px-4 py-2",
             mine
               ? "rounded-br-md bg-primary text-white"
-              : "rounded-bl-md bg-elevation-1 text-white"
+              : "rounded-bl-md bg-elevation-1 text-white",
           )}
         >
           <p className="whitespace-pre-wrap break-words text-sm">
@@ -266,7 +271,7 @@ const MessageBubble: React.FC<{
           <p
             className={clsx(
               "mt-1 text-right text-[10px]",
-              mine ? "text-white/70" : "text-gray-shade-7"
+              mine ? "text-white/70" : "text-gray-shade-7",
             )}
           >
             {getMessageTime(message.created_at)}
@@ -323,7 +328,7 @@ const MessageBubble: React.FC<{
                   "rounded-full px-2 py-0.5 text-xs",
                   r.reacted_by_me
                     ? "bg-primary/30 text-white"
-                    : "bg-elevation-1 text-gray-shade-7"
+                    : "bg-elevation-1 text-gray-shade-7",
                 )}
               >
                 {r.emoji} {r.count}
@@ -336,8 +341,6 @@ const MessageBubble: React.FC<{
   );
 };
 
-SingleChat.getLayout = (page) => (
-  <ChatPagesWrapper pageTitle="Chat">{page}</ChatPagesWrapper>
-);
+SingleChat.getLayout = (page) => <ChatLayout>{page}</ChatLayout>;
 
 export default SingleChat;
