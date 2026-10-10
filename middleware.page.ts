@@ -94,6 +94,14 @@ const publicOrAuthenticatedPages = changePaths(_publicOrAuthenticatedPages);
 
 // Admin Only Pages
 const _adminPages: string[] = [
+  AppRoutes.admin.index,
+  AppRoutes.admin.staking_packs,
+  AppRoutes.admin.create_staking_pack,
+  AppRoutes.admin.update_staking_pack,
+  AppRoutes.admin.users,
+  AppRoutes.admin.network_rewards,
+  AppRoutes.admin.network_rewards_marketplace,
+  AppRoutes.admin.network_rewards_UpdateContract,
   AppRoutes.admin.registration,
   AppRoutes.admin.registration_setting,
 ];

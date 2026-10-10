@@ -6,9 +6,7 @@ import { StakingPackCard } from "./admin.coinpack.card";
 import { StakingPackList } from "./admin.coinpack.list";
 
 export const StakingPacks: NextPage = () => {
-  const [tab, setTab] = useState<
-    "CoinPack" | "StakingFeeDetails" | "StakingPurchase" | "PackClaimRewards"
-  >("CoinPack");
+  const [tab, setTab] = useState<"CoinPack" | "StakingFeeDetails">("CoinPack");
 
   return (
     <div className="stakingpack min-h-screen w-full bg-black-shade-3 p-4 font-monto lg:pl-7 lg:pt-8">
@@ -25,20 +23,6 @@ export const StakingPacks: NextPage = () => {
           variant={tab === "StakingFeeDetails" ? "primary" : "secondary"}
           onClick={() => {
             setTab("StakingFeeDetails");
-          }}
-        />
-        <Button
-          title={"Staking Purchase"}
-          variant={tab === "StakingPurchase" ? "primary" : "secondary"}
-          onClick={() => {
-            setTab("StakingPurchase");
-          }}
-        />
-        <Button
-          title={"Pack Claim Rewards"}
-          variant={tab === "PackClaimRewards" ? "primary" : "secondary"}
-          onClick={() => {
-            setTab("PackClaimRewards");
           }}
         />
       </div>

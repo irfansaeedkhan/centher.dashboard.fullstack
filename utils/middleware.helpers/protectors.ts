@@ -87,6 +87,25 @@ const ADMIN_ACCOUNT_ADDRESS =
     : "0xcBe3a6B073d1460Cc642fC686769A2EB6aF32fa7";
 
 export const isAdmin = async (request: NextRequest) => {
+  // 1. Better Auth session → server-side is_admin flag (source of truth).
+  // Edge-safe: same pattern as hasValidSession (auth-trap fix).
+  try {
+    const url = new URL("/api/admin/check", request.url);
+    const res = await fetch(url, {
+      headers: { cookie: request.headers.get("cookie") ?? "" },
+    });
+    if (res.ok) {
+      const data = await res.json().catch(() => null);
+      if (data?.is_admin === true) return true;
+    }
+    // 403 = authenticated but not an admin → definitive, don't fall through.
+    if (res.status === 403) return false;
+    // 401 / network error → fall through to the legacy wallet check.
+  } catch {
+    // Validator unreachable → fall through to the legacy wallet check.
+  }
+
+  // 2. Legacy wallet-address check (fallback for the old auth path).
   try {
     const authTokens = getAuthTokensFromRequest(request);
 
