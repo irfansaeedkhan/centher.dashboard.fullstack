@@ -4,6 +4,7 @@ import { z } from "zod";
 import { and, asc, desc, eq, gt, ilike, inArray, ne, or, sql } from "drizzle-orm";
 import { db } from "@/db";
 import {
+  autoRestakeSettings,
   channels,
   channelMessages,
   citizenships,
@@ -2409,32 +2410,7 @@ export const createHonoApp = () => {
 
   // Phase 6: replaced by the CFS-mapped version below.
 
-  app.get("/staking/pools", async (c) => {
-    const rows = await db
-      .select()
-      .from(stakingPools)
-      .orderBy(desc(stakingPools.createdAt));
-    return c.json({ data: rows });
-  });
-
-  app.get("/launchpads", async (c) => {
-    const rows = await db
-      .select()
-      .from(launchpads)
-      .orderBy(desc(launchpads.createdAt));
-    return c.json({ data: rows });
-  });
-
-  app.get("/citizenship/me", async (c) => {
-    const userId = c.get("userId");
-    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
-    const [row] = await db
-      .select()
-      .from(citizenships)
-      .where(eq(citizenships.userId, userId!))
-      .limit(1);
-    return c.json({ data: row ?? null });
-  });
+  // Phase 7: replaced by the mapped/filtered versions below.
 
   app.get("/profiles/:userId", async (c) => {
     const userId = c.req.param("userId");
@@ -3360,6 +3336,197 @@ export const createHonoApp = () => {
         code: "IPFS_UPLOAD_UNAVAILABLE",
       },
       501
+    );
+  });
+
+  /**
+   * Phase 7: staking / launchpad / citizenship read layer + auto-restake.
+   * The on-chain (ethers) flows stay where they work; these REST endpoints
+   * back the list pages and toggles that were hanging on dead services.
+   */
+
+  // ---- Auto-restake (per-user pool id list) ----
+
+  const getAutoRestakeIds = async (userId: string): Promise<string[]> => {
+    const [row] = await db
+      .select()
+      .from(autoRestakeSettings)
+      .where(eq(autoRestakeSettings.userId, userId))
+      .limit(1);
+    return row?.poolIds ?? [];
+  };
+
+  // The client compares with `auto_restake.includes(+poolId)` — return
+  // numeric ids as numbers.
+  const toAutoRestakeResponse = (userId: string, poolIds: string[]) => ({
+    _id: userId,
+    auto_restake: poolIds.map((id) => {
+      const n = Number(id);
+      return id.trim() !== "" && Number.isFinite(n) ? n : id;
+    }),
+  });
+
+  const getAutoRestake = async (userId: string) =>
+    toAutoRestakeResponse(userId, await getAutoRestakeIds(userId));
+
+  app.get("/auto-restake", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    return c.json(await getAutoRestake(userId!));
+  });
+
+  app.patch("/auto-restake", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const body = z
+      .object({
+        pool_id: z.union([z.string(), z.number()]),
+        is_auto_restake_enabled: z.boolean(),
+      })
+      .parse(await c.req.json());
+    const poolId = String(body.pool_id);
+
+    const currentIds = await getAutoRestakeIds(userId!);
+    const next = body.is_auto_restake_enabled
+      ? [...new Set([...currentIds, poolId])]
+      : currentIds.filter((id) => id !== poolId);
+
+    await db
+      .insert(autoRestakeSettings)
+      .values({ userId: userId!, poolIds: next })
+      .onConflictDoUpdate({
+        target: autoRestakeSettings.userId,
+        set: { poolIds: next, updatedAt: new Date() },
+      });
+    return c.json(toAutoRestakeResponse(userId!, next));
+  });
+
+  // ---- Launchpads ----
+
+  const mapLaunchpad = (row: typeof launchpads.$inferSelect) => ({
+    id: row.id,
+    name: row.name,
+    symbol: row.symbol,
+    status: row.status,
+    raised: row.raised,
+    soft_cap: row.softCap,
+    created_at: row.createdAt,
+  });
+
+  app.get("/launchpads", async (c) => {
+    const { list_type } = z
+      .object({ list_type: z.string().optional() })
+      .parse(c.req.query());
+    const where =
+      list_type === "live"
+        ? eq(launchpads.status, "live")
+        : list_type === "upcoming"
+          ? eq(launchpads.status, "upcoming")
+          : undefined;
+    const rows = await db
+      .select()
+      .from(launchpads)
+      .where(where)
+      .orderBy(desc(launchpads.createdAt));
+    return c.json({ launchpads: rows.map(mapLaunchpad) });
+  });
+
+  app.get("/launchpads/:id", async (c) => {
+    const id = z.string().uuid().parse(c.req.param("id"));
+    const [row] = await db
+      .select()
+      .from(launchpads)
+      .where(eq(launchpads.id, id))
+      .limit(1);
+    if (!row) apiError("Launchpad not found", "NOT_FOUND", 404);
+    return c.json(mapLaunchpad(row!));
+  });
+
+  // ---- Staking pools ----
+
+  const mapStakingPool = (row: typeof stakingPools.$inferSelect) => ({
+    id: row.id,
+    name: row.name,
+    apy: row.apy,
+    tvl: row.tvl,
+    status: row.status,
+    created_at: row.createdAt,
+  });
+
+  app.get("/staking/pools", async (c) => {
+    const rows = await db
+      .select()
+      .from(stakingPools)
+      .orderBy(desc(stakingPools.createdAt));
+    return c.json({ pools: rows.map(mapStakingPool) });
+  });
+
+  app.get("/staking/pools/:id", async (c) => {
+    const id = z.string().uuid().parse(c.req.param("id"));
+    const [row] = await db
+      .select()
+      .from(stakingPools)
+      .where(eq(stakingPools.id, id))
+      .limit(1);
+    if (!row) apiError("Staking pool not found", "NOT_FOUND", 404);
+    return c.json(mapStakingPool(row!));
+  });
+
+  // ---- Citizenship ----
+
+  app.get("/citizenship", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const [row] = await db
+      .select()
+      .from(citizenships)
+      .where(eq(citizenships.userId, userId!))
+      .limit(1);
+    return c.json({
+      citizenship: row
+        ? {
+            id: row.id,
+            status: row.status,
+            tier: row.tier,
+            created_at: row.createdAt,
+          }
+        : null,
+    });
+  });
+
+  // Records a citizenship purchase (called after the on-chain tx succeeds;
+  // the chain remains the source of truth for the token itself).
+  app.post("/citizenship/purchase", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const body = z
+      .object({
+        tier: z.string().trim().min(1).max(50).optional(),
+        tx_hash: z.string().trim().max(120).optional(),
+      })
+      .parse(await c.req.json().catch(() => ({})));
+
+    const [row] = await db
+      .insert(citizenships)
+      .values({ userId: userId!, tier: body.tier ?? "standard" })
+      .onConflictDoUpdate({
+        target: citizenships.userId,
+        set: {
+          status: "active",
+          tier: body.tier ?? "standard",
+        },
+      })
+      .returning();
+    return c.json(
+      {
+        citizenship: {
+          id: row.id,
+          status: row.status,
+          tier: row.tier,
+          created_at: row.createdAt,
+        },
+      },
+      201
     );
   });
 

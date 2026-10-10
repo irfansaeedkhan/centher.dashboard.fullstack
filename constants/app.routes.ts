@@ -99,7 +99,8 @@ export const AppRoutes = {
     network_genealogy: "/network-genealogy",
     overview: "/network-rewards/overview",
     network_rewards: "/network-rewards/rewards",
-    liscense: "/network-rewards/liscense",
+    license: "/network-rewards/license",
+    liscense: "/network-rewards/license", // deprecated alias (typo route)
   },
 
   profits_dashboard: "/profits-dashboard",

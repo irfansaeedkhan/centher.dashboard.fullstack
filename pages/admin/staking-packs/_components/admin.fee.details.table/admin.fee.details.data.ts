@@ -1,86 +1,18 @@
-export const AdminFeeDetailsData = [
-  {
-    email: "talha@gmail.com",
-    public_key: "0xsdjk32342",
-    date: "2021-05-1",
-    transaction_hash: "0xjksdjk32342",
-    transaction_detail: "0x2342dskd",
-    transaction_valid: true,
-    issue: "--",
-    amount: "1000",
-    status: "success",
-    amount_in_bnb: 100,
-    correct_in_bnb: 100,
-    in_difference: "%",
-  },
-  {
-    email: "talha@gmail.com",
-    public_key: "0xsdjk32342",
-    date: "2021-05-1",
-    transaction_hash: "0xjksdjk322342",
-    transaction_detail: "0x2342dskd",
-    transaction_valid: true,
-    issue: "--",
-    amount: "1000",
-    status: "success",
-    amount_in_bnb: 100,
-    correct_in_bnb: 100,
-    in_difference: "%",
-  },
-  {
-    email: "talha@gmail.com",
-    public_key: "0xsdjk32342",
-    date: "2021-05-1",
-    transaction_hash: "1xjksdjk322342",
-    transaction_detail: "0x2342dskd",
-    transaction_valid: true,
-    issue: "--",
-    amount: "1000",
-    status: "success",
-    amount_in_bnb: 100,
-    correct_in_bnb: 100,
-    in_difference: "%",
-  },
-  {
-    email: "talha@gmail.com",
-    public_key: "0xsdjk32342",
-    date: "2021-05-1",
-    transaction_hash: "2xjksdjk322342",
-    transaction_detail: "0x2342dskd",
-    transaction_valid: true,
-    issue: "--",
-    amount: "1000",
-    status: "success",
-    amount_in_bnb: 100,
-    correct_in_bnb: 100,
-    in_difference: "%",
-  },
-  {
-    email: "talha@gmail.com",
-    public_key: "0xsdjk32342",
-    date: "2021-05-1",
-    transaction_hash: "3xjksdjk322342",
-    transaction_detail: "0x2342dskd",
-    transaction_valid: true,
-    issue: "--",
-    amount: "1000",
-    status: "success",
-    amount_in_bnb: 100,
-    correct_in_bnb: 100,
-    in_difference: "%",
-  },
-  {
-    email: "talha@gmail.com",
-    public_key: "0xsdjk32342",
-    date: "2021-05-1",
-    transaction_hash: "4xjksdjk322342",
-    transaction_detail: "0x2342dskd",
-    transaction_valid: true,
-    issue: "--",
-    amount: "1000",
-    status: "success",
-    amount_in_bnb: 100,
-    correct_in_bnb: 100,
-    in_difference: "%",
-  },
-];
+// Fee details are on-chain records. There is no backend for them yet,
+// so the table renders an honest empty state instead of dummy rows.
+export interface AdminFeeDetail {
+  email: string;
+  public_key: string;
+  date: string;
+  transaction_hash: string;
+  transaction_detail: string;
+  transaction_valid: boolean;
+  issue: string;
+  amount: string;
+  status: string;
+  amount_in_bnb: number;
+  correct_in_bnb: number;
+  in_difference: string;
+}
+
+export const AdminFeeDetailsData: AdminFeeDetail[] = [];

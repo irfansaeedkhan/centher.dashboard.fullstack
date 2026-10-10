@@ -10,6 +10,8 @@ import { CitizenShipType, useCitizenStore } from "@/store/citizen.store";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { useWallet } from "@/web3/hooks/use.wallet";
+import { axiosApi369x } from "@/utils/axios/centher-api";
+import { customLog } from "@/utils/custom.log";
 import { formatEther2Number } from "@/utils/format.address";
 import cn from "@/utils/cn";
 import { CitizenShipSuccessModal } from "./success-modal";
@@ -91,6 +93,12 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
     try {
       if (connectedAddress) {
         await buyCitizenShip(getSigner()!, tab, connectedAddress);
+        // Record the purchase server-side (chain stays source of truth).
+        try {
+          await axiosApi369x.post("/api/citizenship/purchase", { tier: tab });
+        } catch (e) {
+          customLog(["development", "staging"], "citizenship record failed", e);
+        }
         setshowMsg(<CitizenShipSuccessModal />);
       }
     } catch (error: any) {

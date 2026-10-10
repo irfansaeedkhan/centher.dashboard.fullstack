@@ -353,3 +353,15 @@ export const messageReactions = pgTable(
     ),
   ]
 );
+
+/** Phase 7: per-user auto-restake pool ids (staking rewards). */
+export const autoRestakeSettings = pgTable("auto_restake_settings", {
+  userId: text("user_id")
+    .primaryKey()
+    .references(() => user.id, { onDelete: "cascade" }),
+  poolIds: text("pool_ids")
+    .array()
+    .notNull()
+    .default(sql`'{}'::text[]`),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
