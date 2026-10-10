@@ -17,18 +17,18 @@ import { collections, nfts, user } from "../db/schema";
 
 const url = readFileSync(
   process.env.HOME + "/.neon-centher-db-url",
-  "utf8"
+  "utf8",
 ).trim();
 const db = drizzle(neon(url));
 
 const pic = (seed: string) => `https://picsum.photos/seed/${seed}/800/600`;
 
-// Public sample media
+// Public sample media (verified 200/206, video/mp4)
 const VIDEOS = [
-  "https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-  "https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
-  "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-  "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+  "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+  "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_1MB.mp4",
+  "https://test-videos.co.uk/vids/jellyfish/mp4/h264/720/Jellyfish_720_10s_1MB.mp4",
+  "https://filesamples.com/samples/video/mp4/sample_640x360.mp4",
 ];
 const AUDIOS = [
   "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
@@ -60,7 +60,7 @@ async function ensureNft(opts: {
     .select({ id: nfts.id })
     .from(nfts)
     .where(
-      and(eq(nfts.collectionId, opts.collectionId), eq(nfts.name, opts.name))
+      and(eq(nfts.collectionId, opts.collectionId), eq(nfts.name, opts.name)),
     )
     .limit(1);
   if (existing[0]) return existing[0].id;
@@ -84,7 +84,7 @@ async function ensureNft(opts: {
 async function tableExists(name: string): Promise<boolean> {
   const sql = neon(url);
   const r = await sql.query(
-    `SELECT 1 FROM information_schema.tables WHERE table_name='${name}' LIMIT 1`
+    `SELECT 1 FROM information_schema.tables WHERE table_name='${name}' LIMIT 1`,
   );
   return (r as unknown[]).length > 0;
 }
@@ -92,15 +92,17 @@ async function tableExists(name: string): Promise<boolean> {
 async function ensureBid(
   nftId: string,
   bidderId: string,
-  amount: string
+  amount: string,
 ): Promise<void> {
   const sql = neon(url);
   const existing = await sql.query(
-    `SELECT id FROM nft_bids WHERE nft_id='${nftId}' AND bidder_id='${bidderId}' AND amount_bnb='${amount}' LIMIT 1`
+    "SELECT id FROM nft_bids WHERE nft_id=$1 AND bidder_id=$2 AND amount_bnb=$3 LIMIT 1",
+    [nftId, bidderId, amount],
   );
   if ((existing as unknown[]).length > 0) return;
   await sql.query(
-    `INSERT INTO nft_bids (nft_id, bidder_id, amount_bnb, status) VALUES ('${nftId}','${bidderId}','${amount}','active')`
+    "INSERT INTO nft_bids (nft_id, bidder_id, amount_bnb, status) VALUES ($1,$2,$3,'active')",
+    [nftId, bidderId, amount],
   );
 }
 
@@ -150,37 +152,37 @@ async function main() {
     throw new Error("collections missing — run seed-phase12 first");
   }
 
-  let created = 0;
+  let touched = 0;
   const track = async (p: Promise<string>) => {
     await p;
-    created++;
+    touched++;
   };
 
   // --- 2. VIDEO NFTs (4) ---
   const videoDefs = [
     [
+      "Bloom in Motion",
+      "A flower blooms in vivid detail — nature loop.",
+      VIDEOS[0],
+      "centher-video-bloom",
+    ],
+    [
       "Big Buck Bunny",
       "A giant rabbit takes revenge — animated classic.",
-      VIDEOS[0],
+      VIDEOS[1],
       "centher-video-bbb",
     ],
     [
-      "Elephants Dream",
-      "Surreal journey through an infinite machine.",
-      VIDEOS[1],
-      "centher-video-ed",
-    ],
-    [
-      "For Bigger Blazes",
-      "Chromecast promo — fire and motion.",
+      "Jellyfish Drift",
+      "Graceful jellyfish drifting through deep blue.",
       VIDEOS[2],
-      "centher-video-blazes",
+      "centher-video-jelly",
     ],
     [
-      "For Bigger Escapes",
-      "Adventure awaits — cinematic escape.",
+      "Sample Reel",
+      "Demo video NFT — motion and color study.",
       VIDEOS[3],
-      "centher-video-escapes",
+      "centher-video-sample",
     ],
   ];
   for (const [name, desc, videoUrl, seed] of videoDefs) {
@@ -194,7 +196,7 @@ async function main() {
         price: "1.5000",
         mediaType: "video",
         animationUrl: videoUrl,
-      })
+      }),
     );
   }
 
@@ -219,7 +221,7 @@ async function main() {
         price: "0.7500",
         mediaType: "audio",
         animationUrl: audioUrl,
-      })
+      }),
     );
   }
 
@@ -285,7 +287,7 @@ async function main() {
       price,
     });
     buyableIds.push(id);
-    created++;
+    touched++;
   }
 
   // --- 5. With ACTIVE BIDS (3) ---
@@ -325,7 +327,7 @@ async function main() {
       ownerId: owner,
       price,
     });
-    created++;
+    touched++;
     if (hasBids) {
       // Multiple bidders, escalating amounts
       await ensureBid(id, demoId, (parseFloat(price) * 0.8).toFixed(4));
@@ -371,7 +373,7 @@ async function main() {
         ownerId: owner,
         price,
         listed: false,
-      })
+      }),
     );
   }
 
@@ -401,7 +403,7 @@ async function main() {
       ownerId: demoId,
       price,
     });
-    created++;
+    touched++;
     if (hasBids) {
       await ensureBid(id, leo, (parseFloat(price) * 0.7).toFixed(4));
       await ensureBid(id, sofia, (parseFloat(price) * 0.85).toFixed(4));
@@ -409,9 +411,9 @@ async function main() {
   }
 
   console.log(
-    `Phase 14 seed done. NFTs touched: ${created}. Bids table: ${
+    `Phase 14 seed done. NFTs touched: ${touched}. Bids table: ${
       hasBids ? "seeded" : "skipped (no table)"
-    }`
+    }`,
   );
 }
 
