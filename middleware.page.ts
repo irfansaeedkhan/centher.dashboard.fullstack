@@ -11,6 +11,18 @@ import {
 import { AppRoutes } from "@/constants/app.routes";
 
 export async function middleware(request: NextRequest) {
+  // Dev-only pages: not found in production/staging.
+  if (checkMatch(request.nextUrl, devOnlyPages)) {
+    if (
+      process.env.NEXT_PUBLIC_APP_ENV === "production" ||
+      process.env.NEXT_PUBLIC_APP_ENV === "staging"
+    ) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/404";
+      return NextResponse.rewrite(url);
+    }
+  }
+
   if (checkMatch(request.nextUrl, publicOrAuthenticatedPages)) {
     return NextResponse.next();
   }
@@ -92,6 +104,11 @@ const onlyPublicPages = changePaths(_onlyPublicPages);
 const _publicOrAuthenticatedPages: string[] = [AppRoutes.terms];
 const publicOrAuthenticatedPages = changePaths(_publicOrAuthenticatedPages);
 
+// Dev-only pages (hardcoded test payloads) — 404 in production/staging.
+// Phase 9: /ui-test and /stream are developer tools, not user features.
+const _devOnlyPages: string[] = ["/ui-test", "/stream"];
+const devOnlyPages = changePaths(_devOnlyPages);
+
 // Admin Only Pages
 const _adminPages: string[] = [
   AppRoutes.admin.index,
@@ -171,28 +188,18 @@ const _citizenOnlyPages: string[] = [
 ];
 const citizenOnlyPages = changePaths(_citizenOnlyPages);
 
-// Coming soon pages - redirect to feed page
+// Coming soon pages - redirect to the coming-soon page in production/staging.
+// Phase 9: reconciled — /staking-packs (Phase 7), /network-rewards/license
+// (Phase 7 typo fix), and all /admin/* (Phase 8) are real pages now and were
+// removed from this list. The remaining entries are genuinely not ready
+// (missing pages or unverified).
 const _notReadyPages: string[] = [
   AppRoutes.referral.network_genealogy,
   AppRoutes.referral.overview,
   AppRoutes.referral.network_rewards,
-  AppRoutes.referral.liscense,
 
   AppRoutes.profits_dashboard,
   AppRoutes.voting_chain,
-  AppRoutes.staking_packs,
   AppRoutes.liquidity_pool,
-
-  AppRoutes.admin.index,
-  AppRoutes.admin.staking_packs,
-  AppRoutes.admin.create_staking_pack,
-  AppRoutes.admin.update_staking_pack,
-  AppRoutes.admin.influencer_requests,
-  AppRoutes.admin.influencer_details,
-  AppRoutes.admin.transactions,
-  AppRoutes.admin.users,
-  AppRoutes.admin.network_rewards,
-  AppRoutes.admin.network_rewards_marketplace,
-  AppRoutes.admin.network_rewards_UpdateContract,
 ];
 const notReadyPages = changePaths(_notReadyPages);
