@@ -219,6 +219,7 @@ export const collections = pgTable("collections", {
   name: text("name").notNull(),
   description: text("description").default(""),
   imageUrl: text("image_url"),
+  bannerUrl: text("banner_url"),
   creatorId: text("creator_id")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
@@ -238,6 +239,8 @@ export const nfts = pgTable("nfts", {
     .references(() => user.id, { onDelete: "cascade" }),
   price: numeric("price", { precision: 18, scale: 4 }).notNull().default("0"),
   listed: boolean("listed").notNull().default(true),
+  mediaType: text("media_type").notNull().default("image"),
+  animationUrl: text("animation_url"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 

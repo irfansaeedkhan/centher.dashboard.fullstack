@@ -3010,7 +3010,7 @@ export const createHonoApp = () => {
       facebook: "",
       twitter: "",
       profileIPFSHash: c.imageUrl ?? "",
-      coverIPFSHash: "",
+      coverIPFSHash: c.bannerUrl ?? "",
     },
     creator_data: creatorCard,
   });
@@ -3023,7 +3023,11 @@ export const createHonoApp = () => {
     creatorCard: ReturnType<typeof cfsUserCard>
   ) => {
     const img = n.imageUrl ?? "";
-    const isVideo = /\.(mp4|webm|mov)(\?|$)/i.test(img);
+    const animUrl = n.animationUrl ?? "";
+    const mediaType = n.mediaType ?? "image";
+    const isVideo =
+      mediaType === "video" || /\.(mp4|webm|mov)(\?|$)/i.test(animUrl || img);
+    const isAudio = mediaType === "audio";
     return {
       id: n.id,
       collection: collectionId,
@@ -3032,7 +3036,7 @@ export const createHonoApp = () => {
         : new Date(0).toISOString(),
       creator: creatorId,
       mintHash: "",
-      ipfs: img,
+      ipfs: isVideo || isAudio ? animUrl || img : img,
       saleState: n.listed ? "Sale" : "NotForSale",
       tokenId: n.id,
       price: n.price ?? "0",
@@ -3051,8 +3055,8 @@ export const createHonoApp = () => {
         name: n.name,
         description: n.description ?? "",
         supply: 1,
-        image: img,
-        type: isVideo ? "video/mp4" : "image/png",
+        image: isVideo || isAudio ? animUrl || img : img,
+        type: isVideo ? "video/mp4" : isAudio ? "audio/mpeg" : "image/png",
         collection: collectionId,
         attributes: [] as unknown[],
         videoThumbnail: null as string | null,

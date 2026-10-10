@@ -92,17 +92,27 @@ async function ensureCollection(
   name: string,
   description: string,
   imageUrl: string,
-  creatorId: string
+  creatorId: string,
+  bannerUrl?: string
 ): Promise<string> {
   const existing = await db
     .select({ id: collections.id })
     .from(collections)
     .where(eq(collections.name, name))
     .limit(1);
-  if (existing[0]) return existing[0].id;
+  if (existing[0]) {
+    // Backfill banner on re-runs for existing collections.
+    if (bannerUrl) {
+      await db
+        .update(collections)
+        .set({ bannerUrl })
+        .where(eq(collections.id, existing[0].id));
+    }
+    return existing[0].id;
+  }
   const [row] = await db
     .insert(collections)
-    .values({ name, description, imageUrl, creatorId })
+    .values({ name, description, imageUrl, creatorId, bannerUrl })
     .returning({ id: collections.id });
   return row.id;
 }
@@ -384,20 +394,23 @@ async function main() {
   const neonDreams = await ensureCollection(
     "Neon Dreams",
     "Generative neon art by Nina Ross — 50 pieces of midnight color.",
-    pic("centher-collection-neon"),
-    nina
+    "/images/collections/neon-avatar.webp",
+    nina,
+    "/images/collections/neon-banner.jpg"
   );
   const pixelPioneers = await ensureCollection(
     "Pixel Pioneers",
     "Retro pixel avatars with on-chain traits.",
-    pic("centher-collection-pixel"),
-    leo
+    "/images/collections/pixel-avatar.webp",
+    leo,
+    "/images/collections/pixel-banner.jpg"
   );
   const stakingBadges = await ensureCollection(
     "Centher Staking Badges",
     "Soulbound badges for pool participants.",
-    pic("centher-collection-badges"),
-    demoId
+    "/images/collections/badges-avatar.webp",
+    demoId,
+    "/images/collections/badges-banner.jpg"
   );
 
   const nftDefs: [string, string, string, string, string, string][] = [
