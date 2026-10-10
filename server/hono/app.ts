@@ -1163,7 +1163,7 @@ export const createHonoApp = () => {
     await db.insert(follows).values({
       followerId: userId!,
       followingId: following_id,
-    });
+    }).onConflictDoNothing();
     await createNotification({
       userId: following_id,
       type: "follow",
@@ -1245,12 +1245,26 @@ export const createHonoApp = () => {
       );
     // Chats with inbound activity (messages from someone else) — the best
     // "needs attention" proxy without per-conversation read state.
+    // Scoped to conversations the viewer participates in (has sent a message
+    // in); otherwise every conversation with any inbound message inflates
+    // everyone's badge.
     const [{ count: chats }] = await db
       .select({
         count: sql<number>`count(distinct ${messages.conversationId})::int`,
       })
       .from(messages)
-      .where(ne(messages.senderId, userId!));
+      .where(
+        and(
+          ne(messages.senderId, userId!),
+          inArray(
+            messages.conversationId,
+            db
+              .select({ id: messages.conversationId })
+              .from(messages)
+              .where(eq(messages.senderId, userId!))
+          )
+        )
+      );
     return c.json({
       counts: { notifications: unread ?? 0, chats: chats ?? 0, none: 0 },
     });
@@ -1307,13 +1321,13 @@ export const createHonoApp = () => {
   // Search users by display name / username.
   app.get("/search", async (c) => {
     const viewerId = c.get("userId");
-    const q = z
-      .string()
-      .min(1)
-      .max(100)
-      .parse(c.req.query("q") ?? "");
+    // Sanitize BEFORE validating: LIKE wildcards (% / _) and the escape char
+    // (\) are stripped first, so q="%" or "_" can never match the directory.
+    const sanitized = (c.req.query("q") ?? "").replace(/[%_\\]/g, "").trim();
+    if (!sanitized) return c.json({ search_results: [] });
+    const q = z.string().min(1).max(100).parse(sanitized);
     const { limit, offset } = parseListQuery(c);
-    const like = `%${q.replace(/[%_]/g, "")}%`;
+    const like = `%${q}%`;
 
     const rows = await db
       .select({
