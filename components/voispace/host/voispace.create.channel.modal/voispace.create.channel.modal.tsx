@@ -8,6 +8,7 @@ import { useStream } from "@/hooks/stream/use.core";
 import useUser from "@/hooks/use.user";
 import { StreamAccessModeEnum } from "@/stream/enum/stream-access-mode.enum";
 import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
+import { isNextEnabled } from "./room-validation";
 import { CreateBroadcastDto } from "@/stream/types/Broadcast";
 import axios from "axios";
 
@@ -43,8 +44,15 @@ export interface SearchResultWithType {
 }
 
 export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
+  // Wrapped close: clear our own open state FIRST so the overlay unmounts
+  // immediately, then notify the parent. Prevents the z-2000 overlay leak
+  // where clicks were blocked after closing (only Esc dismissed it).
+  const handleCloseModal = useCallback(() => {
+    setCurrentModalIsOpen(false);
+    onClose();
+  }, [onClose]);
   const [currentStep, setCurrentStep] = useState<CreatRoomSteps>(
-    CreatRoomSteps.AMA_OR_LIVE
+    CreatRoomSteps.AMA_OR_LIVE,
   );
   const [loading, setLoading] = useState(false);
   const [roomCreationLoader, setRoomCreationLoader] = useState(false);
@@ -103,9 +111,8 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
     ) {
       const error = eventOnAMA?.data || eventOnLive?.data;
       toast.error(error);
-      onClose();
+      handleCloseModal();
       setRoomCreationLoader(false);
-      setCurrentModalIsOpen(false);
     }
 
     if (
@@ -118,10 +125,9 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
       setRoomData(null);
       setIsHostSettingsOpen(true);
       setRoomCreationLoader(false);
-      setCurrentModalIsOpen(false);
-      onClose();
+      handleCloseModal();
     }
-  }, [eventOnLive, eventOnAMA]);
+  }, [eventOnLive, eventOnAMA, handleCloseModal]);
 
   const generateImageUrl = (params: any): string => {
     if (params.type === "custom-image") {
@@ -139,7 +145,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
     try {
       if (
         !["image/jpeg", "image/png", "image/gif", "image/webp"].includes(
-          file.type
+          file.type,
         )
       ) {
         toast.error("Invalid file type. Please upload a valid image.");
@@ -151,7 +157,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
       // Get presigned URL for the image
       const { presignedPostData, objectName } = await getUserImageUploadUrl(
         file.name,
-        "cover_image"
+        "cover_image",
       );
 
       // Prepare form data for uploading the image
@@ -200,7 +206,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
         return updatedState;
       });
     },
-    [setFormState]
+    [setFormState],
   );
 
   const createRoom = async () => {
@@ -211,7 +217,10 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
         description: "",
         accessMode: formState.accessMode,
         type: formState.type,
-        image: formState.image as string,
+        image:
+          typeof formState.image === "string" && formState.image
+            ? formState.image
+            : "/images/placeholder-square.svg",
         invitedUsers:
           formState.accessMode === StreamAccessModeEnum.ACCESS_BY_INVITATION
             ? formState.invitedPrivateUsers.map((u) => u._id)
@@ -236,7 +245,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
         input,
         user._id,
         formState.audioDevice as MediaDeviceInfo,
-        formState.videoDevice as MediaDeviceInfo
+        formState.videoDevice as MediaDeviceInfo,
       );
     } catch (error) {
       console.error("Error creating public room:", error);
@@ -246,26 +255,16 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
   const handleNext = async () => {
     // Step 2: Validation for room title and image
     if (currentStep === CreatRoomSteps.PERMISSIONS_AND_DETAILS) {
-      if (!formState.name) {
+      if (!formState.name?.trim()) {
         toast.error("Room title is required.");
         return;
       }
 
-      if (!formState.image) {
-        toast.error("Image is required.");
+      // Device validation mirrors PermissionsAndDetails: require selected
+      // devices, but don't block when the browser has none available.
+      if (!permissionsValid) {
+        toast.error("Please select your audio/video devices to continue.");
         return;
-      }
-
-      if (formState.type === BroadcastTypeEnum.LIVE) {
-        if (
-          !formState.audioDevice?.deviceId ||
-          !formState.videoDevice?.deviceId
-        ) {
-          toast.error(
-            "Audio and video permissions are required for live sessions."
-          );
-          return;
-        }
       }
 
       try {
@@ -277,29 +276,19 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
       }
     }
 
-    // Step 3: Validation for audio device
+    // Step 3: Validation for devices (reuses the step-2 grace: permissionsValid
+    // holds its last value while PermissionsAndDetails is unmounted, and
+    // devices can't change between steps).
 
     if (currentStep === CreatRoomSteps.ACCESSIBILITY) {
       // Perform validation for Step 3
-      if (!formState.audioDevice) {
-        toast.error("Audio device is required.");
+      if (!permissionsValid) {
+        toast.error("Please select your audio/video devices to continue.");
         return;
       }
 
-      if (formState.type === BroadcastTypeEnum.LIVE) {
-        if (!formState.videoDevice) {
-          toast.error("Video device is required.");
-          return;
-        }
-      }
-
-      if (!formState.name) {
+      if (!formState.name?.trim()) {
         toast.error("Room title is required.");
-        return;
-      }
-
-      if (!formState.image) {
-        toast.error("Room image is required.");
         return;
       }
 
@@ -413,7 +402,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
   return (
     <ModalContainer
       modalId="create-room"
-      onClose={onClose}
+      onClose={handleCloseModal}
       isOpen={currentModalIsOpen}
       modalContentClassName="mobile-max:h-dvh max-w-[656px] p-0 mobile-max:rounded-none mobile-max:mx-0 rounded-3xl"
       shouldCloseOnEsc={true}
@@ -438,7 +427,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
               <span className="py-1 text-xl font-semibold text-white flg:hidden">
                 <CrossIcon
                   className="mx-auto min-w-[20px] shrink-0 cursor-pointer [&>*]:stroke-white"
-                  onClick={onClose}
+                  onClick={handleCloseModal}
                 />
               </span>
             )}
@@ -452,16 +441,16 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
               loading && currentStep === CreatRoomSteps.PERMISSIONS_AND_DETAILS
                 ? "Uploading..."
                 : roomCreationLoader
-                ? "setting up room..."
-                : currentStep === CreatRoomSteps.ROOM
-                ? "Submit"
-                : "Next"
+                  ? "setting up room..."
+                  : currentStep === CreatRoomSteps.ROOM
+                    ? "Submit"
+                    : "Next"
             }
             disabled={
               loading ||
               roomCreationLoader ||
               (currentStep === CreatRoomSteps.PERMISSIONS_AND_DETAILS &&
-                (!formState.name || !formState.image))
+                !isNextEnabled(formState.name, permissionsValid))
             }
             variant="primary"
             onClick={handleNext}

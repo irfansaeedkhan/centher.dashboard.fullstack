@@ -9,6 +9,7 @@ import useMediaDevices from "hooks/use.get.media.devices/index";
 
 import toast from "react-hot-toast";
 import { Room } from "../voispace.create.channel.modal";
+import { isDeviceStepValid } from "../room-validation";
 import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
 import CustomDropdownAll from "@/components/shared/custom-dropdown";
 
@@ -42,13 +43,26 @@ const PermissionsAndDetails = ({
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
-    const isValid =
-      formState.type === BroadcastTypeEnum.AMA
-        ? !!formState.audioDevice
-        : !!formState.audioDevice && !!formState.videoDevice;
-
-    setPermissionsValid(isValid);
-  }, [formState.audioDevice, formState.videoDevice, formState.type]);
+    setPermissionsValid(
+      isDeviceStepValid({
+        type: formState.type,
+        hasAudioDevice: !!formState.audioDevice,
+        hasVideoDevice: !!formState.videoDevice,
+        audioUnavailable: showGetPermission.audioErr,
+        videoUnavailable: showGetPermission.videoErr,
+        microphoneCount: microphones.length,
+        cameraCount: cameras.length,
+      }),
+    );
+  }, [
+    formState.audioDevice,
+    formState.videoDevice,
+    formState.type,
+    showGetPermission.audioErr,
+    showGetPermission.videoErr,
+    microphones.length,
+    cameras.length,
+  ]);
 
   const setupDevices = async () => {
     let showAudioError = false;
@@ -109,7 +123,7 @@ const PermissionsAndDetails = ({
   }, [rawImage]);
 
   const handleOnUserSelectedImage = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = event.target.files?.[0];
 
@@ -123,7 +137,7 @@ const PermissionsAndDetails = ({
       }
       if (
         !["image/jpeg", "image/png", "image/gif", "image/webp"].includes(
-          file.type
+          file.type,
         )
       ) {
         toast.error("Invalid file type. Please upload a valid image.");
@@ -192,9 +206,16 @@ const PermissionsAndDetails = ({
     }
     if (showGetPermission.audioErr) {
       return (
-        <div className="text-sm text-danger">
-          No audio devices found. Please allow microphone access or check your
-          device settings.
+        <div className="text-sm text-gray-shade-24">
+          No microphone found. You can still create the room and join without
+          audio, or allow microphone access and refresh the device list.
+          <button
+            type="button"
+            onClick={() => setupDevices()}
+            className="ml-2 underline hover:text-white"
+          >
+            Retry
+          </button>
         </div>
       );
     }
@@ -209,7 +230,7 @@ const PermissionsAndDetails = ({
         selectedValue={formState.audioDevice?.deviceId || ""}
         onSelect={(value) => {
           const selectedDevice = microphones.find(
-            (mic) => mic.deviceId === value
+            (mic) => mic.deviceId === value,
           );
           handleInputChange("audioDevice", selectedDevice);
         }}
@@ -234,9 +255,16 @@ const PermissionsAndDetails = ({
 
     if (showGetPermission.videoErr) {
       return (
-        <div className="text-sm text-danger">
-          No video devices found. Please allow camera access or check your
-          device settings.
+        <div className="text-sm text-gray-shade-24">
+          No camera found. You can still create the room and join without video,
+          or allow camera access and refresh the device list.
+          <button
+            type="button"
+            onClick={() => setupDevices()}
+            className="ml-2 underline hover:text-white"
+          >
+            Retry
+          </button>
         </div>
       );
     }
@@ -340,7 +368,7 @@ const PermissionsAndDetails = ({
             "mt-2 block text-xs",
             formState?.name && formState?.name?.length >= 100
               ? "text-danger"
-              : "text-gray-shade-24"
+              : "text-gray-shade-24",
           )}
         >
           {formState?.name && formState.name.length >= 100
@@ -360,7 +388,7 @@ const PermissionsAndDetails = ({
                 currentTab === "audio"
                   ? "gradient-borders-div"
                   : "border-gray-600",
-                loading && "pointer-events-none"
+                loading && "pointer-events-none",
               )}
             >
               <span className="flex items-center gap-2 py-2 text-sm text-gray-shade-24">
@@ -381,12 +409,12 @@ const PermissionsAndDetails = ({
                 currentTab === "video"
                   ? "gradient-borders-div"
                   : "border-gray-600",
-                loading && "pointer-events-none"
+                loading && "pointer-events-none",
               )}
             >
               <span
                 className={clsx(
-                  "flex items-center gap-2 py-2 text-sm text-gray-shade-24"
+                  "flex items-center gap-2 py-2 text-sm text-gray-shade-24",
                 )}
               >
                 <VideoIcon2 className="size-6" /> Video
