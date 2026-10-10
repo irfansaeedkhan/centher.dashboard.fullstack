@@ -1,13 +1,7 @@
 import React from "react";
-import Image from "next/image";
 import { NextPageWithLayout } from "@/pages/_app.page";
-import { ChatPagesWrapper } from "@/components/all.pages.wrapper/chat.pages.wrapper";
 import { IconMessage } from "@/assets/svgs";
-import ChatSidebar from "./_components/chat.sidebar";
-
-type ChatPageProps = {
-  children: React.ReactNode;
-};
+import { ChatLayout } from "./_components/chat.layout";
 
 const Chat: NextPageWithLayout = () => {
   return (
@@ -22,38 +16,6 @@ const Chat: NextPageWithLayout = () => {
   );
 };
 
-const ChatPage: React.FC<ChatPageProps> = ({ children }) => {
-  const [loading, setLoading] = React.useState(true);
-  // Simulate loading delay
-  React.useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  return (
-    <ChatPagesWrapper pageTitle="Chat">
-      {loading ? (
-        <div className="flex h-[calc(100vh-60px)] w-full items-center justify-center">
-          <Image
-            src="/images/preloader.png"
-            alt="Preloader"
-            width={64}
-            height={64}
-            className="h-16 w-16 flex-shrink-0 object-cover"
-          />
-        </div>
-      ) : (
-        <div className="flex">
-          <ChatSidebar />
-          {children}
-        </div>
-      )}
-    </ChatPagesWrapper>
-  );
-};
-
-Chat.getLayout = (page) => <ChatPage>{page}</ChatPage>;
+Chat.getLayout = (page) => <ChatLayout>{page}</ChatLayout>;
 
 export default Chat;
