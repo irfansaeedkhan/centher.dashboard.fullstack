@@ -112,7 +112,7 @@ export const orgMembers = pgTable(
     title: text("title").notNull().default(""),
     joinedAt: timestamp("joined_at").notNull().defaultNow(),
   },
-  (t) => [primaryKey({ columns: [t.orgOwnerId, t.memberId] })]
+  (t) => [primaryKey({ columns: [t.orgOwnerId, t.memberId] })],
 );
 
 export const orgInvites = pgTable("org_invites", {
@@ -156,7 +156,7 @@ export const postLikes = pgTable(
       .references(() => user.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
-  (t) => [primaryKey({ columns: [t.postId, t.userId] })]
+  (t) => [primaryKey({ columns: [t.postId, t.userId] })],
 );
 
 export const comments = pgTable("comments", {
@@ -200,6 +200,22 @@ export const chatAttachments = pgTable("chat_attachments", {
   thumbnailUrl: text("thumbnail_url"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
+
+// Phase 15 fix (Judge F2): DB-backed typing indicators (Vercel-safe;
+// in-memory Maps don't survive across serverless instances).
+export const chatTyping = pgTable(
+  "chat_typing",
+  {
+    conversationId: uuid("conversation_id")
+      .notNull()
+      .references(() => conversations.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.conversationId, t.userId] })],
+);
 
 export const messages = pgTable("messages", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -367,7 +383,7 @@ export const follows = pgTable(
       .references(() => user.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
-  (t) => [primaryKey({ columns: [t.followerId, t.followingId] })]
+  (t) => [primaryKey({ columns: [t.followerId, t.followingId] })],
 );
 
 /** Phase 3: in-app notifications (follow / like / reply signals) */
@@ -415,7 +431,7 @@ export const conversationMembers = pgTable(
     lastReadAt: timestamp("last_read_at"),
     joinedAt: timestamp("joined_at").notNull().defaultNow(),
   },
-  (t) => [primaryKey({ columns: [t.conversationId, t.userId] })]
+  (t) => [primaryKey({ columns: [t.conversationId, t.userId] })],
 );
 
 /** Phase 5: chat — emoji reactions on messages (toggle per user+emoji). */
@@ -436,9 +452,9 @@ export const messageReactions = pgTable(
     uniqueIndex("message_reactions_msg_user_emoji_idx").on(
       t.messageId,
       t.userId,
-      t.emoji
+      t.emoji,
     ),
-  ]
+  ],
 );
 
 /** Phase 7: per-user auto-restake pool ids (staking rewards). */

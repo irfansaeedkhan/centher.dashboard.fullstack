@@ -47,7 +47,7 @@ export const useChatConversations = () => {
       await refresh();
       return convo.id;
     },
-    [refresh]
+    [refresh],
   );
 
   const deleteConversation = useCallback(async (id: string) => {
@@ -64,8 +64,8 @@ export const useChatConversations = () => {
     }
     setConversations((prev) =>
       prev.map((c) =>
-        c.id === convo.id ? { ...c, is_pinned: !convo.is_pinned } : c
-      )
+        c.id === convo.id ? { ...c, is_pinned: !convo.is_pinned } : c,
+      ),
     );
   }, []);
 
@@ -100,12 +100,13 @@ export const useChatMessages = (chatId: string | undefined) => {
         limit: 100,
       });
       setMessages(list);
-      // Mark others' messages as read (per-message receipts).
-      const myId = user._id;
-      for (const m of list) {
-        if (m.sender_id !== myId && m.status !== "read") {
-          chatApi.markMessageRead(m.id).catch(() => {});
-        }
+      // Bulk-mark others' messages as read (single request, N2) instead of
+      // one POST per message.
+      const latest = list.length > 0 ? list[list.length - 1] : null;
+      if (latest) {
+        chatApi
+          .markAsRead(chatId, { upToMessageId: latest.id })
+          .catch(() => {});
       }
     } catch {
       // keep the last good list
@@ -165,7 +166,7 @@ export const useChatMessages = (chatId: string | undefined) => {
         setSending(false);
       }
     },
-    [chatId]
+    [chatId],
   );
 
   const editMessage = useCallback(async (messageId: string, body: string) => {
@@ -186,7 +187,7 @@ export const useChatMessages = (chatId: string | undefined) => {
       // Refetch to get accurate grouped counts.
       fetchMessages();
     },
-    [fetchMessages]
+    [fetchMessages],
   );
 
   const appendMessage = useCallback((msg: ChatMessage) => {

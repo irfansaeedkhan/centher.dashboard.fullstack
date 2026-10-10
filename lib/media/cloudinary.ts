@@ -16,7 +16,7 @@
 export class CloudinaryNotConfiguredError extends Error {
   constructor() {
     super(
-      "Cloudinary is not configured. Set NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME and NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET."
+      "Cloudinary is not configured. Set NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME and NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET.",
     );
     this.name = "CloudinaryNotConfiguredError";
   }
@@ -42,7 +42,7 @@ export const MAX_IMAGE_BYTES = 10 * 1024 * 1024; // 10MB (Cloudinary free max)
 export function isCloudinaryConfigured(): boolean {
   return Boolean(
     process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME &&
-      process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
+    process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET,
   );
 }
 
@@ -64,14 +64,14 @@ export function validateImageFile(file: File): void {
     throw new CloudinaryUploadError(
       `Invalid file type "${
         file.type || "unknown"
-      }". Only JPG, PNG, GIF and WebP are allowed.`
+      }". Only JPG, PNG, GIF and WebP are allowed.`,
     );
   }
   if (file.size > MAX_IMAGE_BYTES) {
     throw new CloudinaryUploadError(
       `Image is too large (${(file.size / 1024 / 1024).toFixed(
-        1
-      )}MB). Maximum is 10MB.`
+        1,
+      )}MB). Maximum is 10MB.`,
     );
   }
 }
@@ -83,7 +83,7 @@ export function validateImageFile(file: File): void {
  */
 export async function uploadImage(
   file: File,
-  folder: string = "centher"
+  folder: string = "centher",
 ): Promise<string> {
   validateImageFile(file);
   const cloudName = getCloudName();
@@ -101,7 +101,7 @@ export async function uploadImage(
     res = await fetch(endpoint, { method: "POST", body: formData });
   } catch (err: any) {
     throw new CloudinaryUploadError(
-      `Upload failed: ${err?.message || "network error"}. Please try again.`
+      `Upload failed: ${err?.message || "network error"}. Please try again.`,
     );
   }
 
@@ -115,7 +115,7 @@ export async function uploadImage(
   const secureUrl = data?.secure_url as string | undefined;
   if (!secureUrl) {
     throw new CloudinaryUploadError(
-      "Upload failed: Cloudinary did not return an image URL."
+      "Upload failed: Cloudinary did not return an image URL.",
     );
   }
   return secureUrl;
@@ -127,7 +127,7 @@ export async function uploadImage(
 /* SVG is rejected outright (stored-XSS when served inline).           */
 /* ------------------------------------------------------------------ */
 
-const CHAT_IMAGE_MIMES = new Set([
+export const CHAT_IMAGE_MIMES = new Set([
   "image/png",
   "image/jpeg",
   "image/gif",
@@ -136,7 +136,7 @@ const CHAT_IMAGE_MIMES = new Set([
   "image/bmp",
 ]);
 
-const CHAT_VIDEO_MIMES = new Set([
+export const CHAT_VIDEO_MIMES = new Set([
   "video/mp4",
   "video/webm",
   "video/ogg",
@@ -145,7 +145,7 @@ const CHAT_VIDEO_MIMES = new Set([
   "video/3gpp",
 ]);
 
-const CHAT_AUDIO_MIMES = new Set([
+export const CHAT_AUDIO_MIMES = new Set([
   "audio/mpeg",
   "audio/mp3",
   "audio/wav",
@@ -158,7 +158,7 @@ const CHAT_AUDIO_MIMES = new Set([
   "audio/flac",
 ]);
 
-const CHAT_FILE_MIMES = new Set([
+export const CHAT_FILE_MIMES = new Set([
   "application/pdf",
   "text/plain",
   "text/csv",
@@ -190,7 +190,7 @@ export function classifyChatFile(file: File): ChatMediaKind {
   if (CHAT_AUDIO_MIMES.has(type)) return "audio";
   if (CHAT_FILE_MIMES.has(type)) return "file";
   throw new CloudinaryUploadError(
-    `File type "${type || "unknown"}" is not supported in chat.`
+    `File type "${type || "unknown"}" is not supported in chat.`,
   );
 }
 
@@ -201,15 +201,15 @@ export function validateChatFile(file: File): ChatMediaKind {
     kind === "video"
       ? MAX_CHAT_VIDEO_BYTES
       : kind === "audio"
-      ? MAX_CHAT_AUDIO_BYTES
-      : kind === "file"
-      ? MAX_CHAT_FILE_BYTES
-      : MAX_IMAGE_BYTES;
+        ? MAX_CHAT_AUDIO_BYTES
+        : kind === "file"
+          ? MAX_CHAT_FILE_BYTES
+          : MAX_IMAGE_BYTES;
   if (file.size > cap) {
     throw new CloudinaryUploadError(
       `File is too large (${(file.size / 1024 / 1024).toFixed(
-        1
-      )}MB). Maximum is ${(cap / 1024 / 1024).toFixed(0)}MB.`
+        1,
+      )}MB). Maximum is ${(cap / 1024 / 1024).toFixed(0)}MB.`,
     );
   }
   return kind;
@@ -232,7 +232,7 @@ export interface ChatUploadResult {
  */
 export async function uploadChatMedia(
   file: File,
-  folder: string = "centher/chat"
+  folder: string = "centher/chat",
 ): Promise<ChatUploadResult> {
   const kind = validateChatFile(file);
   const cloudName = getCloudName();
@@ -250,7 +250,7 @@ export async function uploadChatMedia(
     res = await fetch(endpoint, { method: "POST", body: formData });
   } catch (err: any) {
     throw new CloudinaryUploadError(
-      `Upload failed: ${err?.message || "network error"}. Please try again.`
+      `Upload failed: ${err?.message || "network error"}. Please try again.`,
     );
   }
 
@@ -264,7 +264,7 @@ export async function uploadChatMedia(
   const secureUrl = data?.secure_url as string | undefined;
   if (!secureUrl) {
     throw new CloudinaryUploadError(
-      "Upload failed: Cloudinary did not return a file URL."
+      "Upload failed: Cloudinary did not return a file URL.",
     );
   }
 
