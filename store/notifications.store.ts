@@ -174,25 +174,25 @@ interface BaseNotification {
 interface PostLikeNotification extends BaseNotification {
   type: "post_like";
   by: NotificationBy;
-  post: NotificationPost;
+  post: NotificationPost | null;
 }
 
 interface ReplyLikeNotification extends BaseNotification {
   type: "reply_like";
   by: NotificationBy;
-  post: NotificationPost;
+  post: NotificationPost | null;
 }
 
 interface ReplyToReplyNotification extends BaseNotification {
   type: "reply_reply";
   by: NotificationBy;
-  post: NotificationPost;
+  post: NotificationPost | null;
 }
 
 interface PostReplyNotification extends BaseNotification {
   type: "post_reply";
   by: NotificationBy;
-  post: NotificationPost;
+  post: NotificationPost | null;
 }
 
 interface FollowNotification extends BaseNotification {
@@ -253,7 +253,7 @@ interface PresaleBookingReferralNotification extends BaseNotification {
 interface PostMentionNotification extends BaseNotification {
   type: "mention_in_post";
   by: NotificationBy;
-  post: NotificationPost;
+  post: NotificationPost | null;
 }
 
 interface InvitationReceivedNotification extends BaseNotification {

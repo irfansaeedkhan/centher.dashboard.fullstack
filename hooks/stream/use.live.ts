@@ -406,7 +406,14 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
   const initSocketClient = async (): Promise<void> => {
     return new Promise(async (resolve, reject) => {
       try {
-        globalSocket.current = await SocketClientService.build();
+        const socket = await SocketClientService.build();
+        // No socket URL configured — resolve immediately, streaming works
+        // over REST without the realtime socket.
+        if (!socket) {
+          resolve();
+          return;
+        }
+        globalSocket.current = socket;
 
         globalSocket.current.on("connection-accepted", () => {
           resolve();

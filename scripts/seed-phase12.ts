@@ -44,6 +44,8 @@ async function getUserIdByEmail(email: string): Promise<string | null> {
   return rows[0]?.id ?? null;
 }
 
+// Idempotency: keyed on (authorId, body). If a seeded post's text is edited,
+// a re-run will insert a duplicate. Acceptable for demo seed data.
 async function ensurePost(
   authorId: string,
   body: string,
@@ -497,11 +499,14 @@ async function main() {
   await ensureNotification(demoId, "follow", leo, null);
   await ensureNotification(demoId, "follow", nina, null);
   await ensureNotification(demoId, "follow", aisha, null);
-  await ensureNotification(demoId, "post_like", omar, notifPostId);
-  await ensureNotification(demoId, "post_like", sofia, notifPostId);
-  await ensureNotification(demoId, "post_reply", kai, notifPostId);
-  await ensureNotification(demoId, "post_reply", maya, notifPostId);
-  await ensureNotification(demoId, "mention", kai, notifPostId);
+  // Skip post-type notifications if no post exists (avoid orphaned rows).
+  if (notifPostId) {
+    await ensureNotification(demoId, "post_like", omar, notifPostId);
+    await ensureNotification(demoId, "post_like", sofia, notifPostId);
+    await ensureNotification(demoId, "post_reply", kai, notifPostId);
+    await ensureNotification(demoId, "post_reply", maya, notifPostId);
+    await ensureNotification(demoId, "mention", kai, notifPostId);
+  }
   console.error("Notifications: 8");
 
   // --- 5. Chat conversations --------------------------------------------------

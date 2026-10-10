@@ -18,6 +18,8 @@ const nextConfig = {
             "s3.eu-west-3.amazonaws.com",
             "dapi.369x.io",
             "static.369x.io",
+            "picsum.photos",
+            "res.cloudinary.com",
           ]
         : [
             "localhost",
@@ -32,6 +34,8 @@ const nextConfig = {
             "centher-staging.infura-ipfs.io",
             "upload.wikimedia.org",
             "play.dapp.jedidev.com",
+            "picsum.photos",
+            "res.cloudinary.com",
           ],
   },
   pageExtensions: ["page.tsx", "page.ts", "api.ts"],

@@ -221,6 +221,7 @@ const getNotificationUrl = (
     case "post_reply":
     case "reply_like":
     case "reply_reply":
+      if (!notification.post) return null;
       return {
         pathname: AppRoutes.feed.single_post,
         query: { post_id: notification.post._id },
@@ -248,6 +249,7 @@ const getNotificationUrl = (
         query: { tab: "my-rewards" },
       };
     case "mention_in_post":
+      if (!notification.post) return null;
       return {
         pathname: AppRoutes.feed.single_post,
         query: { post_id: notification.post._id },

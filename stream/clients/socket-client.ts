@@ -2,8 +2,11 @@ import { getAuthTokens } from "@/lib/auth/auth-tokens-storage";
 import { SocketOptions, ManagerOptions, io, Socket } from "socket.io-client";
 
 export class SocketClientService {
-  static async build(): Promise<Socket> {
+  static async build(): Promise<Socket | null> {
     const url = this.getSocketAddress();
+    // No socket URL configured (e.g. Vercel, which doesn't support WebSockets)
+    // — skip silently instead of failing to wss://<origin>/feed.
+    if (!url) return null;
     const options = await this.getOptions();
     const socket = io(url, options);
 

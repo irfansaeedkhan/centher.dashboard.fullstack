@@ -77,6 +77,20 @@ export const VerifyTokenForm: React.FC<Props> = ({
             <span>{formatUnits(presaleCreationFees.toString())} BNB</span>
           )}
         </p>
+        <button
+          type="button"
+          onClick={() =>
+            handleChange({
+              target: {
+                name: "token_address",
+                value: "0x55d398326f99059fF775485246999027B3197955",
+              },
+            } as React.ChangeEvent<HTMLInputElement>)
+          }
+          className="w-fit pb-2 text-xs text-gray-shade-14 underline hover:text-white"
+        >
+          Use demo token address: 0x55d3...7955
+        </button>
       </div>
       <div className={gradientBorderInputMain}>
         <label htmlFor="token_address" className={label}>
