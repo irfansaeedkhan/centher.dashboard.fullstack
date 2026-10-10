@@ -72,6 +72,8 @@ export const profiles = pgTable("profiles", {
   bio: text("bio").default(""),
   avatarUrl: text("avatar_url"),
   membership: text("membership").notNull().default("citizen"),
+  /** Phase 3: profile view counter (mirrors posts.view_count) */
+  viewCount: integer("view_count").notNull().default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
@@ -214,4 +216,50 @@ export const citizenships = pgTable("citizenships", {
   status: text("status").notNull().default("active"),
   tier: text("tier").notNull().default("standard"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+/** Phase 3: social graph — follower_id follows following_id */
+export const follows = pgTable(
+  "follows",
+  {
+    followerId: text("follower_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    followingId: text("following_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.followerId, t.followingId] })]
+);
+
+/** Phase 3: in-app notifications (follow / like / reply signals) */
+export const notifications = pgTable("notifications", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  type: text("type").notNull(),
+  actorId: text("actor_id").references(() => user.id, {
+    onDelete: "cascade",
+  }),
+  postId: uuid("post_id").references(() => posts.id, { onDelete: "cascade" }),
+  status: text("status").notNull().default("unread"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+/** Phase 3: per-user recent searches (search popup history) */
+export const recentSearches = pgTable("recent_searches", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  searchType: text("search_type").notNull(),
+  query: text("query"),
+  searchedUserId: text("searched_user_id").references(() => user.id, {
+    onDelete: "cascade",
+  }),
+  resultCount: integer("result_count").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });

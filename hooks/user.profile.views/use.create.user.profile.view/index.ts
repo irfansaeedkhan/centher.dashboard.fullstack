@@ -10,7 +10,7 @@ export const useCreateUserProfileView = () => {
   useEffect(() => {
     const controller = new AbortController();
 
-    const user_id = router.query.user_id?.toString()?.toLowerCase();
+    const user_id = router.query.user_id?.toString();
     if (user_id) {
       (async () => {
         try {

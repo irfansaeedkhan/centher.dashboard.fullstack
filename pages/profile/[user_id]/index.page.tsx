@@ -43,7 +43,7 @@ const Profile: NextPageWithLayout = () => {
     useShallow((state) => state.actions)
   );
   const { user: loggedInUser } = useUser();
-  const { user } = useGetUser(router.query.user_id?.toString()?.toLowerCase());
+  const { user } = useGetUser(router.query.user_id?.toString());
 
   const {
     posts,
