@@ -18,6 +18,7 @@ import { CFSNFTForPage } from "@/lib/get-single-nft-page-data/types";
 import { LoggedInUser } from "@/models/user";
 import { NFTListing } from "./nft.listing";
 import { NFTOffers } from "./nft.offers";
+import { NFTTradePanel } from "./nft.trade.panel";
 import { FixedPriceNFTDescription } from "./fixed.price.nft.description";
 import { NonNFTDescription } from "./non.nft.description";
 import { NonNFTBuyerDescription } from "./non.nftbuyer.description";
@@ -254,6 +255,11 @@ export const NFTRightSideComponent: React.FC<Props> = ({
       {nftState === "timeAuctionedNFTBuyer" && (
         <AuctionNFTBuyerDescription nft={nft} refetchNFT={refetchNFT} />
       )}
+      <NFTTradePanel
+        nft={nft}
+        loggedInUser={loggedInUser}
+        refetchNFT={refetchNFT}
+      />
       <NFTListing data={nft.marketplaceSaleHistory} />
       {nft.saleState === "Auction" && <NFTOffers bids={nft.auctionInfo.bids} />}
       {nft.saleState === "List" && <NFTOffers bids={nft.listInfo.bids} />}
