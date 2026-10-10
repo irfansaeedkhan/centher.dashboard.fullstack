@@ -3563,6 +3563,13 @@ export const createHonoApp = () => {
     status: z.enum(["active", "disabled"]).default("active"),
   });
 
+  // Admin: session admin check for middleware (Edge-safe). Returns 200
+  // only for admins; 401/403 otherwise.
+  app.get("/admin/check", async (c) => {
+    await requireAdmin(c);
+    return c.json({ is_admin: true });
+  });
+
   // Admin: list users (paginated).
   app.get("/admin/users", async (c) => {
     await requireAdmin(c);
