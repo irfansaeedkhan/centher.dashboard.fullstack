@@ -57,6 +57,16 @@ export const Banner = () => {
               </span>
             </span>
           </div>
+          <div
+            className="gradient-border-3 relative flex h-10 cursor-pointer flex-col items-center justify-center !rounded-[10px] p-[1px]"
+            onClick={() => router.push(AppRoutes.marketplace.activity)}
+          >
+            <span className="glass-card h-10 w-fit rounded-[10px] bg-black/[0.04] px-4 py-2">
+              <span className="textGradient text-xs font-semibold fsm:text-[14px]">
+                My Trading Activity
+              </span>
+            </span>
+          </div>
         </div>
       </div>
       <Image

@@ -241,6 +241,46 @@ export const nfts = pgTable("nfts", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
+/**
+ * Phase 13: persistent NFT purchase records. One row per completed sale —
+ * fixed-price buy or accepted bid. Ownership transfer is a separate
+ * `nfts.owner_id` update done in the same API call.
+ */
+export const nftPurchases = pgTable("nft_purchases", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  nftId: uuid("nft_id")
+    .notNull()
+    .references(() => nfts.id, { onDelete: "cascade" }),
+  buyerId: text("buyer_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  sellerId: text("seller_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  priceBnb: numeric("price_bnb", { precision: 18, scale: 4 }).notNull(),
+  txHash: text("tx_hash"),
+  purchasedAt: timestamp("purchased_at").notNull().defaultNow(),
+});
+
+/**
+ * Phase 13: NFT bid book. Status lifecycle:
+ * active → outbid (a higher bid arrives) | accepted (owner accepts) |
+ * rejected (owner rejects) | withdrawn (bidder withdraws).
+ */
+export const nftBids = pgTable("nft_bids", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  nftId: uuid("nft_id")
+    .notNull()
+    .references(() => nfts.id, { onDelete: "cascade" }),
+  bidderId: text("bidder_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  amountBnb: numeric("amount_bnb", { precision: 18, scale: 4 }).notNull(),
+  status: text("status").notNull().default("active"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  expiresAt: timestamp("expires_at"),
+});
+
 export const stakingPools = pgTable("staking_pools", {
   id: uuid("id").defaultRandom().primaryKey(),
   name: text("name").notNull(),
