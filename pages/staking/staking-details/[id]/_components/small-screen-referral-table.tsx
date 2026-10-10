@@ -9,7 +9,7 @@ import { Referral } from "@/staking/types/referrals.interface";
 import { ListCardDataOBj } from "@/pages/staking/_components/list-card-data";
 import SmallScreenRewardData from "./small-screen-reward-data";
 import SmallScreenReferralData from "./small-screen-referral-data";
-import { eqAddress } from "@/live/utils/address.utils";
+import { eqAddress } from "@/lib/chat/utils";
 
 const SmallScreenReferralTable: React.FC<{
   isClaiming: string;

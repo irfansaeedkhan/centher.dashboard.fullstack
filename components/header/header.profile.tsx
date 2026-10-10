@@ -21,7 +21,8 @@ import {
   PopupUserIcon,
 } from "@/assets/svgs";
 import { BlockchainConfig } from "@/web3/blockchain/config";
-import { useProductLive } from "@/hooks/chat";
+import { useChatConversations } from "@/hooks/chat/useChat";
+import { axiosApi369x } from "@/utils/axios/centher-api";
 import Button from "@/components/button";
 import { WalletEnum, useWallet } from "@/web3/hooks/use.wallet";
 
@@ -41,7 +42,19 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const { user: loggedInUser } = useUser();
-  const { unreadNotifications, unreadConversations } = useProductLive();
+  const { unreadTotal: unreadConversations } = useChatConversations();
+  const [unreadNotifications, setUnreadNotifications] = React.useState(0);
+  React.useEffect(() => {
+    axiosApi369x
+      .get("/api/notifications", { params: { limit: 100 } })
+      .then((res) => {
+        const list = res.data?.notifications ?? [];
+        setUnreadNotifications(
+          list.filter((n: any) => n.status === "unread").length
+        );
+      })
+      .catch(() => {});
+  }, []);
   const { connectedAddress, disconnectWallet, getWalletType, openWallet } =
     useWallet();
   const wallet_type = getWalletType();

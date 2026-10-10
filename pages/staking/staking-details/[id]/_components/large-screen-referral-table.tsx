@@ -1,7 +1,7 @@
 import React from "react";
 import clsx from "clsx";
 import Button from "@/components/button";
-import { eqAddress } from "@/live/utils/address.utils";
+import { eqAddress } from "@/lib/chat/utils";
 import { OptionalType } from "@/staking/types";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
 import { RefReward } from "@/staking/types/ref.rewards.interface";

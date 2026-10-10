@@ -7,7 +7,7 @@ import { CustomNumberInput } from "@/components/custom-number-input";
 import Button from "@/components/button";
 import { ZeroAddress } from "@/web3/constants/common";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
-import { eqAddress } from "@/live/utils/address.utils";
+import { eqAddress } from "@/lib/chat/utils";
 import { Staking } from "@/assets/svgs";
 import { useWallet } from "@/web3/hooks/use.wallet";
 import { BlockchainRead } from "@/web3/blockchain";

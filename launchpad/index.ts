@@ -1,4 +1,4 @@
-import { IApolloProvider } from "@/live/types/apollo.provider";
+import { IApolloProvider } from "@/lib/chat/types";
 import { QueryNames } from "./enum/query.name.enum";
 import { getConnection } from "./lib/connection";
 import { IProductLaunchpadConfig } from "./types/config.interface";

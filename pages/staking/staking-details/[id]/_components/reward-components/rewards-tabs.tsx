@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useStaking } from "@/hooks/staking";
 import { ListCardDataOBj } from "@/pages/staking/_components/list-card-data";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
-import { eqAddress } from "@/live/utils/address.utils";
+import { eqAddress } from "@/lib/chat/utils";
 import { useWallet } from "@/web3/hooks/use.wallet";
 import { UserStakingTransfers } from "@/staking/types/get.projects.interface";
 import { calculateNextReward } from "@/staking/helpers/stake.helper";

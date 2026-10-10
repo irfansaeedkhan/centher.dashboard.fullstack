@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { BigNumber } from "ethers";
 import { formatEther, formatUnits } from "ethers/lib/utils";
-import { eqAddress } from "@/live/utils/address.utils";
+import { eqAddress } from "@/lib/chat/utils";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
 import { ListCardDataOBj } from "./list-card-data";
 

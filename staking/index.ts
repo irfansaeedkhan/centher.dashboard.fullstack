@@ -5,8 +5,8 @@ import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
 import { AddressFactory } from "@/web3/blockchain/providers/address.provider";
 import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.enum";
 import { ZeroAddress } from "@/web3/constants/common";
-import { eqAddress } from "@/live/utils/address.utils";
-import { IApolloProvider } from "@/live/types/apollo.provider";
+import { eqAddress } from "@/lib/chat/utils";
+import { IApolloProvider } from "@/lib/chat/types";
 import { IProductStakingConfig } from "./types/config.interface";
 import {
   AddAffiliateSettingsInput,

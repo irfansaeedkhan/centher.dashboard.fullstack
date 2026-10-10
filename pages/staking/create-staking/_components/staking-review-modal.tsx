@@ -22,7 +22,7 @@ import { sliceAccountAddress } from "@/utils/user.helpers";
 import { copyText } from "@/utils/copy.text";
 import { ModalPortal } from "@/components/modal/modal.portal";
 import Button from "@/components/button";
-import { eqAddress } from "@/live/utils/address.utils";
+import { eqAddress } from "@/lib/chat/utils";
 import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
 import { ZeroAddress } from "@/web3/constants/common";

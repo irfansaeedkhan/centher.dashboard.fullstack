@@ -1,6 +1,6 @@
 import { formatUnits, isAddress, parseEther } from "ethers/lib/utils";
 import { ZeroAddress } from "@/web3/constants/common";
-import { eqAddress } from "@/live/utils/address.utils";
+import { eqAddress } from "@/lib/chat/utils";
 import { ListCardDataOBj } from "@/pages/staking/_components/list-card-data";
 import { CreatePoolInput, MappedCreatePoolInput } from "../types";
 import { StakingProject } from "../types/get.projects.interface";

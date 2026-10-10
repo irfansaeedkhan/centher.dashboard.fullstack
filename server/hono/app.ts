@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { z } from "zod";
-import { and, desc, eq, ilike, inArray, ne, or, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gt, ilike, inArray, ne, or, sql } from "drizzle-orm";
 import { db } from "@/db";
 import {
   channels,
@@ -9,9 +9,11 @@ import {
   citizenships,
   collections,
   comments,
+  conversationMembers,
   conversations,
   follows,
   launchpads,
+  messageReactions,
   messages,
   nfts,
   notifications,
@@ -2316,30 +2318,7 @@ export const createHonoApp = () => {
     );
   });
 
-  app.get("/chat/conversations", async (c) => {
-    const rows = await db
-      .select()
-      .from(conversations)
-      .orderBy(desc(conversations.createdAt));
-    return c.json({ data: rows });
-  });
-
-  app.get("/chat/conversations/:id/messages", async (c) => {
-    const id = c.req.param("id");
-    const rows = await db
-      .select({
-        id: messages.id,
-        body: messages.body,
-        senderId: messages.senderId,
-        createdAt: messages.createdAt,
-        senderName: profiles.displayName,
-      })
-      .from(messages)
-      .leftJoin(profiles, eq(messages.senderId, profiles.userId))
-      .where(eq(messages.conversationId, id))
-      .orderBy(messages.createdAt);
-    return c.json({ data: rows });
-  });
+  // Phase 5: replaced by the user-scoped versions below (member-only).
 
   app.get("/stream/channels", async (c) => {
     const rows = await db
@@ -2479,6 +2458,453 @@ export const createHonoApp = () => {
    * Real endpoints are added phase by phase (see centher-plan.md); genuinely
    * unknown calls are logged server-side so they show up in Vercel/Node logs.
    */
+  /**
+   * Phase 5: chat — Hono REST backend replaces the dead ProductLive/Hasura
+   * adapter (wss://testingapi.centher.io). Every route is user-scoped via
+   * conversation_members; message edits/deletes are sender-scoped.
+   */
+
+  const chatIdParam = z.object({ id: z.string().uuid() });
+  const chatMessageIdParam = z.object({ id: z.string().uuid() });
+
+  /** My membership row, or 404 (never leaks other users' conversations). */
+  const requireMembership = async (conversationId: string, userId: string) => {
+    const [m] = await db
+      .select()
+      .from(conversationMembers)
+      .where(
+        and(
+          eq(conversationMembers.conversationId, conversationId),
+          eq(conversationMembers.userId, userId)
+        )
+      )
+      .limit(1);
+    if (!m) apiError("Conversation not found", "NOT_FOUND", 404);
+    return m!;
+  };
+
+  /** Full conversation shape for the client (members, last message, unread). */
+  const buildConversation = async (
+    conversationId: string,
+    viewerId: string
+  ) => {
+    const [convo] = await db
+      .select()
+      .from(conversations)
+      .where(eq(conversations.id, conversationId))
+      .limit(1);
+    if (!convo) apiError("Conversation not found", "NOT_FOUND", 404);
+
+    const [myMem] = await db
+      .select()
+      .from(conversationMembers)
+      .where(
+        and(
+          eq(conversationMembers.conversationId, conversationId),
+          eq(conversationMembers.userId, viewerId)
+        )
+      )
+      .limit(1);
+
+    const memRows = await db
+      .select({ userId: conversationMembers.userId })
+      .from(conversationMembers)
+      .where(eq(conversationMembers.conversationId, conversationId));
+    const memberCards = await fetchUserCards(
+      memRows.map((m) => m.userId),
+      viewerId
+    );
+
+    const [lastMsg] = await db
+      .select()
+      .from(messages)
+      .where(eq(messages.conversationId, conversationId))
+      .orderBy(desc(messages.createdAt))
+      .limit(1);
+
+    let unreadCount = 0;
+    if (lastMsg) {
+      const unreadRows = await db
+        .select({ id: messages.id })
+        .from(messages)
+        .where(
+          and(
+            eq(messages.conversationId, conversationId),
+            ne(messages.senderId, viewerId),
+            myMem?.lastReadAt
+              ? gt(messages.createdAt, myMem.lastReadAt)
+              : undefined
+          )
+        );
+      unreadCount = unreadRows.length;
+    }
+
+    return {
+      id: convo!.id,
+      title: convo!.title,
+      created_at: convo!.createdAt,
+      is_pinned: myMem?.isPinned ?? false,
+      members: memberCards,
+      last_message: lastMsg
+        ? {
+            id: lastMsg.id,
+            body: lastMsg.body,
+            sender_id: lastMsg.senderId,
+            created_at: lastMsg.createdAt,
+          }
+        : null,
+      unread_count: unreadCount,
+    };
+  };
+
+  /** Message shape with sender card + grouped reactions. */
+  const buildMessage = async (messageId: string, viewerId: string) => {
+    const [msg] = await db
+      .select()
+      .from(messages)
+      .where(eq(messages.id, messageId))
+      .limit(1);
+    if (!msg) apiError("Message not found", "NOT_FOUND", 404);
+
+    const [senderCard] = await fetchUserCards([msg!.senderId], viewerId);
+    const reactionRows = await db
+      .select()
+      .from(messageReactions)
+      .where(eq(messageReactions.messageId, messageId));
+    const byEmoji = new Map<string, { count: number; reacted_by_me: boolean }>();
+    for (const r of reactionRows) {
+      const e = byEmoji.get(r.emoji) ?? { count: 0, reacted_by_me: false };
+      e.count += 1;
+      if (r.userId === viewerId) e.reacted_by_me = true;
+      byEmoji.set(r.emoji, e);
+    }
+
+    return {
+      id: msg!.id,
+      body: msg!.body,
+      sender_id: msg!.senderId,
+      created_at: msg!.createdAt,
+      sender: senderCard ?? null,
+      reactions: [...byEmoji.entries()].map(([emoji, v]) => ({
+        emoji,
+        ...v,
+      })),
+    };
+  };
+
+  // List my conversations (pinned first, then by last activity).
+  app.get("/chat/conversations", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+
+    const mine = await db
+      .select({ conversationId: conversationMembers.conversationId })
+      .from(conversationMembers)
+      .where(eq(conversationMembers.userId, userId!));
+    if (mine.length === 0) return c.json({ conversations: [] });
+
+    const list = await Promise.all(
+      mine.map((m) => buildConversation(m.conversationId, userId!))
+    );
+    list.sort((a, b) => {
+      if (a.is_pinned !== b.is_pinned) return a.is_pinned ? -1 : 1;
+      const at = a.last_message?.created_at ?? a.created_at;
+      const bt = b.last_message?.created_at ?? b.created_at;
+      return +new Date(bt) - +new Date(at);
+    });
+    return c.json({ conversations: list });
+  });
+
+  // Create a conversation (1-on-1 dedups to the existing thread).
+  app.post("/chat/conversations", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+
+    const body = z
+      .object({
+        user_ids: z.array(z.string().min(1)).min(1).max(50),
+        title: z.string().trim().max(100).optional(),
+      })
+      .parse(await c.req.json());
+    const otherIds = [...new Set(body.user_ids)].filter((id) => id !== userId);
+    if (otherIds.length === 0)
+      apiError("Add at least one other participant", "BAD_REQUEST", 400);
+
+    const existingUsers = await db
+      .select({ id: user.id })
+      .from(user)
+      .where(inArray(user.id, otherIds));
+    if (existingUsers.length !== otherIds.length)
+      apiError("Unknown user", "NOT_FOUND", 404);
+
+    if (otherIds.length === 1) {
+      const other = otherIds[0];
+      const want = [userId!, other].sort();
+      const myConvos = await db
+        .select({ conversationId: conversationMembers.conversationId })
+        .from(conversationMembers)
+        .where(eq(conversationMembers.userId, userId!));
+      for (const mc of myConvos) {
+        const mems = await db
+          .select({ userId: conversationMembers.userId })
+          .from(conversationMembers)
+          .where(eq(conversationMembers.conversationId, mc.conversationId));
+        const ids = mems.map((m) => m.userId).sort();
+        if (ids.length === 2 && ids[0] === want[0] && ids[1] === want[1]) {
+          return c.json(await buildConversation(mc.conversationId, userId!));
+        }
+      }
+    }
+
+    const [convo] = await db
+      .insert(conversations)
+      .values({ title: body.title?.trim() || "" })
+      .returning();
+    await db.insert(conversationMembers).values(
+      [userId!, ...otherIds].map((id) => ({
+        conversationId: convo.id,
+        userId: id,
+      }))
+    );
+    return c.json(await buildConversation(convo.id, userId!), 201);
+  });
+
+  // Leave a conversation (deletes it when the last member leaves).
+  app.delete("/chat/conversations/:id", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const { id } = chatIdParam.parse(c.req.param());
+
+    await requireMembership(id, userId!);
+    await db
+      .delete(conversationMembers)
+      .where(
+        and(
+          eq(conversationMembers.conversationId, id),
+          eq(conversationMembers.userId, userId!)
+        )
+      );
+    const remaining = await db
+      .select({ userId: conversationMembers.userId })
+      .from(conversationMembers)
+      .where(eq(conversationMembers.conversationId, id))
+      .limit(1);
+    if (remaining.length === 0) {
+      await db.delete(conversations).where(eq(conversations.id, id));
+    }
+    return c.json({ ok: true });
+  });
+
+  // Pin / unpin a conversation for me.
+  app.post("/chat/conversations/:id/pin", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const { id } = chatIdParam.parse(c.req.param());
+
+    await requireMembership(id, userId!);
+    await db
+      .update(conversationMembers)
+      .set({ isPinned: true })
+      .where(
+        and(
+          eq(conversationMembers.conversationId, id),
+          eq(conversationMembers.userId, userId!)
+        )
+      );
+    return c.json({ ok: true, is_pinned: true });
+  });
+
+  app.post("/chat/conversations/:id/unpin", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const { id } = chatIdParam.parse(c.req.param());
+
+    await requireMembership(id, userId!);
+    await db
+      .update(conversationMembers)
+      .set({ isPinned: false })
+      .where(
+        and(
+          eq(conversationMembers.conversationId, id),
+          eq(conversationMembers.userId, userId!)
+        )
+      );
+    return c.json({ ok: true, is_pinned: false });
+  });
+
+  // Mark a conversation as read.
+  app.post("/chat/conversations/:id/read", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const { id } = chatIdParam.parse(c.req.param());
+
+    await requireMembership(id, userId!);
+    await db
+      .update(conversationMembers)
+      .set({ lastReadAt: new Date() })
+      .where(
+        and(
+          eq(conversationMembers.conversationId, id),
+          eq(conversationMembers.userId, userId!)
+        )
+      );
+    return c.json({ ok: true });
+  });
+
+  // List messages (member-only, chronological, paginated).
+  app.get("/chat/conversations/:id/messages", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const { id } = chatIdParam.parse(c.req.param());
+
+    await requireMembership(id, userId!);
+    const query = z
+      .object({
+        limit: z.coerce.number().int().min(1).max(100).optional(),
+        before: z.string().uuid().optional(),
+      })
+      .parse(c.req.query());
+    const limit = query.limit ?? 50;
+
+    let beforeDate: Date | undefined;
+    if (query.before) {
+      const [ref] = await db
+        .select({ createdAt: messages.createdAt })
+        .from(messages)
+        .where(
+          and(eq(messages.id, query.before), eq(messages.conversationId, id))
+        )
+        .limit(1);
+      if (!ref) apiError("Message not found", "NOT_FOUND", 404);
+      beforeDate = ref!.createdAt;
+    }
+
+    const rows = await db
+      .select()
+      .from(messages)
+      .where(
+        and(
+          eq(messages.conversationId, id),
+          beforeDate ? sql`${messages.createdAt} < ${beforeDate}` : undefined
+        )
+      )
+      .orderBy(desc(messages.createdAt))
+      .limit(limit);
+
+    const list = await Promise.all(
+      rows.reverse().map((m) => buildMessage(m.id, userId!))
+    );
+    return c.json({ messages: list });
+  });
+
+  // Send a message.
+  app.post("/chat/conversations/:id/messages", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const { id } = chatIdParam.parse(c.req.param());
+
+    await requireMembership(id, userId!);
+    const body = z
+      .object({ body: z.string().trim().min(1).max(5000) })
+      .parse(await c.req.json());
+
+    const [msg] = await db
+      .insert(messages)
+      .values({ conversationId: id, senderId: userId!, body: body.body })
+      .returning();
+    await db
+      .update(conversationMembers)
+      .set({ lastReadAt: new Date() })
+      .where(
+        and(
+          eq(conversationMembers.conversationId, id),
+          eq(conversationMembers.userId, userId!)
+        )
+      );
+    return c.json(await buildMessage(msg.id, userId!), 201);
+  });
+
+  // Edit my message.
+  app.patch("/chat/messages/:id", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const { id } = chatMessageIdParam.parse(c.req.param());
+
+    const [msg] = await db
+      .select()
+      .from(messages)
+      .where(and(eq(messages.id, id), eq(messages.senderId, userId!)))
+      .limit(1);
+    if (!msg) apiError("Message not found", "NOT_FOUND", 404);
+
+    const body = z
+      .object({ body: z.string().trim().min(1).max(5000) })
+      .parse(await c.req.json());
+    await db.update(messages).set({ body: body.body }).where(eq(messages.id, id));
+    return c.json(await buildMessage(id, userId!));
+  });
+
+  // Delete my message.
+  app.delete("/chat/messages/:id", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const { id } = chatMessageIdParam.parse(c.req.param());
+
+    const [msg] = await db
+      .select({ id: messages.id })
+      .from(messages)
+      .where(and(eq(messages.id, id), eq(messages.senderId, userId!)))
+      .limit(1);
+    if (!msg) apiError("Message not found", "NOT_FOUND", 404);
+
+    await db.delete(messages).where(eq(messages.id, id));
+    return c.json({ ok: true });
+  });
+
+  // Toggle an emoji reaction (member of the conversation only).
+  app.post("/chat/messages/:id/reactions", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const { id } = chatMessageIdParam.parse(c.req.param());
+
+    const [msg] = await db
+      .select({ conversationId: messages.conversationId })
+      .from(messages)
+      .where(eq(messages.id, id))
+      .limit(1);
+    if (!msg) apiError("Message not found", "NOT_FOUND", 404);
+    await requireMembership(msg!.conversationId, userId!);
+
+    const body = z
+      .object({ emoji: z.string().trim().min(1).max(20) })
+      .parse(await c.req.json());
+
+    const [existing] = await db
+      .select({ id: messageReactions.id })
+      .from(messageReactions)
+      .where(
+        and(
+          eq(messageReactions.messageId, id),
+          eq(messageReactions.userId, userId!),
+          eq(messageReactions.emoji, body.emoji)
+        )
+      )
+      .limit(1);
+    if (existing) {
+      await db
+        .delete(messageReactions)
+        .where(eq(messageReactions.id, existing.id));
+      return c.json({ ok: true, reacted: false });
+    }
+    await db.insert(messageReactions).values({
+      messageId: id,
+      userId: userId!,
+      emoji: body.emoji,
+    });
+    return c.json({ ok: true, reacted: true });
+  });
+
+  // Phase 5: chat REST endpoints are registered above this line.
   app.all("*", (c) => {
     const method = c.req.method;
     const path = c.req.path;

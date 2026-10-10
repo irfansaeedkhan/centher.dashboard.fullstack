@@ -40,7 +40,7 @@ import { copyText } from "@/utils/copy.text";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 import cn from "@/utils/cn";
 import { BackButton } from "@/components/button/back-button";
-import { useProductLive } from "@/hooks/chat";
+import { chatApi } from "@/lib/chat/api";
 import { AppRoutes } from "@/constants/app.routes";
 import { XLogo, ChatProfile, EyeOffFollow } from "@/assets/svgs";
 import FollowedComponent from "../community/_components/followed.component";
@@ -69,7 +69,6 @@ const ProfileHeader: React.FC<Props> = ({
   loggedInUser,
 }) => {
   const router = useRouter();
-  const { adapter } = useProductLive();
   const profileCardDetails = useGetProfileCardDetails(user);
   const { incrementFollowersCount, decrementFollowersCount } =
     useProfileCardStore((state) => ({
@@ -291,12 +290,13 @@ const ProfileHeader: React.FC<Props> = ({
   };
 
   const chatHandler = async () => {
-    if (adapter) {
-      const result = await adapter.createNewPrivateConversation({
-        targetUser: user._id.toLowerCase(),
-      });
-      router.push(`/chat/${result}`);
-    } else throw new Error("Invalid stream handler instance");
+    try {
+      // Exact case-sensitive id — never lowercased (Better Auth ids).
+      const convo = await chatApi.createConversation([user._id]);
+      router.push(`/chat/${convo.id}`);
+    } catch (e: any) {
+      toast.error(e?.message || "Could not start chat");
+    }
   };
 
   return (

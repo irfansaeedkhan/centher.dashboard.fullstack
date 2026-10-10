@@ -7,6 +7,7 @@ import {
   primaryKey,
   text,
   timestamp,
+  uniqueIndex,
   uuid,
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
@@ -312,3 +313,43 @@ export const recentSearches = pgTable("recent_searches", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
+
+/** Phase 5: chat — which users belong to a conversation (user-scoping). */
+export const conversationMembers = pgTable(
+  "conversation_members",
+  {
+    conversationId: uuid("conversation_id")
+      .notNull()
+      .references(() => conversations.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    isPinned: boolean("is_pinned").notNull().default(false),
+    lastReadAt: timestamp("last_read_at"),
+    joinedAt: timestamp("joined_at").notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.conversationId, t.userId] })]
+);
+
+/** Phase 5: chat — emoji reactions on messages (toggle per user+emoji). */
+export const messageReactions = pgTable(
+  "message_reactions",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    messageId: uuid("message_id")
+      .notNull()
+      .references(() => messages.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    emoji: text("emoji").notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex("message_reactions_msg_user_emoji_idx").on(
+      t.messageId,
+      t.userId,
+      t.emoji
+    ),
+  ]
+);
