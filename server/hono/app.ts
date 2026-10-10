@@ -1,7 +1,18 @@
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { z } from "zod";
-import { and, asc, desc, eq, gt, ilike, inArray, ne, or, sql } from "drizzle-orm";
+import {
+  and,
+  asc,
+  desc,
+  eq,
+  gt,
+  ilike,
+  inArray,
+  ne,
+  or,
+  sql,
+} from "drizzle-orm";
 import { db } from "@/db";
 import {
   autoRestakeSettings,
@@ -130,7 +141,7 @@ const mapPostRow = (
     authorAvatar: string | null;
     membership: string | null;
   },
-  opts?: { likedByLoggedInUser?: boolean }
+  opts?: { likedByLoggedInUser?: boolean },
 ) => {
   const { text, post_editor_state } = parseStoredPostBody(row.body);
   return {
@@ -188,7 +199,7 @@ const mapCommentRow = (
     authorId: string;
     authorName: string | null;
     authorAvatar: string | null;
-  }
+  },
 ) => {
   const mapped = mapPostRow({
     id: row.id,
@@ -223,14 +234,14 @@ const mapCommentRow = (
 /** Phase 2: which of these posts the current user has liked (for /with-auth). */
 const getLikedPostIds = async (
   userId: string | null,
-  postIds: string[]
+  postIds: string[],
 ): Promise<Set<string>> => {
   if (!userId || postIds.length === 0) return new Set<string>();
   const rows = await db
     .select({ postId: postLikes.postId })
     .from(postLikes)
     .where(
-      and(eq(postLikes.userId, userId), inArray(postLikes.postId, postIds))
+      and(eq(postLikes.userId, userId), inArray(postLikes.postId, postIds)),
     );
   return new Set(rows.map((r) => r.postId));
 };
@@ -286,7 +297,7 @@ const mapUserCard = (
     avatarUrl: string | null;
     membership: string | null;
   },
-  opts?: { isFollowedByLoggedInUser?: boolean }
+  opts?: { isFollowedByLoggedInUser?: boolean },
 ) => ({
   _id: row.userId,
   display_name: row.displayName || "Centher User",
@@ -303,7 +314,7 @@ const mapUserCard = (
 /** Phase 3: which of these user ids the viewer follows. */
 const getFollowedUserIds = async (
   viewerId: string | null,
-  targetIds: string[]
+  targetIds: string[],
 ): Promise<Set<string>> => {
   if (!viewerId || targetIds.length === 0) return new Set<string>();
   const rows = await db
@@ -312,8 +323,8 @@ const getFollowedUserIds = async (
     .where(
       and(
         eq(follows.followerId, viewerId),
-        inArray(follows.followingId, targetIds)
-      )
+        inArray(follows.followingId, targetIds),
+      ),
     );
   return new Set(rows.map((r) => r.followingId));
 };
@@ -353,7 +364,7 @@ const fetchUserCards = async (userIds: string[], viewerId: string | null) => {
     .map((id) => byId.get(id))
     .filter((r): r is NonNullable<typeof r> => !!r)
     .map((r) =>
-      mapUserCard(r, { isFollowedByLoggedInUser: followed.has(r.userId) })
+      mapUserCard(r, { isFollowedByLoggedInUser: followed.has(r.userId) }),
     );
 };
 
@@ -435,7 +446,7 @@ export const createHonoApp = () => {
             message: i.message,
           })),
         },
-        400
+        400,
       );
     }
     console.error(err);
@@ -451,7 +462,10 @@ export const createHonoApp = () => {
   app.on(["POST", "GET"], "/auth/*", (c) => auth.handler(c.req.raw));
 
   app.get("/health", (c) =>
-    c.json({ ok: true, brand: process.env.NEXT_PUBLIC_BRAND_NAME || "Centher" })
+    c.json({
+      ok: true,
+      brand: process.env.NEXT_PUBLIC_BRAND_NAME || "Centher",
+    }),
   );
 
   /**
@@ -479,7 +493,7 @@ export const createHonoApp = () => {
    * every citizen account is its own org; members join the owner's account).
    */
   const fetchOrganizationOf = async (
-    userId: string
+    userId: string,
   ): Promise<{
     org_id: string;
     profile_image: string;
@@ -528,7 +542,7 @@ export const createHonoApp = () => {
       _id: userId,
       display_name: profile?.displayName || authUser?.name || "Centher Demo",
       profile_image: profile?.avatarUrl || "/images/centher.logo.favicon.png",
-      cover_image: "",
+      cover_image: profile?.coverImageUrl || "",
       membership: {
         last_status: membershipStatus,
         status: membershipStatus,
@@ -550,9 +564,7 @@ export const createHonoApp = () => {
       referrer_address: null,
       display_name_field:
         (profile?.displayNameField as
-          | "real_name"
-          | "pseudonym"
-          | "account_address") || "pseudonym",
+          "real_name" | "pseudonym" | "account_address") || "pseudonym",
       has_seen_notifications_page: true,
       // null until the user answers — the consent banner shows then.
       cookies_consent:
@@ -586,13 +598,13 @@ export const createHonoApp = () => {
 
   const resolveDisplayName = (
     field: "real_name" | "pseudonym" | "account_address",
-    opts: { username: string; realName: string; userId: string }
+    opts: { username: string; realName: string; userId: string },
   ) =>
     field === "real_name"
       ? opts.realName
       : field === "account_address"
-      ? opts.userId
-      : opts.username;
+        ? opts.userId
+        : opts.username;
 
   app.get("/users/me", async (c) => {
     const userId = c.get("userId");
@@ -610,7 +622,7 @@ export const createHonoApp = () => {
       .max(50)
       .regex(
         /^[a-zA-Z0-9_]+$/,
-        "Pseudonym may only contain letters, numbers and underscores"
+        "Pseudonym may only contain letters, numbers and underscores",
       )
       .optional(),
     first_name: z.string().trim().max(100).optional(),
@@ -620,7 +632,7 @@ export const createHonoApp = () => {
       .optional(),
     profile_bio: z.string().max(160).optional(),
     ...Object.fromEntries(
-      SOCIAL_MEDIA_KEYS.map((k) => [k, z.string().trim().max(200).optional()])
+      SOCIAL_MEDIA_KEYS.map((k) => [k, z.string().trim().max(200).optional()]),
     ),
   });
 
@@ -673,9 +685,7 @@ export const createHonoApp = () => {
     const newField =
       body.display_name_field ??
       (profile.displayNameField as
-        | "real_name"
-        | "pseudonym"
-        | "account_address");
+        "real_name" | "pseudonym" | "account_address");
     if (body.display_name_field !== undefined) {
       profilePatch.displayNameField = body.display_name_field;
     }
@@ -794,7 +804,7 @@ export const createHonoApp = () => {
       return apiError(
         "File-service reads are not available in this build",
         "NOT_IMPLEMENTED",
-        501
+        501,
       );
     }
     const raw = c.req.query("user_ids") ?? "";
@@ -852,7 +862,7 @@ export const createHonoApp = () => {
     return apiError(
       "Custom image uploads are not available in this build — choose a preset avatar instead",
       "NOT_IMPLEMENTED",
-      501
+      501,
     );
   });
 
@@ -866,23 +876,42 @@ export const createHonoApp = () => {
       })
       .parse(await c.req.json().catch(() => ({})));
     const preset = PRESET_AVATARS.find(
-      (a) => a.object_name === body.object_name
+      (a) => a.object_name === body.object_name,
     );
-    // Only bundled presets can be persisted — there is no object storage
-    // for custom uploads in this build.
-    if (body.type !== "profile_image" || !preset) {
-      return apiError(
-        "Custom image uploads are not available in this build — choose a preset avatar instead",
-        "NOT_IMPLEMENTED",
-        501
-      );
-    }
     const [authUser] = await db
       .select()
       .from(user)
       .where(eq(user.id, userId!))
       .limit(1);
     await ensureProfile(userId!, authUser?.name || "Centher Demo");
+
+    // Phase 11: a Cloudinary secure_url (https://…) is persisted directly.
+    // The browser uploads to Cloudinary itself; the server just stores the URL.
+    if (body.object_name.startsWith("https://")) {
+      if (body.type === "profile_image") {
+        await db
+          .update(profiles)
+          .set({ avatarUrl: body.object_name })
+          .where(eq(profiles.userId, userId!));
+        return c.json({ profile_image: body.object_name });
+      }
+      if (body.type === "cover_image") {
+        await db
+          .update(profiles)
+          .set({ coverImageUrl: body.object_name })
+          .where(eq(profiles.userId, userId!));
+        return c.json({ cover_image: body.object_name });
+      }
+    }
+
+    // Bundled preset avatars (profile_image only).
+    if (body.type !== "profile_image" || !preset) {
+      return apiError(
+        "Custom image uploads are not available in this build — choose a preset avatar instead",
+        "NOT_IMPLEMENTED",
+        501,
+      );
+    }
     await db
       .update(profiles)
       .set({ avatarUrl: preset.path })
@@ -908,7 +937,7 @@ export const createHonoApp = () => {
       _id: userId,
       display_name: profile?.displayName || authUser?.name || "Centher User",
       profile_image: profile?.avatarUrl || "/images/centher.logo.favicon.png",
-      cover_image: "",
+      cover_image: profile?.coverImageUrl || "",
       membership: {
         last_status: membershipStatus,
         status: membershipStatus,
@@ -935,7 +964,7 @@ export const createHonoApp = () => {
   const toOrgUserCard = (
     id: string,
     p: typeof profiles.$inferSelect | undefined,
-    a: typeof user.$inferSelect | undefined
+    a: typeof user.$inferSelect | undefined,
   ) => ({
     _id: id,
     display_name: p?.displayName || a?.name || "Centher User",
@@ -990,7 +1019,7 @@ export const createHonoApp = () => {
       apiError(
         "Only the invited user can act on this invite",
         "FORBIDDEN",
-        403
+        403,
       );
     if (invite!.status !== "pending")
       apiError("This invite is no longer pending", "CONFLICT", 409);
@@ -1004,7 +1033,7 @@ export const createHonoApp = () => {
       .select()
       .from(orgInvites)
       .where(
-        and(eq(orgInvites.inviteeId, me!), eq(orgInvites.status, "pending"))
+        and(eq(orgInvites.inviteeId, me!), eq(orgInvites.status, "pending")),
       )
       .orderBy(desc(orgInvites.createdAt));
     return c.json(await Promise.all(rows.map(toPendingInvite)));
@@ -1017,7 +1046,7 @@ export const createHonoApp = () => {
       .select()
       .from(orgInvites)
       .where(
-        and(eq(orgInvites.inviterId, me!), eq(orgInvites.status, "pending"))
+        and(eq(orgInvites.inviterId, me!), eq(orgInvites.status, "pending")),
       )
       .orderBy(desc(orgInvites.createdAt));
     return c.json(await Promise.all(rows.map(toPendingInvite)));
@@ -1046,8 +1075,8 @@ export const createHonoApp = () => {
       .where(
         and(
           eq(orgMembers.orgOwnerId, me!),
-          eq(orgMembers.memberId, body.user_id)
-        )
+          eq(orgMembers.memberId, body.user_id),
+        ),
       )
       .limit(1);
     if (alreadyMember)
@@ -1059,8 +1088,8 @@ export const createHonoApp = () => {
         and(
           eq(orgInvites.orgOwnerId, me!),
           eq(orgInvites.inviteeId, body.user_id),
-          eq(orgInvites.status, "pending")
-        )
+          eq(orgInvites.status, "pending"),
+        ),
       )
       .limit(1);
     if (pending) apiError("An invite is already pending", "CONFLICT", 409);
@@ -1160,8 +1189,8 @@ export const createHonoApp = () => {
       .where(
         and(
           eq(orgMembers.orgOwnerId, me!),
-          eq(orgMembers.memberId, c.req.param("userId"))
-        )
+          eq(orgMembers.memberId, c.req.param("userId")),
+        ),
       )
       .limit(1);
     if (!member) apiError("Team member not found", "NOT_FOUND", 404);
@@ -1171,8 +1200,8 @@ export const createHonoApp = () => {
       .where(
         and(
           eq(orgMembers.orgOwnerId, me!),
-          eq(orgMembers.memberId, c.req.param("userId"))
-        )
+          eq(orgMembers.memberId, c.req.param("userId")),
+        ),
       );
     return c.json({ ok: true });
   });
@@ -1185,20 +1214,20 @@ export const createHonoApp = () => {
       apiError(
         "You cannot remove yourself — leave the organization instead",
         "BAD_REQUEST",
-        400
+        400,
       );
     const [member] = await db
       .select()
       .from(orgMembers)
       .where(
-        and(eq(orgMembers.orgOwnerId, me!), eq(orgMembers.memberId, target))
+        and(eq(orgMembers.orgOwnerId, me!), eq(orgMembers.memberId, target)),
       )
       .limit(1);
     if (!member) apiError("Team member not found", "NOT_FOUND", 404);
     await db
       .delete(orgMembers)
       .where(
-        and(eq(orgMembers.orgOwnerId, me!), eq(orgMembers.memberId, target))
+        and(eq(orgMembers.orgOwnerId, me!), eq(orgMembers.memberId, target)),
       );
     return c.json({ ok: true });
   });
@@ -1275,10 +1304,10 @@ export const createHonoApp = () => {
     });
   };
   app.get("/socials/analytics/profile-card/:userId", (c) =>
-    handleProfileCard(c)
+    handleProfileCard(c),
   );
   app.get("/socials/analytics/profile-card/:userId/with-auth", (c) =>
-    handleProfileCard(c)
+    handleProfileCard(c),
   );
 
   app.get("/socials/posts", async (c) => {
@@ -1363,8 +1392,8 @@ export const createHonoApp = () => {
       .where(
         or(
           ilike(profiles.displayName, pattern),
-          ilike(profiles.username, pattern)
-        )
+          ilike(profiles.username, pattern),
+        ),
       )
       .limit(limit);
 
@@ -1460,7 +1489,7 @@ export const createHonoApp = () => {
           authorId: parent.authorId,
           authorName: parent.authorName,
           authorAvatar: parent.authorAvatar,
-        })
+        }),
       );
     }
     return c.json({ postsReplies: mapped, data: mapped, offset, limit });
@@ -1493,17 +1522,17 @@ export const createHonoApp = () => {
     const liked = withAuth
       ? await getLikedPostIds(
           c.get("userId"),
-          rows.map((r) => r.id)
+          rows.map((r) => r.id),
         )
       : new Set<string>();
     const mapped = rows.map((row) =>
-      mapPostRow(row, { likedByLoggedInUser: liked.has(row.id) })
+      mapPostRow(row, { likedByLoggedInUser: liked.has(row.id) }),
     );
     return c.json({ posts: mapped, data: mapped, offset, limit });
   };
   app.get("/socials/posts/user/:userId", (c) => handleUserPosts(c, false));
   app.get("/socials/posts/user/:userId/with-auth", (c) =>
-    handleUserPosts(c, true)
+    handleUserPosts(c, true),
   );
 
   // Single post (+ /with-auth variant the client calls when logged in)
@@ -1562,13 +1591,13 @@ export const createHonoApp = () => {
         authorId: parent!.authorId,
         authorName: parent!.authorName,
         authorAvatar: parent!.authorAvatar,
-      })
+      }),
     );
     return c.json({ posts: mapped, data: mapped, offset, limit });
   };
   app.get("/socials/posts/:id/replies", (c) => handlePostReplies(c, false));
   app.get("/socials/posts/:id/replies/with-auth", (c) =>
-    handlePostReplies(c, true)
+    handlePostReplies(c, true),
   );
 
   // Edit a post (owner only)
@@ -1595,7 +1624,7 @@ export const createHonoApp = () => {
     } else if (payload.text) {
       newBody = JSON.stringify(wrapPlainTextEditorState(payload.text)).slice(
         0,
-        20000
+        20000,
       );
     } else {
       apiError("Nothing to update", "BAD_REQUEST", 400);
@@ -1684,7 +1713,7 @@ export const createHonoApp = () => {
       await db
         .delete(postLikes)
         .where(
-          and(eq(postLikes.postId, postId), eq(postLikes.userId, userId!))
+          and(eq(postLikes.postId, postId), eq(postLikes.userId, userId!)),
         );
     }
 
@@ -1767,8 +1796,8 @@ export const createHonoApp = () => {
       .where(
         and(
           eq(follows.followerId, userId!),
-          eq(follows.followingId, following_id)
-        )
+          eq(follows.followingId, following_id),
+        ),
       )
       .limit(1);
 
@@ -1778,8 +1807,8 @@ export const createHonoApp = () => {
         .where(
           and(
             eq(follows.followerId, userId!),
-            eq(follows.followingId, following_id)
-          )
+            eq(follows.followingId, following_id),
+          ),
         );
       return c.json({ message: "unfollow_success" });
     }
@@ -1809,14 +1838,17 @@ export const createHonoApp = () => {
       .select()
       .from(follows)
       .where(
-        and(eq(follows.followerId, viewerId), eq(follows.followingId, targetId))
+        and(
+          eq(follows.followerId, viewerId),
+          eq(follows.followingId, targetId),
+        ),
       )
       .limit(1);
     return c.json({ is_followed: !!row });
   };
   app.get("/socials/followers/is-followed/:id", (c) => handleIsFollowed(c));
   app.get("/socials/followers/is-followed/:id/with-auth", (c) =>
-    handleIsFollowed(c)
+    handleIsFollowed(c),
   );
 
   // Users following me / users I follow (chat sidebar + followers pages).
@@ -1834,7 +1866,7 @@ export const createHonoApp = () => {
       .offset(offset);
     const followers = await fetchUserCards(
       rows.map((r) => r.followerId),
-      userId!
+      userId!,
     );
     return c.json({ followers });
   });
@@ -1852,7 +1884,7 @@ export const createHonoApp = () => {
       .offset(offset);
     const following = await fetchUserCards(
       rows.map((r) => r.followingId),
-      userId!
+      userId!,
     );
     return c.json({ following });
   });
@@ -1867,8 +1899,8 @@ export const createHonoApp = () => {
       .where(
         and(
           eq(notifications.userId, userId!),
-          eq(notifications.status, "unread")
-        )
+          eq(notifications.status, "unread"),
+        ),
       );
     // Chats with inbound activity (messages from someone else) — the best
     // "needs attention" proxy without per-conversation read state.
@@ -1888,9 +1920,9 @@ export const createHonoApp = () => {
             db
               .select({ id: messages.conversationId })
               .from(messages)
-              .where(eq(messages.senderId, userId!))
-          )
-        )
+              .where(eq(messages.senderId, userId!)),
+          ),
+        ),
       );
     return c.json({
       counts: { notifications: unread ?? 0, chats: chats ?? 0, none: 0 },
@@ -1915,14 +1947,14 @@ export const createHonoApp = () => {
       .where(
         and(
           eq(follows.followingId, targetUserId),
-          inArray(follows.followerId, mine)
-        )
+          inArray(follows.followerId, mine),
+        ),
       )
       .orderBy(desc(follows.createdAt))
       .limit(4);
     const users = await fetchUserCards(
       rows.map((r) => r.userId),
-      viewerId
+      viewerId,
     );
     const [{ count: total }] = await db
       .select({ count: sql<number>`count(*)::int` })
@@ -1930,8 +1962,8 @@ export const createHonoApp = () => {
       .where(
         and(
           eq(follows.followingId, targetUserId),
-          inArray(follows.followerId, mine)
-        )
+          inArray(follows.followerId, mine),
+        ),
       );
     return c.json({
       mutual_followers: {
@@ -1965,18 +1997,18 @@ export const createHonoApp = () => {
       })
       .from(profiles)
       .where(
-        or(ilike(profiles.displayName, like), ilike(profiles.username, like))
+        or(ilike(profiles.displayName, like), ilike(profiles.username, like)),
       )
       .orderBy(desc(profiles.createdAt))
       .limit(limit)
       .offset(offset);
     const followed = await getFollowedUserIds(
       viewerId,
-      rows.map((r) => r.userId)
+      rows.map((r) => r.userId),
     );
     return c.json({
       search_results: rows.map((r) =>
-        mapUserCard(r, { isFollowedByLoggedInUser: followed.has(r.userId) })
+        mapUserCard(r, { isFollowedByLoggedInUser: followed.has(r.userId) }),
       ),
     });
   });
@@ -2069,8 +2101,8 @@ export const createHonoApp = () => {
           eq(recentSearches.userId, userId!),
           payload.search_type === "user"
             ? eq(recentSearches.searchedUserId, payload.searched_user!)
-            : eq(recentSearches.query, payload.query!)
-        )
+            : eq(recentSearches.query, payload.query!),
+        ),
       )
       .limit(1);
 
@@ -2107,7 +2139,10 @@ export const createHonoApp = () => {
       .select({ id: recentSearches.id })
       .from(recentSearches)
       .where(
-        and(eq(recentSearches.id, searchId), eq(recentSearches.userId, userId!))
+        and(
+          eq(recentSearches.id, searchId),
+          eq(recentSearches.userId, userId!),
+        ),
       )
       .limit(1);
     if (!existing) apiError("Recent search not found", "NOT_FOUND", 404);
@@ -2214,7 +2249,7 @@ export const createHonoApp = () => {
           uuid: z.string().optional(),
           post_editor_state: z.any(),
           media: z.array(z.any()).optional().default([]),
-        })
+        }),
       )
       .min(1)
       .parse(payload.posts);
@@ -2272,8 +2307,8 @@ export const createHonoApp = () => {
               authorId: parentRow.authorId,
               authorName: parentRow.authorName,
               authorAvatar: parentRow.authorAvatar,
-            }
-          )
+            },
+          ),
         );
         continue;
       }
@@ -2298,7 +2333,7 @@ export const createHonoApp = () => {
           authorAvatar:
             authorProfile?.avatarUrl || "/images/centher.logo.favicon.png",
           membership: authorProfile?.membership || "citizen",
-        })
+        }),
       );
     }
 
@@ -2315,7 +2350,7 @@ export const createHonoApp = () => {
         message: "Media uploads are not configured on this deployment",
         code: "MEDIA_UPLOAD_UNAVAILABLE",
       },
-      501
+      501,
     );
   });
 
@@ -2445,8 +2480,8 @@ export const createHonoApp = () => {
       .where(
         and(
           eq(conversationMembers.conversationId, conversationId),
-          eq(conversationMembers.userId, userId)
-        )
+          eq(conversationMembers.userId, userId),
+        ),
       )
       .limit(1);
     if (!m) apiError("Conversation not found", "NOT_FOUND", 404);
@@ -2456,7 +2491,7 @@ export const createHonoApp = () => {
   /** Full conversation shape for the client (members, last message, unread). */
   const buildConversation = async (
     conversationId: string,
-    viewerId: string
+    viewerId: string,
   ) => {
     const [convo] = await db
       .select()
@@ -2471,8 +2506,8 @@ export const createHonoApp = () => {
       .where(
         and(
           eq(conversationMembers.conversationId, conversationId),
-          eq(conversationMembers.userId, viewerId)
-        )
+          eq(conversationMembers.userId, viewerId),
+        ),
       )
       .limit(1);
 
@@ -2482,7 +2517,7 @@ export const createHonoApp = () => {
       .where(eq(conversationMembers.conversationId, conversationId));
     const memberCards = await fetchUserCards(
       memRows.map((m) => m.userId),
-      viewerId
+      viewerId,
     );
 
     const [lastMsg] = await db
@@ -2503,8 +2538,8 @@ export const createHonoApp = () => {
             ne(messages.senderId, viewerId),
             myMem?.lastReadAt
               ? gt(messages.createdAt, myMem.lastReadAt)
-              : undefined
-          )
+              : undefined,
+          ),
         );
       unreadCount = unreadRows.length;
     }
@@ -2541,7 +2576,10 @@ export const createHonoApp = () => {
       .select()
       .from(messageReactions)
       .where(eq(messageReactions.messageId, messageId));
-    const byEmoji = new Map<string, { count: number; reacted_by_me: boolean }>();
+    const byEmoji = new Map<
+      string,
+      { count: number; reacted_by_me: boolean }
+    >();
     for (const r of reactionRows) {
       const e = byEmoji.get(r.emoji) ?? { count: 0, reacted_by_me: false };
       e.count += 1;
@@ -2574,7 +2612,7 @@ export const createHonoApp = () => {
     if (mine.length === 0) return c.json({ conversations: [] });
 
     const list = await Promise.all(
-      mine.map((m) => buildConversation(m.conversationId, userId!))
+      mine.map((m) => buildConversation(m.conversationId, userId!)),
     );
     list.sort((a, b) => {
       if (a.is_pinned !== b.is_pinned) return a.is_pinned ? -1 : 1;
@@ -2634,7 +2672,7 @@ export const createHonoApp = () => {
       [userId!, ...otherIds].map((id) => ({
         conversationId: convo.id,
         userId: id,
-      }))
+      })),
     );
     return c.json(await buildConversation(convo.id, userId!), 201);
   });
@@ -2651,8 +2689,8 @@ export const createHonoApp = () => {
       .where(
         and(
           eq(conversationMembers.conversationId, id),
-          eq(conversationMembers.userId, userId!)
-        )
+          eq(conversationMembers.userId, userId!),
+        ),
       );
     const remaining = await db
       .select({ userId: conversationMembers.userId })
@@ -2678,8 +2716,8 @@ export const createHonoApp = () => {
       .where(
         and(
           eq(conversationMembers.conversationId, id),
-          eq(conversationMembers.userId, userId!)
-        )
+          eq(conversationMembers.userId, userId!),
+        ),
       );
     return c.json({ ok: true, is_pinned: true });
   });
@@ -2696,8 +2734,8 @@ export const createHonoApp = () => {
       .where(
         and(
           eq(conversationMembers.conversationId, id),
-          eq(conversationMembers.userId, userId!)
-        )
+          eq(conversationMembers.userId, userId!),
+        ),
       );
     return c.json({ ok: true, is_pinned: false });
   });
@@ -2715,8 +2753,8 @@ export const createHonoApp = () => {
       .where(
         and(
           eq(conversationMembers.conversationId, id),
-          eq(conversationMembers.userId, userId!)
-        )
+          eq(conversationMembers.userId, userId!),
+        ),
       );
     return c.json({ ok: true });
   });
@@ -2742,7 +2780,7 @@ export const createHonoApp = () => {
         .select({ createdAt: messages.createdAt })
         .from(messages)
         .where(
-          and(eq(messages.id, query.before), eq(messages.conversationId, id))
+          and(eq(messages.id, query.before), eq(messages.conversationId, id)),
         )
         .limit(1);
       if (!ref) apiError("Message not found", "NOT_FOUND", 404);
@@ -2755,14 +2793,14 @@ export const createHonoApp = () => {
       .where(
         and(
           eq(messages.conversationId, id),
-          beforeDate ? sql`${messages.createdAt} < ${beforeDate}` : undefined
-        )
+          beforeDate ? sql`${messages.createdAt} < ${beforeDate}` : undefined,
+        ),
       )
       .orderBy(desc(messages.createdAt))
       .limit(limit);
 
     const list = await Promise.all(
-      rows.reverse().map((m) => buildMessage(m.id, userId!))
+      rows.reverse().map((m) => buildMessage(m.id, userId!)),
     );
     return c.json({ messages: list });
   });
@@ -2788,8 +2826,8 @@ export const createHonoApp = () => {
       .where(
         and(
           eq(conversationMembers.conversationId, id),
-          eq(conversationMembers.userId, userId!)
-        )
+          eq(conversationMembers.userId, userId!),
+        ),
       );
     return c.json(await buildMessage(msg.id, userId!), 201);
   });
@@ -2810,7 +2848,10 @@ export const createHonoApp = () => {
     const body = z
       .object({ body: z.string().trim().min(1).max(5000) })
       .parse(await c.req.json());
-    await db.update(messages).set({ body: body.body }).where(eq(messages.id, id));
+    await db
+      .update(messages)
+      .set({ body: body.body })
+      .where(eq(messages.id, id));
     return c.json(await buildMessage(id, userId!));
   });
 
@@ -2856,8 +2897,8 @@ export const createHonoApp = () => {
         and(
           eq(messageReactions.messageId, id),
           eq(messageReactions.userId, userId!),
-          eq(messageReactions.emoji, body.emoji)
-        )
+          eq(messageReactions.emoji, body.emoji),
+        ),
       )
       .limit(1);
     if (existing) {
@@ -2902,7 +2943,8 @@ export const createHonoApp = () => {
 
   const fetchCfsUserCards = async (userIds: string[]) => {
     const uniq = [...new Set(userIds)];
-    if (uniq.length === 0) return new Map<string, ReturnType<typeof cfsUserCard>>();
+    if (uniq.length === 0)
+      return new Map<string, ReturnType<typeof cfsUserCard>>();
     const rows = await db
       .select({
         userId: profiles.userId,
@@ -2916,11 +2958,16 @@ export const createHonoApp = () => {
   };
 
   const fallbackCard = (userId: string) =>
-    cfsUserCard({ userId, displayName: "Unnamed", avatarUrl: "", membership: null });
+    cfsUserCard({
+      userId,
+      displayName: "Unnamed",
+      avatarUrl: "",
+      membership: null,
+    });
 
   const mapCfsCollection = (
     c: typeof collections.$inferSelect,
-    creatorCard: ReturnType<typeof cfsUserCard>
+    creatorCard: ReturnType<typeof cfsUserCard>,
   ) => ({
     id: c.id,
     collection: c.id,
@@ -2954,14 +3001,16 @@ export const createHonoApp = () => {
     collectionId: string,
     creatorId: string,
     ownerCard: ReturnType<typeof cfsUserCard>,
-    creatorCard: ReturnType<typeof cfsUserCard>
+    creatorCard: ReturnType<typeof cfsUserCard>,
   ) => {
     const img = n.imageUrl ?? "";
     const isVideo = /\.(mp4|webm|mov)(\?|$)/i.test(img);
     return {
       id: n.id,
       collection: collectionId,
-      createTime: n.createdAt ? n.createdAt.toISOString() : new Date(0).toISOString(),
+      createTime: n.createdAt
+        ? n.createdAt.toISOString()
+        : new Date(0).toISOString(),
       creator: creatorId,
       mintHash: "",
       ipfs: img,
@@ -2999,15 +3048,13 @@ export const createHonoApp = () => {
     where: ReturnType<typeof eq> | ReturnType<typeof and> | undefined,
     order: "newest" | "oldest",
     limit: number,
-    offset: number
+    offset: number,
   ) => {
     const rows = await db
       .select()
       .from(nfts)
       .where(where)
-      .orderBy(
-        order === "newest" ? desc(nfts.createdAt) : asc(nfts.createdAt)
-      )
+      .orderBy(order === "newest" ? desc(nfts.createdAt) : asc(nfts.createdAt))
       .limit(limit)
       .offset(offset);
     if (rows.length === 0) return [];
@@ -3027,7 +3074,13 @@ export const createHonoApp = () => {
       const ownerCard = cards.get(n.ownerId) ?? fallbackCard(n.ownerId);
       const creatorCard =
         cards.get(coll?.creatorId ?? "") ?? fallbackCard(coll?.creatorId ?? "");
-      return mapCfsNft(n, n.collectionId, coll?.creatorId ?? "", ownerCard, creatorCard);
+      return mapCfsNft(
+        n,
+        n.collectionId,
+        coll?.creatorId ?? "",
+        ownerCard,
+        creatorCard,
+      );
     });
   };
 
@@ -3047,7 +3100,10 @@ export const createHonoApp = () => {
     const cards = await fetchCfsUserCards(rows.map((r) => r.creatorId));
     return c.json({
       collections: rows.map((r) =>
-        mapCfsCollection(r, cards.get(r.creatorId) ?? fallbackCard(r.creatorId))
+        mapCfsCollection(
+          r,
+          cards.get(r.creatorId) ?? fallbackCard(r.creatorId),
+        ),
       ),
     });
   });
@@ -3080,7 +3136,10 @@ export const createHonoApp = () => {
         .map((id) => byId.get(id))
         .filter((r): r is NonNullable<typeof r> => !!r)
         .map((r) =>
-          mapCfsCollection(r, cards.get(r.creatorId) ?? fallbackCard(r.creatorId))
+          mapCfsCollection(
+            r,
+            cards.get(r.creatorId) ?? fallbackCard(r.creatorId),
+          ),
         ),
     });
   });
@@ -3111,11 +3170,13 @@ export const createHonoApp = () => {
       .where(
         inArray(
           collections.creatorId,
-          nftCounts.map((r) => r.creatorId)
-        )
+          nftCounts.map((r) => r.creatorId),
+        ),
       )
       .groupBy(collections.creatorId);
-    const collByCreator = new Map(collCounts.map((r) => [r.creatorId, r.collCount]));
+    const collByCreator = new Map(
+      collCounts.map((r) => [r.creatorId, r.collCount]),
+    );
     const cards = await fetchCfsUserCards(nftCounts.map((r) => r.creatorId));
     return c.json({
       users: nftCounts.map((r) => {
@@ -3148,7 +3209,10 @@ export const createHonoApp = () => {
     const cards = await fetchCfsUserCards(rows.map((r) => r.creatorId));
     return c.json({
       collections: rows.map((r) =>
-        mapCfsCollection(r, cards.get(r.creatorId) ?? fallbackCard(r.creatorId))
+        mapCfsCollection(
+          r,
+          cards.get(r.creatorId) ?? fallbackCard(r.creatorId),
+        ),
       ),
     });
   });
@@ -3164,7 +3228,10 @@ export const createHonoApp = () => {
     if (!row) apiError("Collection not found", "NOT_FOUND", 404);
     const cards = await fetchCfsUserCards([row!.creatorId]);
     return c.json(
-      mapCfsCollection(row!, cards.get(row!.creatorId) ?? fallbackCard(row!.creatorId))
+      mapCfsCollection(
+        row!,
+        cards.get(row!.creatorId) ?? fallbackCard(row!.creatorId),
+      ),
     );
   });
 
@@ -3200,7 +3267,7 @@ export const createHonoApp = () => {
       inArray(nfts.collectionId, ids),
       "newest",
       limit,
-      offset
+      offset,
     );
     return c.json({ nfts: list });
   });
@@ -3211,7 +3278,12 @@ export const createHonoApp = () => {
     const q = marketplacePaging.parse(c.req.query());
     const limit = q.limit ?? q.first ?? 50;
     const offset = q.skip ?? 0;
-    const list = await loadNfts(eq(nfts.ownerId, owner), "newest", limit + 1, offset);
+    const list = await loadNfts(
+      eq(nfts.ownerId, owner),
+      "newest",
+      limit + 1,
+      offset,
+    );
     const hasMore = list.length > limit;
     const page = hasMore ? list.slice(0, limit) : list;
     return c.json({
@@ -3246,7 +3318,7 @@ export const createHonoApp = () => {
       and(eq(nfts.ownerId, owner), eq(nfts.listed, true)),
       "newest",
       limit,
-      offset
+      offset,
     );
     return c.json({ nfts: list });
   });
@@ -3264,8 +3336,10 @@ export const createHonoApp = () => {
       .parse(c.req.query());
     const limit = q.first ?? 50;
     const offset = q.skip ?? 0;
-    let where: ReturnType<typeof eq> | ReturnType<typeof and> | undefined =
-      eq(nfts.collectionId, collection);
+    let where: ReturnType<typeof eq> | ReturnType<typeof and> | undefined = eq(
+      nfts.collectionId,
+      collection,
+    );
     if (q.saleState && q.saleState !== "All") {
       where = and(where, eq(nfts.listed, q.saleState === "Sale"));
     }
@@ -3273,7 +3347,7 @@ export const createHonoApp = () => {
       where,
       q.orderDir === "asc" ? "oldest" : "newest",
       limit,
-      offset
+      offset,
     );
     return c.json({ nfts: list });
   });
@@ -3293,7 +3367,10 @@ export const createHonoApp = () => {
       .from(collections)
       .where(eq(collections.id, row!.collectionId))
       .limit(1);
-    const cards = await fetchCfsUserCards([row!.ownerId, coll?.creatorId ?? ""]);
+    const cards = await fetchCfsUserCards([
+      row!.ownerId,
+      coll?.creatorId ?? "",
+    ]);
     const ownerCard = cards.get(row!.ownerId) ?? fallbackCard(row!.ownerId);
     const creatorCard =
       cards.get(coll?.creatorId ?? "") ?? fallbackCard(coll?.creatorId ?? "");
@@ -3302,7 +3379,7 @@ export const createHonoApp = () => {
       row!.collectionId,
       coll?.creatorId ?? "",
       ownerCard,
-      creatorCard
+      creatorCard,
     );
     const totalSupply = await db
       .select({ count: sql<number>`count(*)::int` })
@@ -3324,7 +3401,7 @@ export const createHonoApp = () => {
           "File upload is not available in this build yet. NFT creation with media is disabled.",
         code: "IPFS_UPLOAD_UNAVAILABLE",
       },
-      501
+      501,
     );
   });
 
@@ -3335,7 +3412,7 @@ export const createHonoApp = () => {
           "Metadata upload is not available in this build yet. NFT creation is disabled.",
         code: "IPFS_UPLOAD_UNAVAILABLE",
       },
-      501
+      501,
     );
   });
 
@@ -3529,7 +3606,7 @@ export const createHonoApp = () => {
           created_at: row.createdAt,
         },
       },
-      201
+      201,
     );
   });
 
@@ -3662,7 +3739,7 @@ export const createHonoApp = () => {
         code: "NOT_IMPLEMENTED",
         path,
       },
-      501
+      501,
     );
   });
 

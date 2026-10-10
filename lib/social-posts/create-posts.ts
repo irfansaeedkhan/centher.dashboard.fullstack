@@ -1,9 +1,13 @@
 import { SerializedEditorState, SerializedLexicalNode } from "lexical";
-import axios from "axios";
 import toast from "react-hot-toast";
 import { axiosApi369x } from "@/utils/axios";
 import { AppError } from "@/utils/app-error";
 import { MediaFileNew } from "@/components/post-editor/shared/types";
+import {
+  uploadImage,
+  isCloudinaryConfigured,
+  CloudinaryNotConfiguredError,
+} from "@/lib/media/cloudinary";
 
 export interface ICreatePost {
   uuid: string;
@@ -35,93 +39,54 @@ export const createPosts = async ({
       }[],
     }));
 
-    // If posts have media, create presigned url for each media and upload them to S3
-    // If posts have no media, skip this step
+    // If posts have media, upload each file to Cloudinary (Phase 11).
+    // If posts have no media, skip this step.
     const hasMedia = posts.some((post) => post.media.length > 0);
 
-    const presignedUrls: any[] = [];
-
     if (hasMedia) {
-      const mediaList = posts
-        .map((post) =>
-          post.media.map((media) => ({
-            post_uuid: post.uuid,
-            media: {
-              uuid: media.uuid,
-              type: media.original.type,
-              name: media.original.name,
-              size: media.original.size,
-              index: media.index,
-            },
-          }))
-        )
-        .flat();
-
-      // Phase 2: the backend has no media pipeline (honest 501). Post
-      // text-only instead of failing the whole post.
-      try {
-        const response = await axiosApi369x.post(
-          `/api/socials/posts/media/presigned-urls`,
-          {
-            media_list: mediaList,
+      if (!isCloudinaryConfigured()) {
+        // Honest fallback: no storage configured — post text-only.
+        toast.error("Media uploads aren't available yet — posting text only");
+      } else {
+        const uploadJobs: Promise<void>[] = [];
+        posts.forEach((post) => {
+          post.media.forEach((media) => {
+            const file = media.original;
+            if (!(file instanceof File)) return;
+            const target = postsToCreate
+              .find((p) => p.uuid === post.uuid)
+              ?.media.find((m) => m.uuid === media.uuid);
+            if (!target) return;
+            uploadJobs.push(
+              uploadImage(file, "centher/posts").then((secureUrl) => {
+                target.object_name = secureUrl;
+                delete target.uuid;
+              }),
+            );
+          });
+        });
+        try {
+          await Promise.all(uploadJobs);
+        } catch (error: any) {
+          if (error instanceof CloudinaryNotConfiguredError) {
+            toast.error(
+              "Media uploads aren't available yet — posting text only",
+            );
+          } else {
+            // Upload failed — post text-only rather than losing the post.
+            toast.error(
+              error?.message || "Image upload failed — posting text only",
+            );
           }
-        );
-
-        presignedUrls.push(...response.data.presignedUrls);
-      } catch (error: any) {
-        if (error.response?.status === 501) {
-          toast.error("Media uploads aren't available yet — posting text only");
-        } else {
-          throw error;
+          // Clear any partial uploads so the post goes out text-only.
+          postsToCreate.forEach((post) => {
+            post.media.forEach((media) => {
+              media.object_name = "";
+              delete media.uuid;
+            });
+          });
         }
       }
-    }
-
-    if (presignedUrls.length > 0) {
-      // Upload media to S3
-      const mediaUploadPromises = presignedUrls.map(async (presignedUrl) => {
-        const fields = presignedUrl.media.presigned_data.fields;
-        const url = presignedUrl.media.presigned_data.url;
-
-        const formData = new FormData();
-
-        Object.keys(fields).forEach((key) => {
-          formData.append(key, fields[key]);
-        });
-
-        // Actual file has to be appended last.
-        const file = posts
-          .find((post) => post.uuid === presignedUrl.post_uuid)
-          ?.media.find((media) => {
-            return media.uuid === presignedUrl.media.uuid;
-          })?.original;
-
-        if (!file || !(file instanceof File)) {
-          return;
-        }
-
-        formData.append("file", file);
-
-        return axios.post(url, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-      });
-
-      await Promise.all(mediaUploadPromises);
-
-      // Update media objects in posts
-      postsToCreate.forEach((post) => {
-        post.media.forEach((media) => {
-          media.object_name = presignedUrls.find(
-            (presignedUrl) =>
-              presignedUrl.post_uuid === post.uuid &&
-              presignedUrl.media.uuid === media.uuid
-          )?.media.object_name;
-          delete media.uuid;
-        });
-      });
     }
 
     // Create posts
@@ -139,7 +104,7 @@ export const createPosts = async ({
       throw new AppError(
         error,
         error.response?.data?.message_description ?? errorMessage,
-        "createPosts"
+        "createPosts",
       );
     }
   }

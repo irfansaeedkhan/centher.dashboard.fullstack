@@ -1,14 +1,17 @@
 import React, { useRef, useState } from "react";
 import Image from "next/image";
-import axios from "axios";
 import { useOnClickOutside } from "usehooks-ts";
 import toast from "react-hot-toast";
 import { CgSpinner } from "react-icons/cg";
-import { getUserImageUploadUrl, updateUserImage } from "@/lib/user";
+import { updateUserImage } from "@/lib/user";
+import {
+  uploadImage,
+  isCloudinaryConfigured,
+  CloudinaryNotConfiguredError,
+} from "@/lib/media/cloudinary";
 import Button from "@/components/button";
 import { LoggedInUser, UserImage } from "@/models/user";
 import { AvatarIcon, UploadIcon } from "@/assets/svgs";
-import { getUserImageUrl } from "@/utils/user.helpers";
 import AvatarModal from "./avatar.modal";
 import SelfieModal from "./selfie.modal";
 import CropProfilePicture from "./crop-profile-picture";
@@ -89,36 +92,27 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
     setProfileImageLoading(true);
     setIsUploading(true);
 
-    try {
-      // Get pre-signed URL from API
-      const data = await getUserImageUploadUrl(
-        profileImageData.object_name,
-        "profile_image"
+    // Phase 11: avatar uploads need Cloudinary configured.
+    if (!isCloudinaryConfigured()) {
+      setIsLoading("idle");
+      setProfileImageLoading(false);
+      setIsUploading(false);
+      toast.error(
+        "Avatar uploads aren't available yet — Cloudinary isn't configured",
       );
+      return;
+    }
 
-      // Create form data
-      const presignedPostData = data.presignedPostData;
-      const formData = new FormData();
-      Object.keys(presignedPostData.fields).forEach((key) => {
-        formData.append(
-          key,
-          presignedPostData.fields[key as keyof typeof presignedPostData.fields]
-        );
-      });
-      formData.append("file", uploadFile);
+    try {
+      // Upload directly to Cloudinary (Phase 11)
+      const secureUrl = await uploadImage(uploadFile, "centher/avatars");
 
-      // Upload file to S3
-      await axios.post(presignedPostData.url, formData);
+      profileImageData.path = secureUrl;
 
-      profileImageData.path = getUserImageUrl({
-        type: "custom-image",
-        object_name: data.objectName,
-      });
-
-      // Update profile image in DB
-      updateUserImage({
+      // Update profile image in DB (server persists the Cloudinary URL)
+      await updateUserImage({
         type: "profile_image",
-        object_name: data.objectName,
+        object_name: secureUrl,
       });
 
       toast.success("Profile picture updated successfully!");

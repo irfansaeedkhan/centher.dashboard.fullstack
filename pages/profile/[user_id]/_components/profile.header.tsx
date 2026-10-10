@@ -8,7 +8,6 @@ import React, {
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import axios from "axios";
 import toast from "react-hot-toast";
 import clsx from "clsx";
 import { CgSpinner } from "react-icons/cg";
@@ -29,12 +28,17 @@ import { useProfileCardStore } from "@/store/profile.card.store";
 import { useFeedStore } from "@/store/feed.store";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import { LoggedInUser, MutualFollowersData, User } from "@/models/user";
-import { getUserImageUploadUrl, updateUserImage } from "@/lib/user";
+import { updateUserImage } from "@/lib/user";
+import {
+  uploadImage,
+  isCloudinaryConfigured,
+  CloudinaryNotConfiguredError,
+} from "@/lib/media/cloudinary";
 import ProfileModal from "@/components/modal/profile.modal";
 import Button from "@/components/button";
 import { useGetProfileCardDetails } from "@/components/feed.components/profile.detail.card/use.get.profile.card.details";
 import { axiosApi369x } from "@/utils/axios";
-import { getUserImageUrl, sliceAccountAddress } from "@/utils/user.helpers";
+import { sliceAccountAddress } from "@/utils/user.helpers";
 import { customLog } from "@/utils/custom.log";
 import { copyText } from "@/utils/copy.text";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
@@ -144,7 +148,7 @@ const ProfileHeader: React.FC<Props> = ({
 
   // Handle cover image change
   const handleSelectCoverImage = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = event.target.files?.[0];
 
@@ -178,7 +182,7 @@ const ProfileHeader: React.FC<Props> = ({
 
   // Upload cover image change
   const handleUploadCoverImage = async (
-    e: React.MouseEvent<HTMLButtonElement>
+    e: React.MouseEvent<HTMLButtonElement>,
   ) => {
     setIsUploading(true);
     setCoverImageLoading(true);
@@ -190,42 +194,32 @@ const ProfileHeader: React.FC<Props> = ({
     const button = e.currentTarget as HTMLButtonElement;
     button.disabled = true;
 
+    // Phase 11: cover uploads need Cloudinary configured.
+    if (!isCloudinaryConfigured()) {
+      button.disabled = false;
+      setIsUploading(false);
+      setCoverImageLoading(false);
+      toast.error(
+        "Cover image uploads aren't available yet — Cloudinary isn't configured",
+      );
+      return;
+    }
+
     try {
       const coverImageData: CoverImageWithFile = {
         ...coverImage,
       };
 
-      // Get pre-signed URL from API
-      const data = await getUserImageUploadUrl(
-        coverImage.object_name!,
-        "cover_image"
-      );
+      // Upload directly to Cloudinary (Phase 11)
+      const secureUrl = await uploadImage(coverImage.blob, "centher/covers");
 
-      coverImageData.object_name = data.objectName;
+      coverImageData.object_name = secureUrl;
+      coverImageData.path = secureUrl;
 
-      // Create form data
-      const presignedPostData = data.presignedPostData;
-      const formData = new FormData();
-      Object.keys(presignedPostData.fields).forEach((key) => {
-        formData.append(
-          key,
-          presignedPostData.fields[key as keyof typeof presignedPostData.fields]
-        );
-      });
-      formData.append("file", coverImage.blob);
-
-      // Upload file to S3
-      await axios.post(presignedPostData.url, formData);
-
-      coverImageData.path = getUserImageUrl({
-        type: "custom-image",
-        object_name: data.objectName,
-      });
-
-      // Update profile image in DB
-      updateUserImage({
+      // Update profile image in DB (server persists the Cloudinary URL)
+      await updateUserImage({
         type: "cover_image",
-        object_name: coverImageData.object_name!,
+        object_name: secureUrl,
       });
 
       setCoverImage((prev) => ({
@@ -277,7 +271,7 @@ const ProfileHeader: React.FC<Props> = ({
     } catch (error: any) {
       setLoadingState(false);
       toast.error(
-        error.response.data?.message_description || "Something went wrong"
+        error.response.data?.message_description || "Something went wrong",
       );
     }
   };
@@ -309,7 +303,7 @@ const ProfileHeader: React.FC<Props> = ({
             `relative h-[180px] w-full rounded-t-xl bg-cover bg-no-repeat`,
             {
               "cursor-move": coverImage.newImage,
-            }
+            },
           )}
           style={{
             backgroundImage: `url(${coverImage.path})`,
@@ -420,7 +414,7 @@ const ProfileHeader: React.FC<Props> = ({
               <div
                 className={clsx(
                   "absolute -top-[45px] right-4 hidden w-full gap-2 fmd:flex",
-                  follow ? "max-w-[114px]" : "max-w-[54px]"
+                  follow ? "max-w-[114px]" : "max-w-[54px]",
                 )}
               >
                 {follow && (
@@ -437,7 +431,7 @@ const ProfileHeader: React.FC<Props> = ({
                     "flex h-10 w-[54px] flex-shrink-0 cursor-pointer items-center justify-center rounded-[14px] border",
                     follow
                       ? " border-gray-shade-3"
-                      : " gradient-border-3 p-[1px]"
+                      : " gradient-border-3 p-[1px]",
                   )}
                   onClick={() => followUser(user._id)}
                 >
@@ -473,7 +467,7 @@ const ProfileHeader: React.FC<Props> = ({
                       user.display_name.length > 20 &&
                       "inline-block w-[90vw] break-words md:w-full"
                     }`,
-                    !loggedInUser && `mt-6`
+                    !loggedInUser && `mt-6`,
                   )}
                 >
                   <span title={user.display_name}>
@@ -493,7 +487,7 @@ const ProfileHeader: React.FC<Props> = ({
                     <span
                       className={cn(
                         "verifiedIcon ml-0.5 inline-block h-[22px] w-[22px] min-w-[22px] rounded-full fsm:ml-1",
-                        user.membership.status === "citizen" ? "pt-2" : "pt-1"
+                        user.membership.status === "citizen" ? "pt-2" : "pt-1",
                       )}
                     >
                       <Image
@@ -539,7 +533,7 @@ const ProfileHeader: React.FC<Props> = ({
                 loggedInUser?._id.toLowerCase() !== user._id.toLowerCase() && (
                   <div
                     className={clsx(
-                      "mt-2 flex w-full max-w-[106px] justify-center gap-2 fmd:hidden"
+                      "mt-2 flex w-full max-w-[106px] justify-center gap-2 fmd:hidden",
                     )}
                   >
                     {follow && (
@@ -556,7 +550,7 @@ const ProfileHeader: React.FC<Props> = ({
                         "flex h-10 w-[54px] flex-shrink-0 cursor-pointer items-center justify-center rounded-[14px] border",
                         follow
                           ? " border-gray-shade-3"
-                          : " gradient-border-3 p-[1px]"
+                          : " gradient-border-3 p-[1px]",
                       )}
                       onClick={() => followUser(user._id)}
                     >
