@@ -16,7 +16,7 @@ export const getOldDXCMetaNFTs = async (): Promise<OldDXCMetaNFT[]> => {
     const { data } = await axiosCFS.get<{
       nfts: OldDXCMetaNFT[];
     }>(`/api/marketplace/nfts/old-dxc-meta-nfts`);
-    return data.nfts;
+    return data.nfts ?? [];
   } catch (error: any) {
     const errorMessage = "Failed to fetch old DXC meta NFTs";
     if (error.response?.status === 500) {

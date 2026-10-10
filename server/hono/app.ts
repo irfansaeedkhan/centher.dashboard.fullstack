@@ -2407,13 +2407,7 @@ export const createHonoApp = () => {
     });
   });
 
-  app.get("/marketplace/collections", async (c) => {
-    const rows = await db
-      .select()
-      .from(collections)
-      .orderBy(desc(collections.createdAt));
-    return c.json({ data: rows });
-  });
+  // Phase 6: replaced by the CFS-mapped version below.
 
   app.get("/staking/pools", async (c) => {
     const rows = await db
@@ -2902,6 +2896,470 @@ export const createHonoApp = () => {
       emoji: body.emoji,
     });
     return c.json({ ok: true, reacted: true });
+  });
+
+  /**
+   * Phase 6: marketplace read layer. The DB holds collections/nfts with uuid
+   * ids; the client expects the legacy CFS shapes, so rows are mapped to
+   * CFSCollection/CFSNFT. Specific routes are registered BEFORE parametric
+   * ones (Hono matches in registration order).
+   */
+
+  const marketplacePaging = z.object({
+    first: z.coerce.number().int().min(1).max(100).optional(),
+    skip: z.coerce.number().int().min(0).optional(),
+    limit: z.coerce.number().int().min(1).max(100).optional(),
+  });
+
+  /** CFS-shaped user card for creator_data / owner_data. */
+  const cfsUserCard = (p: {
+    userId: string;
+    displayName: string | null;
+    avatarUrl: string | null;
+    membership: unknown;
+  }) => ({
+    _id: p.userId,
+    display_name: p.displayName ?? "Unnamed",
+    profile_image: p.avatarUrl ?? "",
+    membership: p.membership ?? null,
+  });
+
+  const fetchCfsUserCards = async (userIds: string[]) => {
+    const uniq = [...new Set(userIds)];
+    if (uniq.length === 0) return new Map<string, ReturnType<typeof cfsUserCard>>();
+    const rows = await db
+      .select({
+        userId: profiles.userId,
+        displayName: profiles.displayName,
+        avatarUrl: profiles.avatarUrl,
+        membership: profiles.membership,
+      })
+      .from(profiles)
+      .where(inArray(profiles.userId, uniq));
+    return new Map(rows.map((r) => [r.userId, cfsUserCard(r)]));
+  };
+
+  const fallbackCard = (userId: string) =>
+    cfsUserCard({ userId, displayName: "Unnamed", avatarUrl: "", membership: null });
+
+  const mapCfsCollection = (
+    c: typeof collections.$inferSelect,
+    creatorCard: ReturnType<typeof cfsUserCard>
+  ) => ({
+    id: c.id,
+    collection: c.id,
+    name: c.name,
+    symbol: "",
+    maxSupply: "0",
+    totalSupply: "0",
+    creator: c.creatorId,
+    ipfs: c.imageUrl ?? "",
+    txTime: c.createdAt ? Math.floor(+c.createdAt / 1000).toString() : "0",
+    createHash: "",
+    tradingVolumn: "0",
+    ipfs_metadata: {
+      name: c.name,
+      symbol: "",
+      description: c.description ?? "",
+      totalsupply: { type: "BigNumber" as const, hex: "0x00" },
+      url: "",
+      category: "All",
+      yoursite: "",
+      facebook: "",
+      twitter: "",
+      profileIPFSHash: c.imageUrl ?? "",
+      coverIPFSHash: "",
+    },
+    creator_data: creatorCard,
+  });
+
+  const mapCfsNft = (
+    n: typeof nfts.$inferSelect,
+    collectionId: string,
+    creatorId: string,
+    ownerCard: ReturnType<typeof cfsUserCard>,
+    creatorCard: ReturnType<typeof cfsUserCard>
+  ) => {
+    const img = n.imageUrl ?? "";
+    const isVideo = /\.(mp4|webm|mov)(\?|$)/i.test(img);
+    return {
+      id: n.id,
+      collection: collectionId,
+      createTime: n.createdAt ? n.createdAt.toISOString() : new Date(0).toISOString(),
+      creator: creatorId,
+      mintHash: "",
+      ipfs: img,
+      saleState: n.listed ? "Sale" : "NotForSale",
+      tokenId: n.id,
+      price: n.price ?? "0",
+      owner: n.ownerId,
+      unlock: "0",
+      listInfo: { price: n.price ?? "0", bidSize: 0, bids: [] as unknown[] },
+      auctionInfo: {
+        endTime: "0",
+        highestBidPrice: "0",
+        highestBidAddress: "",
+        bidSize: 0,
+        startPrice: "0",
+        bids: [] as unknown[],
+      },
+      ipfs_metadata: {
+        name: n.name,
+        description: n.description ?? "",
+        supply: 1,
+        image: img,
+        type: isVideo ? "video/mp4" : "image/png",
+        collection: collectionId,
+        attributes: [] as unknown[],
+        videoThumbnail: null as string | null,
+      },
+      creator_data: creatorCard,
+      owner_data: { ...ownerCard, is_registered: true },
+    };
+  };
+
+  /** Load NFTs with their collections + user cards in bulk. */
+  const loadNfts = async (
+    where: ReturnType<typeof eq> | ReturnType<typeof and> | undefined,
+    order: "newest" | "oldest",
+    limit: number,
+    offset: number
+  ) => {
+    const rows = await db
+      .select()
+      .from(nfts)
+      .where(where)
+      .orderBy(
+        order === "newest" ? desc(nfts.createdAt) : asc(nfts.createdAt)
+      )
+      .limit(limit)
+      .offset(offset);
+    if (rows.length === 0) return [];
+    const collectionIds = [...new Set(rows.map((r) => r.collectionId))];
+    const collRows = await db
+      .select()
+      .from(collections)
+      .where(inArray(collections.id, collectionIds));
+    const collById = new Map(collRows.map((c) => [c.id, c]));
+    const userIds = [
+      ...rows.map((r) => r.ownerId),
+      ...collRows.map((c) => c.creatorId),
+    ];
+    const cards = await fetchCfsUserCards(userIds);
+    return rows.map((n) => {
+      const coll = collById.get(n.collectionId);
+      const ownerCard = cards.get(n.ownerId) ?? fallbackCard(n.ownerId);
+      const creatorCard =
+        cards.get(coll?.creatorId ?? "") ?? fallbackCard(coll?.creatorId ?? "");
+      return mapCfsNft(n, n.collectionId, coll?.creatorId ?? "", ownerCard, creatorCard);
+    });
+  };
+
+  // ---- Collections ----
+
+  // List collections (paginated).
+  app.get("/marketplace/collections", async (c) => {
+    const q = marketplacePaging.parse(c.req.query());
+    const limit = q.first ?? q.limit ?? 15;
+    const offset = q.skip ?? 0;
+    const rows = await db
+      .select()
+      .from(collections)
+      .orderBy(desc(collections.createdAt))
+      .limit(limit)
+      .offset(offset);
+    const cards = await fetchCfsUserCards(rows.map((r) => r.creatorId));
+    return c.json({
+      collections: rows.map((r) =>
+        mapCfsCollection(r, cards.get(r.creatorId) ?? fallbackCard(r.creatorId))
+      ),
+    });
+  });
+
+  // Hot collections (most NFTs first).
+  app.get("/marketplace/collections/hot-collections", async (c) => {
+    const q = marketplacePaging.parse(c.req.query());
+    const limit = q.first ?? q.limit ?? 15;
+    const offset = q.skip ?? 0;
+    const counts = await db
+      .select({
+        collectionId: nfts.collectionId,
+        count: sql<number>`count(*)::int`,
+      })
+      .from(nfts)
+      .groupBy(nfts.collectionId)
+      .orderBy(desc(sql`count(*)`))
+      .limit(limit)
+      .offset(offset);
+    const ids = counts.map((r) => r.collectionId);
+    if (ids.length === 0) return c.json({ collections: [] });
+    const rows = await db
+      .select()
+      .from(collections)
+      .where(inArray(collections.id, ids));
+    const byId = new Map(rows.map((r) => [r.id, r]));
+    const cards = await fetchCfsUserCards(rows.map((r) => r.creatorId));
+    return c.json({
+      collections: ids
+        .map((id) => byId.get(id))
+        .filter((r): r is NonNullable<typeof r> => !!r)
+        .map((r) =>
+          mapCfsCollection(r, cards.get(r.creatorId) ?? fallbackCard(r.creatorId))
+        ),
+    });
+  });
+
+  // Top creators (by NFT count, then collection count).
+  app.get("/marketplace/collections/top-creators", async (c) => {
+    const q = marketplacePaging.parse(c.req.query());
+    const limit = q.first ?? 10;
+    const offset = q.skip ?? 0;
+    const nftCounts = await db
+      .select({
+        creatorId: collections.creatorId,
+        nftCount: sql<number>`count(${nfts.id})::int`,
+      })
+      .from(collections)
+      .leftJoin(nfts, eq(nfts.collectionId, collections.id))
+      .groupBy(collections.creatorId)
+      .orderBy(desc(sql`count(${nfts.id})`))
+      .limit(limit)
+      .offset(offset);
+    const collCounts = await db
+      .select({
+        creatorId: collections.creatorId,
+        collCount: sql<number>`count(*)::int`,
+      })
+      .from(collections)
+      .where(
+        inArray(
+          collections.creatorId,
+          nftCounts.map((r) => r.creatorId)
+        )
+      )
+      .groupBy(collections.creatorId);
+    const collByCreator = new Map(collCounts.map((r) => [r.creatorId, r.collCount]));
+    const cards = await fetchCfsUserCards(nftCounts.map((r) => r.creatorId));
+    return c.json({
+      users: nftCounts.map((r) => {
+        const card = cards.get(r.creatorId) ?? fallbackCard(r.creatorId);
+        return {
+          _id: r.creatorId,
+          display_name: card.display_name,
+          profile_image: card.profile_image,
+          membership: card.membership,
+          createNFTCount: r.nftCount,
+          createCollectionCount: collByCreator.get(r.creatorId) ?? 0,
+        };
+      }),
+    });
+  });
+
+  // Collections by a single creator.
+  app.get("/marketplace/collections/creator/:creator", async (c) => {
+    const creator = c.req.param("creator");
+    const q = marketplacePaging.parse(c.req.query());
+    const limit = q.first ?? q.limit ?? 15;
+    const offset = q.skip ?? 0;
+    const rows = await db
+      .select()
+      .from(collections)
+      .where(eq(collections.creatorId, creator))
+      .orderBy(desc(collections.createdAt))
+      .limit(limit)
+      .offset(offset);
+    const cards = await fetchCfsUserCards(rows.map((r) => r.creatorId));
+    return c.json({
+      collections: rows.map((r) =>
+        mapCfsCollection(r, cards.get(r.creatorId) ?? fallbackCard(r.creatorId))
+      ),
+    });
+  });
+
+  // Single collection (parametric — registered after the specific routes).
+  app.get("/marketplace/collections/:address", async (c) => {
+    const address = z.string().uuid().parse(c.req.param("address"));
+    const [row] = await db
+      .select()
+      .from(collections)
+      .where(eq(collections.id, address))
+      .limit(1);
+    if (!row) apiError("Collection not found", "NOT_FOUND", 404);
+    const cards = await fetchCfsUserCards([row!.creatorId]);
+    return c.json(
+      mapCfsCollection(row!, cards.get(row!.creatorId) ?? fallbackCard(row!.creatorId))
+    );
+  });
+
+  // ---- NFTs ----
+
+  // Hot NFTs (listed first, newest first).
+  app.get("/marketplace/nfts/hot-nfts", async (c) => {
+    const q = marketplacePaging.parse(c.req.query());
+    const limit = q.first ?? q.limit ?? 15;
+    const offset = q.skip ?? 0;
+    const list = await loadNfts(eq(nfts.listed, true), "newest", limit, offset);
+    return c.json({ nfts: list });
+  });
+
+  // Legacy DXC meta NFTs (no legacy rows exist — honest empty list).
+  app.get("/marketplace/nfts/old-dxc-meta-nfts", async (c) => {
+    return c.json({ nfts: [] });
+  });
+
+  // NFTs by creator (across collections).
+  app.get("/marketplace/nfts/creator/:creator", async (c) => {
+    const creator = c.req.param("creator");
+    const q = marketplacePaging.parse(c.req.query());
+    const limit = q.first ?? q.limit ?? 50;
+    const offset = q.skip ?? 0;
+    const collRows = await db
+      .select({ id: collections.id })
+      .from(collections)
+      .where(eq(collections.creatorId, creator));
+    const ids = collRows.map((r) => r.id);
+    if (ids.length === 0) return c.json({ nfts: [] });
+    const list = await loadNfts(
+      inArray(nfts.collectionId, ids),
+      "newest",
+      limit,
+      offset
+    );
+    return c.json({ nfts: list });
+  });
+
+  // NFTs owned by an address (image-card shape + cursor).
+  app.get("/marketplace/nfts/owner/:owner", async (c) => {
+    const owner = c.req.param("owner");
+    const q = marketplacePaging.parse(c.req.query());
+    const limit = q.limit ?? q.first ?? 50;
+    const offset = q.skip ?? 0;
+    const list = await loadNfts(eq(nfts.ownerId, owner), "newest", limit + 1, offset);
+    const hasMore = list.length > limit;
+    const page = hasMore ? list.slice(0, limit) : list;
+    return c.json({
+      nfts: page.map((n) => ({
+        id: n.id,
+        collection: n.collection,
+        tokenId: n.tokenId,
+        creator: n.creator,
+        createTime: n.createTime,
+        ipfs: n.ipfs,
+        saleState: n.saleState,
+        owner: n.owner,
+        endTime: n.auctionInfo.endTime,
+        unlock: n.unlock,
+        mintHash: n.mintHash,
+        owner_data: n.owner_data,
+        creator_data: n.creator_data,
+        ipfs_metadata: n.ipfs_metadata,
+        external: false,
+      })),
+      cursor: hasMore ? String(offset + limit) : "",
+    });
+  });
+
+  // Listed NFTs owned by an address.
+  app.get("/marketplace/nfts/owner/:owner/listed", async (c) => {
+    const owner = c.req.param("owner");
+    const q = marketplacePaging.parse(c.req.query());
+    const limit = q.first ?? q.limit ?? 50;
+    const offset = q.skip ?? 0;
+    const list = await loadNfts(
+      and(eq(nfts.ownerId, owner), eq(nfts.listed, true)),
+      "newest",
+      limit,
+      offset
+    );
+    return c.json({ nfts: list });
+  });
+
+  // NFTs in a single collection (parametric).
+  app.get("/marketplace/nfts/:collection", async (c) => {
+    const collection = z.string().uuid().parse(c.req.param("collection"));
+    const q = z
+      .object({
+        first: z.coerce.number().int().min(1).max(100).optional(),
+        skip: z.coerce.number().int().min(0).optional(),
+        orderDir: z.enum(["asc", "desc"]).optional(),
+        saleState: z.string().optional(),
+      })
+      .parse(c.req.query());
+    const limit = q.first ?? 50;
+    const offset = q.skip ?? 0;
+    let where: ReturnType<typeof eq> | ReturnType<typeof and> | undefined =
+      eq(nfts.collectionId, collection);
+    if (q.saleState && q.saleState !== "All") {
+      where = and(where, eq(nfts.listed, q.saleState === "Sale"));
+    }
+    const list = await loadNfts(
+      where,
+      q.orderDir === "asc" ? "oldest" : "newest",
+      limit,
+      offset
+    );
+    return c.json({ nfts: list });
+  });
+
+  // Single NFT page data (most parametric — registered last).
+  app.get("/marketplace/nfts/:collection/:tokenId/page-data", async (c) => {
+    const collection = z.string().uuid().parse(c.req.param("collection"));
+    const tokenId = c.req.param("tokenId");
+    const [row] = await db
+      .select()
+      .from(nfts)
+      .where(and(eq(nfts.collectionId, collection), eq(nfts.id, tokenId)))
+      .limit(1);
+    if (!row) apiError("NFT not found", "NOT_FOUND", 404);
+    const [coll] = await db
+      .select()
+      .from(collections)
+      .where(eq(collections.id, row!.collectionId))
+      .limit(1);
+    const cards = await fetchCfsUserCards([row!.ownerId, coll?.creatorId ?? ""]);
+    const ownerCard = cards.get(row!.ownerId) ?? fallbackCard(row!.ownerId);
+    const creatorCard =
+      cards.get(coll?.creatorId ?? "") ?? fallbackCard(coll?.creatorId ?? "");
+    const nft = mapCfsNft(
+      row!,
+      row!.collectionId,
+      coll?.creatorId ?? "",
+      ownerCard,
+      creatorCard
+    );
+    const totalSupply = await db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(nfts)
+      .where(eq(nfts.collectionId, row!.collectionId));
+    return c.json({
+      ...nft,
+      marketplaceSaleHistory: [],
+      collectionInfo: { totalSupply: String(totalSupply[0]?.count ?? 0) },
+    });
+  });
+
+  // ---- IPFS (no backend — honest 501s) ----
+
+  app.post("/ipfs/upload/file", async (c) => {
+    return c.json(
+      {
+        message:
+          "File upload is not available in this build yet. NFT creation with media is disabled.",
+        code: "IPFS_UPLOAD_UNAVAILABLE",
+      },
+      501
+    );
+  });
+
+  app.post("/ipfs/upload/metadata", async (c) => {
+    return c.json(
+      {
+        message:
+          "Metadata upload is not available in this build yet. NFT creation is disabled.",
+        code: "IPFS_UPLOAD_UNAVAILABLE",
+      },
+      501
+    );
   });
 
   // Phase 5: chat REST endpoints are registered above this line.

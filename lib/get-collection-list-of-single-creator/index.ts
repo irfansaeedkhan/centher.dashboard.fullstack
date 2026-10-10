@@ -25,7 +25,7 @@ export const getCollectionListOfSingleCreator = async ({
         },
       }
     );
-    return response.data.collections.map((collection) => {
+    return (response.data.collections ?? []).map((collection) => {
       if (isOld(collection.collection)) {
         collection.name = getOldName();
       }

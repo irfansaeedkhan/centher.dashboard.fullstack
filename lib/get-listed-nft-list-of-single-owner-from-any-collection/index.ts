@@ -21,7 +21,7 @@ export const getListedNFTListOfSingleOwnerFromAnyCollection = async ({
         },
       }
     );
-    return data.nfts;
+    return data.nfts ?? [];
   } catch (error: any) {
     throw new AppError(
       error,

@@ -19,7 +19,7 @@ export const getHotNFTs = async ({
       },
     });
 
-    return data.nfts;
+    return data.nfts ?? [];
   } catch (error: any) {
     throw new AppError(error, "Can not load NFTs", "getHotNFTs");
   }

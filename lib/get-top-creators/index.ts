@@ -19,7 +19,7 @@ export const getTopCreators = async ({
         },
       }
     );
-    return data.users;
+    return data.users ?? [];
   } catch (error: any) {
     throw new AppError(error, "Can not load Top Creators", "getTopCreators");
   }
