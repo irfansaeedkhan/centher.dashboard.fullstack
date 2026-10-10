@@ -51,7 +51,8 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins, sdk }) => {
         <Image
           src={
             card.metadata?.banner?.length
-              ? formatIPFSUrl(card.metadata.banner)
+              ? formatIPFSUrl(card.metadata.banner) ||
+                "/images/profile-header-cover.jpg"
               : "/images/profile-header-cover.jpg"
           }
           alt="profile-header-cover"
@@ -65,8 +66,9 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins, sdk }) => {
         <div className="flex items-center gap-4">
           <Image
             src={
-              card.metadata
-                ? formatIPFSUrl(card.metadata.icon)
+              card.metadata?.icon
+                ? formatIPFSUrl(card.metadata.icon) ||
+                  "/images/profile-header-cover.jpg"
                 : "/images/profile-header-cover.jpg"
             }
             alt="profile-header-cover"

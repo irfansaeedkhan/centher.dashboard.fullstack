@@ -114,7 +114,6 @@ module.exports = {
           20: "#282A33",
           23: "#1E202B",
           24: "#17181A",
-          24: "#A8ABBB",
           "border-color": "#202027",
         },
         "white-shade": {

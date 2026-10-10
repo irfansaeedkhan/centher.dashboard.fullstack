@@ -413,6 +413,8 @@ const mapNotificationRow = (row: {
       ? row.createdAt.toISOString()
       : String(row.createdAt),
   post_id: row.postId,
+  // Phase 12: nested shape the notifications UI reads (notification.post._id).
+  post: row.postId ? { _id: row.postId, user_id: "" } : null,
   by: {
     _id: row.actorId || "",
     display_name: row.actorName || "Centher User",

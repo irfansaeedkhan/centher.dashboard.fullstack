@@ -10,12 +10,31 @@ export const formatAddress = (address: string | undefined) => {
     : "";
 };
 
+/** Parse a token amount that may be a decimal BNB string ("1.0000") or a
+ * wei integer string. Never throws — returns 0 for unparseable input. */
+const parseTokenAmount = (num: number | string | undefined): number => {
+  if (num === undefined || num === null || num === "") return 0;
+  const str = `${num}`.trim();
+  // Decimal string → already in ether/BNB units.
+  if (/^\d+\.\d+$/.test(str)) {
+    const n = Number(str);
+    return Number.isFinite(n) ? n : 0;
+  }
+  // Integer string → treat as wei.
+  try {
+    return Number(ethers.utils.formatEther(str));
+  } catch {
+    const n = Number(str);
+    return Number.isFinite(n) ? n : 0;
+  }
+};
+
 export const formatEther2Number = (num: number | string | undefined) => {
-  return Number(num ? ethers.utils.formatEther(`${num}`) : 0);
+  return parseTokenAmount(num);
 };
 
 export const formatString2Ether = (num: string | undefined) => {
-  return Number(num ? ethers.utils.formatEther(`${num}`) : 0);
+  return parseTokenAmount(num);
 };
 
 export const formatBNB2USD = (
