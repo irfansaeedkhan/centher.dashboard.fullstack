@@ -23,7 +23,7 @@ export const getCollections = async ({
         },
       }
     );
-    return response.data.collections.map((collection) => {
+    return (response.data.collections ?? []).map((collection) => {
       if (isOld(collection.collection)) {
         collection.name = getOldName();
       }
@@ -51,7 +51,7 @@ export const getHotCollections = async ({
         },
       }
     );
-    return response.data.collections.map((collection) => {
+    return (response.data.collections ?? []).map((collection) => {
       if (isOld(collection.collection)) {
         collection.name = getOldName();
       }
