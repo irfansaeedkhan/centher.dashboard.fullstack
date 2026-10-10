@@ -12,7 +12,7 @@
 import { neon } from "@neondatabase/serverless";
 import { readFileSync } from "fs";
 import { drizzle } from "drizzle-orm/neon-http";
-import { eq, and } from "drizzle-orm";
+import { eq, and, like } from "drizzle-orm";
 import { collections, nfts, user } from "../db/schema";
 
 const url = readFileSync(
@@ -159,6 +159,9 @@ async function main() {
   };
 
   // --- 2. VIDEO NFTs (4) ---
+  // One-time cleanup: drop rows seeded with the dead gtv-videos-bucket URLs
+  // (renamed in the URL fix, so name-based dedupe won't catch them).
+  await db.delete(nfts).where(like(nfts.animationUrl, "%gtv-videos-bucket%"));
   const videoDefs = [
     [
       "Bloom in Motion",
