@@ -112,7 +112,7 @@ export const orgMembers = pgTable(
     title: text("title").notNull().default(""),
     joinedAt: timestamp("joined_at").notNull().defaultNow(),
   },
-  (t) => [primaryKey({ columns: [t.orgOwnerId, t.memberId] })],
+  (t) => [primaryKey({ columns: [t.orgOwnerId, t.memberId] })]
 );
 
 export const orgInvites = pgTable("org_invites", {
@@ -142,6 +142,7 @@ export const posts = pgTable("posts", {
   viewCount: integer("view_count").notNull().default(0),
   isArchived: boolean("is_archived").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
+  mediaUrls: jsonb("media_urls"),
 });
 
 export const postLikes = pgTable(
@@ -155,7 +156,7 @@ export const postLikes = pgTable(
       .references(() => user.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
-  (t) => [primaryKey({ columns: [t.postId, t.userId] })],
+  (t) => [primaryKey({ columns: [t.postId, t.userId] })]
 );
 
 export const comments = pgTable("comments", {
@@ -288,7 +289,7 @@ export const follows = pgTable(
       .references(() => user.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
-  (t) => [primaryKey({ columns: [t.followerId, t.followingId] })],
+  (t) => [primaryKey({ columns: [t.followerId, t.followingId] })]
 );
 
 /** Phase 3: in-app notifications (follow / like / reply signals) */
@@ -336,7 +337,7 @@ export const conversationMembers = pgTable(
     lastReadAt: timestamp("last_read_at"),
     joinedAt: timestamp("joined_at").notNull().defaultNow(),
   },
-  (t) => [primaryKey({ columns: [t.conversationId, t.userId] })],
+  (t) => [primaryKey({ columns: [t.conversationId, t.userId] })]
 );
 
 /** Phase 5: chat — emoji reactions on messages (toggle per user+emoji). */
@@ -357,9 +358,9 @@ export const messageReactions = pgTable(
     uniqueIndex("message_reactions_msg_user_emoji_idx").on(
       t.messageId,
       t.userId,
-      t.emoji,
+      t.emoji
     ),
-  ],
+  ]
 );
 
 /** Phase 7: per-user auto-restake pool ids (staking rewards). */

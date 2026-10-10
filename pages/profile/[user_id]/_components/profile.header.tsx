@@ -148,7 +148,7 @@ const ProfileHeader: React.FC<Props> = ({
 
   // Handle cover image change
   const handleSelectCoverImage = (
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
 
@@ -182,7 +182,7 @@ const ProfileHeader: React.FC<Props> = ({
 
   // Upload cover image change
   const handleUploadCoverImage = async (
-    e: React.MouseEvent<HTMLButtonElement>,
+    e: React.MouseEvent<HTMLButtonElement>
   ) => {
     setIsUploading(true);
     setCoverImageLoading(true);
@@ -200,7 +200,7 @@ const ProfileHeader: React.FC<Props> = ({
       setIsUploading(false);
       setCoverImageLoading(false);
       toast.error(
-        "Cover image uploads aren't available yet — Cloudinary isn't configured",
+        "Cover image uploads aren't available yet — Cloudinary isn't configured"
       );
       return;
     }
@@ -271,7 +271,7 @@ const ProfileHeader: React.FC<Props> = ({
     } catch (error: any) {
       setLoadingState(false);
       toast.error(
-        error.response.data?.message_description || "Something went wrong",
+        error.response.data?.message_description || "Something went wrong"
       );
     }
   };
@@ -303,7 +303,7 @@ const ProfileHeader: React.FC<Props> = ({
             `relative h-[180px] w-full rounded-t-xl bg-cover bg-no-repeat`,
             {
               "cursor-move": coverImage.newImage,
-            },
+            }
           )}
           style={{
             backgroundImage: `url(${coverImage.path})`,
@@ -414,7 +414,7 @@ const ProfileHeader: React.FC<Props> = ({
               <div
                 className={clsx(
                   "absolute -top-[45px] right-4 hidden w-full gap-2 fmd:flex",
-                  follow ? "max-w-[114px]" : "max-w-[54px]",
+                  follow ? "max-w-[114px]" : "max-w-[54px]"
                 )}
               >
                 {follow && (
@@ -431,7 +431,7 @@ const ProfileHeader: React.FC<Props> = ({
                     "flex h-10 w-[54px] flex-shrink-0 cursor-pointer items-center justify-center rounded-[14px] border",
                     follow
                       ? " border-gray-shade-3"
-                      : " gradient-border-3 p-[1px]",
+                      : " gradient-border-3 p-[1px]"
                   )}
                   onClick={() => followUser(user._id)}
                 >
@@ -467,7 +467,7 @@ const ProfileHeader: React.FC<Props> = ({
                       user.display_name.length > 20 &&
                       "inline-block w-[90vw] break-words md:w-full"
                     }`,
-                    !loggedInUser && `mt-6`,
+                    !loggedInUser && `mt-6`
                   )}
                 >
                   <span title={user.display_name}>
@@ -487,7 +487,7 @@ const ProfileHeader: React.FC<Props> = ({
                     <span
                       className={cn(
                         "verifiedIcon ml-0.5 inline-block h-[22px] w-[22px] min-w-[22px] rounded-full fsm:ml-1",
-                        user.membership.status === "citizen" ? "pt-2" : "pt-1",
+                        user.membership.status === "citizen" ? "pt-2" : "pt-1"
                       )}
                     >
                       <Image
@@ -533,7 +533,7 @@ const ProfileHeader: React.FC<Props> = ({
                 loggedInUser?._id.toLowerCase() !== user._id.toLowerCase() && (
                   <div
                     className={clsx(
-                      "mt-2 flex w-full max-w-[106px] justify-center gap-2 fmd:hidden",
+                      "mt-2 flex w-full max-w-[106px] justify-center gap-2 fmd:hidden"
                     )}
                   >
                     {follow && (
@@ -550,7 +550,7 @@ const ProfileHeader: React.FC<Props> = ({
                         "flex h-10 w-[54px] flex-shrink-0 cursor-pointer items-center justify-center rounded-[14px] border",
                         follow
                           ? " border-gray-shade-3"
-                          : " gradient-border-3 p-[1px]",
+                          : " gradient-border-3 p-[1px]"
                       )}
                       onClick={() => followUser(user._id)}
                     >

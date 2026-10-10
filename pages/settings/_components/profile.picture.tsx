@@ -98,7 +98,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
       setProfileImageLoading(false);
       setIsUploading(false);
       toast.error(
-        "Avatar uploads aren't available yet — Cloudinary isn't configured",
+        "Avatar uploads aren't available yet — Cloudinary isn't configured"
       );
       return;
     }

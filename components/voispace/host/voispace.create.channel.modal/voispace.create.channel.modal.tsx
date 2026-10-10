@@ -55,7 +55,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
     onClose();
   }, [onClose]);
   const [currentStep, setCurrentStep] = useState<CreatRoomSteps>(
-    CreatRoomSteps.AMA_OR_LIVE,
+    CreatRoomSteps.AMA_OR_LIVE
   );
   const [loading, setLoading] = useState(false);
   const [roomCreationLoader, setRoomCreationLoader] = useState(false);
@@ -183,7 +183,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
         return updatedState;
       });
     },
-    [setFormState],
+    [setFormState]
   );
 
   const createRoom = async () => {
@@ -222,7 +222,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
         input,
         user._id,
         formState.audioDevice as MediaDeviceInfo,
-        formState.videoDevice as MediaDeviceInfo,
+        formState.videoDevice as MediaDeviceInfo
       );
     } catch (error) {
       console.error("Error creating public room:", error);
@@ -246,10 +246,21 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
 
       try {
         await getMediaPermissions(formState.type);
+      } catch (error) {
+        toast.error(
+          "Failed to access media devices. Please check permissions."
+        );
+        return;
+      }
+
+      // Phase 11: image is optional — a failed upload warns but never blocks
+      // room creation (the placeholder fallback applies).
+      try {
         await handleImageUpload();
       } catch (error) {
-        toast.error("Failed to upload image, please try another image");
-        return;
+        toast.error(
+          "Failed to upload image — continuing without a cover image."
+        );
       }
     }
 
@@ -418,10 +429,10 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
               loading && currentStep === CreatRoomSteps.PERMISSIONS_AND_DETAILS
                 ? "Uploading..."
                 : roomCreationLoader
-                  ? "setting up room..."
-                  : currentStep === CreatRoomSteps.ROOM
-                    ? "Submit"
-                    : "Next"
+                ? "setting up room..."
+                : currentStep === CreatRoomSteps.ROOM
+                ? "Submit"
+                : "Next"
             }
             disabled={
               loading ||

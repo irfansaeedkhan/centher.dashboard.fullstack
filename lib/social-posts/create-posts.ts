@@ -61,7 +61,7 @@ export const createPosts = async ({
               uploadImage(file, "centher/posts").then((secureUrl) => {
                 target.object_name = secureUrl;
                 delete target.uuid;
-              }),
+              })
             );
           });
         });
@@ -70,12 +70,12 @@ export const createPosts = async ({
         } catch (error: any) {
           if (error instanceof CloudinaryNotConfiguredError) {
             toast.error(
-              "Media uploads aren't available yet — posting text only",
+              "Media uploads aren't available yet — posting text only"
             );
           } else {
             // Upload failed — post text-only rather than losing the post.
             toast.error(
-              error?.message || "Image upload failed — posting text only",
+              error?.message || "Image upload failed — posting text only"
             );
           }
           // Clear any partial uploads so the post goes out text-only.
@@ -104,7 +104,7 @@ export const createPosts = async ({
       throw new AppError(
         error,
         error.response?.data?.message_description ?? errorMessage,
-        "createPosts",
+        "createPosts"
       );
     }
   }
