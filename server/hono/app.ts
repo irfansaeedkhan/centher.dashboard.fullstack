@@ -3450,6 +3450,9 @@ export const createHonoApp = () => {
     apy: row.apy,
     tvl: row.tvl,
     status: row.status,
+    price: row.price,
+    duration_days: row.durationDays,
+    claim_lockup_days: row.claimLockupDays,
     created_at: row.createdAt,
   });
 
@@ -3531,6 +3534,117 @@ export const createHonoApp = () => {
   });
 
   // Phase 5: chat REST endpoints are registered above this line.
+  /**
+   * Phase 8: admin console — server-side admin enforcement. Every /api/admin/*
+   * route requires an authenticated admin (user.is_admin). Non-admins get
+   * 403, unauthenticated get 401. This replaces the legacy UI-only +
+   * middleware-cookie-presence gating.
+   */
+
+  /** Throw 401/403 unless the caller is an authenticated admin. */
+  const requireAdmin = async (c: { get: (k: "userId") => string | null }) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const [row] = await db
+      .select({ isAdmin: user.isAdmin })
+      .from(user)
+      .where(eq(user.id, userId!))
+      .limit(1);
+    if (!row?.isAdmin) apiError("Forbidden: admin only", "FORBIDDEN", 403);
+    return userId!;
+  };
+
+  const adminPoolSchema = z.object({
+    name: z.string().trim().min(1).max(100),
+    apy: z.coerce.number().min(0).max(10000),
+    price: z.coerce.number().min(0).default(0),
+    duration_days: z.coerce.number().int().min(0).default(0),
+    claim_lockup_days: z.coerce.number().int().min(0).default(0),
+    status: z.enum(["active", "disabled"]).default("active"),
+  });
+
+  // Admin: list users (paginated).
+  app.get("/admin/users", async (c) => {
+    await requireAdmin(c);
+    const { limit, offset } = parseListQuery(c);
+    const rows = await db
+      .select({
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        isAdmin: user.isAdmin,
+        createdAt: user.createdAt,
+      })
+      .from(user)
+      .orderBy(desc(user.createdAt))
+      .limit(limit)
+      .offset(offset);
+    return c.json({ users: rows });
+  });
+
+  // Admin: create a staking pool.
+  app.post("/admin/staking-pools", async (c) => {
+    await requireAdmin(c);
+    const body = adminPoolSchema.parse(await c.req.json());
+    const [row] = await db
+      .insert(stakingPools)
+      .values({
+        name: body.name,
+        apy: String(body.apy),
+        price: String(body.price),
+        durationDays: body.duration_days,
+        claimLockupDays: body.claim_lockup_days,
+        status: body.status,
+      })
+      .returning();
+    return c.json(mapStakingPool(row), 201);
+  });
+
+  // Admin: update a staking pool.
+  app.patch("/admin/staking-pools/:id", async (c) => {
+    await requireAdmin(c);
+    const id = z.string().uuid().parse(c.req.param("id"));
+    const body = adminPoolSchema.partial().parse(await c.req.json());
+
+    const [existing] = await db
+      .select({ id: stakingPools.id })
+      .from(stakingPools)
+      .where(eq(stakingPools.id, id))
+      .limit(1);
+    if (!existing) apiError("Staking pool not found", "NOT_FOUND", 404);
+
+    const patch: Partial<typeof stakingPools.$inferInsert> = {};
+    if (body.name !== undefined) patch.name = body.name;
+    if (body.apy !== undefined) patch.apy = String(body.apy);
+    if (body.price !== undefined) patch.price = String(body.price);
+    if (body.duration_days !== undefined)
+      patch.durationDays = body.duration_days;
+    if (body.claim_lockup_days !== undefined)
+      patch.claimLockupDays = body.claim_lockup_days;
+    if (body.status !== undefined) patch.status = body.status;
+
+    const [row] = await db
+      .update(stakingPools)
+      .set(patch)
+      .where(eq(stakingPools.id, id))
+      .returning();
+    return c.json(mapStakingPool(row));
+  });
+
+  // Admin: delete a staking pool.
+  app.delete("/admin/staking-pools/:id", async (c) => {
+    await requireAdmin(c);
+    const id = z.string().uuid().parse(c.req.param("id"));
+    const [existing] = await db
+      .select({ id: stakingPools.id })
+      .from(stakingPools)
+      .where(eq(stakingPools.id, id))
+      .limit(1);
+    if (!existing) apiError("Staking pool not found", "NOT_FOUND", 404);
+    await db.delete(stakingPools).where(eq(stakingPools.id, id));
+    return c.json({ ok: true });
+  });
+
   app.all("*", (c) => {
     const method = c.req.method;
     const path = c.req.path;

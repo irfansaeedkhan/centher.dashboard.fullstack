@@ -114,9 +114,9 @@ export const AppRoutes = {
     staking_packs: "/admin/staking-packs",
     create_staking_pack: "/admin/create-staking-pack",
     update_staking_pack: "/admin/update-staking-pack",
-    influencer_requests: "/admin/influencer-requests",
-    influencer_details: "/admin/influencer-details",
-    transactions: "/admin/transactions",
+    influencer_requests: "/admin/influencer-requests", // Phase 8: removed (no backend)
+    influencer_details: "/admin/influencer-details", // Phase 8: removed (no backend)
+    transactions: "/admin/transactions", // Phase 8: removed (no backend)
     users: "/admin/users",
     network_rewards: "/admin/network-rewards/launchpad",
     network_rewards_marketplace: "/admin/network-rewards/marketplace",

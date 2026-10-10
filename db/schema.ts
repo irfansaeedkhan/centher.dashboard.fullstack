@@ -19,6 +19,8 @@ export const user = pgTable("user", {
   email: text("email").notNull().unique(),
   emailVerified: boolean("email_verified").notNull().default(false),
   image: text("image"),
+  /** Phase 8: server-side admin flag (replaces the legacy hardcoded wallet check). */
+  isAdmin: boolean("is_admin").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
@@ -242,6 +244,10 @@ export const stakingPools = pgTable("staking_pools", {
   apy: numeric("apy", { precision: 8, scale: 2 }).notNull().default("0"),
   tvl: numeric("tvl", { precision: 18, scale: 2 }).notNull().default("0"),
   status: text("status").notNull().default("active"),
+  /** Phase 8: admin-managed pack fields (create/update-staking-pack forms). */
+  price: numeric("price", { precision: 18, scale: 2 }).notNull().default("0"),
+  durationDays: integer("duration_days").notNull().default(0),
+  claimLockupDays: integer("claim_lockup_days").notNull().default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
