@@ -5,17 +5,9 @@ import { useSWRConfig } from "swr";
 import Joi from "joi";
 import { LoadingState } from "@/models/common";
 import { AppRoutes } from "@/constants/app.routes";
-import { getNonce, login } from "@/lib/auth";
 import Button from "@/components/button";
-import { useWallet, WalletEnum } from "@/web3/hooks/use.wallet";
-import { ConnectWalletComp } from "@/components/connect.wallet";
 
 const ButtonsText = {
-  connect_metamask: "Connect to Metamask",
-  login_metamask: "Continue",
-  connect_wallet: `Connect To ${
-    process.env.NEXT_PUBLIC_BRAND_NAME || "Centher"
-  } Wallet`,
   loading: "Continue...",
 };
 
@@ -29,20 +21,9 @@ export const LoginForm: React.FC = () => {
 
   const router = useRouter();
 
-  const {
-    signMessage,
-    disconnectWallet,
-    getWalletType,
-    connectWallet,
-    openWallet,
-    connectedAddress,
-  } = useWallet();
-
-  const [isLoading, setIsLoading] = useState<LoadingState>("idle");
   const [emailLoading, setEmailLoading] = useState<LoadingState>("idle");
   const [email, setEmail] = useState(DEMO_EMAIL);
   const [password, setPassword] = useState(DEMO_PASSWORD);
-  const wallet_type = getWalletType();
 
   const handleEmailLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -74,41 +55,6 @@ export const LoginForm: React.FC = () => {
       const message =
         error instanceof Error ? error.message : "Something went wrong";
       toast.error(message);
-    }
-  };
-
-  const handleLogin = async (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
-    if (!connectedAddress) return;
-
-    const button = e.currentTarget;
-    button.disabled = true;
-
-    setIsLoading("loading");
-
-    // Get Nonce from backend
-    try {
-      const nonceResponse = await getNonce(connectedAddress);
-      const signature = await signMessage(nonceResponse.nonce_with_message);
-      const loginResponse = await login(connectedAddress, signature);
-
-      toast.success(loginResponse.message);
-      setIsLoading("loaded");
-
-      // Phase 1: same as email login — revalidate, never seed a wrong shape.
-      await mutate("/api/users/me");
-
-      router.push(AppRoutes.feed.index);
-    } catch (error: any) {
-      button.disabled = false;
-      setIsLoading("failed");
-      if (error.code === "ACTION_REJECTED") {
-        toast.error("Login request rejected.");
-        return;
-      }
-
-      toast.error(error.message ?? "Something went wrong");
     }
   };
 
@@ -144,70 +90,6 @@ export const LoginForm: React.FC = () => {
           borderRounded="14px"
         />
       </form>
-
-      <div className="my-1 flex items-center gap-2">
-        <div className="h-px flex-1 bg-[#2A2D3C]" />
-        <span className="text-xs text-[#6B7280]">or wallet</span>
-        <div className="h-px flex-1 bg-[#2A2D3C]" />
-      </div>
-
-      {connectedAddress ? (
-        <>
-          <div className="mb-3 flex gap-2 sm:flex-row sm:items-center md:!flex-col md:!items-start">
-            <div className="flex flex-grow flex-col">
-              <p className="font-semibold text-white sm:text-base md:mt-4 md:text-lg">
-                wallet connected
-              </p>
-              <div className="flex items-center gap-1">
-                <p className="text-sm text-[#6B7280]">Wallet Address:</p>
-                <p className="text-sm text-white">
-                  {connectedAddress.slice(0, 6) +
-                    "..." +
-                    connectedAddress.slice(38, 42)}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <Button
-            title={
-              isLoading === "loading"
-                ? ButtonsText.loading
-                : ButtonsText.login_metamask
-            }
-            onClick={handleLogin}
-            variant="primary"
-            className="flex h-11 w-full items-center justify-center text-[14px]"
-            borderRounded="14px"
-          />
-          <Button
-            title="Disconnect"
-            onClick={() => disconnectWallet()}
-            variant="primary"
-            className="flex h-11 w-full items-center justify-center text-[14px]"
-            borderRounded="14px"
-          />
-          {wallet_type && wallet_type == WalletEnum.WALLET_SERVICE ? (
-            <Button
-              title="Open Wallet"
-              onClick={() => openWallet()}
-              variant="primary"
-              className="flex h-11 w-full items-center justify-center text-[14px]"
-              borderRounded="14px"
-            />
-          ) : (
-            <></>
-          )}
-        </>
-      ) : (
-        <div className="space-y-3">
-          <ConnectWalletComp
-            authType="login"
-            connectWallet={connectWallet}
-            className="flex h-11 w-full items-center justify-center text-[14px]"
-          />
-        </div>
-      )}
     </div>
   );
 };

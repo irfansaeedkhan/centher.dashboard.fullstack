@@ -1,6 +1,7 @@
 import {
   boolean,
   integer,
+  jsonb,
   numeric,
   pgTable,
   primaryKey,
@@ -8,6 +9,7 @@ import {
   timestamp,
   uuid,
 } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 
 /** Better Auth core tables */
 export const user = pgTable("user", {
@@ -74,6 +76,53 @@ export const profiles = pgTable("profiles", {
   membership: text("membership").notNull().default("citizen"),
   /** Phase 3: profile view counter (mirrors posts.view_count) */
   viewCount: integer("view_count").notNull().default(0),
+  /** Phase 4: profile settings — social links, display-name preference,
+   *  mention permission, cookie consent (null = never answered). */
+  socialLinks: jsonb("social_links")
+    .$type<Record<string, string>>()
+    .notNull()
+    .default(sql`'{}'::jsonb`),
+  displayNameField: text("display_name_field").notNull().default("pseudonym"),
+  mentionPermission: text("mention_permission").notNull().default("everyone"),
+  cookiesConsent: jsonb("cookies_consent").$type<{
+    consent_given: boolean;
+    timestamp: string;
+  }>(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+/**
+ * Phase 4: orgs. Legacy 369x model — every citizen account is its own org;
+ * team members join the org owner's account. No separate organizations table.
+ */
+export const orgMembers = pgTable(
+  "org_members",
+  {
+    orgOwnerId: text("org_owner_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    memberId: text("member_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    title: text("title").notNull().default(""),
+    joinedAt: timestamp("joined_at").notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.orgOwnerId, t.memberId] })]
+);
+
+export const orgInvites = pgTable("org_invites", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  orgOwnerId: text("org_owner_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  inviterId: text("inviter_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  inviteeId: text("invitee_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  title: text("title").notNull().default(""),
+  status: text("status").notNull().default("pending"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 

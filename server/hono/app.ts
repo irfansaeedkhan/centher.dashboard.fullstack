@@ -15,6 +15,8 @@ import {
   messages,
   nfts,
   notifications,
+  orgInvites,
+  orgMembers,
   postLikes,
   posts,
   profiles,
@@ -449,29 +451,77 @@ export const createHonoApp = () => {
     c.json({ ok: true, brand: process.env.NEXT_PUBLIC_BRAND_NAME || "Centher" })
   );
 
-  app.get("/users/me", async (c) => {
-    const userId = c.get("userId");
-    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+  /**
+   * Phase 4: single source of truth for the LoggedInUser shape.
+   * GET /users/me and every PATCH below return this so the client's
+   * `mutate("/api/users/me", updatedUserRes, false)` stays consistent.
+   */
+  const toMembershipStatus = (m: string | null | undefined) =>
+    m === "citizen" || m === "verified" ? m : "citizen";
 
+  const SOCIAL_MEDIA_DEFAULTS: Record<string, string> = {
+    website_url: "",
+    twitter_username: "",
+    facebook_username: "",
+    instagram_username: "",
+    twitch_username: "",
+    onlyfans_username: "",
+    youtube_url: "",
+    tiktok_username: "",
+    telegram_username: "",
+  };
+
+  /**
+   * Phase 4: the org a user belongs to as a team member (legacy 369x model:
+   * every citizen account is its own org; members join the owner's account).
+   */
+  const fetchOrganizationOf = async (
+    userId: string
+  ): Promise<{
+    org_id: string;
+    profile_image: string;
+    title: string;
+    joined_at: string;
+  } | null> => {
+    const [membership] = await db
+      .select()
+      .from(orgMembers)
+      .where(eq(orgMembers.memberId, userId))
+      .limit(1);
+    if (!membership) return null;
+    const [ownerProfile] = await db
+      .select()
+      .from(profiles)
+      .where(eq(profiles.userId, membership.orgOwnerId))
+      .limit(1);
+    return {
+      org_id: membership.orgOwnerId,
+      profile_image:
+        ownerProfile?.avatarUrl || "/images/centher.logo.favicon.png",
+      title: membership.title,
+      joined_at: membership.joinedAt.toISOString(),
+    };
+  };
+
+  const buildLoggedInUser = async (userId: string) => {
     const [profile] = await db
       .select()
       .from(profiles)
-      .where(eq(profiles.userId, userId!))
+      .where(eq(profiles.userId, userId))
       .limit(1);
 
     const [authUser] = await db
       .select()
       .from(user)
-      .where(eq(user.id, userId!))
+      .where(eq(user.id, userId))
       .limit(1);
 
-    const membershipStatus =
-      profile?.membership === "citizen" || profile?.membership === "verified"
-        ? profile.membership
-        : "citizen";
+    const membershipStatus = toMembershipStatus(profile?.membership);
+
+    const organization = await fetchOrganizationOf(userId);
 
     // Shape matches LoggedInUser used by useUser / header
-    return c.json({
+    return {
       _id: userId,
       display_name: profile?.displayName || authUser?.name || "Centher Demo",
       profile_image: profile?.avatarUrl || "/images/centher.logo.favicon.png",
@@ -483,17 +533,10 @@ export const createHonoApp = () => {
       },
       profile_bio: profile?.bio || "",
       social_media: {
-        website_url: "",
-        twitter_username: "",
-        facebook_username: "",
-        instagram_username: "",
-        twitch_username: "",
-        onlyfans_username: "",
-        youtube_url: "",
-        tiktok_username: "",
-        telegram_username: "",
+        ...SOCIAL_MEDIA_DEFAULTS,
+        ...((profile?.socialLinks as Record<string, string> | null) ?? {}),
       },
-      organization: null,
+      organization,
       createdAt:
         authUser?.createdAt?.toISOString?.() || new Date().toISOString(),
       updatedAt:
@@ -502,15 +545,174 @@ export const createHonoApp = () => {
       last_name: authUser?.name?.split(" ").slice(1).join(" ") || "Demo",
       pseudonym: profile?.username || "centher_demo",
       referrer_address: null,
-      display_name_field: "pseudonym",
+      display_name_field:
+        (profile?.displayNameField as
+          | "real_name"
+          | "pseudonym"
+          | "account_address") || "pseudonym",
       has_seen_notifications_page: true,
-      // Default granted so cookies banner does not block demo sessions
-      cookies_consent: {
-        consent_given: true,
-        timestamp: new Date().toISOString(),
-      },
+      // null until the user answers — the consent banner shows then.
+      cookies_consent:
+        (profile?.cookiesConsent as {
+          consent_given: boolean;
+          timestamp: string;
+        } | null) ?? null,
       email: authUser?.email,
-    });
+    };
+  };
+
+  /** Ensure a profiles row exists (fresh sign-ups may not have one yet). */
+  const ensureProfile = async (userId: string, authName: string) => {
+    const [existing] = await db
+      .select()
+      .from(profiles)
+      .where(eq(profiles.userId, userId))
+      .limit(1);
+    if (existing) return existing;
+    const base = `user_${userId.replace(/[^a-zA-Z0-9]/g, "").slice(0, 12)}`;
+    const [created] = await db
+      .insert(profiles)
+      .values({
+        userId,
+        displayName: authName || "Centher Demo",
+        username: base,
+      })
+      .returning();
+    return created;
+  };
+
+  const resolveDisplayName = (
+    field: "real_name" | "pseudonym" | "account_address",
+    opts: { username: string; realName: string; userId: string }
+  ) =>
+    field === "real_name"
+      ? opts.realName
+      : field === "account_address"
+      ? opts.userId
+      : opts.username;
+
+  app.get("/users/me", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    return c.json(await buildLoggedInUser(userId!));
+  });
+
+  const SOCIAL_MEDIA_KEYS = Object.keys(SOCIAL_MEDIA_DEFAULTS);
+
+  const updateMeSchema = z.object({
+    pseudonym: z
+      .string()
+      .trim()
+      .min(1)
+      .max(50)
+      .regex(
+        /^[a-zA-Z0-9_]+$/,
+        "Pseudonym may only contain letters, numbers and underscores"
+      )
+      .optional(),
+    first_name: z.string().trim().max(100).optional(),
+    last_name: z.string().trim().max(100).optional(),
+    display_name_field: z
+      .enum(["real_name", "pseudonym", "account_address"])
+      .optional(),
+    profile_bio: z.string().max(160).optional(),
+    ...Object.fromEntries(
+      SOCIAL_MEDIA_KEYS.map((k) => [k, z.string().trim().max(200).optional()])
+    ),
+  });
+
+  /**
+   * Phase 4: profile/about/social-links saves. Persists to profiles (+ the
+   * Better Auth user row for the real name) and returns the full LoggedInUser
+   * shape so the client's SWR cache stays consistent — no more
+   * success-toast-then-revert.
+   */
+  app.patch("/users/me", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const body = updateMeSchema.parse(await c.req.json().catch(() => ({})));
+
+    const [authUser] = await db
+      .select()
+      .from(user)
+      .where(eq(user.id, userId!))
+      .limit(1);
+    if (!authUser) apiError("User not found", "NOT_FOUND", 404);
+    const profile = await ensureProfile(userId!, authUser!.name);
+
+    const profilePatch: Partial<typeof profiles.$inferInsert> = {};
+    let newUsername = profile.username;
+    let newRealName = authUser!.name;
+
+    if (body.first_name !== undefined || body.last_name !== undefined) {
+      const first = body.first_name ?? authUser!.name.split(" ")[0] ?? "";
+      const last =
+        body.last_name ?? authUser!.name.split(" ").slice(1).join(" ") ?? "";
+      newRealName = `${first} ${last}`.trim() || authUser!.name;
+      await db
+        .update(user)
+        .set({ name: newRealName, updatedAt: new Date() })
+        .where(eq(user.id, userId!));
+    }
+
+    if (body.pseudonym !== undefined && body.pseudonym !== profile.username) {
+      const [taken] = await db
+        .select({ id: profiles.userId })
+        .from(profiles)
+        .where(eq(profiles.username, body.pseudonym))
+        .limit(1);
+      if (taken && taken.id !== userId)
+        apiError("That pseudonym is already taken", "CONFLICT", 409);
+      newUsername = body.pseudonym;
+      profilePatch.username = body.pseudonym;
+    }
+
+    const newField =
+      body.display_name_field ??
+      (profile.displayNameField as
+        | "real_name"
+        | "pseudonym"
+        | "account_address");
+    if (body.display_name_field !== undefined) {
+      profilePatch.displayNameField = body.display_name_field;
+    }
+    if (
+      body.pseudonym !== undefined ||
+      body.first_name !== undefined ||
+      body.last_name !== undefined ||
+      body.display_name_field !== undefined
+    ) {
+      profilePatch.displayName = resolveDisplayName(newField, {
+        username: newUsername,
+        realName: newRealName,
+        userId: userId!,
+      });
+    }
+
+    if (body.profile_bio !== undefined) {
+      profilePatch.bio = body.profile_bio;
+    }
+
+    const socialPatch: Record<string, string> = {};
+    for (const k of SOCIAL_MEDIA_KEYS) {
+      const v = (body as Record<string, string | undefined>)[k];
+      if (v !== undefined) socialPatch[k] = v;
+    }
+    if (Object.keys(socialPatch).length > 0) {
+      profilePatch.socialLinks = {
+        ...((profile.socialLinks as Record<string, string> | null) ?? {}),
+        ...socialPatch,
+      };
+    }
+
+    if (Object.keys(profilePatch).length > 0) {
+      await db
+        .update(profiles)
+        .set(profilePatch)
+        .where(eq(profiles.userId, userId!));
+    }
+
+    return c.json(await buildLoggedInUser(userId!));
   });
 
   app.patch("/users/cookies-consent", async (c) => {
@@ -519,12 +721,62 @@ export const createHonoApp = () => {
     const body = z
       .object({ consent_given: z.boolean() })
       .parse(await c.req.json().catch(() => ({})));
+    const [authUser] = await db
+      .select()
+      .from(user)
+      .where(eq(user.id, userId!))
+      .limit(1);
+    await ensureProfile(userId!, authUser?.name || "Centher Demo");
+    await db
+      .update(profiles)
+      .set({
+        cookiesConsent: {
+          consent_given: body.consent_given,
+          timestamp: new Date().toISOString(),
+        },
+      })
+      .where(eq(profiles.userId, userId!));
+    return c.json(await buildLoggedInUser(userId!));
+  });
+
+  const MENTION_PERMISSIONS = [
+    "everyone",
+    "followers",
+    "followings",
+    "followers_and_followings",
+    "no_one",
+  ] as const;
+
+  app.get("/users/mention-permission", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const [profile] = await db
+      .select({ mentionPermission: profiles.mentionPermission })
+      .from(profiles)
+      .where(eq(profiles.userId, userId!))
+      .limit(1);
     return c.json({
-      cookies_consent: {
-        consent_given: body.consent_given,
-        timestamp: new Date().toISOString(),
-      },
+      mention_permission: profile?.mentionPermission ?? "everyone",
     });
+  });
+
+  app.patch("/users/mention-permission", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const body = z
+      .object({ mention_permission: z.enum(MENTION_PERMISSIONS) })
+      .parse(await c.req.json().catch(() => ({})));
+    const [authUser] = await db
+      .select()
+      .from(user)
+      .where(eq(user.id, userId!))
+      .limit(1);
+    await ensureProfile(userId!, authUser?.name || "Centher Demo");
+    await db
+      .update(profiles)
+      .set({ mentionPermission: body.mention_permission })
+      .where(eq(profiles.userId, userId!));
+    return c.json(await buildLoggedInUser(userId!));
   });
 
   /**
@@ -533,6 +785,15 @@ export const createHonoApp = () => {
    * Registered before `/users/:userId` (static wins, but explicit is safer).
    */
   app.get("/users", async (c) => {
+    // Phase 4: the legacy file-service read (`?key=`) has no backend in this
+    // build — fail honestly instead of returning a misleading empty list.
+    if (c.req.query("key")) {
+      return apiError(
+        "File-service reads are not available in this build",
+        "NOT_IMPLEMENTED",
+        501
+      );
+    }
     const raw = c.req.query("user_ids") ?? "";
     const ids = raw
       .split(",")
@@ -542,6 +803,88 @@ export const createHonoApp = () => {
     const viewerId = c.get("userId");
     const users = await fetchUserCards(ids, viewerId);
     return c.json({ users });
+  });
+
+  /**
+   * Phase 4: preset avatars. There is no object-storage backend in this
+   * build, so custom uploads are an honest 501 — but picking one of the
+   * bundled presets is a real, persisted choice.
+   */
+  const PRESET_AVATARS = [
+    { path: "/images/___chat-bot.png", object_name: "preset:___chat-bot.png" },
+    {
+      path: "/images/___contract-bot.png",
+      object_name: "preset:___contract-bot.png",
+    },
+    {
+      path: "/images/___crypto-signals.png",
+      object_name: "preset:___crypto-signals.png",
+    },
+    {
+      path: "/images/___exchange-bot.png",
+      object_name: "preset:___exchange-bot.png",
+    },
+    {
+      path: "/images/___staking-bot.png",
+      object_name: "preset:___staking-bot.png",
+    },
+    {
+      path: "/images/___trade-bot.png",
+      object_name: "preset:___trade-bot.png",
+    },
+    {
+      path: "/images/antonio-de-rosa.png",
+      object_name: "preset:antonio-de-rosa.png",
+    },
+    {
+      path: "/images/antonio-monaco.png",
+      object_name: "preset:antonio-monaco.png",
+    },
+  ];
+
+  app.get("/avatars", (c) => c.json(PRESET_AVATARS));
+
+  app.get("/users/image-upload-url", (c) => {
+    if (!c.get("userId")) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    return apiError(
+      "Custom image uploads are not available in this build — choose a preset avatar instead",
+      "NOT_IMPLEMENTED",
+      501
+    );
+  });
+
+  app.patch("/users/image", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const body = z
+      .object({
+        type: z.enum(["profile_image", "cover_image"]),
+        object_name: z.string().min(1),
+      })
+      .parse(await c.req.json().catch(() => ({})));
+    const preset = PRESET_AVATARS.find(
+      (a) => a.object_name === body.object_name
+    );
+    // Only bundled presets can be persisted — there is no object storage
+    // for custom uploads in this build.
+    if (body.type !== "profile_image" || !preset) {
+      return apiError(
+        "Custom image uploads are not available in this build — choose a preset avatar instead",
+        "NOT_IMPLEMENTED",
+        501
+      );
+    }
+    const [authUser] = await db
+      .select()
+      .from(user)
+      .where(eq(user.id, userId!))
+      .limit(1);
+    await ensureProfile(userId!, authUser?.name || "Centher Demo");
+    await db
+      .update(profiles)
+      .set({ avatarUrl: preset.path })
+      .where(eq(profiles.userId, userId!));
+    return c.json({ profile_image: preset.path });
   });
 
   app.get("/users/:userId", async (c) => {
@@ -557,10 +900,7 @@ export const createHonoApp = () => {
       .where(eq(user.id, userId))
       .limit(1);
     if (!profile && !authUser) apiError("User not found", "NOT_FOUND", 404);
-    const membershipStatus =
-      profile?.membership === "citizen" || profile?.membership === "verified"
-        ? profile.membership
-        : "citizen";
+    const membershipStatus = toMembershipStatus(profile?.membership);
     return c.json({
       _id: userId,
       display_name: profile?.displayName || authUser?.name || "Centher User",
@@ -573,22 +913,298 @@ export const createHonoApp = () => {
       },
       profile_bio: profile?.bio || "",
       social_media: {
-        website_url: "",
-        twitter_username: "",
-        facebook_username: "",
-        instagram_username: "",
-        twitch_username: "",
-        onlyfans_username: "",
-        youtube_url: "",
-        tiktok_username: "",
-        telegram_username: "",
+        ...SOCIAL_MEDIA_DEFAULTS,
+        ...((profile?.socialLinks as Record<string, string> | null) ?? {}),
       },
-      organization: null,
+      organization: await fetchOrganizationOf(userId),
       createdAt:
         authUser?.createdAt?.toISOString?.() || new Date().toISOString(),
       updatedAt:
         authUser?.updatedAt?.toISOString?.() || new Date().toISOString(),
     });
+  });
+
+  /**
+   * Phase 4: orgs / team members. Legacy 369x model — every citizen account
+   * is its own org; team members join the org owner's account. All routes
+   * auth-gated; mutations are owner- or invitee-scoped.
+   */
+  const toOrgUserCard = (
+    id: string,
+    p: typeof profiles.$inferSelect | undefined,
+    a: typeof user.$inferSelect | undefined
+  ) => ({
+    _id: id,
+    display_name: p?.displayName || a?.name || "Centher User",
+    profile_image: p?.avatarUrl || "/images/centher.logo.favicon.png",
+    membership: {
+      last_status: toMembershipStatus(p?.membership),
+      status: toMembershipStatus(p?.membership),
+      endAt: 0,
+    },
+  });
+
+  const fetchOrgUserCards = async (userIds: string[]) => {
+    if (userIds.length === 0) return [];
+    const pRows = await db
+      .select()
+      .from(profiles)
+      .where(inArray(profiles.userId, userIds));
+    const aRows = await db.select().from(user).where(inArray(user.id, userIds));
+    const pById = new Map(pRows.map((r) => [r.userId, r]));
+    const aById = new Map(aRows.map((r) => [r.id, r]));
+    return userIds
+      .map((id) => {
+        const p = pById.get(id);
+        const a = aById.get(id);
+        if (!p && !a) return null;
+        return toOrgUserCard(id, p, a);
+      })
+      .filter((c): c is NonNullable<typeof c> => !!c);
+  };
+
+  const toPendingInvite = async (invite: typeof orgInvites.$inferSelect) => {
+    const [ownerCard] = await fetchOrgUserCards([invite.orgOwnerId]);
+    const [inviteeCard] = await fetchOrgUserCards([invite.inviteeId]);
+    return {
+      _id: invite.id,
+      org: ownerCard ?? toOrgUserCard(invite.orgOwnerId, undefined, undefined),
+      user:
+        inviteeCard ?? toOrgUserCard(invite.inviteeId, undefined, undefined),
+      title: invite.title,
+      invited_at: invite.createdAt.toISOString(),
+    };
+  };
+
+  const requireInvitee = async (inviteId: string, me: string) => {
+    const [invite] = await db
+      .select()
+      .from(orgInvites)
+      .where(eq(orgInvites.id, inviteId))
+      .limit(1);
+    if (!invite) apiError("Invite not found", "NOT_FOUND", 404);
+    if (invite!.inviteeId !== me)
+      apiError(
+        "Only the invited user can act on this invite",
+        "FORBIDDEN",
+        403
+      );
+    if (invite!.status !== "pending")
+      apiError("This invite is no longer pending", "CONFLICT", 409);
+    return invite!;
+  };
+
+  app.get("/orgs/members/invites/received", async (c) => {
+    const me = c.get("userId");
+    if (!me) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const rows = await db
+      .select()
+      .from(orgInvites)
+      .where(
+        and(eq(orgInvites.inviteeId, me!), eq(orgInvites.status, "pending"))
+      )
+      .orderBy(desc(orgInvites.createdAt));
+    return c.json(await Promise.all(rows.map(toPendingInvite)));
+  });
+
+  app.get("/orgs/members/invites/sent", async (c) => {
+    const me = c.get("userId");
+    if (!me) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const rows = await db
+      .select()
+      .from(orgInvites)
+      .where(
+        and(eq(orgInvites.inviterId, me!), eq(orgInvites.status, "pending"))
+      )
+      .orderBy(desc(orgInvites.createdAt));
+    return c.json(await Promise.all(rows.map(toPendingInvite)));
+  });
+
+  app.post("/orgs/members/invites", async (c) => {
+    const me = c.get("userId");
+    if (!me) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const body = z
+      .object({
+        user_id: z.string().min(1, "A user is required"),
+        title: z.string().trim().min(1, "A title is required").max(100),
+      })
+      .parse(await c.req.json().catch(() => ({})));
+    if (body.user_id === me)
+      apiError("You cannot invite yourself", "BAD_REQUEST", 400);
+    const [invitee] = await db
+      .select({ id: user.id })
+      .from(user)
+      .where(eq(user.id, body.user_id))
+      .limit(1);
+    if (!invitee) apiError("User not found", "NOT_FOUND", 404);
+    const [alreadyMember] = await db
+      .select({ memberId: orgMembers.memberId })
+      .from(orgMembers)
+      .where(
+        and(
+          eq(orgMembers.orgOwnerId, me!),
+          eq(orgMembers.memberId, body.user_id)
+        )
+      )
+      .limit(1);
+    if (alreadyMember)
+      apiError("This user is already a team member", "CONFLICT", 409);
+    const [pending] = await db
+      .select({ id: orgInvites.id })
+      .from(orgInvites)
+      .where(
+        and(
+          eq(orgInvites.orgOwnerId, me!),
+          eq(orgInvites.inviteeId, body.user_id),
+          eq(orgInvites.status, "pending")
+        )
+      )
+      .limit(1);
+    if (pending) apiError("An invite is already pending", "CONFLICT", 409);
+    const [invite] = await db
+      .insert(orgInvites)
+      .values({
+        orgOwnerId: me!,
+        inviterId: me!,
+        inviteeId: body.user_id,
+        title: body.title,
+      })
+      .returning();
+    return c.json(await toPendingInvite(invite), 201);
+  });
+
+  app.post("/orgs/members/invites/:inviteId/accept", async (c) => {
+    const me = c.get("userId");
+    if (!me) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const invite = await requireInvitee(c.req.param("inviteId"), me!);
+    await db
+      .insert(orgMembers)
+      .values({
+        orgOwnerId: invite.orgOwnerId,
+        memberId: invite.inviteeId,
+        title: invite.title,
+      })
+      .onConflictDoNothing();
+    await db
+      .update(orgInvites)
+      .set({ status: "accepted" })
+      .where(eq(orgInvites.id, invite.id));
+    return c.json(await toPendingInvite({ ...invite, status: "accepted" }));
+  });
+
+  app.post("/orgs/members/invites/:inviteId/reject", async (c) => {
+    const me = c.get("userId");
+    if (!me) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const invite = await requireInvitee(c.req.param("inviteId"), me!);
+    await db
+      .update(orgInvites)
+      .set({ status: "rejected" })
+      .where(eq(orgInvites.id, invite.id));
+    return c.json(await toPendingInvite({ ...invite, status: "rejected" }));
+  });
+
+  app.delete("/orgs/members/invites/:inviteId", async (c) => {
+    const me = c.get("userId");
+    if (!me) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const [invite] = await db
+      .select()
+      .from(orgInvites)
+      .where(eq(orgInvites.id, c.req.param("inviteId")))
+      .limit(1);
+    if (!invite) apiError("Invite not found", "NOT_FOUND", 404);
+    if (invite!.inviterId !== me)
+      apiError("Only the inviter can delete this invite", "FORBIDDEN", 403);
+    await db.delete(orgInvites).where(eq(orgInvites.id, invite!.id));
+    return c.json({ ok: true });
+  });
+
+  app.get("/orgs/members/:orgId", async (c) => {
+    const viewer = c.get("userId");
+    if (!viewer) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const orgId = c.req.param("orgId");
+    const [owner] = await db
+      .select({ id: user.id })
+      .from(user)
+      .where(eq(user.id, orgId))
+      .limit(1);
+    if (!owner) apiError("Organization not found", "NOT_FOUND", 404);
+    const rows = await db
+      .select()
+      .from(orgMembers)
+      .where(eq(orgMembers.orgOwnerId, orgId))
+      .orderBy(orgMembers.joinedAt);
+    const cards = await fetchOrgUserCards(rows.map((r) => r.memberId));
+    const byId = new Map(cards.map((cc) => [cc._id, cc]));
+    return c.json({
+      members: rows.flatMap((r) => {
+        const card = byId.get(r.memberId);
+        return card
+          ? [{ ...card, title: r.title, joined_at: r.joinedAt.toISOString() }]
+          : [];
+      }),
+    });
+  });
+
+  app.patch("/orgs/members/:userId", async (c) => {
+    const me = c.get("userId");
+    if (!me) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const body = z
+      .object({ title: z.string().trim().min(1).max(100) })
+      .parse(await c.req.json().catch(() => ({})));
+    const [member] = await db
+      .select()
+      .from(orgMembers)
+      .where(
+        and(
+          eq(orgMembers.orgOwnerId, me!),
+          eq(orgMembers.memberId, c.req.param("userId"))
+        )
+      )
+      .limit(1);
+    if (!member) apiError("Team member not found", "NOT_FOUND", 404);
+    await db
+      .update(orgMembers)
+      .set({ title: body.title })
+      .where(
+        and(
+          eq(orgMembers.orgOwnerId, me!),
+          eq(orgMembers.memberId, c.req.param("userId"))
+        )
+      );
+    return c.json({ ok: true });
+  });
+
+  app.delete("/orgs/members/:userId", async (c) => {
+    const me = c.get("userId");
+    if (!me) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const target = c.req.param("userId");
+    if (target === me)
+      apiError(
+        "You cannot remove yourself — leave the organization instead",
+        "BAD_REQUEST",
+        400
+      );
+    const [member] = await db
+      .select()
+      .from(orgMembers)
+      .where(
+        and(eq(orgMembers.orgOwnerId, me!), eq(orgMembers.memberId, target))
+      )
+      .limit(1);
+    if (!member) apiError("Team member not found", "NOT_FOUND", 404);
+    await db
+      .delete(orgMembers)
+      .where(
+        and(eq(orgMembers.orgOwnerId, me!), eq(orgMembers.memberId, target))
+      );
+    return c.json({ ok: true });
+  });
+
+  app.delete("/orgs/leave", async (c) => {
+    const me = c.get("userId");
+    if (!me) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    await db.delete(orgMembers).where(eq(orgMembers.memberId, me!));
+    return c.json({ ok: true });
   });
 
   app.get("/socials/recommended-people", async (c) => {
@@ -1160,10 +1776,13 @@ export const createHonoApp = () => {
       return c.json({ message: "unfollow_success" });
     }
 
-    await db.insert(follows).values({
-      followerId: userId!,
-      followingId: following_id,
-    }).onConflictDoNothing();
+    await db
+      .insert(follows)
+      .values({
+        followerId: userId!,
+        followingId: following_id,
+      })
+      .onConflictDoNothing();
     await createNotification({
       userId: following_id,
       type: "follow",
