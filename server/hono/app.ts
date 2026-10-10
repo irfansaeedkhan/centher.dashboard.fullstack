@@ -18,6 +18,7 @@ import {
   autoRestakeSettings,
   channels,
   channelMessages,
+  chatAttachments,
   citizenships,
   collections,
   comments,
@@ -2608,12 +2609,63 @@ export const createHonoApp = () => {
       byEmoji.set(r.emoji, e);
     }
 
+    // Phase 15: attachment + reply preview
+    let attachment: any = null;
+    if (msg!.attachmentId) {
+      const [att] = await db
+        .select()
+        .from(chatAttachments)
+        .where(eq(chatAttachments.id, msg!.attachmentId))
+        .limit(1);
+      if (att) {
+        attachment = {
+          id: att.id,
+          kind: att.kind,
+          mime_type: att.mimeType,
+          file_name: att.fileName,
+          file_size: att.fileSize,
+          url: att.url,
+          duration_sec: att.durationSec,
+          width: att.width,
+          height: att.height,
+          thumbnail_url: att.thumbnailUrl,
+        };
+      }
+    }
+    let replyTo: any = null;
+    if (msg!.replyToId) {
+      const [rm] = await db
+        .select({
+          id: messages.id,
+          body: messages.body,
+          kind: messages.kind,
+          senderId: messages.senderId,
+        })
+        .from(messages)
+        .where(eq(messages.id, msg!.replyToId))
+        .limit(1);
+      if (rm) {
+        const [rc] = await fetchUserCards([rm.senderId], viewerId);
+        replyTo = {
+          id: rm.id,
+          body: rm.body,
+          kind: rm.kind,
+          sender_name: rc?.display_name ?? "Someone",
+        };
+      }
+    }
+
     return {
       id: msg!.id,
       body: msg!.body,
+      kind: msg!.kind ?? "text",
       sender_id: msg!.senderId,
       created_at: msg!.createdAt,
+      status: msg!.status ?? "sent",
+      is_deleted: msg!.isDeleted ?? false,
       sender: senderCard ?? null,
+      attachment,
+      reply_to: replyTo,
       reactions: [...byEmoji.entries()].map(([emoji, v]) => ({
         emoji,
         ...v,
@@ -2834,12 +2886,68 @@ export const createHonoApp = () => {
 
     await requireMembership(id, userId!);
     const body = z
-      .object({ body: z.string().trim().min(1).max(5000) })
+      .object({
+        body: z.string().trim().max(5000).optional().default(""),
+        kind: z
+          .enum(["text", "image", "video", "audio", "file", "voice"])
+          .optional()
+          .default("text"),
+        attachment_id: z.string().uuid().optional(),
+        reply_to_id: z.string().uuid().optional(),
+      })
       .parse(await c.req.json());
+
+    // Non-text messages require an attachment; text requires a body.
+    if (body.kind === "text" && !body.body.trim()) {
+      apiError("Message body is required", "VALIDATION_ERROR", 400);
+    }
+    if (body.kind !== "text" && !body.attachment_id) {
+      apiError(
+        "Attachment is required for media messages",
+        "VALIDATION_ERROR",
+        400
+      );
+    }
+    // Verify the attachment belongs to the sender.
+    if (body.attachment_id) {
+      const [att] = await db
+        .select({ id: chatAttachments.id })
+        .from(chatAttachments)
+        .where(
+          and(
+            eq(chatAttachments.id, body.attachment_id),
+            eq(chatAttachments.uploaderId, userId!)
+          )
+        )
+        .limit(1);
+      if (!att) apiError("Attachment not found", "NOT_FOUND", 404);
+    }
+    // Verify the reply target is in this conversation.
+    if (body.reply_to_id) {
+      const [rm] = await db
+        .select({ id: messages.id })
+        .from(messages)
+        .where(
+          and(
+            eq(messages.id, body.reply_to_id),
+            eq(messages.conversationId, id)
+          )
+        )
+        .limit(1);
+      if (!rm) apiError("Replied message not found", "NOT_FOUND", 404);
+    }
 
     const [msg] = await db
       .insert(messages)
-      .values({ conversationId: id, senderId: userId!, body: body.body })
+      .values({
+        conversationId: id,
+        senderId: userId!,
+        body: body.body,
+        kind: body.kind,
+        attachmentId: body.attachment_id ?? null,
+        replyToId: body.reply_to_id ?? null,
+        status: "sent",
+      })
       .returning();
     await db
       .update(conversationMembers)
@@ -2934,6 +3042,139 @@ export const createHonoApp = () => {
       emoji: body.emoji,
     });
     return c.json({ ok: true, reacted: true });
+  });
+
+  /**
+   * Phase 15: chat completeness.
+   */
+
+  // In-memory typing indicators (ephemeral, 5s TTL). Keyed by
+  // `${conversationId}:${userId}` -> timestamp. Vercel-safe (no sockets).
+  const typingMap = new Map<string, number>();
+  const TYPING_TTL_MS = 5000;
+
+  // Register a chat attachment (file already uploaded to Cloudinary by the client).
+  app.post("/chat/attachments", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+
+    const body = z
+      .object({
+        kind: z.enum(["image", "video", "audio", "file"]),
+        mime_type: z.string().min(1).max(120),
+        file_name: z.string().min(1).max(255),
+        file_size: z
+          .number()
+          .int()
+          .min(1)
+          .max(100 * 1024 * 1024),
+        url: z.string().url().startsWith("https://"),
+        duration_sec: z.number().int().min(0).optional(),
+        width: z.number().int().min(0).optional(),
+        height: z.number().int().min(0).optional(),
+        thumbnail_url: z.string().url().optional(),
+      })
+      .parse(await c.req.json());
+
+    // SVG rejected (stored-XSS when served inline) — company-os pattern.
+    if (body.mime_type === "image/svg+xml") {
+      apiError("SVG images are not allowed", "VALIDATION_ERROR", 400);
+    }
+
+    const [att] = await db
+      .insert(chatAttachments)
+      .values({
+        uploaderId: userId!,
+        kind: body.kind,
+        mimeType: body.mime_type,
+        fileName: body.file_name,
+        fileSize: body.file_size,
+        url: body.url,
+        durationSec: body.duration_sec ?? null,
+        width: body.width ?? null,
+        height: body.height ?? null,
+        thumbnailUrl: body.thumbnail_url ?? null,
+      })
+      .returning();
+    return c.json(
+      {
+        id: att.id,
+        kind: att.kind,
+        mime_type: att.mimeType,
+        file_name: att.fileName,
+        file_size: att.fileSize,
+        url: att.url,
+        duration_sec: att.durationSec,
+        width: att.width,
+        height: att.height,
+        thumbnail_url: att.thumbnailUrl,
+      },
+      201
+    );
+  });
+
+  // Mark a message as read (per-message read receipts).
+  app.post("/chat/messages/:id/read", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const { id } = chatMessageIdParam.parse(c.req.param());
+
+    const [msg] = await db
+      .select({
+        id: messages.id,
+        conversationId: messages.conversationId,
+        senderId: messages.senderId,
+      })
+      .from(messages)
+      .where(eq(messages.id, id))
+      .limit(1);
+    if (!msg) apiError("Message not found", "NOT_FOUND", 404);
+    await requireMembership(msg!.conversationId, userId!);
+    // Only the recipient marks read (not the sender).
+    if (msg!.senderId !== userId) {
+      await db
+        .update(messages)
+        .set({ status: "read" })
+        .where(eq(messages.id, id));
+    }
+    return c.json({ ok: true });
+  });
+
+  // Send a typing indicator (ephemeral).
+  app.post("/chat/conversations/:id/typing", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const { id } = chatIdParam.parse(c.req.param());
+    await requireMembership(id, userId!);
+    typingMap.set(`${id}:${userId}`, Date.now());
+    return c.json({ ok: true });
+  });
+
+  // Get active typing indicators for a conversation (excluding self).
+  app.get("/chat/conversations/:id/typing", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const { id } = chatIdParam.parse(c.req.param());
+    await requireMembership(id, userId!);
+
+    const now = Date.now();
+    const typing: { user_id: string; display_name: string | null }[] = [];
+    const userIds: string[] = [];
+    for (const [key, ts] of typingMap) {
+      if (now - ts > TYPING_TTL_MS) {
+        typingMap.delete(key);
+        continue;
+      }
+      const [convId, uid] = key.split(":");
+      if (convId === id && uid !== userId) userIds.push(uid);
+    }
+    if (userIds.length > 0) {
+      const cards = await fetchUserCards(userIds, userId!);
+      for (const card of cards) {
+        typing.push({ user_id: card._id, display_name: card.display_name });
+      }
+    }
+    return c.json({ typing });
   });
 
   /**

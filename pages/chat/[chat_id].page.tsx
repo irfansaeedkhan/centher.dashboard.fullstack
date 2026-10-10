@@ -15,6 +15,13 @@ import {
   type ChatMessage,
 } from "@/lib/chat/types";
 import { getMessageTime } from "@/lib/chat/utils";
+import {
+  MessageContent,
+  MessageStatus,
+  ReplyPreview,
+} from "./_components/message/message-content";
+import { ChatComposer } from "./_components/composer/chat-composer";
+import { TypingIndicator } from "./_components/typing-indicator";
 import useUser from "@/hooks/use.user";
 import { customLog } from "@/utils/custom.log";
 
@@ -29,17 +36,21 @@ const SingleChat: NextPageWithLayout = () => {
   const {
     messages,
     loading,
-    sending,
+    typingUsers,
     sendMessage,
     editMessage,
     deleteMessage,
     toggleReaction,
+    appendMessage,
+    sendTypingPing,
   } = useChatMessages(chatId);
 
   const [draft, setDraft] = useState("");
   const [editing, setEditing] = useState<ChatMessage | null>(null);
+  const [replyingTo, setReplyingTo] = useState<ChatMessage | null>(null);
   const [reactionFor, setReactionFor] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<ChatMessage | null>(null);
+  const [lightbox, setLightbox] = useState<string | null>(null);
   const endRef = useRef<HTMLDivElement>(null);
 
   const myId = user?._id ?? "";
@@ -59,27 +70,6 @@ const SingleChat: NextPageWithLayout = () => {
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages.length]);
-
-  const handleSend = async () => {
-    const text = draft.trim();
-    if (!text || sending) return;
-    if (editing) {
-      try {
-        await editMessage(editing.id, text);
-        setEditing(null);
-        setDraft("");
-      } catch (e: any) {
-        toast.error(e?.message || "Could not update message");
-      }
-      return;
-    }
-    setDraft("");
-    try {
-      await sendMessage(text);
-    } catch {
-      setDraft(text);
-    }
-  };
 
   const name = convo ? conversationDisplayName(convo, myId) : "Chat";
   const avatar = convo ? conversationAvatar(convo, myId) : null;
@@ -135,8 +125,13 @@ const SingleChat: NextPageWithLayout = () => {
               onPickEmoji={(emoji) => {
                 setReactionFor(null);
                 toggleReaction(m.id, emoji).catch((e: any) =>
-                  toast.error(e?.message || "Could not react"),
+                  toast.error(e?.message || "Could not react")
                 );
+              }}
+              onReply={() => setReplyingTo(m)}
+              onOpenImage={() => {
+                if (m.attachment?.kind === "image")
+                  setLightbox(m.attachment.url);
               }}
               onEdit={() => {
                 setEditing(m);
@@ -149,12 +144,29 @@ const SingleChat: NextPageWithLayout = () => {
         <div ref={endRef} />
       </div>
 
-      <div className="border-t border-gray-shade-3 px-4 py-3">
-        {editing && (
-          <div className="mb-2 flex items-center justify-between rounded-lg bg-elevation-1 px-3 py-2">
-            <p className="truncate text-xs text-gray-shade-7">
-              Editing message
-            </p>
+      <div className="px-4 pb-1">
+        <TypingIndicator users={typingUsers} />
+      </div>
+      {editing && (
+        <div className="mx-4 mb-2 flex items-center justify-between rounded-lg bg-elevation-1 px-3 py-2">
+          <p className="truncate text-xs text-gray-shade-7">Editing message</p>
+          <div className="flex gap-2">
+            <button
+              className="bg-primary rounded-lg px-3 py-1 text-xs font-semibold text-white"
+              onClick={async () => {
+                const text = draft.trim();
+                if (!text) return;
+                try {
+                  await editMessage(editing.id, text);
+                  setEditing(null);
+                  setDraft("");
+                } catch (e: any) {
+                  toast.error(e?.message || "Could not update message");
+                }
+              }}
+            >
+              Save
+            </button>
             <button
               className="text-xs text-gray-shade-7 hover:text-white"
               onClick={() => {
@@ -165,29 +177,65 @@ const SingleChat: NextPageWithLayout = () => {
               Cancel
             </button>
           </div>
-        )}
-        <div className="focus-within:gradient-border-3 flex items-center gap-2 !rounded-lg bg-elevation-1 p-[1px]">
+        </div>
+      )}
+      {editing && (
+        <div className="border-t border-gray-shade-3 px-4 py-3">
           <input
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
-                handleSend();
+                const text = draft.trim();
+                if (!text) return;
+                editMessage(editing.id, text)
+                  .then(() => {
+                    setEditing(null);
+                    setDraft("");
+                  })
+                  .catch((e: any) =>
+                    toast.error(e?.message || "Could not update message")
+                  );
               }
             }}
-            placeholder="Type a message"
-            className="w-full bg-transparent px-4 py-3 text-sm text-white focus:outline-none"
+            placeholder="Edit message"
+            autoFocus
+            className="w-full rounded-lg bg-elevation-1 px-4 py-3 text-sm text-white focus:outline-none"
+          />
+        </div>
+      )}
+      {!editing && (
+        <ChatComposer
+          conversationId={chatId ?? ""}
+          replyingTo={replyingTo}
+          onClearReply={() => setReplyingTo(null)}
+          onSent={(msg) => {
+            appendMessage(msg);
+            endRef.current?.scrollIntoView({ behavior: "smooth" });
+          }}
+          onTyping={sendTypingPing}
+        />
+      )}
+
+      {lightbox && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4"
+          onClick={() => setLightbox(null)}
+        >
+          <img
+            src={lightbox}
+            alt="Full size"
+            className="max-h-full max-w-full rounded-lg object-contain"
           />
           <button
-            onClick={handleSend}
-            disabled={sending || !draft.trim()}
-            className="mr-2 flex-shrink-0 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white disabled:opacity-40"
+            aria-label="Close"
+            className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-xl text-white"
           >
-            {editing ? "Save" : sending ? "..." : "Send"}
+            ✕
           </button>
         </div>
-      </div>
+      )}
 
       {confirmDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
@@ -233,6 +281,8 @@ const MessageBubble: React.FC<{
   onReact: () => void;
   showReactions: boolean;
   onPickEmoji: (emoji: string) => void;
+  onReply: () => void;
+  onOpenImage: () => void;
   onEdit: () => void;
   onDelete: () => void;
 }> = ({
@@ -241,14 +291,17 @@ const MessageBubble: React.FC<{
   onReact,
   showReactions,
   onPickEmoji,
+  onReply,
+  onOpenImage,
   onEdit,
   onDelete,
 }) => {
+  const isMedia = message.kind !== "text" && message.attachment;
   return (
     <div
       className={clsx(
         "group mb-3 flex",
-        mine ? "justify-end" : "justify-start",
+        mine ? "justify-end" : "justify-start"
       )}
     >
       <div className="max-w-[75%] sm:max-w-[60%]">
@@ -261,20 +314,23 @@ const MessageBubble: React.FC<{
           className={clsx(
             "relative rounded-2xl px-4 py-2",
             mine
-              ? "rounded-br-md bg-primary text-white"
+              ? "bg-primary rounded-br-md text-white"
               : "rounded-bl-md bg-elevation-1 text-white",
+            isMedia && "px-2 pt-2"
           )}
         >
-          <p className="whitespace-pre-wrap break-words text-sm">
-            {message.body}
-          </p>
+          {message.reply_to && (
+            <ReplyPreview reply={message.reply_to} mine={mine} />
+          )}
+          <MessageContent message={message} onOpenImage={onOpenImage} />
           <p
             className={clsx(
-              "mt-1 text-right text-[10px]",
-              mine ? "text-white/70" : "text-gray-shade-7",
+              "mt-1 flex items-center justify-end gap-1 text-[10px]",
+              mine ? "text-white/70" : "text-gray-shade-7"
             )}
           >
             {getMessageTime(message.created_at)}
+            <MessageStatus status={message.status} mine={mine} />
           </p>
           <div className="absolute -top-2 right-2 hidden gap-1 group-hover:flex">
             <button
@@ -284,23 +340,30 @@ const MessageBubble: React.FC<{
             >
               🙂
             </button>
+            <button
+              aria-label="Reply"
+              className="rounded-full bg-elevation-2 px-2 py-0.5 text-xs shadow"
+              onClick={onReply}
+            >
+              ↩️
+            </button>
+            {mine && message.kind === "text" && (
+              <button
+                aria-label="Edit"
+                className="rounded-full bg-elevation-2 px-2 py-0.5 text-xs shadow"
+                onClick={onEdit}
+              >
+                ✏️
+              </button>
+            )}
             {mine && (
-              <>
-                <button
-                  aria-label="Edit"
-                  className="rounded-full bg-elevation-2 px-2 py-0.5 text-xs shadow"
-                  onClick={onEdit}
-                >
-                  ✏️
-                </button>
-                <button
-                  aria-label="Delete"
-                  className="rounded-full bg-elevation-2 px-2 py-0.5 text-xs shadow"
-                  onClick={onDelete}
-                >
-                  🗑️
-                </button>
-              </>
+              <button
+                aria-label="Delete"
+                className="rounded-full bg-elevation-2 px-2 py-0.5 text-xs shadow"
+                onClick={onDelete}
+              >
+                🗑️
+              </button>
             )}
           </div>
           {showReactions && (
@@ -328,7 +391,7 @@ const MessageBubble: React.FC<{
                   "rounded-full px-2 py-0.5 text-xs",
                   r.reacted_by_me
                     ? "bg-primary/30 text-white"
-                    : "bg-elevation-1 text-gray-shade-7",
+                    : "bg-elevation-1 text-gray-shade-7"
                 )}
               >
                 {r.emoji} {r.count}

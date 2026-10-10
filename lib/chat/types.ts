@@ -33,13 +33,52 @@ export interface ChatReaction {
   reacted_by_me: boolean;
 }
 
+export type ChatMessageKind =
+  | "text"
+  | "image"
+  | "video"
+  | "audio"
+  | "file"
+  | "voice";
+export type ChatMessageStatus = "sent" | "delivered" | "read";
+
+export interface ChatAttachment {
+  id: string;
+  kind: "image" | "video" | "audio" | "file";
+  mime_type: string;
+  file_name: string;
+  file_size: number;
+  url: string;
+  duration_sec: number | null;
+  width: number | null;
+  height: number | null;
+  thumbnail_url: string | null;
+}
+
+export interface ChatReplyPreview {
+  id: string;
+  body: string;
+  kind: string;
+  sender_name: string;
+}
+
 export interface ChatMessage {
   id: string;
   body: string;
+  kind: ChatMessageKind;
   sender_id: string;
   created_at: string;
+  status: ChatMessageStatus;
+  is_deleted: boolean;
   sender: ChatMember | null;
+  attachment: ChatAttachment | null;
+  reply_to: ChatReplyPreview | null;
   reactions: ChatReaction[];
+}
+
+export interface TypingUser {
+  user_id: string;
+  display_name: string | null;
 }
 
 /** Display name for a conversation: group title, or the other member's name. */
@@ -70,9 +109,11 @@ export function conversationAvatar(
 }
 
 /** Legacy Apollo provider type (kept for staking/launchpad web3 helpers). */
-export type IApolloProvider = import("@apollo/client").ApolloClient<
-  import("@apollo/client").NormalizedCacheObject
-> | null;
+export type IApolloProvider =
+  | import("@apollo/client").ApolloClient<
+      import("@apollo/client").NormalizedCacheObject
+    >
+  | null;
 
 /** Legacy notification shape (kept for the notifications page). */
 export interface Notify {

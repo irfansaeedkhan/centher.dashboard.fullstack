@@ -177,6 +177,30 @@ export const conversations = pgTable("conversations", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
+// Phase 15: chat attachments (images, videos, audio, files, voice notes).
+// Files upload direct to Cloudinary from the browser; this table registers
+// the metadata so messages can reference them.
+export const chatAttachments = pgTable("chat_attachments", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  uploaderId: text("uploader_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  // image | video | audio | file
+  kind: text("kind").notNull(),
+  mimeType: text("mime_type").notNull(),
+  fileName: text("file_name").notNull(),
+  fileSize: integer("file_size").notNull(),
+  // Cloudinary secure_url
+  url: text("url").notNull(),
+  // Audio/voice: duration in seconds
+  durationSec: integer("duration_sec"),
+  // Image/video dimensions
+  width: integer("width"),
+  height: integer("height"),
+  thumbnailUrl: text("thumbnail_url"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
 export const messages = pgTable("messages", {
   id: uuid("id").defaultRandom().primaryKey(),
   conversationId: uuid("conversation_id")
@@ -186,6 +210,17 @@ export const messages = pgTable("messages", {
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
   body: text("body").notNull(),
+  // Phase 15: message kind (text|image|video|audio|file|voice)
+  kind: text("kind").notNull().default("text"),
+  attachmentId: uuid("attachment_id").references(() => chatAttachments.id, {
+    onDelete: "set null",
+  }),
+  // FK to messages(id) ON DELETE SET NULL is enforced in SQL migration
+  // 0003_chat_complete.sql (self-reference breaks drizzle type inference).
+  replyToId: uuid("reply_to_id"),
+  // Phase 15: delivery status (sent|delivered|read)
+  status: text("status").notNull().default("sent"),
+  isDeleted: boolean("is_deleted").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 

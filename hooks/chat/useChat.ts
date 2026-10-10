@@ -6,7 +6,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { chatApi } from "@/lib/chat/api";
-import type { ChatConversation, ChatMessage } from "@/lib/chat/types";
+import type {
+  ChatConversation,
+  ChatMessage,
+  TypingUser,
+} from "@/lib/chat/types";
 import useUser from "../use.user";
 
 export const useChatConversations = () => {
@@ -46,14 +50,11 @@ export const useChatConversations = () => {
     [refresh]
   );
 
-  const deleteConversation = useCallback(
-    async (id: string) => {
-      await chatApi.deleteConversation(id);
-      setConversations((prev) => prev.filter((c) => c.id !== id));
-      toast.success("Conversation deleted");
-    },
-    []
-  );
+  const deleteConversation = useCallback(async (id: string) => {
+    await chatApi.deleteConversation(id);
+    setConversations((prev) => prev.filter((c) => c.id !== id));
+    toast.success("Conversation deleted");
+  }, []);
 
   const togglePin = useCallback(async (convo: ChatConversation) => {
     if (convo.is_pinned) {
@@ -88,7 +89,9 @@ export const useChatMessages = (chatId: string | undefined) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const [typingUsers, setTypingUsers] = useState<TypingUser[]>([]);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const typingThrottleRef = useRef(0);
 
   const fetchMessages = useCallback(async () => {
     if (!chatId || !user) return;
@@ -97,6 +100,13 @@ export const useChatMessages = (chatId: string | undefined) => {
         limit: 100,
       });
       setMessages(list);
+      // Mark others' messages as read (per-message receipts).
+      const myId = user._id;
+      for (const m of list) {
+        if (m.sender_id !== myId && m.status !== "read") {
+          chatApi.markMessageRead(m.id).catch(() => {});
+        }
+      }
     } catch {
       // keep the last good list
     } finally {
@@ -104,18 +114,41 @@ export const useChatMessages = (chatId: string | undefined) => {
     }
   }, [chatId, user]);
 
+  const fetchTyping = useCallback(async () => {
+    if (!chatId || !user) return;
+    try {
+      const { typing } = await chatApi.getTyping(chatId);
+      setTypingUsers(typing);
+    } catch {
+      // ignore
+    }
+  }, [chatId, user]);
+
+  // Throttled typing ping (max once per 3s).
+  const sendTypingPing = useCallback(() => {
+    if (!chatId) return;
+    const now = Date.now();
+    if (now - typingThrottleRef.current < 3000) return;
+    typingThrottleRef.current = now;
+    chatApi.sendTyping(chatId).catch(() => {});
+  }, [chatId]);
+
   useEffect(() => {
     setMessages([]);
+    setTypingUsers([]);
     setLoading(true);
     fetchMessages();
     if (chatId) {
       chatApi.markAsRead(chatId).catch(() => {});
-      pollRef.current = setInterval(fetchMessages, POLL_MS);
+      pollRef.current = setInterval(() => {
+        fetchMessages();
+        fetchTyping();
+      }, POLL_MS);
     }
     return () => {
       if (pollRef.current) clearInterval(pollRef.current);
     };
-  }, [chatId, fetchMessages]);
+  }, [chatId, fetchMessages, fetchTyping]);
 
   const sendMessage = useCallback(
     async (body: string) => {
@@ -156,14 +189,21 @@ export const useChatMessages = (chatId: string | undefined) => {
     [fetchMessages]
   );
 
+  const appendMessage = useCallback((msg: ChatMessage) => {
+    setMessages((prev) => [...prev, msg]);
+  }, []);
+
   return {
     messages,
     loading,
     sending,
+    typingUsers,
     sendMessage,
     editMessage,
     deleteMessage,
     toggleReaction,
     refresh: fetchMessages,
+    appendMessage,
+    sendTypingPing,
   };
 };
