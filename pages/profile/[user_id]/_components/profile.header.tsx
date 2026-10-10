@@ -8,7 +8,6 @@ import React, {
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import axios from "axios";
 import toast from "react-hot-toast";
 import clsx from "clsx";
 import { CgSpinner } from "react-icons/cg";
@@ -29,12 +28,17 @@ import { useProfileCardStore } from "@/store/profile.card.store";
 import { useFeedStore } from "@/store/feed.store";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import { LoggedInUser, MutualFollowersData, User } from "@/models/user";
-import { getUserImageUploadUrl, updateUserImage } from "@/lib/user";
+import { updateUserImage } from "@/lib/user";
+import {
+  uploadImage,
+  isCloudinaryConfigured,
+  CloudinaryNotConfiguredError,
+} from "@/lib/media/cloudinary";
 import ProfileModal from "@/components/modal/profile.modal";
 import Button from "@/components/button";
 import { useGetProfileCardDetails } from "@/components/feed.components/profile.detail.card/use.get.profile.card.details";
 import { axiosApi369x } from "@/utils/axios";
-import { getUserImageUrl, sliceAccountAddress } from "@/utils/user.helpers";
+import { sliceAccountAddress } from "@/utils/user.helpers";
 import { customLog } from "@/utils/custom.log";
 import { copyText } from "@/utils/copy.text";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
@@ -190,42 +194,32 @@ const ProfileHeader: React.FC<Props> = ({
     const button = e.currentTarget as HTMLButtonElement;
     button.disabled = true;
 
+    // Phase 11: cover uploads need Cloudinary configured.
+    if (!isCloudinaryConfigured()) {
+      button.disabled = false;
+      setIsUploading(false);
+      setCoverImageLoading(false);
+      toast.error(
+        "Cover image uploads aren't available yet — Cloudinary isn't configured"
+      );
+      return;
+    }
+
     try {
       const coverImageData: CoverImageWithFile = {
         ...coverImage,
       };
 
-      // Get pre-signed URL from API
-      const data = await getUserImageUploadUrl(
-        coverImage.object_name!,
-        "cover_image"
-      );
+      // Upload directly to Cloudinary (Phase 11)
+      const secureUrl = await uploadImage(coverImage.blob, "centher/covers");
 
-      coverImageData.object_name = data.objectName;
+      coverImageData.object_name = secureUrl;
+      coverImageData.path = secureUrl;
 
-      // Create form data
-      const presignedPostData = data.presignedPostData;
-      const formData = new FormData();
-      Object.keys(presignedPostData.fields).forEach((key) => {
-        formData.append(
-          key,
-          presignedPostData.fields[key as keyof typeof presignedPostData.fields]
-        );
-      });
-      formData.append("file", coverImage.blob);
-
-      // Upload file to S3
-      await axios.post(presignedPostData.url, formData);
-
-      coverImageData.path = getUserImageUrl({
-        type: "custom-image",
-        object_name: data.objectName,
-      });
-
-      // Update profile image in DB
-      updateUserImage({
+      // Update profile image in DB (server persists the Cloudinary URL)
+      await updateUserImage({
         type: "cover_image",
-        object_name: coverImageData.object_name!,
+        object_name: secureUrl,
       });
 
       setCoverImage((prev) => ({

@@ -1,7 +1,18 @@
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { z } from "zod";
-import { and, asc, desc, eq, gt, ilike, inArray, ne, or, sql } from "drizzle-orm";
+import {
+  and,
+  asc,
+  desc,
+  eq,
+  gt,
+  ilike,
+  inArray,
+  ne,
+  or,
+  sql,
+} from "drizzle-orm";
 import { db } from "@/db";
 import {
   autoRestakeSettings,
@@ -129,6 +140,7 @@ const mapPostRow = (
     authorName: string | null;
     authorAvatar: string | null;
     membership: string | null;
+    mediaUrls?: unknown;
   },
   opts?: { likedByLoggedInUser?: boolean }
 ) => {
@@ -163,7 +175,13 @@ const mapPostRow = (
     parent_post: undefined,
     post_editor_state,
     text_content: text,
-    media: [],
+    media: (Array.isArray(row.mediaUrls) ? row.mediaUrls : [])
+      .filter((u): u is string => typeof u === "string" && u.length > 0)
+      .map((url) => ({
+        object_name: url,
+        url,
+        type: "image" as const,
+      })),
   };
 };
 
@@ -250,6 +268,7 @@ const fetchPostRow = async (id: string) => {
       authorName: profiles.displayName,
       authorAvatar: profiles.avatarUrl,
       membership: profiles.membership,
+      mediaUrls: posts.mediaUrls,
     })
     .from(posts)
     .leftJoin(profiles, eq(posts.authorId, profiles.userId))
@@ -451,7 +470,10 @@ export const createHonoApp = () => {
   app.on(["POST", "GET"], "/auth/*", (c) => auth.handler(c.req.raw));
 
   app.get("/health", (c) =>
-    c.json({ ok: true, brand: process.env.NEXT_PUBLIC_BRAND_NAME || "Centher" })
+    c.json({
+      ok: true,
+      brand: process.env.NEXT_PUBLIC_BRAND_NAME || "Centher",
+    })
   );
 
   /**
@@ -528,7 +550,7 @@ export const createHonoApp = () => {
       _id: userId,
       display_name: profile?.displayName || authUser?.name || "Centher Demo",
       profile_image: profile?.avatarUrl || "/images/centher.logo.favicon.png",
-      cover_image: "",
+      cover_image: profile?.coverImageUrl || "",
       membership: {
         last_status: membershipStatus,
         status: membershipStatus,
@@ -868,8 +890,33 @@ export const createHonoApp = () => {
     const preset = PRESET_AVATARS.find(
       (a) => a.object_name === body.object_name
     );
-    // Only bundled presets can be persisted — there is no object storage
-    // for custom uploads in this build.
+    const [authUser] = await db
+      .select()
+      .from(user)
+      .where(eq(user.id, userId!))
+      .limit(1);
+    await ensureProfile(userId!, authUser?.name || "Centher Demo");
+
+    // Phase 11: a Cloudinary secure_url (https://…) is persisted directly.
+    // The browser uploads to Cloudinary itself; the server just stores the URL.
+    if (body.object_name.startsWith("https://")) {
+      if (body.type === "profile_image") {
+        await db
+          .update(profiles)
+          .set({ avatarUrl: body.object_name })
+          .where(eq(profiles.userId, userId!));
+        return c.json({ profile_image: body.object_name });
+      }
+      if (body.type === "cover_image") {
+        await db
+          .update(profiles)
+          .set({ coverImageUrl: body.object_name })
+          .where(eq(profiles.userId, userId!));
+        return c.json({ cover_image: body.object_name });
+      }
+    }
+
+    // Bundled preset avatars (profile_image only).
     if (body.type !== "profile_image" || !preset) {
       return apiError(
         "Custom image uploads are not available in this build — choose a preset avatar instead",
@@ -877,12 +924,6 @@ export const createHonoApp = () => {
         501
       );
     }
-    const [authUser] = await db
-      .select()
-      .from(user)
-      .where(eq(user.id, userId!))
-      .limit(1);
-    await ensureProfile(userId!, authUser?.name || "Centher Demo");
     await db
       .update(profiles)
       .set({ avatarUrl: preset.path })
@@ -908,7 +949,7 @@ export const createHonoApp = () => {
       _id: userId,
       display_name: profile?.displayName || authUser?.name || "Centher User",
       profile_image: profile?.avatarUrl || "/images/centher.logo.favicon.png",
-      cover_image: "",
+      cover_image: profile?.coverImageUrl || "",
       membership: {
         last_status: membershipStatus,
         status: membershipStatus,
@@ -1316,6 +1357,7 @@ export const createHonoApp = () => {
         authorUsername: profiles.username,
         authorAvatar: profiles.avatarUrl,
         membership: profiles.membership,
+        mediaUrls: posts.mediaUrls,
       })
       .from(posts)
       .leftJoin(profiles, eq(posts.authorId, profiles.userId))
@@ -1409,6 +1451,7 @@ export const createHonoApp = () => {
         authorName: profiles.displayName,
         authorAvatar: profiles.avatarUrl,
         membership: profiles.membership,
+        mediaUrls: posts.mediaUrls,
       })
       .from(posts)
       .leftJoin(profiles, eq(posts.authorId, profiles.userId))
@@ -1482,6 +1525,7 @@ export const createHonoApp = () => {
         authorName: profiles.displayName,
         authorAvatar: profiles.avatarUrl,
         membership: profiles.membership,
+        mediaUrls: posts.mediaUrls,
       })
       .from(posts)
       .leftJoin(profiles, eq(posts.authorId, profiles.userId))
@@ -1617,6 +1661,7 @@ export const createHonoApp = () => {
       authorName: existing!.authorName,
       authorAvatar: existing!.authorAvatar,
       membership: existing!.membership,
+      mediaUrls: (updated.mediaUrls as string[] | null) || [],
     });
     return c.json({ posts: [mapped], data: [mapped] });
   });
@@ -2278,11 +2323,17 @@ export const createHonoApp = () => {
         continue;
       }
 
+      // Phase 11: persist uploaded media URLs (Cloudinary secure_urls).
+      const mediaUrls = (item.media || [])
+        .map((m: any) => m?.object_name)
+        .filter((u: any) => typeof u === "string" && u.startsWith("https://"));
+
       const [created] = await db
         .insert(posts)
         .values({
           authorId: userId!,
           body: storedBody.slice(0, 20000),
+          mediaUrls: mediaUrls.length > 0 ? mediaUrls : null,
         })
         .returning();
 
@@ -2298,6 +2349,7 @@ export const createHonoApp = () => {
           authorAvatar:
             authorProfile?.avatarUrl || "/images/centher.logo.favicon.png",
           membership: authorProfile?.membership || "citizen",
+          mediaUrls: (created.mediaUrls as string[] | null) || [],
         })
       );
     }
@@ -2541,7 +2593,10 @@ export const createHonoApp = () => {
       .select()
       .from(messageReactions)
       .where(eq(messageReactions.messageId, messageId));
-    const byEmoji = new Map<string, { count: number; reacted_by_me: boolean }>();
+    const byEmoji = new Map<
+      string,
+      { count: number; reacted_by_me: boolean }
+    >();
     for (const r of reactionRows) {
       const e = byEmoji.get(r.emoji) ?? { count: 0, reacted_by_me: false };
       e.count += 1;
@@ -2810,7 +2865,10 @@ export const createHonoApp = () => {
     const body = z
       .object({ body: z.string().trim().min(1).max(5000) })
       .parse(await c.req.json());
-    await db.update(messages).set({ body: body.body }).where(eq(messages.id, id));
+    await db
+      .update(messages)
+      .set({ body: body.body })
+      .where(eq(messages.id, id));
     return c.json(await buildMessage(id, userId!));
   });
 
@@ -2902,7 +2960,8 @@ export const createHonoApp = () => {
 
   const fetchCfsUserCards = async (userIds: string[]) => {
     const uniq = [...new Set(userIds)];
-    if (uniq.length === 0) return new Map<string, ReturnType<typeof cfsUserCard>>();
+    if (uniq.length === 0)
+      return new Map<string, ReturnType<typeof cfsUserCard>>();
     const rows = await db
       .select({
         userId: profiles.userId,
@@ -2916,7 +2975,12 @@ export const createHonoApp = () => {
   };
 
   const fallbackCard = (userId: string) =>
-    cfsUserCard({ userId, displayName: "Unnamed", avatarUrl: "", membership: null });
+    cfsUserCard({
+      userId,
+      displayName: "Unnamed",
+      avatarUrl: "",
+      membership: null,
+    });
 
   const mapCfsCollection = (
     c: typeof collections.$inferSelect,
@@ -2961,7 +3025,9 @@ export const createHonoApp = () => {
     return {
       id: n.id,
       collection: collectionId,
-      createTime: n.createdAt ? n.createdAt.toISOString() : new Date(0).toISOString(),
+      createTime: n.createdAt
+        ? n.createdAt.toISOString()
+        : new Date(0).toISOString(),
       creator: creatorId,
       mintHash: "",
       ipfs: img,
@@ -3005,9 +3071,7 @@ export const createHonoApp = () => {
       .select()
       .from(nfts)
       .where(where)
-      .orderBy(
-        order === "newest" ? desc(nfts.createdAt) : asc(nfts.createdAt)
-      )
+      .orderBy(order === "newest" ? desc(nfts.createdAt) : asc(nfts.createdAt))
       .limit(limit)
       .offset(offset);
     if (rows.length === 0) return [];
@@ -3027,7 +3091,13 @@ export const createHonoApp = () => {
       const ownerCard = cards.get(n.ownerId) ?? fallbackCard(n.ownerId);
       const creatorCard =
         cards.get(coll?.creatorId ?? "") ?? fallbackCard(coll?.creatorId ?? "");
-      return mapCfsNft(n, n.collectionId, coll?.creatorId ?? "", ownerCard, creatorCard);
+      return mapCfsNft(
+        n,
+        n.collectionId,
+        coll?.creatorId ?? "",
+        ownerCard,
+        creatorCard
+      );
     });
   };
 
@@ -3080,7 +3150,10 @@ export const createHonoApp = () => {
         .map((id) => byId.get(id))
         .filter((r): r is NonNullable<typeof r> => !!r)
         .map((r) =>
-          mapCfsCollection(r, cards.get(r.creatorId) ?? fallbackCard(r.creatorId))
+          mapCfsCollection(
+            r,
+            cards.get(r.creatorId) ?? fallbackCard(r.creatorId)
+          )
         ),
     });
   });
@@ -3115,7 +3188,9 @@ export const createHonoApp = () => {
         )
       )
       .groupBy(collections.creatorId);
-    const collByCreator = new Map(collCounts.map((r) => [r.creatorId, r.collCount]));
+    const collByCreator = new Map(
+      collCounts.map((r) => [r.creatorId, r.collCount])
+    );
     const cards = await fetchCfsUserCards(nftCounts.map((r) => r.creatorId));
     return c.json({
       users: nftCounts.map((r) => {
@@ -3164,7 +3239,10 @@ export const createHonoApp = () => {
     if (!row) apiError("Collection not found", "NOT_FOUND", 404);
     const cards = await fetchCfsUserCards([row!.creatorId]);
     return c.json(
-      mapCfsCollection(row!, cards.get(row!.creatorId) ?? fallbackCard(row!.creatorId))
+      mapCfsCollection(
+        row!,
+        cards.get(row!.creatorId) ?? fallbackCard(row!.creatorId)
+      )
     );
   });
 
@@ -3211,7 +3289,12 @@ export const createHonoApp = () => {
     const q = marketplacePaging.parse(c.req.query());
     const limit = q.limit ?? q.first ?? 50;
     const offset = q.skip ?? 0;
-    const list = await loadNfts(eq(nfts.ownerId, owner), "newest", limit + 1, offset);
+    const list = await loadNfts(
+      eq(nfts.ownerId, owner),
+      "newest",
+      limit + 1,
+      offset
+    );
     const hasMore = list.length > limit;
     const page = hasMore ? list.slice(0, limit) : list;
     return c.json({
@@ -3264,8 +3347,10 @@ export const createHonoApp = () => {
       .parse(c.req.query());
     const limit = q.first ?? 50;
     const offset = q.skip ?? 0;
-    let where: ReturnType<typeof eq> | ReturnType<typeof and> | undefined =
-      eq(nfts.collectionId, collection);
+    let where: ReturnType<typeof eq> | ReturnType<typeof and> | undefined = eq(
+      nfts.collectionId,
+      collection
+    );
     if (q.saleState && q.saleState !== "All") {
       where = and(where, eq(nfts.listed, q.saleState === "Sale"));
     }
@@ -3293,7 +3378,10 @@ export const createHonoApp = () => {
       .from(collections)
       .where(eq(collections.id, row!.collectionId))
       .limit(1);
-    const cards = await fetchCfsUserCards([row!.ownerId, coll?.creatorId ?? ""]);
+    const cards = await fetchCfsUserCards([
+      row!.ownerId,
+      coll?.creatorId ?? "",
+    ]);
     const ownerCard = cards.get(row!.ownerId) ?? fallbackCard(row!.ownerId);
     const creatorCard =
       cards.get(coll?.creatorId ?? "") ?? fallbackCard(coll?.creatorId ?? "");
@@ -3421,8 +3509,8 @@ export const createHonoApp = () => {
       list_type === "live"
         ? eq(launchpads.status, "live")
         : list_type === "upcoming"
-          ? eq(launchpads.status, "upcoming")
-          : undefined;
+        ? eq(launchpads.status, "upcoming")
+        : undefined;
     const rows = await db
       .select()
       .from(launchpads)

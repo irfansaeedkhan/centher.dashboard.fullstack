@@ -10,7 +10,6 @@ import { StreamAccessModeEnum } from "@/stream/enum/stream-access-mode.enum";
 import { BroadcastTypeEnum } from "@/stream/enum/stream-type.enum";
 import { isNextEnabled } from "./room-validation";
 import { CreateBroadcastDto } from "@/stream/types/Broadcast";
-import axios from "axios";
 
 import AMAOrLive from "./steps/AMAOrLive";
 import PermissionsAndDetails from "./steps/PermissionsAndDetails";
@@ -20,7 +19,11 @@ import ChannelMainView from "../../shared/ChannelMainView";
 import { StreamEventEnum } from "@/stream/model";
 import { CreatRoomSteps } from "./enums";
 import { ICentalkBroadcast } from "@/hooks/stream/cen-talk";
-import { getUserImageUploadUrl } from "@/lib/user";
+import {
+  uploadImage,
+  isCloudinaryConfigured,
+  CloudinaryNotConfiguredError,
+} from "@/lib/media/cloudinary";
 import useMediaDevices from "@/hooks/use.get.media.devices";
 import clsx from "clsx";
 import { CrossIcon } from "@/assets/svgs";
@@ -52,7 +55,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
     onClose();
   }, [onClose]);
   const [currentStep, setCurrentStep] = useState<CreatRoomSteps>(
-    CreatRoomSteps.AMA_OR_LIVE,
+    CreatRoomSteps.AMA_OR_LIVE
   );
   const [loading, setLoading] = useState(false);
   const [roomCreationLoader, setRoomCreationLoader] = useState(false);
@@ -142,45 +145,19 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
 
     if (!file || typeof file === "string") return;
 
+    // Phase 11: image is optional — if Cloudinary isn't configured, keep the
+    // placeholder and don't block room creation.
+    if (!isCloudinaryConfigured()) return;
+
+    setLoading(true);
     try {
-      if (
-        !["image/jpeg", "image/png", "image/gif", "image/webp"].includes(
-          file.type,
-        )
-      ) {
-        toast.error("Invalid file type. Please upload a valid image.");
-        return;
-      }
-
-      setLoading(true);
-
-      // Get presigned URL for the image
-      const { presignedPostData, objectName } = await getUserImageUploadUrl(
-        file.name,
-        "cover_image",
-      );
-
-      // Prepare form data for uploading the image
-      const formData = new FormData();
-      Object.entries(presignedPostData.fields).forEach(([key, value]) => {
-        formData.append(key, value);
-      });
-      formData.append("file", file);
-
-      // Upload the image to AWS S3 using the presigned URL
-      await axios.post(presignedPostData.url, formData);
-
-      // Generate the full image URL
-      const imageUrl = generateImageUrl({
-        type: "custom-image",
-        object_name: objectName,
-      });
-
+      const secureUrl = await uploadImage(file, "centher/voispace");
       setFormState((current) => ({
         ...current,
-        image: imageUrl,
+        image: secureUrl,
       }));
-    } catch (error) {
+    } catch (error: any) {
+      if (error instanceof CloudinaryNotConfiguredError) return;
       throw error;
     } finally {
       setLoading(false);
@@ -206,7 +183,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
         return updatedState;
       });
     },
-    [setFormState],
+    [setFormState]
   );
 
   const createRoom = async () => {
@@ -245,7 +222,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
         input,
         user._id,
         formState.audioDevice as MediaDeviceInfo,
-        formState.videoDevice as MediaDeviceInfo,
+        formState.videoDevice as MediaDeviceInfo
       );
     } catch (error) {
       console.error("Error creating public room:", error);
@@ -269,10 +246,21 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
 
       try {
         await getMediaPermissions(formState.type);
+      } catch (error) {
+        toast.error(
+          "Failed to access media devices. Please check permissions."
+        );
+        return;
+      }
+
+      // Phase 11: image is optional — a failed upload warns but never blocks
+      // room creation (the placeholder fallback applies).
+      try {
         await handleImageUpload();
       } catch (error) {
-        toast.error("Failed to upload image, please try another image");
-        return;
+        toast.error(
+          "Failed to upload image — continuing without a cover image."
+        );
       }
     }
 
@@ -441,10 +429,10 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
               loading && currentStep === CreatRoomSteps.PERMISSIONS_AND_DETAILS
                 ? "Uploading..."
                 : roomCreationLoader
-                  ? "setting up room..."
-                  : currentStep === CreatRoomSteps.ROOM
-                    ? "Submit"
-                    : "Next"
+                ? "setting up room..."
+                : currentStep === CreatRoomSteps.ROOM
+                ? "Submit"
+                : "Next"
             }
             disabled={
               loading ||

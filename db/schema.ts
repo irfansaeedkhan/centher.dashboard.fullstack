@@ -76,6 +76,8 @@ export const profiles = pgTable("profiles", {
   username: text("username").notNull().unique(),
   bio: text("bio").default(""),
   avatarUrl: text("avatar_url"),
+  /** Phase 11: cover image URL (Cloudinary). Null = never set. */
+  coverImageUrl: text("cover_image_url"),
   membership: text("membership").notNull().default("citizen"),
   /** Phase 3: profile view counter (mirrors posts.view_count) */
   viewCount: integer("view_count").notNull().default(0),
@@ -140,6 +142,7 @@ export const posts = pgTable("posts", {
   viewCount: integer("view_count").notNull().default(0),
   isArchived: boolean("is_archived").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
+  mediaUrls: jsonb("media_urls"),
 });
 
 export const postLikes = pgTable(
