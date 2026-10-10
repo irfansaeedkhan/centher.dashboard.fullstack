@@ -13,7 +13,7 @@ import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 import { AppRoutes } from "@/constants/app.routes";
 import { ShareBigIcon, LinkIcon, XIcon } from "@/assets/svgs";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
-import { eqAddress } from "@/live/utils/address.utils";
+import { eqAddress } from "@/lib/chat/utils";
 import { CFSNFTForPage } from "@/lib/get-single-nft-page-data/types";
 import { LoggedInUser } from "@/models/user";
 import { NFTListing } from "./nft.listing";

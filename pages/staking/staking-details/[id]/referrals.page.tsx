@@ -11,7 +11,7 @@ import { useStaking } from "@/hooks/staking";
 import { setupUiModels } from "@/staking/helpers/mappers.helper";
 import { ZeroAddress } from "@/web3/constants/common";
 import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
-import { eqAddress } from "@/live/utils/address.utils";
+import { eqAddress } from "@/lib/chat/utils";
 import { IModalHandler, ModalManager, TemplateCollection } from "@/utils/modal";
 import { CustomModal } from "@/components/modal/custom.modal";
 import ConnectWalletModal from "@/components/modal/connect-wallet-modal";

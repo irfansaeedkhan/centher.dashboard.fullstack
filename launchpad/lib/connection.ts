@@ -1,6 +1,6 @@
 import { ApolloClient, InMemoryCache } from "@apollo/client";
 import { customLog } from "@/utils/custom.log";
-import { IApolloProvider } from "@/live/types/apollo.provider";
+import { IApolloProvider } from "@/lib/chat/types";
 
 export function getConnection(url: string): IApolloProvider | null {
   if (url?.length) {

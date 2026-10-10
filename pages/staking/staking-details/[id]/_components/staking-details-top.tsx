@@ -12,7 +12,7 @@ import { IModalHandler, ModalManager, TemplateCollection } from "@/utils/modal";
 import StakeNow, { StakingStat } from "./stake-now";
 import SuccessModalContent from "./success-modal-content";
 import FailedModalContent from "./failed-modal-content";
-import { eqAddress } from "@/live/utils/address.utils";
+import { eqAddress } from "@/lib/chat/utils";
 import { BlockchainRead } from "@/web3/blockchain";
 
 const oneYearInSec = 31449600;

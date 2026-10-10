@@ -14,7 +14,7 @@ import { ListCardDataOBj } from "@/pages/staking/_components/list-card-data";
 import { OptionalType } from "@/staking/types";
 import { Memb } from "@/pages/staking/create-staking/_components/staking-review-modal";
 import { fetchUsers } from "@/hooks/use.get.multi.users";
-import { eqAddress } from "@/live/utils/address.utils";
+import { eqAddress } from "@/lib/chat/utils";
 import TeamMembers from "@/pages/staking/create-staking/_components/team.memeber";
 import { ZeroAddress } from "@/web3/constants/common";
 

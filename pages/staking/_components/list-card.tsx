@@ -11,7 +11,7 @@ import { copyText } from "@/utils/copy.text";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { formatIPFSUrl } from "@/utils/format.address";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
-import { eqAddress } from "@/live/utils/address.utils";
+import { eqAddress } from "@/lib/chat/utils";
 import { ArrowDiagonal, GradientCopy, Staking } from "@/assets/svgs";
 import { BlockchainConfig } from "@/web3/blockchain/config";
 import Button from "@/components/button";

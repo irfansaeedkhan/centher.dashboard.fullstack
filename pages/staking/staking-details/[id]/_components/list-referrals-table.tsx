@@ -4,7 +4,7 @@ import { formatUnits } from "ethers/lib/utils";
 import Button from "@/components/button";
 import { Referral } from "@/staking/types/referrals.interface";
 import { OptionalType } from "@/staking/types";
-import { eqAddress } from "@/live/utils/address.utils";
+import { eqAddress } from "@/lib/chat/utils";
 import { CgSpinner } from "react-icons/cg";
 import { TableCell, TableRow } from "./table-types";
 

@@ -16,7 +16,7 @@ import { CrossIcon, TeamMemberIcon } from "@/assets/svgs";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import Button from "@/components/button";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import { eqAddress } from "@/live/utils/address.utils";
+import { eqAddress } from "@/lib/chat/utils";
 import { CreatePoolStepsEnum } from "@/staking/enum/create-pool-steps.enum";
 import {
   CreatePoolCallContractError,
