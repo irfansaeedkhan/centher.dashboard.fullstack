@@ -101,11 +101,12 @@ export const useChatMessages = (chatId: string | undefined) => {
       });
       setMessages(list);
       // Bulk-mark others' messages as read (single request, N2) instead of
-      // one POST per message.
-      const latest = list.length > 0 ? list[list.length - 1] : null;
-      if (latest) {
+      // one POST per message. Messages are ORDER BY createdAt DESC, so
+      // list[0] is the newest — the correct inclusive boundary.
+      const newest = list.length > 0 ? list[0] : null;
+      if (newest) {
         chatApi
-          .markAsRead(chatId, { upToMessageId: latest.id })
+          .markAsRead(chatId, { upToMessageId: newest.id })
           .catch(() => {});
       }
     } catch {
