@@ -111,9 +111,8 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
     ) {
       const error = eventOnAMA?.data || eventOnLive?.data;
       toast.error(error);
-      onClose();
+      handleCloseModal();
       setRoomCreationLoader(false);
-      setCurrentModalIsOpen(false);
     }
 
     if (
@@ -126,10 +125,9 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
       setRoomData(null);
       setIsHostSettingsOpen(true);
       setRoomCreationLoader(false);
-      setCurrentModalIsOpen(false);
-      onClose();
+      handleCloseModal();
     }
-  }, [eventOnLive, eventOnAMA]);
+  }, [eventOnLive, eventOnAMA, handleCloseModal]);
 
   const generateImageUrl = (params: any): string => {
     if (params.type === "custom-image") {
@@ -219,7 +217,10 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
         description: "",
         accessMode: formState.accessMode,
         type: formState.type,
-        image: formState.image || "/images/placeholder-square.svg",
+        image:
+          typeof formState.image === "string" && formState.image
+            ? formState.image
+            : "/images/placeholder-square.svg",
         invitedUsers:
           formState.accessMode === StreamAccessModeEnum.ACCESS_BY_INVITATION
             ? formState.invitedPrivateUsers.map((u) => u._id)
@@ -275,29 +276,19 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
       }
     }
 
-    // Step 3: Validation for audio device
+    // Step 3: Validation for devices (reuses the step-2 grace: permissionsValid
+    // holds its last value while PermissionsAndDetails is unmounted, and
+    // devices can't change between steps).
 
     if (currentStep === CreatRoomSteps.ACCESSIBILITY) {
       // Perform validation for Step 3
-      if (!formState.audioDevice) {
-        toast.error("Audio device is required.");
+      if (!permissionsValid) {
+        toast.error("Please select your audio/video devices to continue.");
         return;
       }
 
-      if (formState.type === BroadcastTypeEnum.LIVE) {
-        if (!formState.videoDevice) {
-          toast.error("Video device is required.");
-          return;
-        }
-      }
-
-      if (!formState.name) {
+      if (!formState.name?.trim()) {
         toast.error("Room title is required.");
-        return;
-      }
-
-      if (!formState.image) {
-        toast.error("Room image is required.");
         return;
       }
 

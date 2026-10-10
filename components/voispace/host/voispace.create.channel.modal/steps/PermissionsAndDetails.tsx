@@ -52,7 +52,7 @@ const PermissionsAndDetails = ({
         videoUnavailable: showGetPermission.videoErr,
         microphoneCount: microphones.length,
         cameraCount: cameras.length,
-      })
+      }),
     );
   }, [
     formState.audioDevice,

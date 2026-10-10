@@ -37,7 +37,7 @@ export function isDeviceStepValid(input: DeviceValidityInput): boolean {
 /** Whether the Next button should be enabled on the details step. */
 export function isNextEnabled(
   title: string | undefined | null,
-  permissionsValid: boolean
+  permissionsValid: boolean,
 ): boolean {
   return !!title?.trim() && permissionsValid;
 }

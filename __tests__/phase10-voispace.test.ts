@@ -39,9 +39,7 @@ describe("isDeviceStepValid (Bug #3: no devices must not dead-end the form)", ()
   };
 
   test("AMA with a selected microphone is valid", () => {
-    expect(
-      isDeviceStepValid({ ...base, hasAudioDevice: true })
-    ).toBe(true);
+    expect(isDeviceStepValid({ ...base, hasAudioDevice: true })).toBe(true);
   });
 
   test("AMA without a microphone (devices exist) is invalid", () => {
@@ -54,21 +52,21 @@ describe("isDeviceStepValid (Bug #3: no devices must not dead-end the form)", ()
         ...base,
         audioUnavailable: true,
         microphoneCount: 0,
-      })
+      }),
     ).toBe(true);
   });
 
   test("LIVE requires both devices when they exist", () => {
     const live = { ...base, type: BroadcastTypeEnum.LIVE as BroadcastTypeEnum };
     expect(
-      isDeviceStepValid({ ...live, hasAudioDevice: true, hasVideoDevice: true })
+      isDeviceStepValid({
+        ...live,
+        hasAudioDevice: true,
+        hasVideoDevice: true,
+      }),
     ).toBe(true);
-    expect(
-      isDeviceStepValid({ ...live, hasAudioDevice: true })
-    ).toBe(false);
-    expect(
-      isDeviceStepValid({ ...live, hasVideoDevice: true })
-    ).toBe(false);
+    expect(isDeviceStepValid({ ...live, hasAudioDevice: true })).toBe(false);
+    expect(isDeviceStepValid({ ...live, hasVideoDevice: true })).toBe(false);
   });
 
   test("LIVE with no devices at all is valid (graceful, not dead)", () => {
@@ -80,7 +78,7 @@ describe("isDeviceStepValid (Bug #3: no devices must not dead-end the form)", ()
         videoUnavailable: true,
         microphoneCount: 0,
         cameraCount: 0,
-      })
+      }),
     ).toBe(true);
   });
 });
