@@ -3125,6 +3125,7 @@ export const createHonoApp = () => {
       .orderBy(desc(sql`count(${nfts.id})`))
       .limit(limit)
       .offset(offset);
+    if (nftCounts.length === 0) return c.json({ users: [] });
     const collCounts = await db
       .select({
         creatorId: collections.creatorId,
@@ -3304,7 +3305,7 @@ export const createHonoApp = () => {
   // Single NFT page data (most parametric — registered last).
   app.get("/marketplace/nfts/:collection/:tokenId/page-data", async (c) => {
     const collection = z.string().uuid().parse(c.req.param("collection"));
-    const tokenId = c.req.param("tokenId");
+    const tokenId = z.string().uuid().parse(c.req.param("tokenId"));
     const [row] = await db
       .select()
       .from(nfts)
