@@ -33,14 +33,19 @@ export const TimeCount: React.FC<TimeCountProps> = ({ roundInfo }) => {
             height={56}
             className="absolute left-0 top-0 m-auto fmd:inset-0 flg:max-w-full"
           />
-          <Countdown
-            date={
-              startTime <= currentTime
-                ? new Date(endTime * 1000)
-                : new Date(startTime * 1000)
-            }
-            renderer={countdownRenderer}
-          />
+          {(() => {
+            // QA-fix round 2: guard invalid timestamps — never render 0:0:0:0.
+            const target = startTime <= currentTime ? endTime : startTime;
+            const date =
+              typeof target === "number" && isFinite(target)
+                ? new Date(target * 1000)
+                : undefined;
+            return date && !isNaN(date.getTime()) ? (
+              <Countdown date={date} renderer={countdownRenderer} />
+            ) : (
+              <p className="text-sm font-semibold text-white">--</p>
+            );
+          })()}
         </div>
       </div>
     </div>

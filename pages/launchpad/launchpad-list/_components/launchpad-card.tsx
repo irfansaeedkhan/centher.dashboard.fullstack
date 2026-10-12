@@ -23,6 +23,19 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
   minTokensToSell,
 }) => {
   const router = useRouter();
+  // QA-fix round 2: start_date/end_date can be Invalid Date (truthy!) when the
+  // API row lacks a timestamp — new Date(undefined) is truthy but invalid, and
+  // <Countdown> then renders 0:0:0:0. Validate before rendering any countdown.
+  const rawTargetDate =
+    status === "upcoming"
+      ? start_date
+      : status === "live"
+      ? end_date
+      : undefined;
+  const targetDate =
+    rawTargetDate instanceof Date && !isNaN(rawTargetDate.getTime())
+      ? rawTargetDate
+      : undefined;
   return (
     <div className="col-span-1 h-auto w-full rounded-3xl border border-gray-shade-3">
       <div className="flex h-[calc(100%-138px)] flex-col gap-4 bg-transparent p-5">
@@ -164,23 +177,11 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
               ? "Sale starts in:"
               : "Sale already ended:"}
           </p>
-          {status === "ended" ? (
-            <p className={textActive}>--</p>
-          ) : (status === "upcoming" && start_date) ||
-            (status === "live" && end_date) ? (
-            <Countdown
-              date={
-                status === "upcoming" && start_date
-                  ? start_date
-                  : status === "live" && end_date
-                  ? end_date
-                  : new Date()
-              }
-              renderer={countdownRenderer}
-            />
-          ) : (
+          {status === "ended" || !targetDate ? (
             // QA-fix: no valid target date — never render a 0:0:0:0 countdown.
             <p className={textActive}>--</p>
+          ) : (
+            <Countdown date={targetDate} renderer={countdownRenderer} />
           )}
         </div>
         <div

@@ -62,7 +62,13 @@ const LaunchpadList: NextPageWithLayout = () => {
           maxTokensToSell: BigNumber.from(
             Math.floor(Number(item.soft_cap) || 0).toString()
           ),
-          start_date: new Date(item.created_at),
+          // QA-fix round 2: item.created_at can be missing — new Date(undefined)
+          // is an Invalid Date (truthy!), which made <Countdown> render 0:0:0:0.
+          start_date: (() => {
+            if (!item.created_at) return undefined;
+            const d = new Date(item.created_at);
+            return isNaN(d.getTime()) ? undefined : d;
+          })(),
         })
       );
 
