@@ -130,7 +130,17 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
       await initSocketClient();
     }
 
-    globalSocket.current!.emit(
+    // initSocketClient resolves with a null socket when the voice server is
+    // unreachable (no URL configured, or the connection was rejected) —
+    // never emit on null (was: TypeError crash, modal stuck on loader).
+    const socket = globalSocket.current;
+    if (!socket) {
+      throw new Error(
+        "Could not connect to the voice server. Please try again."
+      );
+    }
+
+    socket.emit(
       "create-room",
       input,
       async (data: {
@@ -174,7 +184,7 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
           return;
         }
 
-        globalSocket.current!.on("broadcast-finished", async () => {
+        socket.on("broadcast-finished", async () => {
           close();
           setEvent({
             data,
@@ -182,7 +192,7 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
           });
         });
 
-        globalSocket.current!.on("user-disconnected", async (data) => {});
+        socket.on("user-disconnected", async (data) => {});
       }
     );
   };
@@ -193,7 +203,16 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
         await initSocketClient();
       }
 
-      globalSocket.current!.emit(
+      // Same null-socket guard as createRoom — never emit on null.
+      const socket = globalSocket.current;
+      if (!socket) {
+        rej(
+          new Error("Could not connect to the voice server. Please try again.")
+        );
+        return;
+      }
+
+      socket.emit(
         "join-room",
         { broadcastId: id, device: "" },
         async (data: { rtpCapabilities: any }) => {
@@ -227,7 +246,7 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
             rej(error);
           }
 
-          globalSocket.current!.emit(
+          socket.emit(
             "media",
             {
               broadcastId: globalBroadcastId.current,
@@ -241,11 +260,11 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
             }
           );
 
-          globalSocket.current!.on("consumer-closed", async (data) => {
+          socket.on("consumer-closed", async (data) => {
             closeConsumer(data.user_id);
           });
 
-          globalSocket.current!.on("broadcast-finished", async () => {
+          socket.on("broadcast-finished", async () => {
             close();
             setEvent({
               data,
@@ -253,7 +272,7 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
             });
           });
 
-          globalSocket.current!.on("user-kicked", async () => {
+          socket.on("user-kicked", async () => {
             close();
             setEvent({
               data,
@@ -261,7 +280,7 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
             });
           });
 
-          globalSocket.current!.on("user-disconnected", async (data) => {
+          socket.on("user-disconnected", async (data) => {
             closeConsumer(data.id);
           });
 
@@ -417,6 +436,25 @@ export const useLive: LiveHook = ({ deviceInstance }) => {
 
         globalSocket.current.on("connection-accepted", () => {
           resolve();
+        });
+
+        // The server can reject the connection (e.g. 3000 "origin not
+        // allowed") — reject instead of hanging forever so the UI can
+        // stop its loader and show an error. No-op if already resolved.
+        globalSocket.current.on("disconnect", () => {
+          reject(
+            new Error(
+              "Could not connect to the voice server. Please try again."
+            )
+          );
+        });
+
+        globalSocket.current.on("connect_error", () => {
+          reject(
+            new Error(
+              "Could not connect to the voice server. Please try again."
+            )
+          );
         });
 
         globalSocket.current.on("error", ({ data }: any) => {
