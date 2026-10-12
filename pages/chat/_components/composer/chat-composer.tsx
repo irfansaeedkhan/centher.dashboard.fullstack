@@ -32,6 +32,17 @@ export const ChatComposer: React.FC<{
     null
   );
   const fileRef = React.useRef<HTMLInputElement>(null);
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  const prevReplyingTo = React.useRef<ChatMessage | null>(null);
+
+  // Focus the input when the user starts replying (null -> message only;
+  // never on mount, never when the reply is cleared).
+  React.useEffect(() => {
+    if (replyingTo && !prevReplyingTo.current) {
+      inputRef.current?.focus();
+    }
+    prevReplyingTo.current = replyingTo;
+  }, [replyingTo]);
 
   const pickFiles = (files: FileList | null) => {
     if (!files) return;
@@ -160,7 +171,7 @@ export const ChatComposer: React.FC<{
             <p className="text-primary text-[11px] font-semibold">
               Replying to {replyingTo.sender?.display_name || "Someone"}
             </p>
-            <p className="truncate text-xs text-gray-shade-7">
+            <p className="truncate text-xs text-white/70">
               {replyingTo.kind === "text"
                 ? replyingTo.body
                 : `[${replyingTo.kind}]`}
@@ -222,6 +233,7 @@ export const ChatComposer: React.FC<{
               🎙
             </button>
             <input
+              ref={inputRef}
               value={draft}
               onChange={(e) => {
                 setDraft(e.target.value);
