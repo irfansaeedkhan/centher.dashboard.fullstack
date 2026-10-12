@@ -217,6 +217,7 @@ const mapCommentRow = (
     authorId: string;
     authorName: string | null;
     authorAvatar: string | null;
+    membership: string | null;
   }
 ) => {
   const mapped = mapPostRow({
@@ -244,6 +245,15 @@ const mapCommentRow = (
         display_name: parent.authorName || "Centher Demo",
         profile_image:
           parent.authorAvatar || "/images/centher.logo.favicon.png",
+        // QA-fix: replies render PostHeader's verification tick against
+        // parent_post.user.membership — it must never be undefined.
+        membership: {
+          last_status:
+            (parent.membership as "citizen" | "verified" | "none") || "citizen",
+          status:
+            (parent.membership as "citizen" | "verified" | "none") || "citizen",
+          endAt: 0,
+        },
       },
     },
   };
@@ -1516,6 +1526,7 @@ export const createHonoApp = () => {
           authorId: parent.authorId,
           authorName: parent.authorName,
           authorAvatar: parent.authorAvatar,
+          membership: parent.membership,
         })
       );
     }
@@ -1619,6 +1630,7 @@ export const createHonoApp = () => {
         authorId: parent!.authorId,
         authorName: parent!.authorName,
         authorAvatar: parent!.authorAvatar,
+        membership: parent!.membership,
       })
     );
     return c.json({ posts: mapped, data: mapped, offset, limit });
@@ -2330,6 +2342,7 @@ export const createHonoApp = () => {
               authorId: parentRow.authorId,
               authorName: parentRow.authorName,
               authorAvatar: parentRow.authorAvatar,
+              membership: parentRow.membership,
             }
           )
         );
@@ -3573,12 +3586,45 @@ export const createHonoApp = () => {
       .limit(1);
     if (!row) apiError("Collection not found", "NOT_FOUND", 404);
     const cards = await fetchCfsUserCards([row!.creatorId]);
-    return c.json(
-      mapCfsCollection(
-        row!,
-        cards.get(row!.creatorId) ?? fallbackCard(row!.creatorId)
-      )
+    // QA-fix: compute real collection stats from the backend (the old UI
+    // read these from the dead TheGraph subgraph and showed 0 placeholders).
+    const [stats] = await db
+      .select({
+        total: sql<number>`count(*)::int`,
+        listed: sql<number>`count(*) filter (where ${nfts.listed})::int`,
+        floorPrice: sql<
+          string | null
+        >`min(${nfts.price}) filter (where ${nfts.listed})`,
+      })
+      .from(nfts)
+      .where(eq(nfts.collectionId, address));
+    const [vol] = await db
+      .select({
+        totalVolume: sql<
+          string | null
+        >`coalesce(sum(${nftPurchases.priceBnb}), 0)`,
+      })
+      .from(nftPurchases)
+      .innerJoin(nfts, eq(nftPurchases.nftId, nfts.id))
+      .where(eq(nfts.collectionId, address));
+    const total = stats?.total ?? 0;
+    const listed = stats?.listed ?? 0;
+    const mapped = mapCfsCollection(
+      row!,
+      cards.get(row!.creatorId) ?? fallbackCard(row!.creatorId)
     );
+    return c.json({
+      ...mapped,
+      totalSupply: String(total),
+      tradingVolumn: String(vol?.totalVolume ?? "0"),
+      stats: {
+        items: total,
+        listed,
+        listedPercent: total > 0 ? ((listed / total) * 100).toFixed(1) : "0",
+        floorPrice: stats?.floorPrice ?? "0",
+        totalVolume: String(vol?.totalVolume ?? "0"),
+      },
+    });
   });
 
   // ---- NFTs ----

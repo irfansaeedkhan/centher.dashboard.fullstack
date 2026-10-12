@@ -43,21 +43,16 @@ const Collection: NextPageWithLayout = () => {
   useEffect(() => {
     if (router.query.collection) {
       resetStore(router.query.collection.toString(), "loading", "loading");
-      fetchCollection().then(() => {
-        fetchCollectionAdditionalInfo();
-      });
+      // QA-fix: stats now come from the backend collection payload
+      // (collection.stats). The old fetchCollectionAdditionalInfo hit the
+      // dead TheGraph subgraph — do not call it.
+      fetchCollection();
       fetchNFTs();
     }
     return () => {
       resetStore("", "idle", "idle");
     };
-  }, [
-    router.query.collection,
-    fetchNFTs,
-    fetchCollection,
-    fetchCollectionAdditionalInfo,
-    resetStore,
-  ]);
+  }, [router.query.collection, fetchNFTs, fetchCollection, resetStore]);
 
   return (
     <div className="mx-auto min-h-screen w-full max-w-[1144px] bg-black-shade-3 pb-10 font-monto">

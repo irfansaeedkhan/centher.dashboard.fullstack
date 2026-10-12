@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import clsx from "clsx";
@@ -25,16 +26,17 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({
     },
   });
 
+  // QA-fix: proper link (keyboard reachable, exposed in DOM) instead of
+  // a div with onClick.
   return (
-    <div
-      onClick={() => {
-        router.push({
-          pathname: AppRoutes.marketplace.collection,
-          query: {
-            collection: data.address,
-          },
-        });
+    <Link
+      href={{
+        pathname: AppRoutes.marketplace.collection,
+        query: {
+          collection: data.address,
+        },
       }}
+      aria-label={`View collection ${data.name}`}
       className={clsx(
         `flex w-full max-w-[300px] cursor-pointer flex-col rounded-lg border border-gray-shade-3`,
         className
@@ -66,8 +68,12 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({
           {data.name}
         </div>
         <span
+          role="link"
+          tabIndex={0}
+          aria-label={`View ${data.creator.display_name}'s profile`}
           onClick={(e) => {
             e.stopPropagation();
+            e.preventDefault();
             router.push({
               pathname: AppRoutes.profile.user_id,
               query: {
@@ -75,8 +81,20 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({
               },
             });
           }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.stopPropagation();
+              e.preventDefault();
+              router.push({
+                pathname: AppRoutes.profile.user_id,
+                query: {
+                  user_id: data.creator._id,
+                },
+              });
+            }
+          }}
           className={clsx(
-            `mt-2 flex items-center text-center text-xs font-medium text-white`
+            `mt-2 flex cursor-pointer items-center text-center text-xs font-medium text-white`
           )}
           title={data.creator.display_name}
         >
@@ -99,7 +117,7 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({
           {data.description}
         </p>
       </div>
-    </div>
+    </Link>
   );
 };
 

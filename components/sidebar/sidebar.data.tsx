@@ -1,4 +1,5 @@
 import { Explore, Launchpad, Staking } from "@/assets/svgs";
+import { Feed, Chat, Notification } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 import { AddressFactory } from "@/web3/blockchain/providers/address.provider";
 import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.enum";
@@ -6,6 +7,35 @@ import { CreateLaunchpad } from "@/assets/svgs/launchpad-v2";
 import { SidebarData } from "./shared";
 
 export const sidebarData: SidebarData = {
+  // QA-fix: pages outside feed/chat (marketplace, launchpad, staking, …)
+  // previously showed only the Explore section with no way back to the
+  // main app. The Main section restores Feed/Chat/Notifications everywhere.
+  main: {
+    label: "Main",
+    items: [
+      {
+        label: "Feed",
+        url: AppRoutes.feed.index,
+        icon: Feed,
+        available_for: "all",
+        activeList: [AppRoutes.feed.index, AppRoutes.feed.single_post],
+      },
+      {
+        label: "Chat",
+        url: AppRoutes.chat.index,
+        icon: Chat,
+        available_for: "all",
+        activeList: [AppRoutes.chat.index, AppRoutes.chat.single_chat],
+      },
+      {
+        label: "Notifications",
+        url: AppRoutes.notifications,
+        icon: Notification,
+        available_for: "all",
+        activeList: [AppRoutes.notifications],
+      },
+    ],
+  },
   nft_marketplace: {
     label: "Explore",
     items: [
@@ -57,4 +87,4 @@ export const sidebarData: SidebarData = {
   },
 };
 
-export const SidebarSections = [sidebarData.nft_marketplace];
+export const SidebarSections = [sidebarData.main, sidebarData.nft_marketplace];

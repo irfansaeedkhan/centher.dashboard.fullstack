@@ -29,7 +29,7 @@ export const PostFooter: React.FC<Props> = ({
   onClickReply,
 }) => {
   const [isShareMenuOpen, setIsShareMenuOpen] = useState(false);
-  const shareMenuContainerRef = useRef<HTMLDivElement>(null);
+  const shareMenuContainerRef = useRef<HTMLButtonElement>(null);
   useOnClickOutside(shareMenuContainerRef, () => setIsShareMenuOpen(false));
 
   return (
@@ -39,6 +39,7 @@ export const PostFooter: React.FC<Props> = ({
       )}
     >
       <AnalyticsCount
+        aria-label={`Reply to post (${post.replies_count} replies)`}
         onClick={(e) => {
           e.stopPropagation();
           onClickReply();
@@ -68,6 +69,9 @@ export const PostFooter: React.FC<Props> = ({
         <span className="leading-[17px]">45</span>
       </AnalyticsCount> */}
       <AnalyticsCount
+        aria-label={`${post.liked_by_loggedin_user ? "Unlike" : "Like"} post (${
+          post.likes_count
+        } likes)`}
         onClick={(e) => {
           e.stopPropagation();
           onClickLike();
@@ -97,6 +101,7 @@ export const PostFooter: React.FC<Props> = ({
         </span>
       </AnalyticsCount>
       <AnalyticsCount
+        aria-label="Share post"
         onClick={(e) => {
           e.stopPropagation();
         }}
@@ -122,21 +127,24 @@ export const PostFooter: React.FC<Props> = ({
   );
 };
 
-interface AnalyticsCountProps extends HTMLAttributes<HTMLDivElement> {}
+interface AnalyticsCountProps extends HTMLAttributes<HTMLButtonElement> {
+  "aria-label"?: string;
+}
 
-const AnalyticsCount = React.forwardRef<HTMLDivElement, AnalyticsCountProps>(
+const AnalyticsCount = React.forwardRef<HTMLButtonElement, AnalyticsCountProps>(
   ({ children, className, ...props }, ref) => {
     return (
-      <div
+      <button
+        type="button"
         ref={ref}
         className={clsx(
-          "flex cursor-pointer items-center gap-x-2 text-xs font-medium fmd:text-[13px]",
+          "flex cursor-pointer items-center gap-x-2 bg-transparent text-xs font-medium fmd:text-[13px]",
           className
         )}
         {...props}
       >
         {children}
-      </div>
+      </button>
     );
   }
 );

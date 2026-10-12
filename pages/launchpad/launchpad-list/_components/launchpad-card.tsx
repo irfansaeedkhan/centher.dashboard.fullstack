@@ -103,7 +103,10 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
           <div className="flex w-full items-center justify-between gap-3">
             <p className="text-sm text-gray-shade-14">Lockup Time:</p>
             <p className="text-sm font-medium text-white">
-              {Number(lockup_time) * 30} days
+              {/* QA-fix: lockup_time can be "-" (unknown) — never render NaN. */}
+              {Number.isFinite(Number(lockup_time))
+                ? `${Number(lockup_time) * 30} days`
+                : "—"}
             </p>
           </div>
           <div className="flex w-full items-center justify-between gap-3">
@@ -163,7 +166,8 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
           </p>
           {status === "ended" ? (
             <p className={textActive}>--</p>
-          ) : (
+          ) : (status === "upcoming" && start_date) ||
+            (status === "live" && end_date) ? (
             <Countdown
               date={
                 status === "upcoming" && start_date
@@ -174,6 +178,9 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
               }
               renderer={countdownRenderer}
             />
+          ) : (
+            // QA-fix: no valid target date — never render a 0:0:0:0 countdown.
+            <p className={textActive}>--</p>
           )}
         </div>
         <div
