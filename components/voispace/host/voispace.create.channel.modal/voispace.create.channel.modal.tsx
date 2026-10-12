@@ -47,13 +47,18 @@ export interface SearchResultWithType {
 }
 
 export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
-  // Wrapped close: clear our own open state FIRST so the overlay unmounts
-  // immediately, then notify the parent. Prevents the z-2000 overlay leak
-  // where clicks were blocked after closing (only Esc dismissed it).
-  const handleCloseModal = useCallback(() => {
-    setCurrentModalIsOpen(false);
-    onClose();
-  }, [onClose]);
+  const { amaAgent, liveAgent } = useStream();
+  const {
+    createRoom: createAMARoom,
+    event: eventOnAMA,
+    leave: leaveAMARoom,
+  } = amaAgent;
+  const {
+    createRoom: createLiveRoom,
+    event: eventOnLive,
+    leave: leaveLiveRoom,
+  } = liveAgent;
+
   const [currentStep, setCurrentStep] = useState<CreatRoomSteps>(
     CreatRoomSteps.AMA_OR_LIVE
   );
@@ -61,9 +66,6 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
   const [roomCreationLoader, setRoomCreationLoader] = useState(false);
   const [isHostSettingsOpen, setIsHostSettingsOpen] = useState(false);
   const [roomData, setRoomData] = useState<Room | null>(null);
-  const { amaAgent, liveAgent } = useStream();
-  const { createRoom: createAMARoom, event: eventOnAMA } = amaAgent;
-  const { createRoom: createLiveRoom, event: eventOnLive } = liveAgent;
   const { user } = useUser();
   const { getMediaPermissions, error: mediaError } = useMediaDevices();
   const [currentModalIsOpen, setCurrentModalIsOpen] = useState(true);
@@ -85,6 +87,31 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
     hasTalkRequestUsers: { aggregate: { count: 0 } },
   });
 
+  // Wrapped close: clear our own open state FIRST so the overlay unmounts
+  // immediately, then notify the parent. Prevents the z-2000 overlay leak
+  // where clicks were blocked after closing (only Esc dismissed it).
+  // If a room creation is in flight, best-effort leave the voice server and
+  // stop the loader so the user is never trapped on "setting up room...".
+  const handleCloseModal = useCallback(() => {
+    if (roomCreationLoader) {
+      try {
+        (formState.type === BroadcastTypeEnum.AMA
+          ? leaveAMARoom
+          : leaveLiveRoom)();
+      } catch {
+        // Socket may already be gone — closing the modal is what matters.
+      }
+      setRoomCreationLoader(false);
+    }
+    setCurrentModalIsOpen(false);
+    onClose();
+  }, [
+    onClose,
+    roomCreationLoader,
+    formState.type,
+    leaveAMARoom,
+    leaveLiveRoom,
+  ]);
   useEffect(() => {
     if (mediaError) {
       toast.error("Check your audio and video devices");
@@ -215,6 +242,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
 
       if (!user) {
         toast.error("User not found. Please try again.");
+        setRoomCreationLoader(false);
         return;
       }
 
@@ -225,7 +253,16 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
         formState.videoDevice as MediaDeviceInfo
       );
     } catch (error) {
+      // Never leave the modal stuck on "setting up room..." — stop the
+      // loader and surface the failure. The modal stays open so the user
+      // can retry.
       console.error("Error creating public room:", error);
+      setRoomCreationLoader(false);
+      toast.error(
+        error instanceof Error && error.message
+          ? error.message
+          : "Could not connect to the voice server. Please check your connection and try again."
+      );
     }
   };
 
@@ -399,7 +436,7 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
       <div className="header relative border-b-2 border-[#141416]">
         <div className="mb-0 flex items-center justify-between rounded-t px-4 py-4 md:py-4">
           <span className="flex items-center">
-            {currentStep !== CreatRoomSteps.AMA_OR_LIVE && (
+            {currentStep !== CreatRoomSteps.AMA_OR_LIVE ? (
               <button
                 onClick={loading || roomCreationLoader ? undefined : handleBack}
                 className={clsx("transition-opacity", {
@@ -410,41 +447,49 @@ export const VoispaceCreateChannelModal: React.FC<Props> = ({ onClose }) => {
               >
                 <MdOutlineExpandLess className="h-7 w-7 -rotate-90 text-white" />
               </button>
-            )}
-            {currentStep === CreatRoomSteps.AMA_OR_LIVE && (
-              <span className="py-1 text-xl font-semibold text-white flg:hidden">
-                <CrossIcon
-                  className="mx-auto min-w-[20px] shrink-0 cursor-pointer [&>*]:stroke-white"
-                  onClick={handleCloseModal}
-                />
-              </span>
+            ) : (
+              // Spacer keeps the title centered now that X lives top-right.
+              <span className="w-7" />
             )}
           </span>
 
           <span className="py-1 text-base font-semibold text-white flg:text-xl">
             Create New Room
           </span>
-          <Button
-            title={
-              loading && currentStep === CreatRoomSteps.PERMISSIONS_AND_DETAILS
-                ? "Uploading..."
-                : roomCreationLoader
-                ? "setting up room..."
-                : currentStep === CreatRoomSteps.ROOM
-                ? "Submit"
-                : "Next"
-            }
-            disabled={
-              loading ||
-              roomCreationLoader ||
-              (currentStep === CreatRoomSteps.PERMISSIONS_AND_DETAILS &&
-                !isNextEnabled(formState.name, permissionsValid))
-            }
-            variant="primary"
-            onClick={handleNext}
-            borderRounded="10px"
-            className="text-xs font-medium"
-          />
+          <span className="flex items-center gap-2">
+            <Button
+              title={
+                loading &&
+                currentStep === CreatRoomSteps.PERMISSIONS_AND_DETAILS
+                  ? "Uploading..."
+                  : roomCreationLoader
+                  ? "setting up room..."
+                  : currentStep === CreatRoomSteps.ROOM
+                  ? "Submit"
+                  : "Next"
+              }
+              disabled={
+                loading ||
+                roomCreationLoader ||
+                (currentStep === CreatRoomSteps.PERMISSIONS_AND_DETAILS &&
+                  !isNextEnabled(formState.name, permissionsValid))
+              }
+              variant="primary"
+              onClick={handleNext}
+              borderRounded="10px"
+              className="text-xs font-medium"
+            />
+            {/* Always-visible close: clickable on every step, even while a
+                room creation is in flight (handleCloseModal cleans up). */}
+            <button
+              onClick={handleCloseModal}
+              aria-label="Close"
+              title="Close"
+              className="shrink-0 cursor-pointer p-1"
+            >
+              <CrossIcon className="min-w-[20px] [&>*]:stroke-white" />
+            </button>
+          </span>
         </div>
       </div>
       <div className="p-6">{renderStep()}</div>

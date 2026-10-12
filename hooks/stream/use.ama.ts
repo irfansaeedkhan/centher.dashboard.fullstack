@@ -97,7 +97,17 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
       await initSocketClient();
     }
 
-    globalSocket.current!.emit("create-room", input, async (data: any) => {
+    // initSocketClient resolves with a null socket when the voice server is
+    // unreachable (no URL configured, or the connection was rejected) —
+    // never emit on null (was: TypeError crash, modal stuck on loader).
+    const socket = globalSocket.current;
+    if (!socket) {
+      throw new Error(
+        "Could not connect to the voice server. Please try again."
+      );
+    }
+
+    socket.emit("create-room", input, async (data: any) => {
       if (!data) {
         return;
       }
@@ -132,11 +142,11 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
         return;
       }
 
-      globalSocket.current!.on("new-producer-joined", (data: any) => {
+      socket.on("new-producer-joined", (data: any) => {
         newProducerJoined(data.user_id, data.kind);
       });
 
-      globalSocket.current!.on("consumer-closed", async (data: any) => {
+      socket.on("consumer-closed", async (data: any) => {
         console.log("consumer-closed");
         if (areStringsEquals(globalUserId.current!, data.user_id)) {
           closeProducer();
@@ -145,7 +155,7 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
         }
       });
 
-      globalSocket.current!.on("broadcast-finished", async () => {
+      socket.on("broadcast-finished", async () => {
         close();
         setEvent({
           data,
@@ -153,7 +163,7 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
         });
       });
 
-      globalSocket.current!.on("user-disconnected", async (data: any) => {
+      socket.on("user-disconnected", async (data: any) => {
         if (areStringsEquals(globalUserId.current!, data.id)) {
           close();
           setEvent({
@@ -173,7 +183,16 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
         await initSocketClient();
       }
 
-      globalSocket.current!.emit(
+      // Same null-socket guard as createRoom — never emit on null.
+      const socket = globalSocket.current;
+      if (!socket) {
+        rej(
+          new Error("Could not connect to the voice server. Please try again.")
+        );
+        return;
+      }
+
+      socket.emit(
         "join-room",
         { broadcastId: id, device: "" },
         async (data: { rtpCapabilities: any }) => {
@@ -205,7 +224,7 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
             rej(error);
           }
 
-          globalSocket.current!.emit(
+          socket.emit(
             "media",
             {
               broadcastId: globalBroadcastId.current,
@@ -218,7 +237,7 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
             }
           );
 
-          globalSocket.current!.on("toggle-talk-permission", async (data) => {
+          socket.on("toggle-talk-permission", async (data) => {
             if (data && globalHasTalkRequest.current) {
               globalHasTalkRequest.current = false;
               await createProducerTransport();
@@ -228,11 +247,11 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
             }
           });
 
-          globalSocket.current!.on("new-producer-joined", async (data) => {
+          socket.on("new-producer-joined", async (data) => {
             newProducerJoined(data.user_id, data.kind);
           });
 
-          globalSocket.current!.on("consumer-closed", async (data) => {
+          socket.on("consumer-closed", async (data) => {
             if (areStringsEquals(globalUserId.current!, data.user_id)) {
               closeProducer();
             } else {
@@ -240,7 +259,7 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
             }
           });
 
-          globalSocket.current!.on("broadcast-finished", async () => {
+          socket.on("broadcast-finished", async () => {
             close();
             setEvent({
               data,
@@ -248,7 +267,7 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
             });
           });
 
-          globalSocket.current!.on("user-kicked", async () => {
+          socket.on("user-kicked", async () => {
             close();
             setEvent({
               data,
@@ -256,7 +275,7 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
             });
           });
 
-          globalSocket.current!.on("user-disconnected", async (data) => {
+          socket.on("user-disconnected", async (data) => {
             if (areStringsEquals(globalUserId.current!, data.id)) {
               close();
               setEvent({
@@ -327,9 +346,13 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
 
   // for owner it finished broadcast, for participants its leave room
   const leave = () => {
-    globalSocket.current!.emit("leave-room", {
-      broadcastId: globalBroadcastId.current,
-    });
+    // Null-safe: leave is also called as best-effort cleanup when the
+    // socket never connected (mirrors use.live.ts).
+    if (globalSocket.current) {
+      globalSocket.current.emit("leave-room", {
+        broadcastId: globalBroadcastId.current,
+      });
+    }
   };
 
   const createProducerTransport = (): Promise<void> => {
@@ -734,6 +757,25 @@ export const useAMA: AMAHook = ({ deviceInstance }) => {
 
         globalSocket.current.on("connection-accepted", () => {
           resolve();
+        });
+
+        // The server can reject the connection (e.g. 3000 "origin not
+        // allowed") — reject instead of hanging forever so the UI can
+        // stop its loader and show an error. No-op if already resolved.
+        globalSocket.current.on("disconnect", () => {
+          reject(
+            new Error(
+              "Could not connect to the voice server. Please try again."
+            )
+          );
+        });
+
+        globalSocket.current.on("connect_error", () => {
+          reject(
+            new Error(
+              "Could not connect to the voice server. Please try again."
+            )
+          );
         });
 
         globalSocket.current.on("error", ({ data }: any) => {
