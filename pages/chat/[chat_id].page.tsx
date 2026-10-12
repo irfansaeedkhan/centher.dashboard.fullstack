@@ -71,6 +71,17 @@ const SingleChat: NextPageWithLayout = () => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages.length]);
 
+  // Scroll to the original message when a quoted reply is clicked, and
+  // briefly highlight it. No-op if the message isn't in the loaded batch.
+  const scrollToMessage = (id: string) => {
+    const el = document.querySelector(`[data-message-id="${CSS.escape(id)}"]`);
+    if (!el) return;
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+    const highlight = ["outline-2", "outline-primary", "outline-offset-2"];
+    el.classList.add(...highlight);
+    window.setTimeout(() => el.classList.remove(...highlight), 1500);
+  };
+
   const name = convo ? conversationDisplayName(convo, myId) : "Chat";
   const avatar = convo ? conversationAvatar(convo, myId) : null;
 
@@ -129,6 +140,7 @@ const SingleChat: NextPageWithLayout = () => {
                 );
               }}
               onReply={() => setReplyingTo(m)}
+              onReplyClick={scrollToMessage}
               onOpenImage={() => {
                 if (m.attachment?.kind === "image")
                   setLightbox(m.attachment.url);
@@ -282,6 +294,7 @@ const MessageBubble: React.FC<{
   showReactions: boolean;
   onPickEmoji: (emoji: string) => void;
   onReply: () => void;
+  onReplyClick: (messageId: string) => void;
   onOpenImage: () => void;
   onEdit: () => void;
   onDelete: () => void;
@@ -292,6 +305,7 @@ const MessageBubble: React.FC<{
   showReactions,
   onPickEmoji,
   onReply,
+  onReplyClick,
   onOpenImage,
   onEdit,
   onDelete,
@@ -299,6 +313,7 @@ const MessageBubble: React.FC<{
   const isMedia = message.kind !== "text" && message.attachment;
   return (
     <div
+      data-message-id={message.id}
       className={clsx(
         "group mb-3 flex",
         mine ? "justify-end" : "justify-start"
@@ -320,7 +335,11 @@ const MessageBubble: React.FC<{
           )}
         >
           {message.reply_to && (
-            <ReplyPreview reply={message.reply_to} mine={mine} />
+            <ReplyPreview
+              reply={message.reply_to}
+              mine={mine}
+              onReplyClick={onReplyClick}
+            />
           )}
           <MessageContent message={message} onOpenImage={onOpenImage} />
           <p
