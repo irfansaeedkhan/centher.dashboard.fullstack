@@ -224,9 +224,25 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
             alt={data.name}
             height={222}
             width={293}
-            className="!h-[222px] !w-[293px] rounded-md object-cover"
+            className={clsx(
+              "!h-[222px] !w-[293px] rounded-md object-cover",
+              // QA-fix: video NFTs without a thumbnail render a <video>
+              // element below instead of a broken <Image src="*.mp4">.
+              data.type.includes("video") && !data.videoThumbnail && "hidden"
+            )}
             onError={() => setImageUrl("/images/placeholder-square.svg")}
           />
+          {/* QA-fix: video thumbnail via the video element itself
+              (preload="metadata" shows the first frame). */}
+          {data.type.includes("video") && !data.videoThumbnail && (
+            <video
+              src={imageUrl}
+              preload="metadata"
+              muted
+              playsInline
+              className="!h-[222px] !w-[293px] rounded-md object-cover"
+            />
+          )}
           {locked && (
             <div
               className={`absolute right-5 top-[70px] flex h-[24px] w-[80px] items-center justify-center rounded-md bg-black/20 text-[10px] text-white backdrop-blur-[20px]`}

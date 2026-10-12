@@ -20,9 +20,12 @@ export const useVerificationTick = (
       return;
     }
 
-    if (params.user.membership.status === "verified") {
+    // QA-fix: membership may be absent on embedded user objects
+    // (e.g. reply parent_post.user) — never throw on it.
+    const status = params.user.membership?.status;
+    if (status === "verified") {
       setVerificationIcon("/images/verified-icon.png");
-    } else if (params.user.membership.status === "citizen") {
+    } else if (status === "citizen") {
       setVerificationIcon("/images/citizen-icon.svg");
     } else {
       setVerificationIcon(null);

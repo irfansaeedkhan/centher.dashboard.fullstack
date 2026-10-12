@@ -335,28 +335,30 @@ export const CollectionHeader: React.FC<Props> = ({
                 <div className="text-left fmd:text-center">
                   <h4 className={detailsCardTitle}>Items</h4>
                   <h5 className={detailsCardValue}>
-                    {collection?.totalSupply}
+                    {collection?.stats?.items ?? collection?.totalSupply ?? 0}
                   </h5>
                 </div>
                 <div className="text-left fmd:text-center">
                   <h4 className={detailsCardTitle}>Listed</h4>
                   <h5 className={detailsCardValue}>
-                    {collectionAdditionalInfo?.listedPercent}%
+                    {collection?.stats?.listedPercent ??
+                      collectionAdditionalInfo?.listedPercent ??
+                      0}
+                    %
                   </h5>
                 </div>
                 <div className="text-left fmd:text-center">
                   <h4 className={detailsCardTitle}>Floor Price</h4>
                   <h5 className={detailsCardValue}>
                     $
-                    {collectionAdditionalInfo?.minPrice &&
-                    collectionAdditionalInfo?.minPrice > 0
-                      ? formatNumber(
-                          formatBNB2USD(
-                            collectionAdditionalInfo?.minPrice,
-                            bnbPrice
-                          )
-                        )
-                      : 0}
+                    {(() => {
+                      const floor =
+                        Number(collection?.stats?.floorPrice ?? 0) ||
+                        Number(collectionAdditionalInfo?.minPrice ?? 0);
+                      return floor > 0
+                        ? formatNumber(formatBNB2USD(floor, bnbPrice))
+                        : 0;
+                    })()}
                   </h5>
                 </div>
                 {/* FIXME: Not Sure what to show here! */}

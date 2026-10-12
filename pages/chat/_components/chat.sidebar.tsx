@@ -20,9 +20,12 @@ import { axiosApi369x } from "@/utils/axios/centher-api";
 import { customLog } from "@/utils/custom.log";
 
 interface SearchedUser {
-  user_id: string;
+  // QA-fix: /api/search returns `_id` / `profile_image` (mapUserCard) —
+  // the old `user_id` / `avatar_url` names were undefined, which made
+  // createConversation send [undefined] and the API 400 "Invalid request".
+  _id: string;
   display_name?: string | null;
-  avatar_url?: string | null;
+  profile_image?: string | null;
 }
 
 const ChatSidebar = () => {
@@ -242,7 +245,7 @@ const ConversationRow: React.FC<{
             {convo.last_message?.body ?? "No messages yet"}
           </p>
           {convo.unread_count > 0 && (
-            <span className="flex h-5 min-w-[20px] flex-shrink-0 items-center justify-center rounded-full bg-primary px-1 text-xs font-semibold text-white">
+            <span className="bg-primary flex h-5 min-w-[20px] flex-shrink-0 items-center justify-center rounded-full px-1 text-xs font-semibold text-white">
               {convo.unread_count > 99 ? "99+" : convo.unread_count}
             </span>
           )}
@@ -354,23 +357,23 @@ const NewConversationModal: React.FC<{
           )}
           {results.map((u) => (
             <button
-              key={u.user_id}
+              key={u._id}
               disabled={starting !== null}
               className="flex w-full items-center gap-3 rounded-xl px-3 py-2 hover:bg-elevation-1 disabled:opacity-50"
               onClick={async () => {
-                setStarting(u.user_id);
+                setStarting(u._id);
                 try {
                   // Exact case-sensitive id — never lowercased.
-                  await onPick(u.user_id);
+                  await onPick(u._id);
                 } finally {
                   setStarting(null);
                 }
               }}
             >
               <div className="relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-full bg-elevation-1">
-                {u.avatar_url ? (
+                {u.profile_image ? (
                   <Image
-                    src={u.avatar_url}
+                    src={u.profile_image}
                     alt={u.display_name || "User"}
                     fill
                     className="object-cover"
@@ -383,7 +386,7 @@ const NewConversationModal: React.FC<{
               </div>
               <span className="truncate text-sm font-medium text-white">
                 {u.display_name || "Unnamed"}
-                {starting === u.user_id && " — starting..."}
+                {starting === u._id && " — starting..."}
               </span>
             </button>
           ))}

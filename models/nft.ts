@@ -39,6 +39,14 @@ export interface CFSCollection {
     profile_image: User["profile_image"];
     membership: User["membership"];
   };
+  // QA-fix: real stats computed by GET /api/marketplace/collections/:address.
+  stats?: {
+    items: number;
+    listed: number;
+    listedPercent: string;
+    floorPrice: string;
+    totalVolume: string;
+  };
 }
 
 export interface CFSNFT {

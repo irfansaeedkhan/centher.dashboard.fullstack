@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { NextPage } from "next";
 import type { AppProps } from "next/app";
+import { useRouter } from "next/router";
 import NextNProgress from "nextjs-progressbar";
 import { Toaster } from "react-hot-toast";
 import * as mediasoupClient from "mediasoup-client";
@@ -13,6 +14,7 @@ import { Web3ModalProvider } from "@/web3/context/web3-modal";
 import { GlobalModal } from "@/components/modal/global-modal/global-modal";
 import { StreamProvider } from "@/hooks/stream/use.core";
 import { ErrorBoundary } from "@/components/error-boundary";
+import { AdminGuard } from "@/components/admin/admin-guard";
 
 import "@/styles/globals.css";
 
@@ -29,7 +31,13 @@ const StreamContext = createContext(null);
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   // Create a socket.io connection
   // useCreateSocketIOConnection();
+  const router = useRouter();
   const getLayout = Component.getLayout || ((page) => page);
+  // QA-fix: gate the admin console UI — non-admins never see admin pages.
+  // (APIs already 403; this stops the UI from rendering for them.)
+  const isAdminRoute = router.pathname.startsWith("/admin");
+  const page = getLayout(<Component {...pageProps} />);
+  const guardedPage = isAdminRoute ? <AdminGuard>{page}</AdminGuard> : page;
 
   const [deviceInstance, setDeviceInstance] =
     useState<mediasoupClient.Device | null>(null);
@@ -82,7 +90,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
                   },
                 }}
               />
-              {getLayout(<Component {...pageProps} />)}
+              {guardedPage}
             </Web3ModalProvider>
           </GlobalModal>
         </RefreshContextProvider>
