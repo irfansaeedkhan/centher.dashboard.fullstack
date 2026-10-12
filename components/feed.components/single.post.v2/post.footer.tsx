@@ -102,17 +102,19 @@ export const PostFooter: React.FC<Props> = ({
       </AnalyticsCount>
       <AnalyticsCount
         aria-label="Share post"
+        aria-expanded={isShareMenuOpen}
+        aria-haspopup="menu"
         onClick={(e) => {
           e.stopPropagation();
+          // QA-fix round 2: toggle lives on the BUTTON (not the inner icon) so
+          // keyboard Enter/Space opens the share menu too.
+          setIsShareMenuOpen((prev) => !prev);
         }}
         ref={shareMenuContainerRef}
         className="relative text-gray-shade-10"
       >
         <span className="group flex h-6 items-center justify-center rounded-md border border-transparent px-1 transition-all duration-200 hover:border-[#00BF96]/30 hover:bg-[#00BF96]/20">
-          <ShareIcon
-            className="h-4 w-4 cursor-pointer transition-all duration-100 group-hover:[&>*]:stroke-[#00BF96]"
-            onClick={() => setIsShareMenuOpen((prev) => !prev)}
-          />
+          <ShareIcon className="h-4 w-4 transition-all duration-100 group-hover:[&>*]:stroke-[#00BF96]" />
         </span>
 
         {isShareMenuOpen && (
@@ -139,6 +141,8 @@ const AnalyticsCount = React.forwardRef<HTMLButtonElement, AnalyticsCountProps>(
         ref={ref}
         className={clsx(
           "flex cursor-pointer items-center gap-x-2 bg-transparent text-xs font-medium fmd:text-[13px]",
+          // QA-fix round 2: keyboard focus must be visible (was perceivable as "skipped").
+          "rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-elevation-1",
           className
         )}
         {...props}
