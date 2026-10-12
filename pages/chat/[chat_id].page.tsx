@@ -77,7 +77,7 @@ const SingleChat: NextPageWithLayout = () => {
     const el = document.querySelector(`[data-message-id="${CSS.escape(id)}"]`);
     if (!el) return;
     el.scrollIntoView({ behavior: "smooth", block: "center" });
-    const highlight = ["outline-2", "outline-primary", "outline-offset-2"];
+    const highlight = ["outline", "outline-2", "outline-primary", "outline-offset-2"];
     el.classList.add(...highlight);
     window.setTimeout(() => el.classList.remove(...highlight), 1500);
   };
