@@ -112,7 +112,7 @@ export const orgMembers = pgTable(
     title: text("title").notNull().default(""),
     joinedAt: timestamp("joined_at").notNull().defaultNow(),
   },
-  (t) => [primaryKey({ columns: [t.orgOwnerId, t.memberId] })]
+  (t) => [primaryKey({ columns: [t.orgOwnerId, t.memberId] })],
 );
 
 export const orgInvites = pgTable("org_invites", {
@@ -156,7 +156,7 @@ export const postLikes = pgTable(
       .references(() => user.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
-  (t) => [primaryKey({ columns: [t.postId, t.userId] })]
+  (t) => [primaryKey({ columns: [t.postId, t.userId] })],
 );
 
 export const comments = pgTable("comments", {
@@ -177,6 +177,46 @@ export const conversations = pgTable("conversations", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
+// Phase 15: chat attachments (images, videos, audio, files, voice notes).
+// Files upload direct to Cloudinary from the browser; this table registers
+// the metadata so messages can reference them.
+export const chatAttachments = pgTable("chat_attachments", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  uploaderId: text("uploader_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  // image | video | audio | file
+  kind: text("kind").notNull(),
+  mimeType: text("mime_type").notNull(),
+  fileName: text("file_name").notNull(),
+  fileSize: integer("file_size").notNull(),
+  // Cloudinary secure_url
+  url: text("url").notNull(),
+  // Audio/voice: duration in seconds
+  durationSec: integer("duration_sec"),
+  // Image/video dimensions
+  width: integer("width"),
+  height: integer("height"),
+  thumbnailUrl: text("thumbnail_url"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// Phase 15 fix (Judge F2): DB-backed typing indicators (Vercel-safe;
+// in-memory Maps don't survive across serverless instances).
+export const chatTyping = pgTable(
+  "chat_typing",
+  {
+    conversationId: uuid("conversation_id")
+      .notNull()
+      .references(() => conversations.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.conversationId, t.userId] })],
+);
+
 export const messages = pgTable("messages", {
   id: uuid("id").defaultRandom().primaryKey(),
   conversationId: uuid("conversation_id")
@@ -186,6 +226,17 @@ export const messages = pgTable("messages", {
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
   body: text("body").notNull(),
+  // Phase 15: message kind (text|image|video|audio|file|voice)
+  kind: text("kind").notNull().default("text"),
+  attachmentId: uuid("attachment_id").references(() => chatAttachments.id, {
+    onDelete: "set null",
+  }),
+  // FK to messages(id) ON DELETE SET NULL is enforced in SQL migration
+  // 0003_chat_complete.sql (self-reference breaks drizzle type inference).
+  replyToId: uuid("reply_to_id"),
+  // Phase 15: delivery status (sent|delivered|read)
+  status: text("status").notNull().default("sent"),
+  isDeleted: boolean("is_deleted").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
@@ -332,7 +383,7 @@ export const follows = pgTable(
       .references(() => user.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
-  (t) => [primaryKey({ columns: [t.followerId, t.followingId] })]
+  (t) => [primaryKey({ columns: [t.followerId, t.followingId] })],
 );
 
 /** Phase 3: in-app notifications (follow / like / reply signals) */
@@ -380,7 +431,7 @@ export const conversationMembers = pgTable(
     lastReadAt: timestamp("last_read_at"),
     joinedAt: timestamp("joined_at").notNull().defaultNow(),
   },
-  (t) => [primaryKey({ columns: [t.conversationId, t.userId] })]
+  (t) => [primaryKey({ columns: [t.conversationId, t.userId] })],
 );
 
 /** Phase 5: chat — emoji reactions on messages (toggle per user+emoji). */
@@ -401,9 +452,9 @@ export const messageReactions = pgTable(
     uniqueIndex("message_reactions_msg_user_emoji_idx").on(
       t.messageId,
       t.userId,
-      t.emoji
+      t.emoji,
     ),
-  ]
+  ],
 );
 
 /** Phase 7: per-user auto-restake pool ids (staking rewards). */

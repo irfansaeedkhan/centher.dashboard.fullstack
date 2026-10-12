@@ -6,7 +6,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { chatApi } from "@/lib/chat/api";
-import type { ChatConversation, ChatMessage } from "@/lib/chat/types";
+import type {
+  ChatConversation,
+  ChatMessage,
+  TypingUser,
+} from "@/lib/chat/types";
 import useUser from "../use.user";
 
 export const useChatConversations = () => {
@@ -43,17 +47,14 @@ export const useChatConversations = () => {
       await refresh();
       return convo.id;
     },
-    [refresh]
+    [refresh],
   );
 
-  const deleteConversation = useCallback(
-    async (id: string) => {
-      await chatApi.deleteConversation(id);
-      setConversations((prev) => prev.filter((c) => c.id !== id));
-      toast.success("Conversation deleted");
-    },
-    []
-  );
+  const deleteConversation = useCallback(async (id: string) => {
+    await chatApi.deleteConversation(id);
+    setConversations((prev) => prev.filter((c) => c.id !== id));
+    toast.success("Conversation deleted");
+  }, []);
 
   const togglePin = useCallback(async (convo: ChatConversation) => {
     if (convo.is_pinned) {
@@ -63,8 +64,8 @@ export const useChatConversations = () => {
     }
     setConversations((prev) =>
       prev.map((c) =>
-        c.id === convo.id ? { ...c, is_pinned: !convo.is_pinned } : c
-      )
+        c.id === convo.id ? { ...c, is_pinned: !convo.is_pinned } : c,
+      ),
     );
   }, []);
 
@@ -88,7 +89,9 @@ export const useChatMessages = (chatId: string | undefined) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const [typingUsers, setTypingUsers] = useState<TypingUser[]>([]);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const typingThrottleRef = useRef(0);
 
   const fetchMessages = useCallback(async () => {
     if (!chatId || !user) return;
@@ -97,6 +100,16 @@ export const useChatMessages = (chatId: string | undefined) => {
         limit: 100,
       });
       setMessages(list);
+      // Bulk-mark others' messages as read (single request, N2) instead of
+      // one POST per message. The API returns messages chronological ASC
+      // (oldest first), so list[list.length - 1] is the newest — the
+      // correct inclusive boundary.
+      const newest = list.length > 0 ? list[list.length - 1] : null;
+      if (newest) {
+        chatApi
+          .markAsRead(chatId, { upToMessageId: newest.id })
+          .catch(() => {});
+      }
     } catch {
       // keep the last good list
     } finally {
@@ -104,18 +117,41 @@ export const useChatMessages = (chatId: string | undefined) => {
     }
   }, [chatId, user]);
 
+  const fetchTyping = useCallback(async () => {
+    if (!chatId || !user) return;
+    try {
+      const { typing } = await chatApi.getTyping(chatId);
+      setTypingUsers(typing);
+    } catch {
+      // ignore
+    }
+  }, [chatId, user]);
+
+  // Throttled typing ping (max once per 3s).
+  const sendTypingPing = useCallback(() => {
+    if (!chatId) return;
+    const now = Date.now();
+    if (now - typingThrottleRef.current < 3000) return;
+    typingThrottleRef.current = now;
+    chatApi.sendTyping(chatId).catch(() => {});
+  }, [chatId]);
+
   useEffect(() => {
     setMessages([]);
+    setTypingUsers([]);
     setLoading(true);
     fetchMessages();
     if (chatId) {
       chatApi.markAsRead(chatId).catch(() => {});
-      pollRef.current = setInterval(fetchMessages, POLL_MS);
+      pollRef.current = setInterval(() => {
+        fetchMessages();
+        fetchTyping();
+      }, POLL_MS);
     }
     return () => {
       if (pollRef.current) clearInterval(pollRef.current);
     };
-  }, [chatId, fetchMessages]);
+  }, [chatId, fetchMessages, fetchTyping]);
 
   const sendMessage = useCallback(
     async (body: string) => {
@@ -132,7 +168,7 @@ export const useChatMessages = (chatId: string | undefined) => {
         setSending(false);
       }
     },
-    [chatId]
+    [chatId],
   );
 
   const editMessage = useCallback(async (messageId: string, body: string) => {
@@ -153,17 +189,24 @@ export const useChatMessages = (chatId: string | undefined) => {
       // Refetch to get accurate grouped counts.
       fetchMessages();
     },
-    [fetchMessages]
+    [fetchMessages],
   );
+
+  const appendMessage = useCallback((msg: ChatMessage) => {
+    setMessages((prev) => [...prev, msg]);
+  }, []);
 
   return {
     messages,
     loading,
     sending,
+    typingUsers,
     sendMessage,
     editMessage,
     deleteMessage,
     toggleReaction,
     refresh: fetchMessages,
+    appendMessage,
+    sendTypingPing,
   };
 };
