@@ -53,8 +53,7 @@ const makeDb = (rowsFor: (op: string, table: string) => any[]) => {
     let table = initialTable;
     const q: any = new Proxy(() => {}, {
       get(_t, prop) {
-        if (prop === "then")
-          return (res: any) => res(rowsFor(op, table));
+        if (prop === "then") return (res: any) => res(rowsFor(op, table));
         return (...args: any[]) => {
           if (String(prop) === "from" && args[0]) table = tableKey(args[0]);
           calls.push({ op, method: String(prop), table, args });
@@ -108,7 +107,13 @@ const PEER = "user-peer-2";
 const CONVO = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa";
 const MSG = "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb";
 
-const memRow = { conversationId: CONVO, userId: ME, isPinned: false, lastReadAt: null, joinedAt: new Date() };
+const memRow = {
+  conversationId: CONVO,
+  userId: ME,
+  isPinned: false,
+  lastReadAt: null,
+  joinedAt: new Date(),
+};
 const msgRow = (over: Record<string, any> = {}) => ({
   id: MSG,
   conversationId: CONVO,
@@ -121,7 +126,6 @@ const msgRow = (over: Record<string, any> = {}) => ({
   status: "sent",
   isDeleted: false,
   editedAt: null,
-  botReplied: false,
   createdAt: new Date("2026-10-16T10:00:00Z"),
   ...over,
 });
@@ -150,13 +154,21 @@ beforeEach(() => {
 describe("Q1 attachment host allowlist", () => {
   test("unit: only https://res.cloudinary.com is trusted", () => {
     expect(
-      isTrustedAttachmentUrl("https://res.cloudinary.com/demo/image/upload/x.png")
+      isTrustedAttachmentUrl(
+        "https://res.cloudinary.com/demo/image/upload/x.png"
+      )
     ).toBe(true);
-    expect(isTrustedAttachmentUrl("https://evil.example/pixel.png")).toBe(false);
-    expect(isTrustedAttachmentUrl("http://res.cloudinary.com/x.png")).toBe(false);
+    expect(isTrustedAttachmentUrl("https://evil.example/pixel.png")).toBe(
+      false
+    );
+    expect(isTrustedAttachmentUrl("http://res.cloudinary.com/x.png")).toBe(
+      false
+    );
     expect(isTrustedAttachmentUrl("not a url")).toBe(false);
     expect(isTrustedAttachmentUrl(null)).toBe(false);
-    expect(isTrustedAttachmentUrl("https://res.cloudinary.com.evil.example/x.png")).toBe(false);
+    expect(
+      isTrustedAttachmentUrl("https://res.cloudinary.com.evil.example/x.png")
+    ).toBe(false);
   });
 
   test("POST /chat/attachments rejects an off-host URL before any insert", async () => {
@@ -180,7 +192,18 @@ describe("Q1 attachment host allowlist", () => {
   });
 
   test("POST /chat/attachments accepts a Cloudinary URL", async () => {
-    const att = { id: "att-1", kind: "image", mimeType: "image/png", fileName: "x.png", fileSize: 100, url: "https://res.cloudinary.com/demo/image/upload/x.png", durationSec: null, width: 10, height: 10, thumbnailUrl: null };
+    const att = {
+      id: "att-1",
+      kind: "image",
+      mimeType: "image/png",
+      fileName: "x.png",
+      fileSize: 100,
+      url: "https://res.cloudinary.com/demo/image/upload/x.png",
+      durationSec: null,
+      width: 10,
+      height: 10,
+      thumbnailUrl: null,
+    };
     installDb(byTable("insert", "chatAttachments", [att]));
     const app = createHonoApp();
     asUser(ME);
@@ -210,7 +233,11 @@ describe("Q2 user-deletion tombstone (schema contract)", () => {
     expect((conversations as any).dmPairKey).toBeDefined();
     expect((messages as any).editedAt).toBeDefined();
     expect((messages as any).replySnapshot).toBeDefined();
-    expect((messages as any).botReplied).toBeDefined();
+    // Q5: claim table (neon-http has no multi-statement transactions, so no
+    // advisory lock); Q20: explicit bot role on profiles.
+    const { botReplyClaims } = require("@/db/schema");
+    expect(botReplyClaims).toBeDefined();
+    expect((profiles as any).botRole).toBeDefined();
   });
 });
 
@@ -252,7 +279,7 @@ describe("Q4/Q9 read route", () => {
     expect(calls.some((c) => c.op === "execute")).toBe(false);
   });
 
-  test("valid up_to_message_id → lastReadAt equals the ref message's created_at", async () => {
+  test("valid up_to_message_id → one boundary drives lastReadAt AND status ticks", async () => {
     const refDate = new Date("2026-10-16T09:30:00Z");
     const { calls } = installDb((op, table) => {
       if (op === "select" && table === "conversationMembers") return [memRow];
@@ -269,12 +296,29 @@ describe("Q4/Q9 read route", () => {
     });
     expect(res.status).toBe(200);
     const setCall = calls.find(
-      (c) => c.op === "update" && c.table === "conversationMembers" && c.method === "set"
+      (c) =>
+        c.op === "update" &&
+        c.table === "conversationMembers" &&
+        c.method === "set"
     );
-    expect(setCall).toBeDefined();
-    // Single source of truth (Q9): lastReadAt and the status boundary agree.
-    expect(+setCall!.args[0].lastReadAt).toBe(+refDate);
-    expect(calls.some((c) => c.op === "execute")).toBe(true);
+    if (!setCall) throw new Error("expected conversationMembers update");
+    const lastReadAtVal: any = setCall.args![0].lastReadAt;
+    // Q9: single boundary via subquery on the message id — NOT a JS Date
+    // round-trip (µs truncation would leave the boundary message itself
+    // counted as unread, re-splitting badge and ticks).
+    expect(lastReadAtVal).not.toBeInstanceOf(Date);
+    // The message id travels inside the subquery's chunks (drizzle inlines
+    // template params there) — proving the boundary is the ref message,
+    // not a JS Date.
+    expect(JSON.stringify((lastReadAtVal as any)?.queryChunks ?? "")).toContain(
+      MSG
+    );
+    // The status flip runs in the same route (sender ticks keep working).
+    const msgUpdate = calls.find(
+      (c) => c.op === "update" && c.table === "messages" && c.method === "set"
+    );
+    if (!msgUpdate) throw new Error("expected messages status update");
+    expect(msgUpdate.args![0].status).toBe("read");
   });
 });
 
@@ -313,7 +357,12 @@ describe("Q14 edit window", () => {
   test("edit after 15 minutes → 400, no update", async () => {
     const { calls } = installDb((op, table) => {
       if (op === "select" && table === "messages")
-        return [msgRow({ senderId: ME, createdAt: new Date(Date.now() - 16 * 60 * 1000) })];
+        return [
+          msgRow({
+            senderId: ME,
+            createdAt: new Date(Date.now() - 16 * 60 * 1000),
+          }),
+        ];
       return [];
     });
     const app = createHonoApp();
@@ -329,7 +378,10 @@ describe("Q14 edit window", () => {
   });
 
   test("edit inside the window → 200 and editedAt is set", async () => {
-    const fresh = msgRow({ senderId: ME, createdAt: new Date(Date.now() - 60 * 1000) });
+    const fresh = msgRow({
+      senderId: ME,
+      createdAt: new Date(Date.now() - 60 * 1000),
+    });
     const { calls } = installDb((op, table) => {
       if (op === "select" && table === "messages") return [fresh];
       return [];
@@ -345,9 +397,9 @@ describe("Q14 edit window", () => {
     const setCall = calls.find(
       (c) => c.op === "update" && c.table === "messages" && c.method === "set"
     );
-    expect(setCall).toBeDefined();
-    expect(setCall!.args[0].body).toBe("fixed typo");
-    expect(setCall!.args[0].editedAt).toBeInstanceOf(Date);
+    if (!setCall) throw new Error("expected messages update");
+    expect(setCall.args![0].body).toBe("fixed typo");
+    expect(setCall.args![0].editedAt).toBeInstanceOf(Date);
   });
 
   test("unit: isEditExpired", () => {
@@ -392,28 +444,50 @@ describe("Q7 poll merge", () => {
 
   test("edited message upserts by id", () => {
     const prev = [m("m1", "peer", "2026-10-16T10:00:01Z", { body: "a" })];
-    const out = mergeMessages(prev, [m("m1", "peer", "2026-10-16T10:00:01Z", { body: "b" })], "me");
+    const out = mergeMessages(
+      prev,
+      [m("m1", "peer", "2026-10-16T10:00:01Z", { body: "b" })],
+      "me"
+    );
     expect(out[0].body).toBe("b");
   });
 
   test("peer's message missing inside the window is dropped (deleted)", () => {
     const prev = [
+      m("m0", "peer", "2026-10-16T10:00:00Z"),
       m("m1", "peer", "2026-10-16T10:00:01Z"),
       m("m2", "peer", "2026-10-16T10:00:02Z"),
     ];
-    const out = mergeMessages(prev, [m("m2", "peer", "2026-10-16T10:00:02Z")], "me");
-    expect(out.map((x) => x.id)).toEqual(["m2"]);
+    const out = mergeMessages(
+      prev,
+      [
+        m("m0", "peer", "2026-10-16T10:00:00Z"),
+        m("m2", "peer", "2026-10-16T10:00:02Z"),
+      ],
+      "me"
+    );
+    // m1 (10:00:01) is newer than the window's oldest (10:00:00) but absent
+    // from the fresh list → deleted → dropped. m0/m2 survive.
+    expect(out.map((x) => x.id)).toEqual(["m0", "m2"]);
   });
 
   test("older-than-window messages are kept (pagination)", () => {
     const prev = [m("m0", "peer", "2026-10-16T09:00:00Z")];
-    const out = mergeMessages(prev, [m("m1", "peer", "2026-10-16T10:00:01Z")], "me");
+    const out = mergeMessages(
+      prev,
+      [m("m1", "peer", "2026-10-16T10:00:01Z")],
+      "me"
+    );
     expect(out.map((x) => x.id)).toEqual(["m0", "m1"]);
   });
 
   test("result stays chronological", () => {
     const prev = [m("m2", "me", "2026-10-16T10:00:02Z")];
-    const out = mergeMessages(prev, [m("m1", "peer", "2026-10-16T10:00:01Z")], "me");
+    const out = mergeMessages(
+      prev,
+      [m("m1", "peer", "2026-10-16T10:00:01Z")],
+      "me"
+    );
     expect(out.map((x) => x.id)).toEqual(["m1", "m2"]);
   });
 });
@@ -433,7 +507,7 @@ describe("Q13 prependOlder", () => {
 // Q17 — two-phase attachment send (pure, injected deps)
 // ---------------------------------------------------------------------------
 describe("Q17 two-phase attachment send", () => {
-  const file = (name: string) => ({ name }) as unknown as File;
+  const file = (name: string) => ({ name } as unknown as File);
 
   test("a failure in phase 1 aborts before anything is sent", async () => {
     const registered: string[] = [];
@@ -441,7 +515,13 @@ describe("Q17 two-phase attachment send", () => {
     const deps = {
       upload: async (f: File) => {
         if ((f as any).name === "b.png") throw new Error("upload boom");
-        return { kind: "image" as const, mimeType: "image/png", fileName: (f as any).name, fileSize: 1, url: "https://res.cloudinary.com/x" };
+        return {
+          kind: "image" as const,
+          mimeType: "image/png",
+          fileName: (f as any).name,
+          fileSize: 1,
+          url: "https://res.cloudinary.com/x",
+        };
       },
       register: async (d: any) => {
         registered.push(d.file_name);
@@ -452,7 +532,11 @@ describe("Q17 two-phase attachment send", () => {
       },
     };
     await expect(
-      prepareAttachments([file("a.png"), file("b.png")], ["image", "image"], deps)
+      prepareAttachments(
+        [file("a.png"), file("b.png")],
+        ["image", "image"],
+        deps
+      )
     ).rejects.toThrow("upload boom");
     expect(sent).toEqual([]); // nothing was ever sent
     expect(registered).toEqual(["a.png"]); // phase 1 stopped at the failure
@@ -461,8 +545,22 @@ describe("Q17 two-phase attachment send", () => {
   test("phase 2 sends in order with the caption on the first message", async () => {
     const sent: Array<{ body: string; att: string }> = [];
     const prepared = [
-      { kind: "image" as const, mimeType: "image/png", fileName: "a.png", fileSize: 1, url: "u", attachmentId: "att-a" },
-      { kind: "image" as const, mimeType: "image/png", fileName: "b.png", fileSize: 1, url: "u", attachmentId: "att-b" },
+      {
+        kind: "image" as const,
+        mimeType: "image/png",
+        fileName: "a.png",
+        fileSize: 1,
+        url: "u",
+        attachmentId: "att-a",
+      },
+      {
+        kind: "image" as const,
+        mimeType: "image/png",
+        fileName: "b.png",
+        fileSize: 1,
+        url: "u",
+        attachmentId: "att-b",
+      },
     ];
     await sendPreparedAttachments(prepared, "my caption", undefined, {
       sendMessage: async (body: string, opts: any) => {
@@ -488,7 +586,9 @@ describe("Q12 keyset pagination contract", () => {
     });
     const app = createHonoApp();
     asUser(ME);
-    const res = await app.request(`/api/chat/conversations/${CONVO}/messages?limit=1`);
+    const res = await app.request(
+      `/api/chat/conversations/${CONVO}/messages?limit=1`
+    );
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(typeof body.has_more).toBe("boolean");

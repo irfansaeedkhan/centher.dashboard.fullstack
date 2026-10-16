@@ -38,9 +38,22 @@ END $$;
 ALTER TABLE "messages" ADD COLUMN IF NOT EXISTS "edited_at" timestamp;
 ALTER TABLE "messages" ADD COLUMN IF NOT EXISTS "reply_snapshot" jsonb;
 
--- Q5: atomic claim flag for the team-bots auto-responder (see column docs).
-ALTER TABLE "messages"
-  ADD COLUMN IF NOT EXISTS "bot_replied" boolean NOT NULL DEFAULT false;
+-- Q5: atomic claim table for the team-bots auto-responder. The responder runs
+-- on the Neon HTTP driver (no multi-statement transactions), so an advisory
+-- lock cannot span check+insert — a single INSERT … ON CONFLICT DO NOTHING
+-- on this table is the claim. Rows persist as the "already replied" record.
+CREATE TABLE IF NOT EXISTS "bot_reply_claims" (
+  "conversation_id" uuid NOT NULL REFERENCES "conversations"("id") ON DELETE CASCADE,
+  "message_id" uuid NOT NULL REFERENCES "messages"("id") ON DELETE CASCADE,
+  "claimed_at" timestamptz NOT NULL DEFAULT NOW(),
+  PRIMARY KEY ("conversation_id", "message_id")
+);
+
+-- Q20: explicit bot role, stored once at seed time (replaces deriving the
+-- role from the bio at reply time). NULL until the seed re-runs; the
+-- responder falls back to roleFromBio(bio) for NULL rows.
+ALTER TABLE "profiles"
+  ADD COLUMN IF NOT EXISTS "bot_role" text;
 
 -- Q3: dedup key for 1-on-1 conversations. NULL for groups (Postgres UNIQUE
 -- allows multiple NULLs).

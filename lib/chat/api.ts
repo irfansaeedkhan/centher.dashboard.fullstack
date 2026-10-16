@@ -17,7 +17,7 @@ async function req<T>(promise: Promise<{ data: T }>): Promise<T> {
     return res.data;
   } catch (err: any) {
     throw new Error(
-      err?.response?.data?.message || `Chat request failed, please try again`,
+      err?.response?.data?.message || `Chat request failed, please try again`
     );
   }
 }
@@ -26,8 +26,8 @@ export const chatApi = {
   listConversations: () =>
     req(
       axiosApi369x.get<{ conversations: ChatConversation[] }>(
-        "/api/chat/conversations",
-      ),
+        "/api/chat/conversations"
+      )
     ),
 
   createConversation: (user_ids: string[], title?: string) =>
@@ -35,7 +35,7 @@ export const chatApi = {
       axiosApi369x.post<ChatConversation>("/api/chat/conversations", {
         user_ids,
         title,
-      }),
+      })
     ),
 
   deleteConversation: (id: string) =>
@@ -51,15 +51,15 @@ export const chatApi = {
     req(
       axiosApi369x.post<{ ok: true }>(`/api/chat/conversations/${id}/read`, {
         up_to_message_id: opts?.upToMessageId,
-      }),
+      })
     ),
 
   listMessages: (id: string, opts?: { limit?: number; before?: string }) =>
     req(
       axiosApi369x.get<{ messages: ChatMessage[]; has_more?: boolean }>(
         `/api/chat/conversations/${id}/messages`,
-        { params: { limit: opts?.limit, before: opts?.before } },
-      ),
+        { params: { limit: opts?.limit, before: opts?.before } }
+      )
     ),
 
   sendMessage: (
@@ -69,7 +69,7 @@ export const chatApi = {
       kind?: ChatMessageKind;
       attachment_id?: string;
       reply_to_id?: string;
-    },
+    }
   ) =>
     req(
       axiosApi369x.post<ChatMessage>(`/api/chat/conversations/${id}/messages`, {
@@ -77,7 +77,7 @@ export const chatApi = {
         kind: opts?.kind ?? "text",
         attachment_id: opts?.attachment_id,
         reply_to_id: opts?.reply_to_id,
-      }),
+      })
     ),
 
   registerAttachment: (data: {
@@ -94,21 +94,21 @@ export const chatApi = {
 
   sendTyping: (id: string) =>
     req(
-      axiosApi369x.post<{ ok: true }>(`/api/chat/conversations/${id}/typing`),
+      axiosApi369x.post<{ ok: true }>(`/api/chat/conversations/${id}/typing`)
     ),
 
   getTyping: (id: string) =>
     req(
       axiosApi369x.get<{ typing: TypingUser[] }>(
-        `/api/chat/conversations/${id}/typing`,
-      ),
+        `/api/chat/conversations/${id}/typing`
+      )
     ),
 
   editMessage: (messageId: string, body: string) =>
     req(
       axiosApi369x.patch<ChatMessage>(`/api/chat/messages/${messageId}`, {
         body,
-      }),
+      })
     ),
 
   deleteMessage: (messageId: string) =>
@@ -118,7 +118,7 @@ export const chatApi = {
     req(
       axiosApi369x.post<{ ok: true; reacted: boolean }>(
         `/api/chat/messages/${messageId}/reactions`,
-        { emoji },
-      ),
+        { emoji }
+      )
     ),
 };

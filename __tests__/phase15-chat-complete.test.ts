@@ -15,8 +15,11 @@ describe("phase15 chat completeness routes", () => {
     expect(appSrc).toContain('app.post("/chat/attachments"');
   });
 
-  test("per-message read receipt endpoint exists", () => {
-    expect(appSrc).toContain('app.post("/chat/messages/:id/read"');
+  test("per-message read route is gone — bulk is the single read path (grill Q11)", () => {
+    // Q11: POST /chat/messages/:id/read had zero client callers — a latent
+    // divergence bomb. Removed; the bulk endpoint below is the only read path.
+    expect(appSrc).not.toContain('app.post("/chat/messages/:id/read"');
+    expect(appSrc).toContain('app.post("/chat/conversations/:id/read"');
   });
 
   test("typing indicator endpoints exist", () => {
@@ -84,7 +87,7 @@ describe("phase15 chat completeness routes", () => {
   test("buildMessage includes attachment + reply + status", () => {
     expect(appSrc).toContain("attachment,");
     expect(appSrc).toContain("reply_to: replyTo,");
-    expect(appSrc).toContain('status: msg!.status ?? "sent"');
+    expect(appSrc).toContain('status: msg.status ?? "sent"');
   });
 
   test("schema has chat_attachments table + message columns", () => {

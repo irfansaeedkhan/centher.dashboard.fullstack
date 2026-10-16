@@ -48,7 +48,7 @@ export const useChatConversations = () => {
       await refresh();
       return convo.id;
     },
-    [refresh],
+    [refresh]
   );
 
   const deleteConversation = useCallback(async (id: string) => {
@@ -65,8 +65,8 @@ export const useChatConversations = () => {
     }
     setConversations((prev) =>
       prev.map((c) =>
-        c.id === convo.id ? { ...c, is_pinned: !convo.is_pinned } : c,
-      ),
+        c.id === convo.id ? { ...c, is_pinned: !convo.is_pinned } : c
+      )
     );
   }, []);
 
@@ -152,10 +152,10 @@ export const useChatMessages = (chatId: string | undefined) => {
     if (!oldestId) return;
     setLoadingOlder(true);
     try {
-      const { messages: older, has_more } = await chatApi.listMessages(
-        chatId,
-        { before: oldestId, limit: 50 }
-      );
+      const { messages: older, has_more } = await chatApi.listMessages(chatId, {
+        before: oldestId,
+        limit: 50,
+      });
       if (older.length > 0) {
         oldestIdRef.current = older[0].id;
         setMessages((prev) => prependOlder(prev, older));
@@ -226,7 +226,7 @@ export const useChatMessages = (chatId: string | undefined) => {
       // Refetch to get accurate grouped counts.
       fetchMessages();
     },
-    [fetchMessages],
+    [fetchMessages]
   );
 
   const appendMessage = useCallback((msg: ChatMessage) => {

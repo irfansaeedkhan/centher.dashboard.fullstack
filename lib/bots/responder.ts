@@ -35,6 +35,12 @@ export interface BotReplyInput {
   humanMessage: string;
   /** Bodies of the bot's most recent replies in this conversation. */
   recentBotBodies?: string[];
+  /**
+   * Chat-grill Q23: rotation counter — the caller passes the number of bot
+   * replies already in the conversation. Advances variant selection so
+   * repeated human messages can't get the identical reply twice in a row.
+   */
+  rotation?: number;
 }
 
 /** Map a seed-team bio ("Frontend Developer · React/Next.js") to a role. */
@@ -68,10 +74,18 @@ function hashStr(s: string): number {
   return Math.abs(h);
 }
 
-function pick(variants: string[], seed: string, exclude: string[]): string {
+function pick(
+  variants: string[],
+  seed: string,
+  exclude: string[],
+  rotation = 0
+): string {
   const pool = variants.filter((v) => !exclude.includes(v));
   const usable = pool.length > 0 ? pool : variants;
-  return usable[hashStr(seed) % usable.length];
+  // Chat-grill Q23: rotation advances with every bot reply in the
+  // conversation, so a repeated human message ("hi", "hi", "hi") can never
+  // pick the same variant back-to-back — the old hash-only pick did.
+  return usable[(hashStr(seed) + rotation) % usable.length];
 }
 
 function fill(template: string, human: string): string {
@@ -692,7 +706,9 @@ const TRIGGERS: Trigger[] = [
   },
   {
     test: (m) =>
-      /\b(bug|issue|broken|error|crash(\w*)?|fail(\w*)?|not\sworking|doesn'?t\swork|exception|stack\s?trace|500|404)\b/.test(
+      // Chat-grill Q22: added broke/breaks — "hey, this broke" used to fall
+      // through to GREETING.
+      /\b(bug|issue|broke|break(\w*)?|broken|error|crash(\w*)?|fail(\w*)?|not\sworking|doesn'?t\swork|exception|stack\s?trace|500|404)\b/.test(
         m
       ),
     replies: GENERIC_BUG,
@@ -731,10 +747,27 @@ const TRIGGERS: Trigger[] = [
     replies: GENERIC_STATUS,
   },
   {
-    test: (m) =>
-      /^(please\s?)?(can\syou|could\syou|would\syou|pls|plz|fix|build|add|create|implement|check|handle|take\s(care|this)|look\sinto|do\s(this|it)|make|write|update|refactor|help\sme\s)/.test(
-        m.trim()
-      ) || /\b(can\syou|could\syou|please\s\w+|need\syou\sto)\b/.test(m),
+    // Chat-grill Q22: stronger anchors. The old version fired on any bare
+    // imperative ("make money fast" → "On it — I'll get that built.").
+    // Now it needs a direct request to the bot (can you / need you to) or a
+    // work-specific imperative verb at the start of the message.
+    test: (m) => {
+      const t = m.trim();
+      if (
+        /^(please\s+|pls\s+|plz\s+)?(can\syou|could\syou|would\syou)\b/.test(t)
+      )
+        return true;
+      if (/^(please|pls|plz)\s+\w+/.test(t)) return true;
+      if (
+        /^(fix|build|add|create|implement|refactor|deploy|check|handle|write|update|look\sinto|take\s(care\sof|this))\b/.test(
+          t
+        )
+      )
+        return true;
+      return /\b(can\syou|could\syou|would\syou|need\syou\sto|want\syou\sto)\b/.test(
+        t
+      );
+    },
     replies: GENERIC_WORK,
   },
   {
@@ -762,6 +795,7 @@ export function generateBotReply(input: BotReplyInput): string {
   const msg = (input.humanMessage || "").toLowerCase();
   const role = input.role || "teammate";
   const exclude = input.recentBotBodies ?? [];
+  const rotation = input.rotation ?? 0;
 
   for (const trigger of TRIGGERS) {
     let matched = false;
@@ -777,12 +811,12 @@ export function generateBotReply(input: BotReplyInput): string {
     // Fill placeholders BEFORE the no-repeat check: recentBotBodies holds
     // rendered bodies, so templates must be rendered to compare correctly.
     const pool = rawPool.map((t) => fill(t, input.humanName));
-    return pick(pool, msg, exclude);
+    return pick(pool, msg, exclude, rotation);
   }
 
   // Fallback: role-flavored acknowledgment + follow-up question.
   const fallbackPool = (
     GENERIC_FALLBACK[role] ?? GENERIC_FALLBACK.teammate
   ).map((t) => fill(t, input.humanName));
-  return pick(fallbackPool, msg || "fallback", exclude);
+  return pick(fallbackPool, msg || "fallback", exclude, rotation);
 }

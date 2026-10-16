@@ -48,7 +48,10 @@ export interface AttachmentDeps {
     width?: number;
     height?: number;
   }) => Promise<{ id: string }>;
-  sendMessage: (body: string, opts: { kind: ChatMessageKind; attachment_id: string; reply_to_id?: string }) => Promise<unknown>;
+  sendMessage: (
+    body: string,
+    opts: { kind: ChatMessageKind; attachment_id: string; reply_to_id?: string }
+  ) => Promise<unknown>;
 }
 
 /**

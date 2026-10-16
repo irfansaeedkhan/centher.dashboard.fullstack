@@ -10,6 +10,7 @@ import {
   ilike,
   inArray,
   lt,
+  lte,
   ne,
   or,
   sql,
@@ -412,6 +413,7 @@ const fetchUserCards = async (userIds: string[], viewerId: string | null) => {
         displayName: u.name,
         avatarUrl: u.image,
         membership: "citizen",
+        isBot: false,
       });
     }
   }
@@ -2749,7 +2751,8 @@ export const createHonoApp = () => {
 
     const senderIds = new Set<string>();
     for (const m of rows) if (m.senderId) senderIds.add(m.senderId);
-    for (const r of liveById.values()) if (r.senderId) senderIds.add(r.senderId);
+    for (const r of liveById.values())
+      if (r.senderId) senderIds.add(r.senderId);
     const cards = await fetchUserCards([...senderIds], viewerId);
     const cardById = new Map<string, (typeof cards)[number]>();
     for (const c of cards) cardById.set((c as any)._id, c);
@@ -2821,8 +2824,8 @@ export const createHonoApp = () => {
       const senderCard = tombstoned
         ? deletedUserCard()
         : msg.senderId
-          ? ((cardById.get(msg.senderId) as any) ?? null)
-          : null;
+        ? (cardById.get(msg.senderId) as any) ?? null
+        : null;
 
       return {
         id: msg.id,
@@ -2892,7 +2895,7 @@ export const createHonoApp = () => {
     // Latest message per conversation (DISTINCT ON — bounded, no full scan).
     // rowsOf: neon-http's execute returns rows directly; normalize
     // defensively so a driver-shape change can't break the list.
-    const rowsOf = <T,>(raw: unknown): T[] => {
+    const rowsOf = <T>(raw: unknown): T[] => {
       if (Array.isArray(raw)) return raw as T[];
       if (raw && typeof raw === "object" && Array.isArray((raw as any).rows))
         return (raw as any).rows as T[];
@@ -3119,12 +3122,15 @@ export const createHonoApp = () => {
       .object({ up_to_message_id: z.string().uuid().optional() })
       .parse(await c.req.json().catch(() => ({})));
 
+    // Chat-grill Q4: validate everything BEFORE mutating — the old code
+    // bumped lastReadAt before checking the message existed (404 after
+    // a write).
     await requireMembership(id, userId!);
 
-    let boundary: Date;
+    let upToMessageId: string | undefined;
     if (body.up_to_message_id) {
       const [ref] = await db
-        .select({ createdAt: messages.createdAt })
+        .select({ id: messages.id })
         .from(messages)
         .where(
           and(
@@ -3134,30 +3140,38 @@ export const createHonoApp = () => {
         )
         .limit(1);
       if (!ref) apiError("Message not found", "NOT_FOUND", 404);
-      boundary = ref!.createdAt;
-    } else {
-      boundary = new Date();
+      upToMessageId = body.up_to_message_id;
     }
 
+    // Chat-grill Q9: ONE boundary drives both the badge (lastReadAt) and
+    // the ticks (message statuses) — the old code used now() for one and
+    // the ref's created_at for the other, so they disagreed. The boundary
+    // is the ref message's exact created_at via subquery: never a JS Date
+    // round-trip (µs truncation would leave the boundary message itself
+    // counted as unread).
+    const boundary = upToMessageId
+      ? sql`(SELECT "created_at" FROM "messages" WHERE "id" = ${upToMessageId})`
+      : sql`NOW()`;
     await db
       .update(conversationMembers)
-      .set({ lastReadAt: boundary })
+      .set({ lastReadAt: boundary as unknown as Date })
       .where(
         and(
           eq(conversationMembers.conversationId, id),
           eq(conversationMembers.userId, userId!)
         )
       );
-
-    // Bulk-mark messages read up to the same boundary. Runs entirely in
-    // Postgres to avoid JS Date serialization edge cases.
-    await db.execute(sql`
-      UPDATE "messages" SET "status" = 'read'
-      WHERE "conversation_id" = ${id}
-        AND "sender_id" != ${userId}
-        AND "status" != 'read'
-        AND "created_at" <= ${boundary}
-    `);
+    await db
+      .update(messages)
+      .set({ status: "read" })
+      .where(
+        and(
+          eq(messages.conversationId, id),
+          ne(messages.senderId, userId!),
+          ne(messages.status, "read"),
+          lte(messages.createdAt, boundary)
+        )
+      );
     return c.json({ ok: true });
   });
 
@@ -3506,11 +3520,7 @@ export const createHonoApp = () => {
     // link rendered inline to every recipient. Only the Cloudinary host
     // is trusted.
     if (!isTrustedAttachmentUrl(body.url)) {
-      apiError(
-        "Attachment URL host is not allowed",
-        "VALIDATION_ERROR",
-        400
-      );
+      apiError("Attachment URL host is not allowed", "VALIDATION_ERROR", 400);
     }
     if (body.thumbnail_url && !isTrustedAttachmentUrl(body.thumbnail_url)) {
       apiError(

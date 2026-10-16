@@ -15,10 +15,13 @@ jest.mock("@/lib/chat/api", () => ({
     getTyping: jest.fn().mockResolvedValue({ typing: [] }),
   },
 }));
-jest.mock("@/hooks/use.user", () => ({
-  __esModule: true,
-  default: () => ({ user: { _id: "me" } }),
-}));
+jest.mock("@/hooks/use.user", () => {
+  // Stable across renders — like the real SWR-backed hook. A fresh object
+  // per render would change fetchMessages's identity and retrigger the
+  // mount effect in a loop (pre-existing hook sensitivity, not test intent).
+  const stable = { user: { _id: "me" } };
+  return { __esModule: true, default: () => stable };
+});
 
 const { chatApi } = require("@/lib/chat/api");
 const listMessages = chatApi.listMessages as jest.Mock;

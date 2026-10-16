@@ -10,6 +10,7 @@ config({ path: ".env.local" });
 
 import { and, eq } from "drizzle-orm";
 import { auth } from "../lib/auth/better-auth";
+import { roleFromBio } from "../lib/bots/responder";
 import { db } from "../db";
 import {
   conversationMembers,
@@ -347,13 +348,17 @@ async function main() {
         membership: member.membership,
         avatarUrl: "/images/centher.logo.favicon.png",
         isBot: true,
+        // Chat-grill Q20: freeze the role at seed time so a later bio edit
+        // can't silently re-personality the bot.
+        botRole: roleFromBio(member.bio),
       })
       .onConflictDoNothing();
     // Idempotent flagging: the insert is skipped when the profile already
-    // exists, so always enforce is_bot=true for team members.
+    // exists, so always enforce is_bot=true (and the frozen role) for team
+    // members.
     await db
       .update(profiles)
-      .set({ isBot: true })
+      .set({ isBot: true, botRole: roleFromBio(member.bio) })
       .where(eq(profiles.userId, authUser.id));
     idsByUsername[member.username] = authUser.id;
     created++;
