@@ -131,7 +131,7 @@ const SingleChat: NextPageWithLayout = () => {
           <p className="flex items-center gap-2 truncate text-sm font-semibold text-white">
             <span className="truncate">{name}</span>
             {peerIsBot && (
-              <span className="bg-primary/20 text-primary flex-shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide">
+              <span className="bg-brand-primary/20 text-brand-primary flex-shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide">
                 Bot
               </span>
             )}
@@ -209,7 +209,7 @@ const SingleChat: NextPageWithLayout = () => {
           <p className="truncate text-xs text-gray-shade-7">Editing message</p>
           <div className="flex gap-2">
             <button
-              className="bg-primary rounded-lg px-3 py-1 text-xs font-semibold text-white"
+              className="bg-brand-primary rounded-lg px-3 py-1 text-xs font-semibold text-white"
               onClick={async () => {
                 const text = draft.trim();
                 if (!text) return;
@@ -374,7 +374,7 @@ const MessageBubble: React.FC<{
           className={clsx(
             "relative rounded-2xl px-4 py-2",
             mine
-              ? "bg-primary rounded-br-md text-white"
+              ? "bg-brand-primary rounded-br-md text-white"
               : "rounded-bl-md bg-elevation-1 text-white",
             isMedia && "px-2 pt-2"
           )}
@@ -460,7 +460,7 @@ const MessageBubble: React.FC<{
                 className={clsx(
                   "rounded-full px-2 py-0.5 text-xs",
                   r.reacted_by_me
-                    ? "bg-primary/30 text-white"
+                    ? "bg-brand-primary/30 text-white"
                     : "bg-elevation-1 text-gray-shade-7"
                 )}
               >

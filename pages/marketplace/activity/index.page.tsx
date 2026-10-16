@@ -77,7 +77,7 @@ const ActivityPage: NextPageWithLayout = () => {
               className={clsx(
                 "rounded-[10px] border px-5 py-2 text-sm font-semibold capitalize transition",
                 tab === t
-                  ? "border-primary bg-primary/10 text-white"
+                  ? "border-brand-primary bg-brand-primary/10 text-white"
                   : "border-gray-shade-3 text-gray-shade-7 hover:bg-black-shade-4"
               )}
             >

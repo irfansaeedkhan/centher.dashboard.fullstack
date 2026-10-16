@@ -245,7 +245,7 @@ const ConversationRow: React.FC<{
             {convo.last_message?.body ?? "No messages yet"}
           </p>
           {convo.unread_count > 0 && (
-            <span className="bg-primary flex h-5 min-w-[20px] flex-shrink-0 items-center justify-center rounded-full px-1 text-xs font-semibold text-white">
+            <span className="bg-brand-primary flex h-5 min-w-[20px] flex-shrink-0 items-center justify-center rounded-full px-1 text-xs font-semibold text-white">
               {convo.unread_count > 99 ? "99+" : convo.unread_count}
             </span>
           )}

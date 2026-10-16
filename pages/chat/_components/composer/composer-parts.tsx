@@ -145,7 +145,7 @@ export const VoiceRecorder: React.FC<{
           <span className="text-xs text-gray-shade-7">Recording…</span>
           <button
             onClick={stop}
-            className="bg-primary ml-auto rounded-lg px-4 py-1.5 text-sm font-semibold text-white"
+            className="bg-brand-primary ml-auto rounded-lg px-4 py-1.5 text-sm font-semibold text-white"
           >
             Send
           </button>
