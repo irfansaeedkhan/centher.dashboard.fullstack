@@ -84,6 +84,11 @@ const SingleChat: NextPageWithLayout = () => {
 
   const name = convo ? conversationDisplayName(convo, myId) : "Chat";
   const avatar = convo ? conversationAvatar(convo, myId) : null;
+  // Team bots (2026-10-16): in a 1-on-1 DM, badge the bot peer.
+  const peerIsBot =
+    !!convo &&
+    convo.members.length === 2 &&
+    convo.members.some((m) => m.user_id !== myId && m.is_bot);
 
   return (
     <div className="flex h-[calc(100vh-60px)] w-full flex-col">
@@ -99,7 +104,14 @@ const SingleChat: NextPageWithLayout = () => {
           )}
         </div>
         <div className="min-w-0">
-          <p className="truncate text-sm font-semibold text-white">{name}</p>
+          <p className="flex items-center gap-2 truncate text-sm font-semibold text-white">
+            <span className="truncate">{name}</span>
+            {peerIsBot && (
+              <span className="bg-primary/20 text-primary flex-shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide">
+                Bot
+              </span>
+            )}
+          </p>
           {convo && convo.members.length > 2 && (
             <p className="truncate text-xs text-gray-shade-7">
               {convo.members.length} members

@@ -346,8 +346,15 @@ async function main() {
         bio: member.bio,
         membership: member.membership,
         avatarUrl: "/images/centher.logo.favicon.png",
+        isBot: true,
       })
       .onConflictDoNothing();
+    // Idempotent flagging: the insert is skipped when the profile already
+    // exists, so always enforce is_bot=true for team members.
+    await db
+      .update(profiles)
+      .set({ isBot: true })
+      .where(eq(profiles.userId, authUser.id));
     idsByUsername[member.username] = authUser.id;
     created++;
   }

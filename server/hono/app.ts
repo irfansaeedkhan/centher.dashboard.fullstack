@@ -325,12 +325,14 @@ const mapUserCard = (
     displayName: string | null;
     avatarUrl: string | null;
     membership: string | null;
+    isBot?: boolean | null;
   },
   opts?: { isFollowedByLoggedInUser?: boolean }
 ) => ({
   _id: row.userId,
   display_name: row.displayName || "Centher User",
   profile_image: row.avatarUrl || "/images/centher.logo.favicon.png",
+  is_bot: !!row.isBot,
   membership: {
     last_status:
       (row.membership as "citizen" | "verified" | "none") || "citizen",
@@ -383,6 +385,7 @@ const fetchUserCards = async (userIds: string[], viewerId: string | null) => {
       displayName: profiles.displayName,
       avatarUrl: profiles.avatarUrl,
       membership: profiles.membership,
+      isBot: profiles.isBot,
     })
     .from(profiles)
     .where(inArray(profiles.userId, userIds));
@@ -2032,6 +2035,7 @@ export const createHonoApp = () => {
         displayName: profiles.displayName,
         avatarUrl: profiles.avatarUrl,
         membership: profiles.membership,
+        isBot: profiles.isBot,
       })
       .from(profiles)
       .where(

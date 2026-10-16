@@ -8,6 +8,8 @@ export interface ChatMember {
   avatar_url?: string | null;
   membership?: string | null;
   is_followed_by_logged_in_user?: boolean;
+  /** Team bots (2026-10-16): demo team-member accounts that auto-reply. */
+  is_bot?: boolean | null;
 }
 
 export interface ChatLastMessage {
