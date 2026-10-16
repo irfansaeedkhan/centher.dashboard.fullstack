@@ -44,6 +44,7 @@ import {
   user,
 } from "@/db/schema";
 import { auth } from "@/lib/auth/better-auth";
+import { mintVoiceToken } from "@/lib/voice/voice-token";
 import {
   CHAT_AUDIO_MIMES,
   CHAT_FILE_MIMES,
@@ -498,6 +499,34 @@ export const createHonoApp = () => {
       brand: process.env.NEXT_PUBLIC_BRAND_NAME || "Centher",
     })
   );
+
+  /**
+   * GET /api/voice/token — mints a short-lived JWT for the Centher voice
+   * server (VoiSpace rooms). Session required.
+   *
+   * Contract (locked — the voice server verifies exactly this):
+   * HS256, secret = BETTER_AUTH_SECRET,
+   * payload { sub: userId, aud: "centher-voice", iat, exp: now+15min }.
+   *
+   * Rate limit: cheap to mint, but throttled per user (30/min) so a stuck
+   * client can't spin it. In-memory per instance — a best-effort guard,
+   * the session check is the real gate.
+   */
+  const voiceTokenHits = new Map<string, number[]>();
+  app.get("/voice/token", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+
+    const nowMs = Date.now();
+    const hits = (voiceTokenHits.get(userId!) || []).filter(
+      (t) => nowMs - t < 60_000
+    );
+    if (hits.length >= 30) apiError("Too many requests", "RATE_LIMITED", 429);
+    hits.push(nowMs);
+    voiceTokenHits.set(userId!, hits);
+
+    return c.json({ token: mintVoiceToken(userId!) });
+  });
 
   /**
    * Phase 4: single source of truth for the LoggedInUser shape.
