@@ -24,10 +24,10 @@ export const ReplyPreview: React.FC<{
       "mb-2 block w-full cursor-pointer rounded-lg border-l-2 px-2 py-1 text-left transition-colors",
       mine
         ? "border-white/60 bg-white/10 hover:bg-white/20"
-        : "border-primary bg-elevation-2 hover:bg-elevation-3"
+        : "border-brand-primary bg-elevation-2 hover:bg-elevation-3"
     )}
   >
-    <p className="text-primary text-[11px] font-semibold">
+    <p className="text-brand-primary text-[11px] font-semibold">
       {reply.sender_name}
     </p>
     <p className="truncate text-xs text-white/70">

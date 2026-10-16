@@ -170,9 +170,9 @@ export const ChatComposer: React.FC<{
   return (
     <div className="border-t border-gray-shade-3 px-4 py-3">
       {replyingTo && (
-        <div className="border-primary mb-2 flex items-center justify-between rounded-lg border-l-2 bg-elevation-1 px-3 py-2">
+        <div className="border-brand-primary mb-2 flex items-center justify-between rounded-lg border-l-2 bg-elevation-1 px-3 py-2">
           <div className="min-w-0">
-            <p className="text-primary text-[11px] font-semibold">
+            <p className="text-brand-primary text-[11px] font-semibold">
               Replying to {replyingTo.sender?.display_name || "Someone"}
             </p>
             <p className="truncate text-xs text-white/70">
@@ -260,7 +260,7 @@ export const ChatComposer: React.FC<{
             <button
               onClick={handleSend}
               disabled={uploading || !canSend}
-              className="bg-primary mr-2 flex-shrink-0 rounded-lg px-4 py-2 text-sm font-semibold text-white disabled:opacity-40"
+              className="bg-brand-primary mr-2 flex-shrink-0 rounded-lg px-4 py-2 text-sm font-semibold text-white disabled:opacity-40"
             >
               {uploading ? "…" : "Send"}
             </button>

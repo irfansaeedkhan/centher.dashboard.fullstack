@@ -143,7 +143,7 @@ const LaunchpadListDetails: NextPageWithLayout = () => {
         <button
           type="button"
           onClick={() => loadLaunchpad()}
-          className="bg-primary rounded-lg px-5 py-2 text-sm font-semibold text-white"
+          className="bg-brand-primary rounded-lg px-5 py-2 text-sm font-semibold text-white"
         >
           Retry
         </button>

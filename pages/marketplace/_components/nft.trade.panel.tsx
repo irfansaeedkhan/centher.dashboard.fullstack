@@ -256,6 +256,6 @@ const panel = `bg-background-shade-3 rounded-10px flex flex-col gap-4 p-6`;
 const panelTitle = `text-sm font-semibold text-white`;
 const greyBox = `flex flex-col gap-2`;
 const greyTxt = `text-sm font-normal text-gray-shade-7`;
-const input = `w-full rounded-[10px] border border-gray-shade-3 bg-black-shade-3 px-4 py-2.5 text-sm text-white placeholder:text-gray-shade-7 focus:border-primary focus:outline-none`;
+const input = `w-full rounded-[10px] border border-gray-shade-3 bg-black-shade-3 px-4 py-2.5 text-sm text-white placeholder:text-gray-shade-7 focus:border-brand-primary focus:outline-none`;
 const bidRow = `flex items-center justify-between gap-3 rounded-[10px] border border-gray-shade-3/50 px-4 py-3`;
 const smallBtn = `rounded-full border border-gray-shade-3 px-3 py-1 text-xs font-semibold text-white transition hover:bg-black-shade-4 disabled:opacity-50`;
