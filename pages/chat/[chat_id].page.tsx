@@ -14,7 +14,7 @@ import {
   type ChatConversation,
   type ChatMessage,
 } from "@/lib/chat/types";
-import { getMessageTime } from "@/lib/chat/utils";
+import { getMessageTime, isEditExpired } from "@/lib/chat/utils";
 import {
   MessageContent,
   MessageStatus,
@@ -36,8 +36,10 @@ const SingleChat: NextPageWithLayout = () => {
   const {
     messages,
     loading,
+    hasMore,
+    loadingOlder,
+    loadOlder,
     typingUsers,
-    sendMessage,
     editMessage,
     deleteMessage,
     toggleReaction,
@@ -52,6 +54,7 @@ const SingleChat: NextPageWithLayout = () => {
   const [confirmDelete, setConfirmDelete] = useState<ChatMessage | null>(null);
   const [lightbox, setLightbox] = useState<string | null>(null);
   const endRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
 
   const myId = user?._id ?? "";
 
@@ -71,13 +74,34 @@ const SingleChat: NextPageWithLayout = () => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages.length]);
 
+  // Chat-grill Q13: scroll-up loads older messages (threads over 100
+  // messages were silently truncated before). Scroll position is restored
+  // so the view doesn't jump when the older page prepends.
+  const handleListScroll = () => {
+    const el = listRef.current;
+    if (!el || loadingOlder || !hasMore) return;
+    if (el.scrollTop > 120) return;
+    const prevHeight = el.scrollHeight;
+    const prevTop = el.scrollTop;
+    loadOlder().then(() => {
+      requestAnimationFrame(() => {
+        const cur = listRef.current;
+        if (cur) cur.scrollTop = cur.scrollHeight - prevHeight + prevTop;
+      });
+    });
+  };
   // Scroll to the original message when a quoted reply is clicked, and
   // briefly highlight it. No-op if the message isn't in the loaded batch.
   const scrollToMessage = (id: string) => {
     const el = document.querySelector(`[data-message-id="${CSS.escape(id)}"]`);
     if (!el) return;
     el.scrollIntoView({ behavior: "smooth", block: "center" });
-    const highlight = ["outline", "outline-2", "outline-primary", "outline-offset-2"];
+    const highlight = [
+      "outline",
+      "outline-2",
+      "outline-primary",
+      "outline-offset-2",
+    ];
     el.classList.add(...highlight);
     window.setTimeout(() => el.classList.remove(...highlight), 1500);
   };
@@ -120,7 +144,16 @@ const SingleChat: NextPageWithLayout = () => {
         </div>
       </div>
 
-      <div className="customScrollbar flex-1 overflow-y-auto bg-[url(/images/chat-bg-with-centher-logo.png)] bg-cover bg-center px-4 py-4">
+      <div
+        ref={listRef}
+        onScroll={handleListScroll}
+        className="customScrollbar flex-1 overflow-y-auto bg-[url(/images/chat-bg-with-centher-logo.png)] bg-cover bg-center px-4 py-4"
+      >
+        {loadingOlder && (
+          <p className="mb-2 text-center text-xs text-gray-shade-7">
+            Loading older messages…
+          </p>
+        )}{" "}
         {loading ? (
           <div className="flex h-full items-center justify-center">
             <Image
@@ -268,7 +301,7 @@ const SingleChat: NextPageWithLayout = () => {
               Delete message?
             </h3>
             <p className="mt-2 text-sm text-gray-shade-7">
-              This message will be permanently removed.
+              This message will be removed for everyone.
             </p>
             <div className="mt-6 flex justify-end gap-3">
               <button
@@ -361,6 +394,7 @@ const MessageBubble: React.FC<{
             )}
           >
             {getMessageTime(message.created_at)}
+            {message.edited_at && <span className="italic">edited</span>}
             <MessageStatus status={message.status} mine={mine} />
           </p>
           <div className="absolute -top-2 right-2 hidden gap-1 group-hover:flex">
@@ -378,16 +412,21 @@ const MessageBubble: React.FC<{
             >
               ↩️
             </button>
-            {mine && message.kind === "text" && (
-              <button
-                aria-label="Edit"
-                className="rounded-full bg-elevation-2 px-2 py-0.5 text-xs shadow"
-                onClick={onEdit}
-              >
-                ✏️
-              </button>
-            )}
-            {mine && (
+            {/* Chat-grill Q14: no edit UI after the 15-minute window, and
+                never on deleted messages. The server enforces this too. */}
+            {mine &&
+              message.kind === "text" &&
+              !message.is_deleted &&
+              !isEditExpired(message.created_at) && (
+                <button
+                  aria-label="Edit"
+                  className="rounded-full bg-elevation-2 px-2 py-0.5 text-xs shadow"
+                  onClick={onEdit}
+                >
+                  ✏️
+                </button>
+              )}
+            {mine && !message.is_deleted && (
               <button
                 aria-label="Delete"
                 className="rounded-full bg-elevation-2 px-2 py-0.5 text-xs shadow"

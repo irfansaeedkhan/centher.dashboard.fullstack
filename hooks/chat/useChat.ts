@@ -6,6 +6,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { chatApi } from "@/lib/chat/api";
+import { mergeMessages, prependOlder } from "@/lib/chat/merge";
 import type {
   ChatConversation,
   ChatMessage,
@@ -47,7 +48,7 @@ export const useChatConversations = () => {
       await refresh();
       return convo.id;
     },
-    [refresh],
+    [refresh]
   );
 
   const deleteConversation = useCallback(async (id: string) => {
@@ -64,8 +65,8 @@ export const useChatConversations = () => {
     }
     setConversations((prev) =>
       prev.map((c) =>
-        c.id === convo.id ? { ...c, is_pinned: !convo.is_pinned } : c,
-      ),
+        c.id === convo.id ? { ...c, is_pinned: !convo.is_pinned } : c
+      )
     );
   }, []);
 
@@ -86,26 +87,42 @@ const POLL_MS = 5000;
 
 export const useChatMessages = (chatId: string | undefined) => {
   const { user } = useUser();
+  const myId = user?._id ?? "";
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(true);
-  const [sending, setSending] = useState(false);
   const [typingUsers, setTypingUsers] = useState<TypingUser[]>([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingOlder, setLoadingOlder] = useState(false);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const typingThrottleRef = useRef(0);
+  // Chat-grill Q19: newest message id we've already marked read. The poll
+  // used to POST markAsRead every 5s even with zero new messages (~24
+  // pointless writes/min per idle open chat). Now it only fires when the
+  // newest message actually changed.
+  const markedNewestIdRef = useRef<string | null>(null);
+  const oldestIdRef = useRef<string | null>(null);
 
   const fetchMessages = useCallback(async () => {
     if (!chatId || !user) return;
     try {
-      const { messages: list } = await chatApi.listMessages(chatId, {
+      const { messages: list, has_more } = await chatApi.listMessages(chatId, {
         limit: 100,
       });
-      setMessages(list);
-      // Bulk-mark others' messages as read (single request, N2) instead of
+      // Chat-grill Q7: merge by id instead of full-replacing — a poll
+      // response that started before my send completed no longer wipes
+      // the optimistically appended message.
+      setMessages((prev) => mergeMessages(prev, list, myId));
+      if (list.length > 0) {
+        oldestIdRef.current = list[0].id;
+        if (typeof has_more === "boolean") setHasMore(has_more);
+      }
+      // Bulk-mark others' messages as read (single request) instead of
       // one POST per message. The API returns messages chronological ASC
       // (oldest first), so list[list.length - 1] is the newest — the
       // correct inclusive boundary.
       const newest = list.length > 0 ? list[list.length - 1] : null;
-      if (newest) {
+      if (newest && newest.id !== markedNewestIdRef.current) {
+        markedNewestIdRef.current = newest.id;
         chatApi
           .markAsRead(chatId, { upToMessageId: newest.id })
           .catch(() => {});
@@ -115,7 +132,7 @@ export const useChatMessages = (chatId: string | undefined) => {
     } finally {
       setLoading(false);
     }
-  }, [chatId, user]);
+  }, [chatId, user, myId]);
 
   const fetchTyping = useCallback(async () => {
     if (!chatId || !user) return;
@@ -126,6 +143,31 @@ export const useChatMessages = (chatId: string | undefined) => {
       // ignore
     }
   }, [chatId, user]);
+
+  // Chat-grill Q13: scroll-up pagination. The client never sent `before`
+  // before — threads over 100 messages were silently truncated.
+  const loadOlder = useCallback(async () => {
+    if (!chatId || loadingOlder || !hasMore) return;
+    const oldestId = oldestIdRef.current;
+    if (!oldestId) return;
+    setLoadingOlder(true);
+    try {
+      const { messages: older, has_more } = await chatApi.listMessages(chatId, {
+        before: oldestId,
+        limit: 50,
+      });
+      if (older.length > 0) {
+        oldestIdRef.current = older[0].id;
+        setMessages((prev) => prependOlder(prev, older));
+      }
+      if (typeof has_more === "boolean") setHasMore(has_more);
+      else if (older.length < 50) setHasMore(false);
+    } catch {
+      // keep what we have
+    } finally {
+      setLoadingOlder(false);
+    }
+  }, [chatId, loadingOlder, hasMore]);
 
   // Throttled typing ping (max once per 3s).
   const sendTypingPing = useCallback(() => {
@@ -140,6 +182,10 @@ export const useChatMessages = (chatId: string | undefined) => {
     setMessages([]);
     setTypingUsers([]);
     setLoading(true);
+    setHasMore(true);
+    setLoadingOlder(false);
+    markedNewestIdRef.current = null;
+    oldestIdRef.current = null;
     fetchMessages();
     if (chatId) {
       chatApi.markAsRead(chatId).catch(() => {});
@@ -153,33 +199,24 @@ export const useChatMessages = (chatId: string | undefined) => {
     };
   }, [chatId, fetchMessages, fetchTyping]);
 
-  const sendMessage = useCallback(
-    async (body: string) => {
-      if (!chatId || !body.trim()) return;
-      setSending(true);
-      try {
-        const msg = await chatApi.sendMessage(chatId, body.trim());
-        setMessages((prev) => [...prev, msg]);
-        chatApi.markAsRead(chatId).catch(() => {});
-      } catch (e: any) {
-        toast.error(e?.message || "Could not send message");
-        throw e;
-      } finally {
-        setSending(false);
-      }
-    },
-    [chatId],
-  );
-
+  // Chat-grill Q25: the old sendMessage here was dead — the composer sends
+  // through chatApi directly (divergent double-send guards). One send path:
+  // the composer's. Deleted instead of "fixed".
   const editMessage = useCallback(async (messageId: string, body: string) => {
     const msg = await chatApi.editMessage(messageId, body.trim());
     setMessages((prev) => prev.map((m) => (m.id === messageId ? msg : m)));
     toast.success("Message updated");
   }, []);
 
+  // Chat-grill Q16: soft delete — mark the placeholder instead of dropping
+  // the row from the list (the server keeps the row with is_deleted).
   const deleteMessage = useCallback(async (messageId: string) => {
     await chatApi.deleteMessage(messageId);
-    setMessages((prev) => prev.filter((m) => m.id !== messageId));
+    setMessages((prev) =>
+      prev.map((m) =>
+        m.id === messageId ? { ...m, is_deleted: true, body: "" } : m
+      )
+    );
     toast.success("Message deleted");
   }, []);
 
@@ -189,7 +226,7 @@ export const useChatMessages = (chatId: string | undefined) => {
       // Refetch to get accurate grouped counts.
       fetchMessages();
     },
-    [fetchMessages],
+    [fetchMessages]
   );
 
   const appendMessage = useCallback((msg: ChatMessage) => {
@@ -199,9 +236,10 @@ export const useChatMessages = (chatId: string | undefined) => {
   return {
     messages,
     loading,
-    sending,
+    hasMore,
+    loadingOlder,
+    loadOlder,
     typingUsers,
-    sendMessage,
     editMessage,
     deleteMessage,
     toggleReaction,

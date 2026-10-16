@@ -95,6 +95,13 @@ export const profiles = pgTable("profiles", {
   }>(),
   /** Team bots (2026-10-16): demo team-member accounts that auto-reply in DMs. */
   isBot: boolean("is_bot").notNull().default(false),
+  /**
+   * Chat-grill Q20: the bot's role is stored explicitly at seed time.
+   * Deriving it from the bio at reply time (roleFromBio) meant a bio edit
+   * silently re-personalitied the bot; the responder reads this column and
+   * only falls back to roleFromBio when it is NULL (pre-migration rows).
+   */
+  botRole: text("bot_role"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
@@ -114,7 +121,7 @@ export const orgMembers = pgTable(
     title: text("title").notNull().default(""),
     joinedAt: timestamp("joined_at").notNull().defaultNow(),
   },
-  (t) => [primaryKey({ columns: [t.orgOwnerId, t.memberId] })],
+  (t) => [primaryKey({ columns: [t.orgOwnerId, t.memberId] })]
 );
 
 export const orgInvites = pgTable("org_invites", {
@@ -158,7 +165,7 @@ export const postLikes = pgTable(
       .references(() => user.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
-  (t) => [primaryKey({ columns: [t.postId, t.userId] })],
+  (t) => [primaryKey({ columns: [t.postId, t.userId] })]
 );
 
 export const comments = pgTable("comments", {
@@ -177,6 +184,13 @@ export const conversations = pgTable("conversations", {
   id: uuid("id").defaultRandom().primaryKey(),
   title: text("title").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
+  /**
+   * Chat-grill Q3: dedup key for 1-on-1 conversations (`dm:<uidA>:<uidB>`,
+   * ids sorted). UNIQUE + NULL for groups (Postgres allows multiple NULLs).
+   * Lets concurrent creates resolve to one row via on-conflict instead of a
+   * check-then-act scan. Backfilled for existing 2-member conversations.
+   */
+  dmPairKey: text("dm_pair_key").unique(),
 });
 
 // Phase 15: chat attachments (images, videos, audio, files, voice notes).
@@ -216,7 +230,7 @@ export const chatTyping = pgTable(
       .references(() => user.id, { onDelete: "cascade" }),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
   },
-  (t) => [primaryKey({ columns: [t.conversationId, t.userId] })],
+  (t) => [primaryKey({ columns: [t.conversationId, t.userId] })]
 );
 
 export const messages = pgTable("messages", {
@@ -224,9 +238,13 @@ export const messages = pgTable("messages", {
   conversationId: uuid("conversation_id")
     .notNull()
     .references(() => conversations.id, { onDelete: "cascade" }),
-  senderId: text("sender_id")
-    .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
+  // Chat-grill Q2 (tombstone, not cascade-wipe): when a user is deleted,
+  // their messages stay as "deleted" placeholders in everyone else's
+  // threads instead of vanishing. Nullable + SET NULL; buildMessage maps a
+  // null sender to the deleted-message placeholder.
+  senderId: text("sender_id").references(() => user.id, {
+    onDelete: "set null",
+  }),
   body: text("body").notNull(),
   // Phase 15: message kind (text|image|video|audio|file|voice)
   kind: text("kind").notNull().default("text"),
@@ -236,11 +254,51 @@ export const messages = pgTable("messages", {
   // FK to messages(id) ON DELETE SET NULL is enforced in SQL migration
   // 0003_chat_complete.sql (self-reference breaks drizzle type inference).
   replyToId: uuid("reply_to_id"),
-  // Phase 15: delivery status (sent|delivered|read)
+  // Phase 15: delivery status (sent|read). The `delivered` state was dead
+  // (nothing ever wrote it) — chat-grill Q8 simplified the machine to two
+  // states rather than keep an unreachable third.
   status: text("status").notNull().default("sent"),
   isDeleted: boolean("is_deleted").notNull().default(false),
+  /**
+   * Chat-grill Q14: 15-minute edit window. Set when the sender edits;
+   * null = never edited. Rendered as an "edited" mark in the UI.
+   */
+  editedAt: timestamp("edited_at"),
+  /**
+   * Chat-grill Q14: frozen quote. When a message replies to another, the
+   * target's {id, body, kind, sender_name} is snapshotted here so later
+   * edits/deletes of the original can't silently rewrite quoted history.
+   */
+  replySnapshot: jsonb("reply_snapshot").$type<{
+    id: string;
+    body: string;
+    kind: string;
+    sender_name: string;
+  } | null>(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
+
+/**
+ * Chat-grill Q5: atomic claim rows for the team-bot responder.
+ * The responder runs on the Neon HTTP driver, which has no multi-statement
+ * transactions — so pg_advisory_xact_lock cannot span check+insert. Instead
+ * each run claims (conversation_id, message_id) with a single
+ * INSERT … ON CONFLICT DO NOTHING; only the run that gets the row replies.
+ * Rows are kept as the "already replied" record (never deleted on success).
+ */
+export const botReplyClaims = pgTable(
+  "bot_reply_claims",
+  {
+    conversationId: uuid("conversation_id")
+      .notNull()
+      .references(() => conversations.id, { onDelete: "cascade" }),
+    messageId: uuid("message_id")
+      .notNull()
+      .references(() => messages.id, { onDelete: "cascade" }),
+    claimedAt: timestamp("claimed_at").notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.conversationId, t.messageId] })]
+);
 
 export const channels = pgTable("channels", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -385,7 +443,7 @@ export const follows = pgTable(
       .references(() => user.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
-  (t) => [primaryKey({ columns: [t.followerId, t.followingId] })],
+  (t) => [primaryKey({ columns: [t.followerId, t.followingId] })]
 );
 
 /** Phase 3: in-app notifications (follow / like / reply signals) */
@@ -433,7 +491,7 @@ export const conversationMembers = pgTable(
     lastReadAt: timestamp("last_read_at"),
     joinedAt: timestamp("joined_at").notNull().defaultNow(),
   },
-  (t) => [primaryKey({ columns: [t.conversationId, t.userId] })],
+  (t) => [primaryKey({ columns: [t.conversationId, t.userId] })]
 );
 
 /** Phase 5: chat — emoji reactions on messages (toggle per user+emoji). */
@@ -454,9 +512,9 @@ export const messageReactions = pgTable(
     uniqueIndex("message_reactions_msg_user_emoji_idx").on(
       t.messageId,
       t.userId,
-      t.emoji,
+      t.emoji
     ),
-  ],
+  ]
 );
 
 /** Phase 7: per-user auto-restake pool ids (staking rewards). */

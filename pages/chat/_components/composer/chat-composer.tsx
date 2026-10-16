@@ -1,12 +1,16 @@
 import React from "react";
 import toast from "react-hot-toast";
 import { chatApi } from "@/lib/chat/api";
-import type { ChatMessage, ChatMessageKind } from "@/lib/chat/types";
+import type { ChatMessage } from "@/lib/chat/types";
 import {
   classifyChatFile,
   uploadChatMedia,
   CloudinaryNotConfiguredError,
 } from "@/lib/media/cloudinary";
+import {
+  prepareAttachments,
+  sendPreparedAttachments,
+} from "@/lib/chat/send-attachments";
 import {
   AttachmentPreview,
   VoiceRecorder,
@@ -97,34 +101,34 @@ export const ChatComposer: React.FC<{
         return;
       }
 
-      // Send each attachment as its own message (caption = draft on first).
-      for (let i = 0; i < attachments.length; i++) {
-        const item = attachments[i];
-        setUploadProgress(
-          `Uploading ${i + 1}/${attachments.length}: ${item.file.name}`
-        );
-        const result = await uploadChatMedia(item.file);
-        const att = await chatApi.registerAttachment({
-          kind: result.kind,
-          mime_type: result.mimeType,
-          file_name: result.fileName,
-          file_size: result.fileSize,
-          url: result.url,
-          duration_sec: result.durationSec,
-          width: result.width,
-          height: result.height,
-        });
-        const msg = await chatApi.sendMessage(
-          conversationId,
-          i === 0 ? draft.trim() : "",
-          {
-            kind: result.kind as ChatMessageKind,
-            attachment_id: att.id,
-            reply_to_id: replyingTo?.id,
-          }
-        );
-        onSent(msg);
-      }
+      // Chat-grill Q17: two phases. Phase 1 uploads + registers ALL
+      // attachments before anything is sent — a failure aborts here, so
+      // there are no partial sends and retries can't duplicate message 1.
+      const prepared = await prepareAttachments(
+        attachments.map((a) => a.file),
+        attachments.map((a) => a.kind),
+        {
+          upload: async (file) => {
+            const idx = attachments.findIndex((a) => a.file === file);
+            setUploadProgress(
+              `Uploading ${idx + 1}/${attachments.length}: ${file.name}`
+            );
+            return uploadChatMedia(file);
+          },
+          register: (data) => chatApi.registerAttachment(data),
+        }
+      );
+
+      // Phase 2: send one message per attachment (caption = draft on first).
+      setUploadProgress("Sending…");
+      const caption = draft.trim();
+      const replyToId = replyingTo?.id;
+      await sendPreparedAttachments(prepared, caption, replyToId, {
+        sendMessage: async (body, opts) => {
+          const msg = await chatApi.sendMessage(conversationId, body, opts);
+          onSent(msg);
+        },
+      });
       setPending([]);
       setDraft("");
       onClearReply();
