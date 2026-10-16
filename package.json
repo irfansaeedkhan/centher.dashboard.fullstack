@@ -16,6 +16,7 @@
     "test": "jest",
     "db:push": "drizzle-kit push",
     "db:seed": "tsx scripts/seed.ts",
+    "bots:respond": "tsx scripts/bot-responder.ts",
     "db:studio": "drizzle-kit studio"
   },
   "engines": {

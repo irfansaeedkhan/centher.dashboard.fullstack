@@ -93,6 +93,8 @@ export const profiles = pgTable("profiles", {
     consent_given: boolean;
     timestamp: string;
   }>(),
+  /** Team bots (2026-10-16): demo team-member accounts that auto-reply in DMs. */
+  isBot: boolean("is_bot").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 

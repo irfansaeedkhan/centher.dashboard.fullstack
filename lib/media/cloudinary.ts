@@ -229,6 +229,11 @@ export interface ChatUploadResult {
 /**
  * Upload a chat media file to Cloudinary via the unsigned preset.
  * Uses resource_type "auto" so video/audio are accepted, not just images.
+ *
+ * IMPORTANT: The Cloudinary upload preset must allow the chat formats.
+ * If the preset only allows images (the Phase 11 default), Cloudinary
+ * rejects video/audio with "Image file format X not allowed". See
+ * docs/CLOUDINARY_SETUP.md for the required preset configuration.
  */
 export async function uploadChatMedia(
   file: File,
@@ -257,6 +262,16 @@ export async function uploadChatMedia(
   if (!res.ok) {
     const body = await res.json().catch(() => null);
     const detail = body?.error?.message || `HTTP ${res.status}`;
+    // The upload preset in the Cloudinary dashboard restricts allowed
+    // formats. If it only allows images (Phase 11 default), video/audio
+    // uploads fail here even though client-side validation passed.
+    // Surface a helpful message instead of Cloudinary's cryptic one.
+    if (/file format .* not allowed/i.test(detail)) {
+      throw new CloudinaryUploadError(
+        `Upload failed: the Cloudinary upload preset does not allow "${file.type || "this file type"}". ` +
+          `Update the preset's allowed formats in the Cloudinary dashboard (see docs/CLOUDINARY_SETUP.md).`,
+      );
+    }
     throw new CloudinaryUploadError(`Upload failed: ${detail}`);
   }
 

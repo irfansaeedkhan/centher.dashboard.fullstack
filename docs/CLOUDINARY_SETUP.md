@@ -19,9 +19,15 @@ the one manual step: creating the account and the upload preset.
    - **Preset name:** `centher_uploads` (use exactly this, or update the env var below)
    - **Signing Mode:** **Unsigned** (this is what lets the browser upload without a server signature)
    - **Folder:** `centher`
-   - **Allowed formats:** `jpg,png,webp,gif`
-   - **Max file size:** `10 MB`
+   - **Allowed formats:** leave empty (allow all), OR explicitly list:
+     `jpg,jpeg,png,gif,webp,avif,bmp,mp4,webm,ogg,mov,mkv,mp3,wav,m4a,aac,flac,pdf,txt,csv,md,json,zip,doc,docx,xls,xlsx,ppt,pptx`
+   - **Max file size:** `50 MB` (chat video uploads need up to 50MB; images are capped at 10MB client-side)
 4. Click **Save**.
+
+> **Critical for chat:** The preset MUST allow video/audio formats. The old
+> Phase 11 default (`jpg,png,webp,gif` only, 10MB max) breaks voice messages
+> and video uploads — Cloudinary rejects them with "Image file format webm
+> not allowed". If chat media uploads fail, check this preset first.
 
 > Why unsigned? Signed uploads need a server-side signature endpoint. The
 > unsigned preset keeps uploads working with zero backend code, and the
