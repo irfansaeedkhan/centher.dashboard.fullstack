@@ -177,6 +177,13 @@ export const conversations = pgTable("conversations", {
   id: uuid("id").defaultRandom().primaryKey(),
   title: text("title").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
+  /**
+   * Chat-grill Q3: dedup key for 1-on-1 conversations (`dm:<uidA>:<uidB>`,
+   * ids sorted). UNIQUE + NULL for groups (Postgres allows multiple NULLs).
+   * Lets concurrent creates resolve to one row via on-conflict instead of a
+   * check-then-act scan. Backfilled for existing 2-member conversations.
+   */
+  dmPairKey: text("dm_pair_key").unique(),
 });
 
 // Phase 15: chat attachments (images, videos, audio, files, voice notes).
@@ -224,9 +231,13 @@ export const messages = pgTable("messages", {
   conversationId: uuid("conversation_id")
     .notNull()
     .references(() => conversations.id, { onDelete: "cascade" }),
-  senderId: text("sender_id")
-    .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
+  // Chat-grill Q2 (tombstone, not cascade-wipe): when a user is deleted,
+  // their messages stay as "deleted" placeholders in everyone else's
+  // threads instead of vanishing. Nullable + SET NULL; buildMessage maps a
+  // null sender to the deleted-message placeholder.
+  senderId: text("sender_id").references(() => user.id, {
+    onDelete: "set null",
+  }),
   body: text("body").notNull(),
   // Phase 15: message kind (text|image|video|audio|file|voice)
   kind: text("kind").notNull().default("text"),
@@ -236,9 +247,36 @@ export const messages = pgTable("messages", {
   // FK to messages(id) ON DELETE SET NULL is enforced in SQL migration
   // 0003_chat_complete.sql (self-reference breaks drizzle type inference).
   replyToId: uuid("reply_to_id"),
-  // Phase 15: delivery status (sent|delivered|read)
+  // Phase 15: delivery status (sent|read). The `delivered` state was dead
+  // (nothing ever wrote it) — chat-grill Q8 simplified the machine to two
+  // states rather than keep an unreachable third.
   status: text("status").notNull().default("sent"),
   isDeleted: boolean("is_deleted").notNull().default(false),
+  /**
+   * Chat-grill Q14: 15-minute edit window. Set when the sender edits;
+   * null = never edited. Rendered as an "edited" mark in the UI.
+   */
+  editedAt: timestamp("edited_at"),
+  /**
+   * Chat-grill Q14: frozen quote. When a message replies to another, the
+   * target's {id, body, kind, sender_name} is snapshotted here so later
+   * edits/deletes of the original can't silently rewrite quoted history.
+   */
+  replySnapshot: jsonb("reply_snapshot").$type<{
+    id: string;
+    body: string;
+    kind: string;
+    sender_name: string;
+  } | null>(),
+  /**
+   * Chat-grill Q5: atomic claim flag for the team-bots auto-responder.
+   * The responder does `UPDATE messages SET bot_replied = true WHERE id =
+   * $1 AND bot_replied = false RETURNING id` — exactly one overlapping run
+   * wins the row lock, so overlapping runs can never double-reply. (The
+   * responder itself lives on the team-bots branch; the column lands here
+   * so the migration order stays sane.)
+   */
+  botReplied: boolean("bot_replied").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 

@@ -51,6 +51,8 @@ import {
   CHAT_IMAGE_MIMES,
   CHAT_VIDEO_MIMES,
 } from "@/lib/media/cloudinary";
+import { isTrustedAttachmentUrl } from "@/lib/chat/attachments";
+import { dmPairKey, EDIT_WINDOW_MS } from "@/lib/chat/utils";
 
 type AppEnv = {
   Variables: {
@@ -380,6 +382,7 @@ const getFollowCounts = async (userId: string) => {
 /** Phase 3: fetch profile rows for a list of user ids (single query). */
 const fetchUserCards = async (userIds: string[], viewerId: string | null) => {
   if (userIds.length === 0) return [];
+  const uniq = [...new Set(userIds)];
   const rows = await db
     .select({
       userId: profiles.userId,
@@ -389,11 +392,30 @@ const fetchUserCards = async (userIds: string[], viewerId: string | null) => {
       isBot: profiles.isBot,
     })
     .from(profiles)
-    .where(inArray(profiles.userId, userIds));
-  const followed = await getFollowedUserIds(viewerId, userIds);
+    .where(inArray(profiles.userId, uniq));
+  const followed = await getFollowedUserIds(viewerId, uniq);
   // Preserve the requested order.
   const byId = new Map(rows.map((r) => [r.userId, r]));
-  return userIds
+  // Chat-grill Q27: ids with no profile row (never onboarded, or row
+  // missing) used to vanish here — conversations rendered as "Chat" and
+  // senders as "Someone". Fall back to the auth user row so every real
+  // user gets a name instead of a placeholder.
+  const missing = uniq.filter((id) => !byId.has(id));
+  if (missing.length > 0) {
+    const urows = await db
+      .select({ id: user.id, name: user.name, image: user.image })
+      .from(user)
+      .where(inArray(user.id, missing));
+    for (const u of urows) {
+      byId.set(u.id, {
+        userId: u.id,
+        displayName: u.name,
+        avatarUrl: u.image,
+        membership: "citizen",
+      });
+    }
+  }
+  return uniq
     .map((id) => byId.get(id))
     .filter((r): r is NonNullable<typeof r> => !!r)
     .map((r) =>
@@ -1972,26 +1994,25 @@ export const createHonoApp = () => {
           eq(notifications.status, "unread")
         )
       );
-    // Chats with inbound activity (messages from someone else) — the best
-    // "needs attention" proxy without per-conversation read state.
-    // Scoped to conversations the viewer participates in (has sent a message
-    // in); otherwise every conversation with any inbound message inflates
-    // everyone's badge.
+    // Chat-grill Q10: the old "chats" count was wrong in both directions —
+    // it only counted conversations the viewer had also sent in (a first
+    // message from a stranger never lit the badge) and it never decreased
+    // on read. Now: conversations with at least one message newer than my
+    // lastReadAt — the same read state the chat list itself uses.
     const [{ count: chats }] = await db
       .select({
-        count: sql<number>`count(distinct ${messages.conversationId})::int`,
+        count: sql<number>`count(distinct ${conversationMembers.conversationId})::int`,
       })
-      .from(messages)
+      .from(conversationMembers)
       .where(
         and(
-          ne(messages.senderId, userId!),
-          inArray(
-            messages.conversationId,
-            db
-              .select({ id: messages.conversationId })
-              .from(messages)
-              .where(eq(messages.senderId, userId!))
-          )
+          eq(conversationMembers.userId, userId!),
+          sql`EXISTS (
+            SELECT 1 FROM "messages" m
+            WHERE m."conversation_id" = ${conversationMembers.conversationId}
+              AND m."sender_id" != ${userId}
+              AND m."created_at" > COALESCE(${conversationMembers.lastReadAt}, 'epoch'::timestamptz)
+          )`
         )
       );
     return c.json({
@@ -2605,8 +2626,10 @@ export const createHonoApp = () => {
 
     let unreadCount = 0;
     if (lastMsg) {
-      const unreadRows = await db
-        .select({ id: messages.id })
+      // Chat-grill Q18: COUNT(*) instead of selecting every id just to
+      // take .length (was an unbounded fetch on 10k-unread threads).
+      const [{ count }] = await db
+        .select({ count: sql<number>`count(*)::int` })
         .from(messages)
         .where(
           and(
@@ -2617,7 +2640,7 @@ export const createHonoApp = () => {
               : undefined
           )
         );
-      unreadCount = unreadRows.length;
+      unreadCount = count ?? 0;
     }
 
     return {
@@ -2638,7 +2661,24 @@ export const createHonoApp = () => {
     };
   };
 
-  /** Message shape with sender card + grouped reactions. */
+  /**
+   * Chat-grill Q2: synthetic sender card for tombstoned messages (the
+   * sender's account was deleted — sender_id is NULL). Rendered as a
+   * "deleted" placeholder in everyone else's threads instead of vanishing.
+   */
+  const deletedUserCard = () => ({
+    _id: "",
+    display_name: "Deleted user",
+    profile_image: "/images/centher.logo.favicon.png",
+    membership: {
+      last_status: "citizen" as const,
+      status: "citizen" as const,
+      endAt: 0,
+    },
+    is_followed_by_loggedin_user: false,
+  });
+
+  /** Single-message shape (thin wrapper — batch path does the work). */
   const buildMessage = async (messageId: string, viewerId: string) => {
     const [msg] = await db
       .select()
@@ -2646,32 +2686,97 @@ export const createHonoApp = () => {
       .where(eq(messages.id, messageId))
       .limit(1);
     if (!msg) apiError("Message not found", "NOT_FOUND", 404);
+    const [built] = await buildMessages([msg!], viewerId);
+    return built;
+  };
 
-    const [senderCard] = await fetchUserCards([msg!.senderId], viewerId);
+  /**
+   * Chat-grill Q18: batched message assembly. The old per-message builder
+   * ran 5-7 queries per message (re-select, sender card, reactions,
+   * attachment, reply-to + its card) — ~500+ queries for a 100-message
+   * poll. This issues ~6 queries total regardless of batch size:
+   * reactions, attachments, legacy reply targets, and one sender-card
+   * fetch for every distinct sender involved.
+   *
+   * Also applies the trust/tombstone rules:
+   * - Q1: attachments whose URL is not on the trusted host are stripped
+   *   (never rendered as embeds) — legacy off-host rows stay in the DB.
+   * - Q2: null sender_id (deleted account) -> deleted placeholder.
+   * - Q14: reply_to prefers the frozen reply_snapshot; legacy rows fall
+   *   back to a live lookup. edited_at is exposed for the "edited" mark.
+   * - Q16: soft-deleted messages are redacted (no body/attachment leak).
+   */
+  type MessageRow = typeof messages.$inferSelect;
+  const buildMessages = async (rows: MessageRow[], viewerId: string) => {
+    if (rows.length === 0) return [];
+    const ids = rows.map((m) => m.id);
+
     const reactionRows = await db
       .select()
       .from(messageReactions)
-      .where(eq(messageReactions.messageId, messageId));
-    const byEmoji = new Map<
+      .where(inArray(messageReactions.messageId, ids));
+
+    const attachmentIds = [
+      ...new Set(
+        rows.map((m) => m.attachmentId).filter((a): a is string => !!a)
+      ),
+    ];
+    const attById = new Map<string, typeof chatAttachments.$inferSelect>();
+    if (attachmentIds.length > 0) {
+      const attRows = await db
+        .select()
+        .from(chatAttachments)
+        .where(inArray(chatAttachments.id, attachmentIds));
+      for (const a of attRows) attById.set(a.id, a);
+    }
+
+    // Legacy reply targets (rows that predate reply_snapshot).
+    const liveReplyIds = [
+      ...new Set(
+        rows
+          .filter((m) => m.replyToId && !m.replySnapshot)
+          .map((m) => m.replyToId as string)
+      ),
+    ];
+    const liveById = new Map<string, MessageRow>();
+    if (liveReplyIds.length > 0) {
+      const liveRows = await db
+        .select()
+        .from(messages)
+        .where(inArray(messages.id, liveReplyIds));
+      for (const r of liveRows) liveById.set(r.id, r);
+    }
+
+    const senderIds = new Set<string>();
+    for (const m of rows) if (m.senderId) senderIds.add(m.senderId);
+    for (const r of liveById.values()) if (r.senderId) senderIds.add(r.senderId);
+    const cards = await fetchUserCards([...senderIds], viewerId);
+    const cardById = new Map<string, (typeof cards)[number]>();
+    for (const c of cards) cardById.set((c as any)._id, c);
+
+    const reactionsByMsg = new Map<
       string,
-      { count: number; reacted_by_me: boolean }
+      Map<string, { count: number; reacted_by_me: boolean }>
     >();
     for (const r of reactionRows) {
+      let byEmoji = reactionsByMsg.get(r.messageId);
+      if (!byEmoji) {
+        byEmoji = new Map();
+        reactionsByMsg.set(r.messageId, byEmoji);
+      }
       const e = byEmoji.get(r.emoji) ?? { count: 0, reacted_by_me: false };
       e.count += 1;
       if (r.userId === viewerId) e.reacted_by_me = true;
       byEmoji.set(r.emoji, e);
     }
 
-    // Phase 15: attachment + reply preview
-    let attachment: any = null;
-    if (msg!.attachmentId) {
-      const [att] = await db
-        .select()
-        .from(chatAttachments)
-        .where(eq(chatAttachments.id, msg!.attachmentId))
-        .limit(1);
-      if (att) {
+    return rows.map((msg) => {
+      const tombstoned = msg.senderId == null; // Q2: account deleted
+      const deleted = msg.isDeleted || tombstoned; // Q16: soft delete
+
+      let attachment: any = null;
+      const att = msg.attachmentId ? attById.get(msg.attachmentId) : undefined;
+      if (att && !deleted && isTrustedAttachmentUrl(att.url)) {
         attachment = {
           id: att.id,
           kind: att.kind,
@@ -2685,62 +2790,176 @@ export const createHonoApp = () => {
           thumbnail_url: att.thumbnailUrl,
         };
       }
-    }
-    let replyTo: any = null;
-    if (msg!.replyToId) {
-      const [rm] = await db
-        .select({
-          id: messages.id,
-          body: messages.body,
-          kind: messages.kind,
-          senderId: messages.senderId,
-        })
-        .from(messages)
-        .where(eq(messages.id, msg!.replyToId))
-        .limit(1);
-      if (rm) {
-        const [rc] = await fetchUserCards([rm.senderId], viewerId);
-        replyTo = {
-          id: rm.id,
-          body: rm.body,
-          kind: rm.kind,
-          sender_name: rc?.display_name ?? "Someone",
-        };
-      }
-    }
 
-    return {
-      id: msg!.id,
-      body: msg!.body,
-      kind: msg!.kind ?? "text",
-      sender_id: msg!.senderId,
-      created_at: msg!.createdAt,
-      status: msg!.status ?? "sent",
-      is_deleted: msg!.isDeleted ?? false,
-      sender: senderCard ?? null,
-      attachment,
-      reply_to: replyTo,
-      reactions: [...byEmoji.entries()].map(([emoji, v]) => ({
-        emoji,
-        ...v,
-      })),
-    };
+      let replyTo: any = null;
+      const snap = msg.replySnapshot as {
+        id: string;
+        body: string;
+        kind: string;
+        sender_name: string;
+      } | null;
+      if (snap) {
+        replyTo = {
+          id: snap.id,
+          body: snap.body,
+          kind: snap.kind,
+          sender_name: snap.sender_name,
+        };
+      } else if (msg.replyToId) {
+        const rm = liveById.get(msg.replyToId);
+        if (rm && !rm.isDeleted && rm.senderId) {
+          const rc: any = cardById.get(rm.senderId);
+          replyTo = {
+            id: rm.id,
+            body: rm.body,
+            kind: rm.kind,
+            sender_name: rc?.display_name ?? "Someone",
+          };
+        }
+      }
+
+      const senderCard = tombstoned
+        ? deletedUserCard()
+        : msg.senderId
+          ? ((cardById.get(msg.senderId) as any) ?? null)
+          : null;
+
+      return {
+        id: msg.id,
+        // Q16: redacted — deleted content never leaves the server.
+        body: deleted ? "" : msg.body,
+        kind: msg.kind ?? "text",
+        sender_id: msg.senderId,
+        created_at: msg.createdAt,
+        status: msg.status ?? "sent",
+        is_deleted: deleted,
+        edited_at: msg.editedAt ? msg.editedAt.toISOString() : null,
+        sender: senderCard,
+        attachment,
+        reply_to: replyTo,
+        reactions: [...(reactionsByMsg.get(msg.id)?.entries() ?? [])].map(
+          ([emoji, v]) => ({ emoji, ...v })
+        ),
+      };
+    });
   };
 
   // List my conversations (pinned first, then by last activity).
+  // Chat-grill Q18: the old version called buildConversation per
+  // conversation (~6 queries each, plus an unbounded unread-id select).
+  // This batches the whole list into a fixed handful of queries.
   app.get("/chat/conversations", async (c) => {
     const userId = c.get("userId");
     if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
 
-    const mine = await db
-      .select({ conversationId: conversationMembers.conversationId })
+    const myMems = await db
+      .select()
       .from(conversationMembers)
       .where(eq(conversationMembers.userId, userId!));
-    if (mine.length === 0) return c.json({ conversations: [] });
-
-    const list = await Promise.all(
-      mine.map((m) => buildConversation(m.conversationId, userId!))
+    if (myMems.length === 0) return c.json({ conversations: [] });
+    const convoIds = myMems.map((m) => m.conversationId);
+    const inConvos = sql.join(
+      convoIds.map((id) => sql`${id}`),
+      sql`, `
     );
+
+    const convos = await db
+      .select()
+      .from(conversations)
+      .where(inArray(conversations.id, convoIds));
+    const convoById = new Map(convos.map((cv) => [cv.id, cv]));
+
+    const allMems = await db
+      .select({
+        conversationId: conversationMembers.conversationId,
+        userId: conversationMembers.userId,
+      })
+      .from(conversationMembers)
+      .where(inArray(conversationMembers.conversationId, convoIds));
+    const memberIdsByConvo = new Map<string, string[]>();
+    for (const m of allMems) {
+      const arr = memberIdsByConvo.get(m.conversationId) ?? [];
+      arr.push(m.userId);
+      memberIdsByConvo.set(m.conversationId, arr);
+    }
+    const cards = await fetchUserCards(
+      [...new Set(allMems.map((m) => m.userId))],
+      userId!
+    );
+    const cardById = new Map<string, (typeof cards)[number]>();
+    for (const cd of cards) cardById.set((cd as any)._id, cd);
+
+    // Latest message per conversation (DISTINCT ON — bounded, no full scan).
+    // rowsOf: neon-http's execute returns rows directly; normalize
+    // defensively so a driver-shape change can't break the list.
+    const rowsOf = <T,>(raw: unknown): T[] => {
+      if (Array.isArray(raw)) return raw as T[];
+      if (raw && typeof raw === "object" && Array.isArray((raw as any).rows))
+        return (raw as any).rows as T[];
+      return [];
+    };
+    const lastRows = rowsOf<{
+      id: string;
+      conversation_id: string;
+      body: string;
+      sender_id: string | null;
+      created_at: Date;
+    }>(
+      await db.execute(sql`
+      SELECT DISTINCT ON (m."conversation_id")
+        m."id", m."conversation_id", m."body", m."sender_id", m."created_at"
+      FROM "messages" m
+      WHERE m."conversation_id" IN (${inConvos})
+      ORDER BY m."conversation_id", m."created_at" DESC, m."id" DESC
+    `)
+    );
+    const lastByConvo = new Map(lastRows.map((r) => [r.conversation_id, r]));
+
+    // Unread counts per conversation, one GROUP BY (Q18: was an unbounded
+    // select-ids-then-length per conversation).
+    const unreadRows = rowsOf<{ conversation_id: string; count: number }>(
+      await db.execute(sql`
+      SELECT m."conversation_id", COUNT(*)::int AS "count"
+      FROM "messages" m
+      JOIN "conversation_members" cm
+        ON cm."conversation_id" = m."conversation_id"
+        AND cm."user_id" = ${userId}
+      WHERE m."conversation_id" IN (${inConvos})
+        AND m."sender_id" != ${userId}
+        AND m."created_at" > COALESCE(cm."last_read_at", 'epoch'::timestamptz)
+      GROUP BY m."conversation_id"
+    `)
+    );
+    const unreadByConvo = new Map(
+      unreadRows.map((r) => [r.conversation_id, Number(r.count)])
+    );
+
+    const myMemByConvo = new Map(myMems.map((m) => [m.conversationId, m]));
+    const list = convoIds
+      .map((cid) => {
+        const convo = convoById.get(cid);
+        if (!convo) return null;
+        const last = lastByConvo.get(cid);
+        return {
+          id: convo.id,
+          title: convo.title,
+          created_at: convo.createdAt,
+          is_pinned: myMemByConvo.get(cid)?.isPinned ?? false,
+          members: (memberIdsByConvo.get(cid) ?? [])
+            .map((uid) => cardById.get(uid))
+            .filter((mc): mc is (typeof cards)[number] => !!mc),
+          last_message: last
+            ? {
+                id: last.id,
+                body: last.body,
+                sender_id: last.sender_id,
+                created_at: last.created_at,
+              }
+            : null,
+          unread_count: unreadByConvo.get(cid) ?? 0,
+        };
+      })
+      .filter((x): x is NonNullable<typeof x> => !!x);
     list.sort((a, b) => {
       if (a.is_pinned !== b.is_pinned) return a.is_pinned ? -1 : 1;
       const at = a.last_message?.created_at ?? a.created_at;
@@ -2773,22 +2992,36 @@ export const createHonoApp = () => {
       apiError("Unknown user", "NOT_FOUND", 404);
 
     if (otherIds.length === 1) {
+      // Chat-grill Q3: the old scan-then-insert raced — two concurrent
+      // creates (double-click, two tabs) both passed the scan and made
+      // duplicate DM threads no constraint could heal. The UNIQUE
+      // dm_pair_key makes the insert itself the atomic check: the loser
+      // gets the existing row. (neon-http has no interactive
+      // transactions, so an advisory-lock approach would not work here.)
       const other = otherIds[0];
-      const want = [userId!, other].sort();
-      const myConvos = await db
-        .select({ conversationId: conversationMembers.conversationId })
-        .from(conversationMembers)
-        .where(eq(conversationMembers.userId, userId!));
-      for (const mc of myConvos) {
-        const mems = await db
-          .select({ userId: conversationMembers.userId })
-          .from(conversationMembers)
-          .where(eq(conversationMembers.conversationId, mc.conversationId));
-        const ids = mems.map((m) => m.userId).sort();
-        if (ids.length === 2 && ids[0] === want[0] && ids[1] === want[1]) {
-          return c.json(await buildConversation(mc.conversationId, userId!));
-        }
+      const pairKey = dmPairKey(userId!, other);
+      const [convo] = await db
+        .insert(conversations)
+        .values({ title: body.title?.trim() || "", dmPairKey: pairKey })
+        .onConflictDoNothing({ target: conversations.dmPairKey })
+        .returning();
+      if (convo) {
+        await db.insert(conversationMembers).values(
+          [userId!, other].map((id) => ({
+            conversationId: convo.id,
+            userId: id,
+          }))
+        );
+        return c.json(await buildConversation(convo.id, userId!), 201);
       }
+      const [existing] = await db
+        .select({ id: conversations.id })
+        .from(conversations)
+        .where(eq(conversations.dmPairKey, pairKey))
+        .limit(1);
+      if (existing)
+        return c.json(await buildConversation(existing.id, userId!));
+      apiError("Conversation not found", "NOT_FOUND", 404);
     }
 
     const [convo] = await db
@@ -2867,9 +3100,17 @@ export const createHonoApp = () => {
     return c.json({ ok: true, is_pinned: false });
   });
 
-  // Mark a conversation as read + bulk-mark its messages read (N2).
+  // Mark a conversation as read + bulk-mark its messages read.
   // Accepts an optional up_to_message_id: messages up to and including that
   // message (by created_at) are marked read. Omitting it marks everything.
+  //
+  // Chat-grill Q4: the old code mutated lastReadAt BEFORE validating
+  // up_to_message_id — a 404 still cleared the unread badge. Validation now
+  // runs before any mutation.
+  // Chat-grill Q9: the old code set lastReadAt=now() but only advanced
+  // message statuses to the ref message — two sources of truth disagreeing.
+  // Now both derive from one boundary: the ref message's created_at (or
+  // now() when no ref is given).
   app.post("/chat/conversations/:id/read", async (c) => {
     const userId = c.get("userId");
     if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
@@ -2879,20 +3120,11 @@ export const createHonoApp = () => {
       .parse(await c.req.json().catch(() => ({})));
 
     await requireMembership(id, userId!);
-    await db
-      .update(conversationMembers)
-      .set({ lastReadAt: new Date() })
-      .where(
-        and(
-          eq(conversationMembers.conversationId, id),
-          eq(conversationMembers.userId, userId!)
-        )
-      );
 
-    let upToMessageId: string | undefined;
+    let boundary: Date;
     if (body.up_to_message_id) {
       const [ref] = await db
-        .select({ id: messages.id })
+        .select({ createdAt: messages.createdAt })
         .from(messages)
         .where(
           and(
@@ -2902,36 +3134,38 @@ export const createHonoApp = () => {
         )
         .limit(1);
       if (!ref) apiError("Message not found", "NOT_FOUND", 404);
-      upToMessageId = body.up_to_message_id;
-    }
-    // Bulk-mark messages read. The created_at comparison runs entirely in
-    // Postgres (subquery) to avoid JS Date serialization edge cases.
-    if (upToMessageId) {
-      await db.execute(sql`
-        UPDATE "messages" SET "status" = 'read'
-        WHERE "conversation_id" = ${id}
-          AND "sender_id" != ${userId}
-          AND "status" != 'read'
-          AND "created_at" <= (
-            SELECT "created_at" FROM "messages" WHERE "id" = ${upToMessageId}
-          )
-      `);
+      boundary = ref!.createdAt;
     } else {
-      await db
-        .update(messages)
-        .set({ status: "read" })
-        .where(
-          and(
-            eq(messages.conversationId, id),
-            ne(messages.senderId, userId!),
-            ne(messages.status, "read")
-          )
-        );
+      boundary = new Date();
     }
+
+    await db
+      .update(conversationMembers)
+      .set({ lastReadAt: boundary })
+      .where(
+        and(
+          eq(conversationMembers.conversationId, id),
+          eq(conversationMembers.userId, userId!)
+        )
+      );
+
+    // Bulk-mark messages read up to the same boundary. Runs entirely in
+    // Postgres to avoid JS Date serialization edge cases.
+    await db.execute(sql`
+      UPDATE "messages" SET "status" = 'read'
+      WHERE "conversation_id" = ${id}
+        AND "sender_id" != ${userId}
+        AND "status" != 'read'
+        AND "created_at" <= ${boundary}
+    `);
     return c.json({ ok: true });
   });
 
   // List messages (member-only, chronological, paginated).
+  // Chat-grill Q12: keyset on (created_at, id). The old `created_at <`
+  // cursor permanently skipped messages sharing a millisecond timestamp;
+  // tuple comparison can't. Chat-grill Q18: batched assembly instead of
+  // one buildMessage (5-7 queries) per row.
   app.get("/chat/conversations/:id/messages", async (c) => {
     const userId = c.get("userId");
     if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
@@ -2946,17 +3180,17 @@ export const createHonoApp = () => {
       .parse(c.req.query());
     const limit = query.limit ?? 50;
 
-    let beforeDate: Date | undefined;
+    let cursor: { createdAt: Date; id: string } | undefined;
     if (query.before) {
       const [ref] = await db
-        .select({ createdAt: messages.createdAt })
+        .select({ createdAt: messages.createdAt, id: messages.id })
         .from(messages)
         .where(
           and(eq(messages.id, query.before), eq(messages.conversationId, id))
         )
         .limit(1);
       if (!ref) apiError("Message not found", "NOT_FOUND", 404);
-      beforeDate = ref!.createdAt;
+      cursor = { createdAt: ref!.createdAt, id: ref!.id };
     }
 
     const rows = await db
@@ -2965,16 +3199,16 @@ export const createHonoApp = () => {
       .where(
         and(
           eq(messages.conversationId, id),
-          beforeDate ? sql`${messages.createdAt} < ${beforeDate}` : undefined
+          cursor
+            ? sql`(${messages.createdAt}, ${messages.id}) < (${cursor.createdAt}, ${cursor.id})`
+            : undefined
         )
       )
-      .orderBy(desc(messages.createdAt))
+      .orderBy(desc(messages.createdAt), desc(messages.id))
       .limit(limit);
 
-    const list = await Promise.all(
-      rows.reverse().map((m) => buildMessage(m.id, userId!))
-    );
-    return c.json({ messages: list });
+    const list = await buildMessages(rows.reverse(), userId!);
+    return c.json({ messages: list, has_more: rows.length === limit });
   });
 
   // Send a message.
@@ -3022,9 +3256,22 @@ export const createHonoApp = () => {
       if (!att) apiError("Attachment not found", "NOT_FOUND", 404);
     }
     // Verify the reply target is in this conversation.
+    // Chat-grill Q14: freeze a snapshot of the quoted message so later
+    // edits/deletes of the original can't silently rewrite quoted history.
+    let replySnapshot: {
+      id: string;
+      body: string;
+      kind: string;
+      sender_name: string;
+    } | null = null;
     if (body.reply_to_id) {
       const [rm] = await db
-        .select({ id: messages.id })
+        .select({
+          id: messages.id,
+          body: messages.body,
+          kind: messages.kind,
+          senderId: messages.senderId,
+        })
         .from(messages)
         .where(
           and(
@@ -3034,6 +3281,15 @@ export const createHonoApp = () => {
         )
         .limit(1);
       if (!rm) apiError("Replied message not found", "NOT_FOUND", 404);
+      const [rc] = rm!.senderId
+        ? await fetchUserCards([rm!.senderId], userId!)
+        : [];
+      replySnapshot = {
+        id: rm!.id,
+        body: rm!.body,
+        kind: rm!.kind ?? "text",
+        sender_name: (rc as any)?.display_name ?? "Someone",
+      };
     }
 
     const [msg] = await db
@@ -3045,22 +3301,22 @@ export const createHonoApp = () => {
         kind: body.kind,
         attachmentId: body.attachment_id ?? null,
         replyToId: body.reply_to_id ?? null,
+        replySnapshot,
         status: "sent",
       })
       .returning();
-    await db
-      .update(conversationMembers)
-      .set({ lastReadAt: new Date() })
-      .where(
-        and(
-          eq(conversationMembers.conversationId, id),
-          eq(conversationMembers.userId, userId!)
-        )
-      );
+    // Chat-grill Q6: no lastReadAt bump on send. The old code advanced the
+    // sender's read marker past peer messages that arrived milliseconds
+    // before the send — marking them "read" sight unseen. The poller's
+    // markAsRead (which only advances to messages actually fetched) is the
+    // correct mechanism.
     return c.json(await buildMessage(msg.id, userId!), 201);
   });
 
   // Edit my message.
+  // Chat-grill Q14 (Irfan's product call): 15-minute edit window + edited
+  // flag. Edits after the window are rejected with a readable error; the
+  // client hides the edit button for expired messages too.
   app.patch("/chat/messages/:id", async (c) => {
     const userId = c.get("userId");
     if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
@@ -3069,34 +3325,77 @@ export const createHonoApp = () => {
     const [msg] = await db
       .select()
       .from(messages)
-      .where(and(eq(messages.id, id), eq(messages.senderId, userId!)))
+      .where(
+        and(
+          eq(messages.id, id),
+          eq(messages.senderId, userId!),
+          eq(messages.isDeleted, false)
+        )
+      )
       .limit(1);
     if (!msg) apiError("Message not found", "NOT_FOUND", 404);
+
+    const createdMs = +new Date(msg!.createdAt as unknown as string);
+    if (Date.now() - createdMs > EDIT_WINDOW_MS) {
+      apiError(
+        "The 15-minute edit window has expired",
+        "EDIT_WINDOW_EXPIRED",
+        400
+      );
+    }
 
     const body = z
       .object({ body: z.string().trim().min(1).max(5000) })
       .parse(await c.req.json());
     await db
       .update(messages)
-      .set({ body: body.body })
+      .set({ body: body.body, editedAt: new Date() })
       .where(eq(messages.id, id));
     return c.json(await buildMessage(id, userId!));
   });
 
-  // Delete my message.
+  // Delete my message (soft delete — Q16).
+  // Chat-grill Q16: is_deleted was a dead column (DELETE hard-deleted, so
+  // the "This message was deleted" UI was unreachable and the column lied
+  // about the data model). Now delete sets the flag: the row stays, the
+  // API redacts it, and the UI shows the placeholder.
+  // Chat-grill Q15: the attachment row is released when no non-deleted
+  // message references it anymore (Cloudinary file cleanup needs a
+  // server-side API secret — not configured; tracked as follow-up).
   app.delete("/chat/messages/:id", async (c) => {
     const userId = c.get("userId");
     if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
     const { id } = chatMessageIdParam.parse(c.req.param());
 
     const [msg] = await db
-      .select({ id: messages.id })
+      .select({ id: messages.id, attachmentId: messages.attachmentId })
       .from(messages)
       .where(and(eq(messages.id, id), eq(messages.senderId, userId!)))
       .limit(1);
     if (!msg) apiError("Message not found", "NOT_FOUND", 404);
 
-    await db.delete(messages).where(eq(messages.id, id));
+    await db
+      .update(messages)
+      .set({ isDeleted: true })
+      .where(eq(messages.id, id));
+
+    if (msg!.attachmentId) {
+      const [other] = await db
+        .select({ id: messages.id })
+        .from(messages)
+        .where(
+          and(
+            eq(messages.attachmentId, msg!.attachmentId),
+            eq(messages.isDeleted, false)
+          )
+        )
+        .limit(1);
+      if (!other) {
+        await db
+          .delete(chatAttachments)
+          .where(eq(chatAttachments.id, msg!.attachmentId));
+      }
+    }
     return c.json({ ok: true });
   });
 
@@ -3200,6 +3499,27 @@ export const createHonoApp = () => {
       );
     }
 
+    // Chat-grill Q1 (security): the URL is attacker-controlled input (the
+    // browser uploads straight to Cloudinary; this endpoint only
+    // *registers* metadata). MIME was allowlisted but the host was not —
+    // an arbitrary https:// URL here becomes a tracking pixel / phishing
+    // link rendered inline to every recipient. Only the Cloudinary host
+    // is trusted.
+    if (!isTrustedAttachmentUrl(body.url)) {
+      apiError(
+        "Attachment URL host is not allowed",
+        "VALIDATION_ERROR",
+        400
+      );
+    }
+    if (body.thumbnail_url && !isTrustedAttachmentUrl(body.thumbnail_url)) {
+      apiError(
+        "Attachment thumbnail URL host is not allowed",
+        "VALIDATION_ERROR",
+        400
+      );
+    }
+
     const [att] = await db
       .insert(chatAttachments)
       .values({
@@ -3232,33 +3552,6 @@ export const createHonoApp = () => {
     );
   });
 
-  // Mark a message as read (per-message read receipts).
-  app.post("/chat/messages/:id/read", async (c) => {
-    const userId = c.get("userId");
-    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
-    const { id } = chatMessageIdParam.parse(c.req.param());
-
-    const [msg] = await db
-      .select({
-        id: messages.id,
-        conversationId: messages.conversationId,
-        senderId: messages.senderId,
-      })
-      .from(messages)
-      .where(eq(messages.id, id))
-      .limit(1);
-    if (!msg) apiError("Message not found", "NOT_FOUND", 404);
-    await requireMembership(msg!.conversationId, userId!);
-    // Only the recipient marks read (not the sender).
-    if (msg!.senderId !== userId) {
-      await db
-        .update(messages)
-        .set({ status: "read" })
-        .where(eq(messages.id, id));
-    }
-    return c.json({ ok: true });
-  });
-
   // Send a typing indicator (ephemeral, DB-backed — Vercel-safe).
   app.post("/chat/conversations/:id/typing", async (c) => {
     const userId = c.get("userId");
@@ -3282,11 +3575,17 @@ export const createHonoApp = () => {
     const { id } = chatIdParam.parse(c.req.param());
     await requireMembership(id, userId!);
 
-    // Opportunistic cleanup of stale rows (best-effort, no await needed
-    // for correctness — but cheap enough to await).
+    // Opportunistic cleanup of stale rows, scoped to this conversation
+    // (chat-grill Q19: the old global delete made every user's poll write
+    // against every other user's stale rows).
     await db
       .delete(chatTyping)
-      .where(lt(chatTyping.updatedAt, new Date(Date.now() - TYPING_STALE_MS)));
+      .where(
+        and(
+          eq(chatTyping.conversationId, id),
+          lt(chatTyping.updatedAt, new Date(Date.now() - TYPING_STALE_MS))
+        )
+      );
 
     const rows = await db
       .select({ userId: chatTyping.userId })

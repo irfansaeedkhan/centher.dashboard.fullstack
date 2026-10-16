@@ -56,7 +56,7 @@ export const chatApi = {
 
   listMessages: (id: string, opts?: { limit?: number; before?: string }) =>
     req(
-      axiosApi369x.get<{ messages: ChatMessage[] }>(
+      axiosApi369x.get<{ messages: ChatMessage[]; has_more?: boolean }>(
         `/api/chat/conversations/${id}/messages`,
         { params: { limit: opts?.limit, before: opts?.before } },
       ),
@@ -91,11 +91,6 @@ export const chatApi = {
     height?: number;
     thumbnail_url?: string;
   }) => req(axiosApi369x.post<ChatAttachment>("/api/chat/attachments", data)),
-
-  markMessageRead: (messageId: string) =>
-    req(
-      axiosApi369x.post<{ ok: true }>(`/api/chat/messages/${messageId}/read`),
-    ),
 
   sendTyping: (id: string) =>
     req(

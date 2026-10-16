@@ -42,7 +42,9 @@ export type ChatMessageKind =
   | "audio"
   | "file"
   | "voice";
-export type ChatMessageStatus = "sent" | "delivered" | "read";
+// Chat-grill Q8: simplified to sent|read. `delivered` was dead — nothing
+// ever wrote it, so the three-state machine had an unreachable state.
+export type ChatMessageStatus = "sent" | "read";
 
 export interface ChatAttachment {
   id: string;
@@ -72,6 +74,8 @@ export interface ChatMessage {
   created_at: string;
   status: ChatMessageStatus;
   is_deleted: boolean;
+  /** Chat-grill Q14: ISO timestamp when the message was edited (15-min window), null if never. */
+  edited_at: string | null;
   sender: ChatMember | null;
   attachment: ChatAttachment | null;
   reply_to: ChatReplyPreview | null;

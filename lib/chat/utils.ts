@@ -37,6 +37,26 @@ export function getMessageTime(dateTime: unknown): string {
   return dt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
 
+/**
+ * Chat-grill Q14: the edit window is 15 minutes (Irfan's product call).
+ * True when a message is too old to edit — the server enforces this too;
+ * the client uses it to hide the edit button.
+ */
+export const EDIT_WINDOW_MS = 15 * 60 * 1000;
+
+export function isEditExpired(
+  createdAt: unknown,
+  now: number = Date.now()
+): boolean {
+  if (!createdAt) return true;
+  return now - +new Date(createdAt as string) > EDIT_WINDOW_MS;
+}
+
+/** Chat-grill Q3: canonical dedup key for a 1-on-1 pair (order-free). */
+export function dmPairKey(a: string, b: string): string {
+  return `dm:${[a, b].sort().join(":")}`;
+}
+
 /** Linkify URLs in a message body (escaped by React on render). */
 export function urlify(text: string): string {
   const urlRegex = /(https?:\/\/[^\s]+)/g;

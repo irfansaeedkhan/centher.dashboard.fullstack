@@ -38,7 +38,8 @@ export const ReplyPreview: React.FC<{
   </button>
 );
 
-/** Read-receipt ticks: ✓ sent, ✓✓ delivered/read. */
+/** Read-receipt ticks: ✓ sent, ✓✓ read. (Chat-grill Q8: `delivered` was
+ *  dead — the status machine is sent|read now.) */
 export const MessageStatus: React.FC<{ status: string; mine: boolean }> = ({
   status,
   mine,
