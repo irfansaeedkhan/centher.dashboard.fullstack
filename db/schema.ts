@@ -1,5 +1,6 @@
 import {
   boolean,
+  index,
   integer,
   jsonb,
   numeric,
@@ -212,24 +213,70 @@ export const postViews = pgTable(
   ]
 );
 
-export const comments = pgTable("comments", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  postId: uuid("post_id")
-    .notNull()
-    .references(() => posts.id, { onDelete: "cascade" }),
-  authorId: text("author_id")
-    .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
-  body: text("body").notNull(),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  /**
-   * Feed product calls (Irfan 2026-10-21): replies get the same edit
-   * window + "edited" mark and soft-delete tombstone as posts/chat —
-   * they used to be write-once forever (no edit/delete endpoints).
-   */
-  editedAt: timestamp("edited_at"),
-  deletedAt: timestamp("deleted_at"),
-});
+export const comments = pgTable(
+  "comments",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    postId: uuid("post_id")
+      .notNull()
+      .references(() => posts.id, { onDelete: "cascade" }),
+    authorId: text("author_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    body: text("body").notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    /**
+     * Feed product calls (Irfan 2026-10-21): replies get the same edit
+     * window + "edited" mark and soft-delete tombstone as posts/chat —
+     * they used to be write-once forever (no edit/delete endpoints).
+     */
+    editedAt: timestamp("edited_at"),
+    deletedAt: timestamp("deleted_at"),
+    /**
+     * Nested replies (Irfan 2026-10-21, migration 0012): X-style true
+     * direct parent. NULL = top-level reply to the post itself (true
+     * for every pre-existing comment — no backfill). Depth is a
+     * rendering rule, never a storage cap. SET NULL if the parent row
+     * is ever hard-deleted (comments are soft-deleted in practice), so
+     * the child keeps living under the post.
+     */
+    parentCommentId: uuid("parent_comment_id").references(
+      (): any => comments.id,
+      { onDelete: "set null" }
+    ),
+    /**
+     * Denormalized counters: likeCount is recounted from comment_likes
+     * inside the comment-likes endpoint (self-healing, like posts);
+     * replyCount counts DIRECT children only and is
+     * increment-maintained on nested insert (like posts.commentCount).
+     * Tombstones never decrement either — the placeholder still
+     * occupies its slot and its subtree stays rendered beneath it.
+     */
+    likeCount: integer("like_count").notNull().default(0),
+    replyCount: integer("reply_count").notNull().default(0),
+  },
+  (t) => [index("comments_parent_idx").on(t.parentCommentId)]
+);
+
+/**
+ * Nested replies (migration 0012): real likes for replies — an exact
+ * mirror of post_likes. Before this the reply heart was fictional:
+ * the client posted comment ids to the post-likes endpoint, got a 404,
+ * and silently rolled the optimistic count back.
+ */
+export const commentLikes = pgTable(
+  "comment_likes",
+  {
+    commentId: uuid("comment_id")
+      .notNull()
+      .references(() => comments.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.commentId, t.userId] })]
+);
 
 export const conversations = pgTable("conversations", {
   id: uuid("id").defaultRandom().primaryKey(),

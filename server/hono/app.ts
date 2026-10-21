@@ -25,6 +25,7 @@ import {
   chatTyping,
   citizenships,
   collections,
+  commentLikes,
   comments,
   conversationMembers,
   conversations,
@@ -257,8 +258,16 @@ const mapPostRow = (
 
 /**
  * Phase 2: map a `comments` row to the CompletedPost shape the UI expects for
- * replies. Replies live in the `comments` table (one level deep); the parent
- * post is attached as `parent_post`.
+ * replies. Replies live in the `comments` table; the parent post is attached
+ * as `parent_post`.
+ *
+ * Nested replies (2026-10-21, migration 0012): the row also carries its
+ * TRUE direct parent (`parent_comment_id` — null for top-level replies),
+ * the parent comment's author (for the orphan @prefix fallback when a
+ * reply is rendered before its parent page loads), its real like count
+ * (recounted from `comment_likes`) and its DIRECT-children reply count.
+ * All four used to be hardcoded to 0/absent when replies were one level
+ * deep and their like button was fictional.
  */
 const mapCommentRow = (
   row: {
@@ -271,6 +280,11 @@ const mapCommentRow = (
     membership: string | null;
     editedAt?: Date | string | null;
     deletedAt?: Date | string | null;
+    likeCount?: number | null;
+    replyCount?: number | null;
+    parentCommentId?: string | null;
+    parentCommentAuthorId?: string | null;
+    parentCommentAuthorName?: string | null;
   },
   parent: {
     id: string;
@@ -279,26 +293,40 @@ const mapCommentRow = (
     authorName: string | null;
     authorAvatar: string | null;
     membership: string | null;
-  }
+  },
+  opts?: { likedByLoggedInUser?: boolean }
 ) => {
-  const mapped = mapPostRow({
-    id: row.id,
-    body: row.body,
-    likeCount: 0,
-    commentCount: 0,
-    createdAt: row.createdAt,
-    authorId: row.authorId,
-    authorName: row.authorName,
-    authorAvatar: row.authorAvatar,
-    membership: row.membership,
-    // Feed product calls Q12/Q13: reply edited mark + tombstone ride the
-    // same mapPostRow redaction as posts.
-    editedAt: row.editedAt,
-    deletedAt: row.deletedAt,
-  });
+  const mapped = mapPostRow(
+    {
+      id: row.id,
+      body: row.body,
+      likeCount: row.likeCount ?? 0,
+      commentCount: row.replyCount ?? 0,
+      createdAt: row.createdAt,
+      authorId: row.authorId,
+      authorName: row.authorName,
+      authorAvatar: row.authorAvatar,
+      membership: row.membership,
+      // Feed product calls Q12/Q13: reply edited mark + tombstone ride the
+      // same mapPostRow redaction as posts.
+      editedAt: row.editedAt,
+      deletedAt: row.deletedAt,
+    },
+    { likedByLoggedInUser: opts?.likedByLoggedInUser ?? false }
+  );
   return {
     ...mapped,
-    replies_count: 0,
+    // Direct children only (design §3.4) — mapPostRow already derived
+    // this from commentCount; keep the explicit override so the reply
+    // semantics never drift from the post meaning of the same field.
+    replies_count: row.replyCount ?? 0,
+    parent_comment_id: row.parentCommentId ?? null,
+    parent_comment_author: row.parentCommentAuthorId
+      ? {
+          _id: row.parentCommentAuthorId,
+          display_name: row.parentCommentAuthorName || "Centher User",
+        }
+      : null,
     parent_post: {
       _id: parent.id,
       createdAt:
@@ -337,6 +365,53 @@ const getLikedPostIds = async (
       and(eq(postLikes.userId, userId), inArray(postLikes.postId, postIds))
     );
   return new Set(rows.map((r) => r.postId));
+};
+
+/** Nested replies: which of these comments the current user has liked. */
+const getLikedCommentIds = async (
+  userId: string | null,
+  commentIds: string[]
+): Promise<Set<string>> => {
+  if (!userId || commentIds.length === 0) return new Set<string>();
+  const rows = await db
+    .select({ commentId: commentLikes.commentId })
+    .from(commentLikes)
+    .where(
+      and(
+        eq(commentLikes.userId, userId),
+        inArray(commentLikes.commentId, commentIds)
+      )
+    );
+  return new Set(rows.map((r) => r.commentId));
+};
+
+/**
+ * Nested replies: authors of the given parent comments, in ONE batched
+ * query (the replies list must not grow a per-row lookup). Keyed by
+ * parent comment id; feeds `parent_comment_author` on mapped replies —
+ * the data behind the orphan @prefix fallback (design §3.3).
+ */
+const fetchParentCommentAuthors = async (
+  parentIds: (string | null | undefined)[]
+): Promise<Map<string, { authorId: string; authorName: string | null }>> => {
+  const ids = [...new Set(parentIds.filter((x): x is string => !!x))];
+  const out = new Map<
+    string,
+    { authorId: string; authorName: string | null }
+  >();
+  if (ids.length === 0) return out;
+  const rows = await db
+    .select({
+      id: comments.id,
+      authorId: comments.authorId,
+      authorName: profiles.displayName,
+    })
+    .from(comments)
+    .leftJoin(profiles, eq(comments.authorId, profiles.userId))
+    .where(inArray(comments.id, ids));
+  for (const r of rows)
+    out.set(r.id, { authorId: r.authorId, authorName: r.authorName });
+  return out;
 };
 
 /** Phase 2: single post row with author profile, or null. */
@@ -1880,6 +1955,10 @@ export const createHonoApp = () => {
         parentPostId: comments.postId,
         editedAt: comments.editedAt,
         deletedAt: comments.deletedAt,
+        // Nested replies (0012): true parent + real counters.
+        parentCommentId: comments.parentCommentId,
+        likeCount: comments.likeCount,
+        replyCount: comments.replyCount,
       })
       .from(comments)
       .leftJoin(profiles, eq(comments.authorId, profiles.userId))
@@ -1888,19 +1967,40 @@ export const createHonoApp = () => {
       .limit(limit)
       .offset(offset);
 
+    // This list is always the viewer's own replies — liked state is
+    // real here too (the viewer can like their own reply).
+    const liked = await getLikedCommentIds(
+      userId,
+      rows.map((r) => r.id)
+    );
+    const parentAuthors = await fetchParentCommentAuthors(
+      rows.map((r) => r.parentCommentId)
+    );
+
     const mapped = [];
     for (const row of rows) {
       const parent = await fetchPostRow(row.parentPostId);
       if (!parent) continue;
+      const parentAuthor = row.parentCommentId
+        ? parentAuthors.get(row.parentCommentId)
+        : undefined;
       mapped.push(
-        mapCommentRow(row, {
-          id: parent.id,
-          createdAt: parent.createdAt,
-          authorId: parent.authorId,
-          authorName: parent.authorName,
-          authorAvatar: parent.authorAvatar,
-          membership: parent.membership,
-        })
+        mapCommentRow(
+          {
+            ...row,
+            parentCommentAuthorId: parentAuthor?.authorId ?? null,
+            parentCommentAuthorName: parentAuthor?.authorName ?? null,
+          },
+          {
+            id: parent.id,
+            createdAt: parent.createdAt,
+            authorId: parent.authorId,
+            authorName: parent.authorName,
+            authorAvatar: parent.authorAvatar,
+            membership: parent.membership,
+          },
+          { likedByLoggedInUser: liked.has(row.id) }
+        )
       );
     }
     return c.json({ postsReplies: mapped, data: mapped, offset, limit });
@@ -2009,6 +2109,12 @@ export const createHonoApp = () => {
         membership: profiles.membership,
         editedAt: comments.editedAt,
         deletedAt: comments.deletedAt,
+        // Nested replies (0012): the flat stream now carries each row's
+        // true parent + real counters; the client assembles the tree
+        // (design §3.3 — the keyset contract is unchanged).
+        parentCommentId: comments.parentCommentId,
+        likeCount: comments.likeCount,
+        replyCount: comments.replyCount,
       })
       .from(comments)
       .leftJoin(profiles, eq(comments.authorId, profiles.userId))
@@ -2025,16 +2131,39 @@ export const createHonoApp = () => {
 
     const rows = await (cursor ? baseQuery : baseQuery.offset(offset));
 
-    const mapped = rows.map((row) =>
-      mapCommentRow(row, {
-        id: parent!.id,
-        createdAt: parent!.createdAt,
-        authorId: parent!.authorId,
-        authorName: parent!.authorName,
-        authorAvatar: parent!.authorAvatar,
-        membership: parent!.membership,
-      })
+    // with-auth finally means something for replies: liked state comes
+    // from comment_likes (the plain variant never carries it).
+    const liked = withAuth
+      ? await getLikedCommentIds(
+          viewerId,
+          rows.map((r) => r.id)
+        )
+      : new Set<string>();
+    const parentAuthors = await fetchParentCommentAuthors(
+      rows.map((r) => r.parentCommentId)
     );
+
+    const mapped = rows.map((row) => {
+      const parentAuthor = row.parentCommentId
+        ? parentAuthors.get(row.parentCommentId)
+        : undefined;
+      return mapCommentRow(
+        {
+          ...row,
+          parentCommentAuthorId: parentAuthor?.authorId ?? null,
+          parentCommentAuthorName: parentAuthor?.authorName ?? null,
+        },
+        {
+          id: parent!.id,
+          createdAt: parent!.createdAt,
+          authorId: parent!.authorId,
+          authorName: parent!.authorName,
+          authorAvatar: parent!.authorAvatar,
+          membership: parent!.membership,
+        },
+        { likedByLoggedInUser: liked.has(row.id) }
+      );
+    });
     return c.json({
       posts: mapped,
       data: mapped,
@@ -2222,6 +2351,10 @@ export const createHonoApp = () => {
         membership: profiles.membership,
         editedAt: comments.editedAt,
         deletedAt: comments.deletedAt,
+        // Nested replies (0012): true parent + real counters.
+        parentCommentId: comments.parentCommentId,
+        likeCount: comments.likeCount,
+        replyCount: comments.replyCount,
       })
       .from(comments)
       .leftJoin(profiles, eq(comments.authorId, profiles.userId))
@@ -2234,14 +2367,29 @@ export const createHonoApp = () => {
     row: NonNullable<Awaited<ReturnType<typeof fetchCommentRow>>>
   ) => {
     const parent = await fetchPostRow(row.postId);
-    return mapCommentRow(row, {
-      id: row.postId,
-      createdAt: parent?.createdAt ?? row.createdAt,
-      authorId: parent?.authorId ?? row.authorId,
-      authorName: parent?.authorName ?? null,
-      authorAvatar: parent?.authorAvatar ?? null,
-      membership: parent?.membership ?? null,
-    });
+    // Nested rows carry their parent comment's author (orphan @prefix
+    // data); top-level rows have no parent comment to look up.
+    const parentAuthors = row.parentCommentId
+      ? await fetchParentCommentAuthors([row.parentCommentId])
+      : new Map<string, { authorId: string; authorName: string | null }>();
+    const parentAuthor = row.parentCommentId
+      ? parentAuthors.get(row.parentCommentId)
+      : undefined;
+    return mapCommentRow(
+      {
+        ...row,
+        parentCommentAuthorId: parentAuthor?.authorId ?? null,
+        parentCommentAuthorName: parentAuthor?.authorName ?? null,
+      },
+      {
+        id: row.postId,
+        createdAt: parent?.createdAt ?? row.createdAt,
+        authorId: parent?.authorId ?? row.authorId,
+        authorName: parent?.authorName ?? null,
+        authorAvatar: parent?.authorAvatar ?? null,
+        membership: parent?.membership ?? null,
+      }
+    );
   };
 
   // Edit a reply (author only, 15-minute window)
@@ -2399,6 +2547,82 @@ export const createHonoApp = () => {
       likes_count: count,
       liked: actionType === "like",
       post_id: postId,
+    });
+  });
+
+  // Like / unlike a REPLY (nested replies design §3.7). A deliberate
+  // twin of the post-likes endpoint above — NOT a target-type flag on
+  // it: the post path is Judge-verified and heavily regression-tested,
+  // and until now reply hearts posted comment ids to it, 404'd, and
+  // silently rolled back (post-grill Q4: the like was fictional).
+  app.post("/socials/analytics/comment-likes", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    // Shared "likes" bucket with post likes — one engagement budget.
+    rateLimitFeedWrite("likes", userId!, 60);
+    const { commentId, actionType } = z
+      .object({
+        commentId: z.string().uuid(),
+        actionType: z.enum(["like", "unlike"]),
+      })
+      .parse(await c.req.json());
+
+    const target = await fetchCommentRow(commentId);
+    if (!target) apiError("Reply not found", "NOT_FOUND", 404);
+    // A tombstoned reply's counts are frozen (same rule as posts).
+    if (target!.deletedAt)
+      apiError("This reply has been deleted", "REPLY_DELETED", 400);
+    // The parent post's state closes the whole subtree: tombstoned →
+    // read-only archive; archived → invisible to non-owners, exactly
+    // like the reads.
+    const parentPost = await fetchPostRow(target!.postId);
+    if (!parentPost) apiError("Reply not found", "NOT_FOUND", 404);
+    if (parentPost!.deletedAt)
+      apiError("This post has been deleted", "POST_DELETED", 400);
+    if (parentPost!.isArchived && parentPost!.authorId !== userId)
+      apiError("Reply not found", "NOT_FOUND", 404);
+
+    if (actionType === "like") {
+      // Notify ONLY when the like row was actually inserted (the
+      // post-like Q5 rule): repeat likes must not re-ping the author.
+      const inserted = await db
+        .insert(commentLikes)
+        .values({ commentId, userId: userId! })
+        .onConflictDoNothing()
+        .returning({ commentId: commentLikes.commentId });
+      if (inserted.length > 0) {
+        await createNotification({
+          userId: target!.authorId,
+          type: "comment_like",
+          actorId: userId!,
+          postId: target!.postId,
+          commentId,
+        });
+      }
+    } else {
+      await db
+        .delete(commentLikes)
+        .where(
+          and(
+            eq(commentLikes.commentId, commentId),
+            eq(commentLikes.userId, userId!)
+          )
+        );
+    }
+
+    const [{ count }] = await db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(commentLikes)
+      .where(eq(commentLikes.commentId, commentId));
+    await db
+      .update(comments)
+      .set({ likeCount: count })
+      .where(eq(comments.id, commentId));
+
+    return c.json({
+      likes_count: count,
+      liked: actionType === "like",
+      comment_id: commentId,
     });
   });
 
@@ -2940,8 +3164,20 @@ export const createHonoApp = () => {
       ? z.string().uuid().parse(payload.replying_to)
       : null;
     let parentRow: Awaited<ReturnType<typeof fetchPostRow>> | null = null;
+    // Nested replies (design §3.2): `replying_to` may name a COMMENT —
+    // the reply-of-reply modal has sent comment ids since the client
+    // was built; they 404'd until now because resolution stopped at
+    // posts. Posts resolve FIRST (every existing flow byte-identical);
+    // only a post-miss falls through to the comments table, and the
+    // effective parent post becomes that comment's root post.
+    let parentComment: Awaited<ReturnType<typeof fetchCommentRow>> | null =
+      null;
     if (replyingTo) {
       parentRow = await fetchPostRow(replyingTo);
+      if (!parentRow) {
+        parentComment = await fetchCommentRow(replyingTo);
+        if (parentComment) parentRow = await fetchPostRow(parentComment.postId);
+      }
       if (!parentRow) apiError("Parent post not found", "NOT_FOUND", 404);
       // Phase 3 carry-forward: archived posts are invisible to non-owners —
       // same guard as GET /:id (no reading or replying to them).
@@ -2951,6 +3187,10 @@ export const createHonoApp = () => {
       // readable, but no new ones land under a "deleted" stub.
       if (parentRow!.deletedAt)
         apiError("This post has been deleted", "POST_DELETED", 400);
+      // A tombstoned reply is closed the same way: its existing subtree
+      // stays readable, but it accepts no new children.
+      if (parentComment?.deletedAt)
+        apiError("This reply has been deleted", "REPLY_DELETED", 400);
     }
 
     const postsInput = z
@@ -3011,29 +3251,62 @@ export const createHonoApp = () => {
       const storedBody = editorState?.root ? JSON.stringify(editorState) : text;
 
       if (parentRow) {
-        // Reply: store in comments, bump the parent's comment count
+        // Reply: store in comments, bump the parent's comment count.
+        // Nested replies (design §3.2/§3.4) also record their true
+        // parent comment and bump ITS direct-children counter; the
+        // post counter counts every depth, as it always has.
         const [reply] = await db
           .insert(comments)
           .values({
             postId: parentRow.id,
             authorId: userId!,
             body: storedBody.slice(0, 20000),
+            parentCommentId: parentComment?.id ?? null,
           })
           .returning();
         await db
           .update(posts)
           .set({ commentCount: sql`${posts.commentCount} + 1` })
           .where(eq(posts.id, parentRow.id));
-        // Phase 3: notify the parent post author. Post-grill Q12:
-        // carry the reply id so the notification deep-links to the
-        // reply itself, not just the top of the post page.
-        await createNotification({
-          userId: parentRow.authorId,
-          type: "post_reply",
-          actorId: userId!,
-          postId: parentRow.id,
-          commentId: reply.id,
-        });
+        if (parentComment) {
+          await db
+            .update(comments)
+            .set({ replyCount: sql`${comments.replyCount} + 1` })
+            .where(eq(comments.id, parentComment.id));
+          // Design §3.5: the replied-to author hears about it
+          // (comment_reply, anchored to the NEW reply)...
+          await createNotification({
+            userId: parentComment.authorId,
+            type: "comment_reply",
+            actorId: userId!,
+            postId: parentRow.id,
+            commentId: reply.id,
+          });
+          // ...and the post author gets their usual post_reply ONLY
+          // when they aren't the parent comment's author — at most one
+          // reply-ping per person per event. (createNotification
+          // already suppresses the actor notifying themselves.)
+          if (parentRow.authorId !== parentComment.authorId) {
+            await createNotification({
+              userId: parentRow.authorId,
+              type: "post_reply",
+              actorId: userId!,
+              postId: parentRow.id,
+              commentId: reply.id,
+            });
+          }
+        } else {
+          // Phase 3: notify the parent post author. Post-grill Q12:
+          // carry the reply id so the notification deep-links to the
+          // reply itself, not just the top of the post page.
+          await createNotification({
+            userId: parentRow.authorId,
+            type: "post_reply",
+            actorId: userId!,
+            postId: parentRow.id,
+            commentId: reply.id,
+          });
+        }
         // Q23: notify anyone @mentioned in the reply. Q12: same
         // anchoring — the notification names the reply it came from.
         await notifyMentions({
@@ -3053,6 +3326,13 @@ export const createHonoApp = () => {
               authorAvatar:
                 authorProfile?.avatarUrl || "/images/centher.logo.favicon.png",
               membership: authorProfile?.membership || "citizen",
+              // The client files the new reply under its thread from
+              // THIS response (post-grill Q1 pattern — no refetch).
+              parentCommentId: parentComment?.id ?? null,
+              parentCommentAuthorId: parentComment?.authorId ?? null,
+              parentCommentAuthorName: parentComment?.authorName ?? null,
+              likeCount: reply.likeCount ?? 0,
+              replyCount: reply.replyCount ?? 0,
             },
             {
               id: parentRow.id,
