@@ -40,6 +40,24 @@ export const likePost = async (
   });
 };
 
+/**
+ * Nested replies: reply likes hit the comment-likes endpoint — a real
+ * twin of the post-likes route. Before this, the reply heart posted
+ * comment ids to the post endpoint above, which 404'd, and the store's
+ * optimistic count silently rolled back (post-grill Q4: the like was
+ * fictional). Server errors now propagate to the caller so the UI can
+ * roll back AND say why.
+ */
+export const likeComment = async (
+  commentId: string,
+  actionType: "like" | "unlike"
+) => {
+  await axiosApi369x.post("/api/socials/analytics/comment-likes", {
+    commentId,
+    actionType: actionType,
+  });
+};
+
 export const createPostView = async (post_id: string) => {
   await axiosApi369x.post(`/api/socials/analytics/post-views`, {
     post_id,

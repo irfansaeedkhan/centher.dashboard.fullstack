@@ -146,6 +146,10 @@ const getNotificationMessage = (
       return <>{NotificationByName} liked your post.</>;
     case "post_reply":
       return <>{NotificationByName} replied to your post.</>;
+    case "comment_like":
+      return <>{NotificationByName} liked your reply.</>;
+    case "comment_reply":
+      return <>{NotificationByName} replied to your reply.</>;
     case "reply_like":
       return <>{NotificationByName} liked your reply.</>;
     case "reply_reply":
@@ -221,6 +225,8 @@ const getNotificationUrl = (
       };
     case "post_like":
     case "post_reply":
+    case "comment_like":
+    case "comment_reply":
     case "reply_like":
     case "reply_reply":
       if (!notification.post) return null;
@@ -228,8 +234,13 @@ const getNotificationUrl = (
         pathname: AppRoutes.feed.single_post,
         query: {
           post_id: notification.post._id,
-          // Q12: a reply notification anchors to that reply.
-          ...(notification.type === "post_reply" && notification.comment_id
+          // Q12: a reply notification anchors to that reply. Nested
+          // replies (comment_reply / comment_like) anchor the same
+          // way — the post page expands the ancestor chain on landing.
+          ...((notification.type === "post_reply" ||
+            notification.type === "comment_reply" ||
+            notification.type === "comment_like") &&
+          notification.comment_id
             ? { reply: notification.comment_id }
             : {}),
         },

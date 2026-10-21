@@ -4,6 +4,7 @@ import { devtools } from "zustand/middleware";
 import type { CompletedPost, Post } from "@/models/post";
 import type { LoadingState } from "@/models/common";
 import { likePost } from "@/components/feed.components";
+import { likeComment } from "@/components/feed.components/single.post.v2/post.helpers";
 import { axiosApi369x } from "@/utils/axios";
 import { customLog } from "@/utils/custom.log";
 
@@ -18,6 +19,12 @@ export interface SinglePostStore {
 
   replies: CompletedPost[];
   repliesLoading: LoadingState;
+
+  // Nested replies: the reply the user just posted. The post page
+  // watches it to expand its ancestor chain and highlight it (the
+  // "your reply appears" rule), then clears it.
+  newlyAddedReplyId: string | null;
+  clearNewlyAddedReply: () => void;
 
   repliesOffset: number;
   updateRepliesOffset: () => void;
@@ -76,6 +83,9 @@ export const useSinglePostStore = create<SinglePostStore>()(
 
       repliesCursor: null,
       repliesHasMore: true,
+
+      newlyAddedReplyId: null,
+      clearNewlyAddedReply: () => set({ newlyAddedReplyId: null }),
 
       posts: [],
       replies: [],
@@ -232,7 +242,16 @@ export const useSinglePostStore = create<SinglePostStore>()(
             postId
           );
 
-          await likePost(postId, actionType);
+          // Nested replies: a reply's like goes to the comment-likes
+          // endpoint — posting a comment id to the post-likes route
+          // was the fictional heart of post-grill Q4 (404 + silent
+          // rollback). Now the server agrees, so the optimistic count
+          // is real; only a genuine failure rolls back.
+          if (postType === "reply") {
+            await likeComment(postId, actionType);
+          } else {
+            await likePost(postId, actionType);
+          }
 
           if (postType === "main") {
             // Also update the feed store
@@ -250,6 +269,9 @@ export const useSinglePostStore = create<SinglePostStore>()(
             postId
           );
           customLog(["development"], error);
+          // Roll back AND surface: the caller shows the readable
+          // message (house rule — no console-only failures).
+          throw error;
         }
       },
 
@@ -343,6 +365,7 @@ export const useSinglePostStore = create<SinglePostStore>()(
 
         set((state) => ({
           replies: [reply, ...state.replies],
+          newlyAddedReplyId: reply._id,
         }));
       },
 
@@ -370,6 +393,7 @@ export const useSinglePostStore = create<SinglePostStore>()(
           repliesOffset: 0,
           repliesCursor: null,
           repliesHasMore: true,
+          newlyAddedReplyId: null,
         });
       },
 

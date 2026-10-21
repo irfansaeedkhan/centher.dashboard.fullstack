@@ -20,6 +20,12 @@ import {
   deleteReply,
   createPostView,
 } from "@/components/feed.components";
+import {
+  MAX_THREAD_INDENT_DEPTH,
+  ancestorChainIds,
+  buildReplyTree,
+  flattenVisibleReplies,
+} from "@/components/feed.components/single.post.v2/reply.tree";
 import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
 import { PostEditorModal } from "@/components/post-editor/post-editor-modal";
 import { Post } from "@/models/post";
@@ -48,6 +54,8 @@ const SinglePostPage: NextPageWithLayout = () => {
     updatePost,
     replaceEditedPost,
     createPostViewInStore,
+    newlyAddedReplyId,
+    clearNewlyAddedReply,
   } = useSinglePostStore();
 
   const feedStore = useFeedStore((state) => ({
@@ -195,6 +203,49 @@ const SinglePostPage: NextPageWithLayout = () => {
     }
   };
 
+  // Nested replies: likes roll back in the store on failure; the
+  // readable reason surfaces here (no console-only failures).
+  const handleLike = async (
+    id: string,
+    liked: boolean,
+    postType: "main" | "reply"
+  ) => {
+    try {
+      setActionError(null);
+      await likePostAPI(id, liked ? "unlike" : "like", postType);
+    } catch (error: any) {
+      setActionError(
+        apiErrorMessage(error, "Could not update your like. Please try again.")
+      );
+    }
+  };
+
+  // ------------------------------------------------------------------
+  // Nested replies (2026-10-21): X-style thread tree. The store keeps
+  // the flat server stream; the tree is assembled per render and
+  // branches expand/collapse locally. Indentation caps at depth 4 so
+  // deep threads stay readable on a phone (design §3.5).
+  // ------------------------------------------------------------------
+  const [expandedReplyIds, setExpandedReplyIds] = useState<ReadonlySet<string>>(
+    new Set()
+  );
+  const replyTree = useMemo(() => buildReplyTree(replies), [replies]);
+  const visibleReplyRows = useMemo(
+    () => flattenVisibleReplies(replyTree, expandedReplyIds),
+    [replyTree, expandedReplyIds]
+  );
+  const toggleReplyBranch = (replyId: string) => {
+    setExpandedReplyIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(replyId)) {
+        next.delete(replyId);
+      } else {
+        next.add(replyId);
+      }
+      return next;
+    });
+  };
+
   // ------------------------------------------------------------------
   // Post-grill Q12: reply deep-link anchor. Notification and share
   // links carry ?reply=<comment_id>; when the reply is loaded, scroll
@@ -207,9 +258,13 @@ const SinglePostPage: NextPageWithLayout = () => {
     null
   );
   const anchorAttemptsRef = useRef(0);
+  // Once an anchor has been landed, stop auto-expanding for it — the
+  // user may collapse the branch again and the page must not fight them.
+  const anchorSettledRef = useRef<string | null>(null);
 
   useEffect(() => {
     anchorAttemptsRef.current = 0;
+    anchorSettledRef.current = null;
   }, [anchorReplyId]);
 
   useEffect(() => {
@@ -217,8 +272,20 @@ const SinglePostPage: NextPageWithLayout = () => {
 
     const found = replies.some((reply) => reply._id === anchorReplyId);
     if (found) {
+      // Nested replies (design §3.6): a nested target sits inside a
+      // collapsed branch — expand its whole ancestor chain first, then
+      // scroll once the row is actually rendered.
+      if (anchorSettledRef.current !== anchorReplyId) {
+        const chain = ancestorChainIds(replies, anchorReplyId);
+        const missing = chain.filter((id) => !expandedReplyIds.has(id));
+        if (missing.length > 0) {
+          setExpandedReplyIds((prev) => new Set([...prev, ...chain]));
+          return;
+        }
+      }
       const el = document.getElementById(`reply-${anchorReplyId}`);
       if (el) {
+        anchorSettledRef.current = anchorReplyId;
         el.scrollIntoView({ behavior: "smooth", block: "center" });
         setHighlightedReplyId(anchorReplyId);
         const timer = setTimeout(() => setHighlightedReplyId(null), 3000);
@@ -231,7 +298,35 @@ const SinglePostPage: NextPageWithLayout = () => {
       anchorAttemptsRef.current += 1;
       fetchReplies();
     }
-  }, [anchorReplyId, postLoading, replies, repliesHasMore, fetchReplies]);
+  }, [
+    anchorReplyId,
+    postLoading,
+    replies,
+    repliesHasMore,
+    fetchReplies,
+    expandedReplyIds,
+  ]);
+
+  // Nested replies: the reply the user just posted must be VISIBLE —
+  // expand its ancestor chain, scroll to it, highlight it (mirrors
+  // post-grill Q1's "your reply appears" for the nested case).
+  useEffect(() => {
+    if (!newlyAddedReplyId) return;
+    const target = replies.find((reply) => reply._id === newlyAddedReplyId);
+    if (!target) return;
+    const chain = ancestorChainIds(replies, newlyAddedReplyId);
+    setExpandedReplyIds((prev) => new Set([...prev, ...chain]));
+    clearNewlyAddedReply();
+    const scrollTimer = setTimeout(() => {
+      const el = document.getElementById(`reply-${newlyAddedReplyId}`);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+        setHighlightedReplyId(newlyAddedReplyId);
+        setTimeout(() => setHighlightedReplyId(null), 3000);
+      }
+    }, 60);
+    return () => clearTimeout(scrollTimer);
+  }, [newlyAddedReplyId, replies, clearNewlyAddedReply]);
 
   return (
     <>
@@ -284,9 +379,9 @@ const SinglePostPage: NextPageWithLayout = () => {
                 bottom: replies.length > 0 ? false : true,
               }}
               onClickLike={async () => {
-                await likePostAPI(
+                await handleLike(
                   firstPost._id,
-                  firstPost.liked_by_loggedin_user ? "unlike" : "like",
+                  firstPost.liked_by_loggedin_user,
                   "main"
                 );
               }}
@@ -320,15 +415,28 @@ const SinglePostPage: NextPageWithLayout = () => {
               dead code wired to live delete/archive handlers, with a
               parent-header fallback that pointed a post at itself. */}
 
-          {replies.map((reply) => {
+          {visibleReplyRows.map((row, rowIndex) => {
+            const reply = row.reply;
+            const indentDepth = Math.min(row.depth, MAX_THREAD_INDENT_DEPTH);
+            // "View replies (N)": N is the DIRECT reply count — what
+            // expanding this branch reveals first (design §3.5).
+            const toggleCount =
+              reply.replies_count > 0 ? reply.replies_count : row.childCount;
+            const showToggle = toggleCount > 0 || row.childCount > 0;
             return (
               <div
                 key={reply._id}
                 id={`reply-${reply._id}`}
                 className={clsx(
+                  "relative",
                   highlightedReplyId === reply._id &&
                     "rounded-10px ring-2 ring-brand-primary"
                 )}
+                style={
+                  indentDepth > 0
+                    ? { marginLeft: `${indentDepth * 28}px` }
+                    : undefined
+                }
                 onClick={() => {
                   // Post-grill Q5: a reply's address is its PARENT post
                   // anchored to the reply — this used to push
@@ -343,6 +451,21 @@ const SinglePostPage: NextPageWithLayout = () => {
                   });
                 }}
               >
+                {/* X-style thread line: nested rows connect back to
+                    their parent through the indent gutter. */}
+                {row.depth > 0 && (
+                  <div
+                    aria-hidden
+                    className="absolute bottom-0 left-[-16px] top-0 w-0.5 bg-gray-shade-3"
+                  />
+                )}
+                {/* Orphan fallback (design §3.3): the parent comment
+                    isn't loaded yet, so name who this answers. */}
+                {row.orphan && reply.parent_comment_author && (
+                  <p className="bg-elevation-1 px-4 pt-2 text-xs text-gray-shade-7">
+                    Replying to @{reply.parent_comment_author.display_name}
+                  </p>
+                )}
                 <SinglePostV2
                   post={reply}
                   postType={"reply"}
@@ -351,15 +474,13 @@ const SinglePostPage: NextPageWithLayout = () => {
                   borderRadius={{
                     top: false,
                     bottom:
-                      // if it is last post in replies and there are no more replies to fetch
-                      replies[replies.length - 1]._id === reply._id
-                        ? true
-                        : false,
+                      // last visible row closes the stacked card group
+                      rowIndex === visibleReplyRows.length - 1,
                   }}
                   onClickLike={async () => {
-                    await likePostAPI(
+                    await handleLike(
                       reply._id,
-                      reply.liked_by_loggedin_user ? "unlike" : "like",
+                      reply.liked_by_loggedin_user,
                       "reply"
                     );
                   }}
@@ -375,6 +496,22 @@ const SinglePostPage: NextPageWithLayout = () => {
                   onClickDelete={() => handleDeleteReply(reply._id)}
                   onReplyUpdated={(updated) => replaceEditedPost(updated)}
                 />
+                {showToggle && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      // Branch toggle only — never trigger the row's
+                      // navigate-to-anchor click.
+                      e.stopPropagation();
+                      toggleReplyBranch(reply._id);
+                    }}
+                    className="w-full bg-elevation-1 px-4 pb-2 text-left text-xs font-semibold text-brand-primary hover:underline"
+                  >
+                    {row.expanded
+                      ? "Hide replies"
+                      : `View replies (${toggleCount})`}
+                  </button>
+                )}
               </div>
             );
           })}

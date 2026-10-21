@@ -149,14 +149,26 @@ const Replies: NextPageWithLayout = () => {
           <div
             key={post._id}
             onClick={() => {
+              // Nested replies (design §3.8): land on the PARENT post
+              // anchored to this reply — /post/<comment_id> renders
+              // "The post does not exist" (the post-grill Q5 bug, this
+              // page's copy of it).
               router.push({
                 pathname: AppRoutes.feed.single_post,
                 query: {
-                  post_id: post._id,
+                  post_id: post.parent_post?._id ?? post._id,
+                  reply: post._id,
                 },
               });
             }}
           >
+            {/* Nested replies (design §3.8): name the reply this one
+                answers — the payload already carries it. */}
+            {post.parent_comment_id && post.parent_comment_author && (
+              <p className="px-1 text-xs text-gray-shade-7">
+                in reply to @{post.parent_comment_author.display_name}
+              </p>
+            )}
             <SinglePostV2
               post={post}
               parentPost={post.parent_post}
@@ -168,10 +180,20 @@ const Replies: NextPageWithLayout = () => {
               }}
               shouldShowThread={post.is_thread}
               onClickLike={async () => {
-                await likePostAPI(
-                  post._id,
-                  post.liked_by_loggedin_user ? "unlike" : "like"
-                );
+                try {
+                  setReplyActionError(null);
+                  await likePostAPI(
+                    post._id,
+                    post.liked_by_loggedin_user ? "unlike" : "like"
+                  );
+                } catch (error: any) {
+                  setReplyActionError(
+                    apiErrorMessage(
+                      error,
+                      "Could not update your like. Please try again."
+                    )
+                  );
+                }
               }}
               onClickReply={() => {
                 setIsReplyModalOpen(true);

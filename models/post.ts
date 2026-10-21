@@ -30,6 +30,19 @@ export interface BasePost {
    * Always false/absent for replies (comments can't be archived).
    */
   is_archived?: boolean;
+  /**
+   * Nested replies (2026-10-21): the reply's TRUE direct parent
+   * comment id — null/absent for top-level replies and for posts.
+   * The post page assembles the X-style thread tree from this.
+   */
+  parent_comment_id?: string | null;
+  /**
+   * Nested replies: the parent comment's author, present on replies
+   * whose parent is another comment. Used only by the orphan fallback
+   * ("Replying to @name") when a reply renders before its parent's
+   * page has loaded; normal rendering connects via the thread line.
+   */
+  parent_comment_author?: { _id: string; display_name: string } | null;
 }
 
 export interface DeletedPost extends BasePost {

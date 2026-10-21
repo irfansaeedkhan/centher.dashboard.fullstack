@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
-import { likePost } from "@/components/feed.components";
+import { likeComment } from "@/components/feed.components/single.post.v2/post.helpers";
 import { CompletedPost } from "@/models/post";
 import { LoadingState } from "@/models/common";
 import { axiosApi369x } from "@/utils/axios";
@@ -126,13 +126,18 @@ export const useMyRepliesStore = create<RepliesStore>()(
             postId
           );
 
-          await likePost(postId, actionType);
+          // Every row in this store is a comment — likes go to the
+          // comment-likes endpoint (they used to hit the post-likes
+          // route with a comment id and 404; see post.helpers).
+          await likeComment(postId, actionType);
         } catch (error: any) {
           get().updatePostLikesCount(
             actionType === "like" ? "decrement" : "increment",
             postId
           );
           customLog(["development"], error);
+          // Roll back AND surface (house rule — no console-only failures).
+          throw error;
         }
       },
 

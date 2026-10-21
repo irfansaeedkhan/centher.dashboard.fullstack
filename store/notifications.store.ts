@@ -202,6 +202,26 @@ interface PostReplyNotification extends BaseNotification {
   post: NotificationPost | null;
 }
 
+/**
+ * Nested replies (2026-10-21): someone liked your reply. Deep-links to
+ * the post anchored at the liked reply (comment_id).
+ */
+interface CommentLikeNotification extends BaseNotification {
+  type: "comment_like";
+  by: NotificationBy;
+  post: NotificationPost | null;
+}
+
+/**
+ * Nested replies (2026-10-21): someone replied to your reply.
+ * Deep-links to the post anchored at the NEW reply (comment_id).
+ */
+interface CommentReplyNotification extends BaseNotification {
+  type: "comment_reply";
+  by: NotificationBy;
+  post: NotificationPost | null;
+}
+
 interface FollowNotification extends BaseNotification {
   type: "follow";
   by: NotificationBy;
@@ -281,6 +301,8 @@ interface InvitationReceivedNotification extends BaseNotification {
 export type Notification =
   | PostLikeNotification
   | PostReplyNotification
+  | CommentLikeNotification
+  | CommentReplyNotification
   | FollowNotification
   | NewReferralNotification
   | NTRNetworkRewardsNotification

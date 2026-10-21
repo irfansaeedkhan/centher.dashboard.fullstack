@@ -65,9 +65,26 @@ export const updateStoresWithCreatedPost = ({
       }
     } else if (modalType === "reply-of-reply" && parentPostId) {
       if (post.status === "complete") {
-        // Increment counts in stores
+        // Nested replies (2026-10-21): the create now succeeds
+        // server-side, so the new reply is FILED, not just counted —
+        // it joins the single-post store's flat list (the page's tree
+        // builder nests it under parentPostId and expands its chain)
+        // and the author's own replies list.
+        singlePostStore.addNewReply(post);
+        myRepliesStore.addNewPost(post);
+
+        // Increment counts in stores: the parent reply's direct count,
+        // and the root post's all-depths count (server semantics).
         singlePostStore.updateRepliesCountForReply("increment", parentPostId);
-        // myRepliesStore.updateRepliesCountForReply("increment", parentPostId);
+        myRepliesStore.incrementPostRepliesCount(parentPostId);
+        const rootPostId = post.parent_post?._id;
+        if (rootPostId) {
+          singlePostStore.updatePost(rootPostId, (post) => ({
+            replies_count: post.replies_count ? post.replies_count + 1 : 1,
+          }));
+          feedStore.incrementPostRepliesCount(rootPostId);
+          myPostStore.incrementPostRepliesCount(rootPostId);
+        }
       }
     } else if (modalType === "reply-of-thread-post" && parentPostId) {
       if (post.status === "complete") {
