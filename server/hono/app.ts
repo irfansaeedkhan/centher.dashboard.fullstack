@@ -58,6 +58,12 @@ import { isTrustedAttachmentUrl } from "@/lib/chat/attachments";
 import { dmPairKey, EDIT_WINDOW_MS, isEditExpired } from "@/lib/chat/utils";
 import { sanitizeEditorState } from "@/lib/feed/editor-state";
 import {
+  parseBnbAmount,
+  storedBnbToScaled,
+  type ParsedBnbAmount,
+} from "@/lib/marketplace/bnb-amount";
+import type { NFTSaleState } from "@/models/nft";
+import {
   extractMentionUserIds,
   MAX_MENTION_NOTIFICATIONS,
 } from "@/lib/feed/mentions";
@@ -4767,7 +4773,9 @@ export const createHonoApp = () => {
       creator: creatorId,
       mintHash: "",
       ipfs: isVideo || isAudio ? animUrl || img : img,
-      saleState: n.listed ? "Sale" : "NotForSale",
+      // Canonical vocabulary (marketplace-grill Q10): the detail page
+      // branches on exactly these two values.
+      saleState: (n.listed ? "Sale" : "NotForSale") as NFTSaleState,
       tokenId: n.id,
       price: n.price ?? "0",
       owner: n.ownerId,
@@ -5119,6 +5127,70 @@ export const createHonoApp = () => {
 
   const uuidParam = z.string().uuid();
 
+  // Raw row shapes returned by the atomic trade statements below
+  // (db.execute over neon-http: numeric → string, timestamps → ISO
+  // strings). Same defensive normalization as the chat list's rowsOf.
+  type TradePurchaseRow = {
+    id: string;
+    nft_id: string;
+    buyer_id: string;
+    seller_id: string;
+    price_bnb: string;
+    tx_hash: string | null;
+    purchased_at: string | null;
+  };
+  type TradeBidRow = {
+    id: string;
+    nft_id: string;
+    bidder_id: string;
+    amount_bnb: string;
+    status: string;
+    created_at: string | null;
+    expires_at: string | null;
+  };
+  const tradeRowsOf = <T>(raw: unknown): T[] => {
+    if (Array.isArray(raw)) return raw as T[];
+    if (raw && typeof raw === "object" && Array.isArray((raw as any).rows))
+      return (raw as any).rows as T[];
+    return [];
+  };
+  // Buy and accept claim rows in opposite orders (nft→bids vs bid→nft),
+  // so a simultaneous buy+accept on the same NFT can deadlock; Postgres
+  // aborts one statement (40P01/40001). Translate that into the readable
+  // 409 the loser would have gotten anyway — never a raw 500.
+  const execTrade = async (stmt: ReturnType<typeof sql>) => {
+    try {
+      return await db.execute(stmt);
+    } catch (err: any) {
+      const code = err?.code ?? err?.cause?.code;
+      if (code === "40P01" || code === "40001")
+        apiError(
+          "This item changed hands at the same moment — please try again",
+          "TRADE_CONFLICT",
+          409
+        );
+      throw err;
+    }
+  };
+  const mapPurchaseRaw = (r: TradePurchaseRow) => ({
+    id: r.id,
+    nftId: r.nft_id,
+    buyerId: r.buyer_id,
+    sellerId: r.seller_id,
+    priceBnb: r.price_bnb,
+    txHash: r.tx_hash,
+    purchasedAt: r.purchased_at ? new Date(r.purchased_at).toISOString() : null,
+  });
+  const mapBidRaw = (r: TradeBidRow) => ({
+    id: r.id,
+    nftId: r.nft_id,
+    bidderId: r.bidder_id,
+    amountBnb: r.amount_bnb,
+    status: r.status,
+    createdAt: r.created_at ? new Date(r.created_at).toISOString() : null,
+    expiresAt: r.expires_at ? new Date(r.expires_at).toISOString() : null,
+  });
+
   const mapBidRow = (b: typeof nftBids.$inferSelect) => ({
     id: b.id,
     nftId: b.nftId,
@@ -5147,12 +5219,17 @@ export const createHonoApp = () => {
   // Buy a listed NFT at its fixed price: records the purchase, transfers
   // ownership, unlists, and marks active bids outbid.
   //
-  // KNOWN LIMITATION (Phase 13): check-then-act race — two concurrent buys
-  // can both pass the `listed` check before either UPDATE lands, recording
-  // two purchases for one NFT. Acceptable for the demo (no real funds move
-  // on-chain here); a production fix would use a single conditional UPDATE
-  // (... WHERE listed = true RETURNING) and treat "0 rows updated" as the
-  // lost race. Logged, not fixed, per Judge F4.
+  // Marketplace-grill Q4 (was "KNOWN LIMITATION, logged not fixed"): the
+  // old flow was check-then-act across three awaits — two concurrent buys
+  // could both pass the `listed` check and both record purchases, and a
+  // crash between steps left a purchase record for a sale that never
+  // completed. The trade now runs as ONE statement: the conditional
+  // UPDATE claims the NFT only while it is still listed (the row lock +
+  // WHERE re-evaluation serialize concurrent buyers — exactly one claim
+  // wins), and the purchase insert + bid sweep are gated on the claim's
+  // RETURNING, so a trade either fully lands or not at all. (neon-http
+  // has no interactive transactions; a single statement is the atomic
+  // unit, and every write below is chained on the previous RETURNING.)
   app.post("/marketplace/nfts/:id/buy", async (c) => {
     const buyerId = requireUserId(c);
     const nftId = uuidParam.parse(c.req.param("id"));
@@ -5164,25 +5241,47 @@ export const createHonoApp = () => {
     if (!nft!.listed) apiError("NFT is not listed for sale", "NOT_LISTED", 400);
     if (nft!.ownerId === buyerId)
       apiError("You already own this NFT", "SELF_BUY", 400);
-    const [purchase] = await db
-      .insert(nftPurchases)
-      .values({
-        nftId,
-        buyerId,
-        sellerId: nft!.ownerId,
-        priceBnb: nft!.price ?? "0",
-        txHash: body.txHash ?? null,
-      })
-      .returning();
-    await db
-      .update(nfts)
-      .set({ ownerId: buyerId, listed: false })
-      .where(eq(nfts.id, nftId));
-    await db
-      .update(nftBids)
-      .set({ status: "outbid" })
-      .where(and(eq(nftBids.nftId, nftId), eq(nftBids.status, "active")));
-    return c.json({ purchase: mapPurchaseRow(purchase) }, 201);
+    const rows = tradeRowsOf<TradePurchaseRow>(
+      await execTrade(sql`
+        WITH claim AS (
+          UPDATE "nfts"
+          SET "owner_id" = ${buyerId}, "listed" = false
+          WHERE "id" = ${nftId} AND "listed" = true
+            AND "owner_id" = ${nft!.ownerId}
+          RETURNING "id", "price"
+        ),
+        purchase AS (
+          INSERT INTO "nft_purchases"
+            ("nft_id", "buyer_id", "seller_id", "price_bnb", "tx_hash")
+          SELECT "id", ${buyerId}, ${nft!.ownerId}, "price", ${
+        body.txHash ?? null
+      }
+          FROM claim
+          RETURNING "id", "nft_id", "buyer_id", "seller_id", "price_bnb",
+            "tx_hash", "purchased_at"
+        ),
+        swept AS (
+          UPDATE "nft_bids" SET "status" = 'outbid'
+          WHERE "nft_id" IN (SELECT "id" FROM claim) AND "status" = 'active'
+          RETURNING "id"
+        )
+        SELECT p.*, (SELECT count(*)::int FROM swept) AS "swept_count"
+        FROM purchase p
+      `)
+    );
+    if (rows.length === 0) {
+      // Lost the race between the pre-checks and the claim — re-read so
+      // the loser gets the precise, readable reason.
+      const now = await nftRowById(nftId);
+      if (now && now.ownerId === buyerId)
+        apiError("You already own this NFT", "SELF_BUY", 409);
+      apiError(
+        "This item was just sold — someone else completed the purchase first",
+        "ALREADY_SOLD",
+        409
+      );
+    }
+    return c.json({ purchase: mapPurchaseRaw(rows[0]) }, 201);
   });
 
   // Place a bid. Must exceed the current highest active bid (or be > 0 when
@@ -5201,9 +5300,20 @@ export const createHonoApp = () => {
     const body = z
       .object({ amountBnb: z.union([z.string(), z.number()]) })
       .parse(await c.req.json());
-    const amount = Number(body.amountBnb);
-    if (!Number.isFinite(amount) || amount <= 0)
-      apiError("Bid amount must be a positive number", "INVALID_AMOUNT", 400);
+    // Marketplace-grill Q7: exact decimal handling (lib/marketplace/
+    // bnb-amount). The old path validated the float, then stored
+    // `amount.toFixed(4)` — a 0.00001 BNB bid rounded to "0.0000" yet
+    // still wiped the real top bid, and huge amounts overflowed the
+    // numeric(18,4) column into a raw 500. Now the amount is parsed
+    // exactly (wei-scale BigInt), stored unrounded at numeric(38,18),
+    // and a bid whose stored value would be zero is rejected up front.
+    const parsed = parseBnbAmount(body.amountBnb);
+    if (!parsed.ok) apiError(parsed.error, "INVALID_AMOUNT", 400);
+    // apiError always throws; the cast is the narrowing (same reason
+    // this file is full of `nft!` after apiError guards).
+    const bidAmount = (parsed as { ok: true; value: ParsedBnbAmount }).value;
+    if (bidAmount.scaled <= 0n)
+      apiError("Bid amount must be more than 0 BNB", "INVALID_AMOUNT", 400);
     const nft = await nftRowById(nftId);
     if (!nft) apiError("NFT not found", "NOT_FOUND", 404);
     if (nft!.ownerId === bidderId)
@@ -5214,33 +5324,49 @@ export const createHonoApp = () => {
       .where(and(eq(nftBids.nftId, nftId), eq(nftBids.status, "active")))
       .orderBy(desc(nftBids.amountBnb))
       .limit(1);
-    const floor = top ? Number(top.amountBnb) : 0;
-    if (amount <= floor)
+    // Exact comparison against the *stored* top bid — never floats.
+    if (top && bidAmount.scaled <= storedBnbToScaled(top.amountBnb))
       apiError(
-        `Bid must exceed the current highest bid of ${floor} BNB`,
+        `Bid must exceed the current highest bid of ${top.amountBnb} BNB`,
         "BID_TOO_LOW",
         400
       );
-    const [bid] = await db
-      .insert(nftBids)
-      .values({
-        nftId,
-        bidderId,
-        amountBnb: amount.toFixed(4),
-        status: "active",
-      })
-      .returning();
-    await db
-      .update(nftBids)
-      .set({ status: "outbid" })
-      .where(
-        and(
-          eq(nftBids.nftId, nftId),
-          eq(nftBids.status, "active"),
-          ne(nftBids.id, bid.id)
+    // One statement: the insert only lands if the amount still beats the
+    // stored top bid at execution time, and the sweep only marks bids
+    // the new bid actually outbids — a bid can never displace a higher
+    // (or equal) top bid, even when two bids land concurrently (Q3/Q5).
+    const rows = tradeRowsOf<TradeBidRow>(
+      await execTrade(sql`
+        WITH placed AS (
+          INSERT INTO "nft_bids" ("nft_id", "bidder_id", "amount_bnb", "status")
+          SELECT ${nftId}, ${bidderId}, ${bidAmount.canonical}, 'active'
+          WHERE ${bidAmount.canonical}::numeric > COALESCE(
+            (SELECT MAX("amount_bnb") FROM "nft_bids"
+             WHERE "nft_id" = ${nftId} AND "status" = 'active'),
+            0
+          )
+          RETURNING "id", "nft_id", "bidder_id", "amount_bnb", "status",
+            "created_at", "expires_at"
+        ),
+        swept AS (
+          UPDATE "nft_bids" SET "status" = 'outbid'
+          WHERE "nft_id" = ${nftId} AND "status" = 'active'
+            AND "id" NOT IN (SELECT "id" FROM placed)
+            AND EXISTS (SELECT 1 FROM placed)
+            AND "amount_bnb" < (SELECT "amount_bnb" FROM placed)
+          RETURNING "id"
         )
+        SELECT p.*, (SELECT count(*)::int FROM swept) AS "swept_count"
+        FROM placed p
+      `)
+    );
+    if (rows.length === 0)
+      apiError(
+        "Bid must exceed the current highest bid — it was just raised",
+        "BID_TOO_LOW",
+        409
       );
-    return c.json({ bid: mapBidRow(bid) }, 201);
+    return c.json({ bid: mapBidRaw(rows[0]) }, 201);
   });
 
   // Bid history for an NFT, newest first, with bidder cards.
@@ -5263,6 +5389,13 @@ export const createHonoApp = () => {
 
   // Owner accepts an active bid: creates the purchase record, transfers
   // ownership, unlists, marks the bid accepted and the rest outbid.
+  //
+  // Marketplace-grill Q5: same atomic pattern as buy. The bid is claimed
+  // conditionally (`status = 'active'` — a bid withdrawn a millisecond
+  // earlier can no longer settle), the NFT transfer is gated on the bid
+  // claim AND still being the owner, and the purchase (at the bid's
+  // actual stored amount — Q3: volume stats sum these rows, so the price
+  // recorded is the price that settles) is gated on the transfer.
   app.post("/marketplace/bids/:bidId/accept", async (c) => {
     const userId = requireUserId(c);
     const bidId = uuidParam.parse(c.req.param("bidId"));
@@ -5280,32 +5413,84 @@ export const createHonoApp = () => {
       apiError("Only the owner can accept bids", "FORBIDDEN", 403);
     if (bid!.bidderId === userId)
       apiError("Owner cannot accept their own bid", "SELF_BID", 400);
-    const [purchase] = await db
-      .insert(nftPurchases)
-      .values({
-        nftId: nft!.id,
-        buyerId: bid!.bidderId,
-        sellerId: nft!.ownerId,
-        priceBnb: bid!.amountBnb,
-        txHash: null,
-      })
-      .returning();
-    await db
-      .update(nfts)
-      .set({ ownerId: bid!.bidderId, listed: false })
-      .where(eq(nfts.id, nft!.id));
-    await db
-      .update(nftBids)
-      .set({ status: "accepted" })
-      .where(eq(nftBids.id, bid!.id));
-    await db
-      .update(nftBids)
-      .set({ status: "outbid" })
-      .where(and(eq(nftBids.nftId, nft!.id), eq(nftBids.status, "active")));
-    return c.json({ purchase: mapPurchaseRow(purchase) });
+    const rows = tradeRowsOf<TradePurchaseRow>(
+      await execTrade(sql`
+        WITH bid_claim AS (
+          UPDATE "nft_bids" SET "status" = 'accepted'
+          WHERE "id" = ${bidId} AND "status" = 'active'
+            AND EXISTS (
+              SELECT 1 FROM "nfts"
+              WHERE "id" = ${bid!.nftId} AND "owner_id" = ${userId}
+            )
+          RETURNING "id", "nft_id", "bidder_id", "amount_bnb"
+        ),
+        nft_claim AS (
+          UPDATE "nfts"
+          SET "owner_id" = (SELECT "bidder_id" FROM bid_claim),
+              "listed" = false
+          WHERE "id" IN (SELECT "nft_id" FROM bid_claim)
+            AND "owner_id" = ${userId}
+          RETURNING "id"
+        ),
+        purchase AS (
+          INSERT INTO "nft_purchases"
+            ("nft_id", "buyer_id", "seller_id", "price_bnb", "tx_hash")
+          SELECT "id", (SELECT "bidder_id" FROM bid_claim), ${userId},
+                 (SELECT "amount_bnb" FROM bid_claim), NULL
+          FROM nft_claim
+          RETURNING "id", "nft_id", "buyer_id", "seller_id", "price_bnb",
+            "tx_hash", "purchased_at"
+        ),
+        swept AS (
+          UPDATE "nft_bids" SET "status" = 'outbid'
+          WHERE "nft_id" IN (SELECT "id" FROM nft_claim)
+            AND "status" = 'active'
+          RETURNING "id"
+        )
+        SELECT p.*, (SELECT count(*)::int FROM swept) AS "swept_count"
+        FROM purchase p
+      `)
+    );
+    if (rows.length === 0) {
+      // The claim chain broke: the bid was withdrawn/accepted in the same
+      // instant, or the NFT changed hands first. If the bid claim fired
+      // but the transfer didn't, the bid is parked in 'accepted' with no
+      // sale behind it — hand it back to 'active', but only when the NFT
+      // did NOT end up with the bidder (i.e. no sale actually happened).
+      await db.execute(sql`
+        UPDATE "nft_bids" SET "status" = 'active'
+        WHERE "id" = ${bidId} AND "status" = 'accepted'
+          AND NOT EXISTS (
+            SELECT 1 FROM "nfts"
+            WHERE "id" = ${bid!.nftId} AND "owner_id" = ${bid!.bidderId}
+          )
+      `);
+      const [fresh] = await db
+        .select()
+        .from(nftBids)
+        .where(eq(nftBids.id, bidId))
+        .limit(1);
+      if (fresh && fresh.status === "withdrawn")
+        apiError(
+          "This bid was just withdrawn by the bidder",
+          "BID_INACTIVE",
+          409
+        );
+      if (fresh && fresh.status !== "active")
+        apiError("Bid is no longer active", "BID_INACTIVE", 409);
+      apiError(
+        "This sale could not be completed — the item changed hands at the same moment",
+        "TRADE_CONFLICT",
+        409
+      );
+    }
+    return c.json({ purchase: mapPurchaseRaw(rows[0]) });
   });
 
-  // Owner rejects an active bid.
+  // Owner rejects an active bid. Marketplace-grill Q5: the status flip is
+  // a conditional update — if the bid left 'active' between the checks
+  // and the write (accepted/withdrawn race), the loser gets a 409, not a
+  // silent overwrite.
   app.post("/marketplace/bids/:bidId/reject", async (c) => {
     const userId = requireUserId(c);
     const bidId = uuidParam.parse(c.req.param("bidId"));
@@ -5321,14 +5506,20 @@ export const createHonoApp = () => {
     if (!nft) apiError("NFT not found", "NOT_FOUND", 404);
     if (nft!.ownerId !== userId)
       apiError("Only the owner can reject bids", "FORBIDDEN", 403);
-    await db
+    const updated = await db
       .update(nftBids)
       .set({ status: "rejected" })
-      .where(eq(nftBids.id, bid!.id));
-    return c.json({ bid: mapBidRow({ ...bid!, status: "rejected" }) });
+      .where(and(eq(nftBids.id, bid!.id), eq(nftBids.status, "active")))
+      .returning();
+    if (updated.length === 0)
+      apiError("This bid was just accepted or withdrawn", "BID_INACTIVE", 409);
+    return c.json({ bid: mapBidRow(updated[0]) });
   });
 
-  // Bidder withdraws their own active bid.
+  // Bidder withdraws their own active bid. Marketplace-grill Q5: the
+  // conditional update is what guarantees a withdrawn bid can never
+  // settle — accept claims the bid with the same `status = 'active'`
+  // condition, so exactly one of the two transitions wins the row.
   app.post("/marketplace/bids/:bidId/withdraw", async (c) => {
     const userId = requireUserId(c);
     const bidId = uuidParam.parse(c.req.param("bidId"));
@@ -5342,11 +5533,24 @@ export const createHonoApp = () => {
       apiError("Only the bidder can withdraw this bid", "FORBIDDEN", 403);
     if (bid!.status !== "active")
       apiError("Bid is no longer active", "BID_INACTIVE", 400);
-    await db
+    const updated = await db
       .update(nftBids)
       .set({ status: "withdrawn" })
-      .where(eq(nftBids.id, bid!.id));
-    return c.json({ bid: mapBidRow({ ...bid!, status: "withdrawn" }) });
+      .where(
+        and(
+          eq(nftBids.id, bid!.id),
+          eq(nftBids.bidderId, userId),
+          eq(nftBids.status, "active")
+        )
+      )
+      .returning();
+    if (updated.length === 0)
+      apiError(
+        "This bid was just accepted — it can no longer be withdrawn",
+        "BID_INACTIVE",
+        409
+      );
+    return c.json({ bid: mapBidRow(updated[0]) });
   });
 
   // Purchase history for a user (bought + sold). Users can only view their

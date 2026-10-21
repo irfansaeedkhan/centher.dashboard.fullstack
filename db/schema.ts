@@ -411,7 +411,9 @@ export const nfts = pgTable("nfts", {
   ownerId: text("owner_id")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
-  price: numeric("price", { precision: 18, scale: 4 }).notNull().default("0"),
+  // numeric(38,18) since 0011 (marketplace-grill Q7): full wei precision
+  // so amounts are stored exactly, never rounded to 4dp.
+  price: numeric("price", { precision: 38, scale: 18 }).notNull().default("0"),
   listed: boolean("listed").notNull().default(true),
   mediaType: text("media_type").notNull().default("image"),
   animationUrl: text("animation_url"),
@@ -434,7 +436,7 @@ export const nftPurchases = pgTable("nft_purchases", {
   sellerId: text("seller_id")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
-  priceBnb: numeric("price_bnb", { precision: 18, scale: 4 }).notNull(),
+  priceBnb: numeric("price_bnb", { precision: 38, scale: 18 }).notNull(),
   txHash: text("tx_hash"),
   purchasedAt: timestamp("purchased_at").notNull().defaultNow(),
 });
@@ -452,7 +454,7 @@ export const nftBids = pgTable("nft_bids", {
   bidderId: text("bidder_id")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
-  amountBnb: numeric("amount_bnb", { precision: 18, scale: 4 }).notNull(),
+  amountBnb: numeric("amount_bnb", { precision: 38, scale: 18 }).notNull(),
   status: text("status").notNull().default("active"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   expiresAt: timestamp("expires_at"),
