@@ -103,7 +103,12 @@ export const BlockchainConfig: IBlockchainConfig = {
   rpcProvider:
     process.env.NEXT_PUBLIC_APP_ENV === "production"
       ? "https://bsc-dataseed1.binance.org"
-      : "https://ethereum-sepolia.core.chainstack.com/bfa8949f46986d75815e86ab166ce3ea",
+      : // Marketplace-grill Q13: the Chainstack RPC URL carries an API
+        // key and must come from the environment, never from source
+        // (the previously committed key must be rotated — it is in git
+        // history). Unset → a keyless public Sepolia RPC, so read paths
+        // keep working and no page crashes on a missing credential.
+        process.env.NEXT_PUBLIC_CHAINSTACK_RPC_URL || "https://rpc.sepolia.org",
   abis: {
     CENTHER_TOKEN: centherAbi,
     REGISTRATION: registrationAbi,
