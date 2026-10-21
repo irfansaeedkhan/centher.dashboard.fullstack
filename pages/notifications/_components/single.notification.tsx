@@ -224,7 +224,13 @@ const getNotificationUrl = (
       if (!notification.post) return null;
       return {
         pathname: AppRoutes.feed.single_post,
-        query: { post_id: notification.post._id },
+        query: {
+          post_id: notification.post._id,
+          // Q12: a reply notification anchors to that reply.
+          ...(notification.type === "post_reply" && notification.comment_id
+            ? { reply: notification.comment_id }
+            : {}),
+        },
       };
     case "follow":
     case "new_referral":
@@ -252,7 +258,15 @@ const getNotificationUrl = (
       if (!notification.post) return null;
       return {
         pathname: AppRoutes.feed.single_post,
-        query: { post_id: notification.post._id },
+        query: {
+          post_id: notification.post._id,
+          // Post-grill Q12: anchor to the reply the mention lives in —
+          // landing at the top of the post left the notified user
+          // hunting through pages of replies for their name.
+          ...(notification.comment_id
+            ? { reply: notification.comment_id }
+            : {}),
+        },
       };
     default:
       return null;

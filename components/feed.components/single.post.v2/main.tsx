@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { useShallow } from "zustand/react/shallow";
 import clsx from "clsx";
 import { HiOutlineArchive } from "react-icons/hi";
 import { useInView } from "react-intersection-observer";
-import { useNewPostStore } from "@/store/new.post.store";
+import { SerializedEditorState, SerializedLexicalNode } from "lexical";
 import useUser from "@/hooks/use.user";
 import { ArchivedPost, CompletedPost, ParentPost } from "@/models/post";
 import { customLog } from "@/utils/custom.log";
-import { PostModal } from "../create.post/post.modal";
+import { ModalPortal } from "@/components/modal/modal.portal";
+import { extractTextFromEditorState } from "@/lib/feed/editor-state";
+import { useFeedStore } from "@/store/feed.store";
+import { useMyPostStore } from "@/store/my.post.store";
+import { useSinglePostStore } from "@/store/single.post.store";
 import { PostHeader } from "./post.header";
-import { apiErrorMessage, editReply } from "./post.helpers";
+import { apiErrorMessage, editPostRich, editReplyRich } from "./post.helpers";
+import { RichTextInlineEditor } from "./rich.text.editor";
 import { PostMedia } from "./post.media";
 import { PostTextContent } from "./post.text.content";
 import { PostFooter } from "./post.footer";
@@ -80,15 +84,25 @@ export const SinglePostV2: React.FC<Props> = ({
   onReplyUpdated,
 }) => {
   const { user: loggedInUser } = useUser();
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  // Q13: inline reply-edit state (draft, saving flag, readable error).
+  // Q13 + post-grill Q10: inline reply edit runs over the STORED
+  // editor state — it used to be a textarea seeded from plain
+  // `text_content` that saved `{ text }`, irreversibly flattening
+  // mentions, links, and formatting on any save.
   const [isEditingReply, setIsEditingReply] = useState(false);
-  const [replyDraft, setReplyDraft] = useState("");
+  const [replyDraftState, setReplyDraftState] =
+    useState<SerializedEditorState<SerializedLexicalNode> | null>(null);
   const [isSavingReply, setIsSavingReply] = useState(false);
   const [replyEditError, setReplyEditError] = useState<string | null>(null);
-  const { openModal: openPostModal } = useNewPostStore(
-    useShallow((state) => state.actions)
-  );
+  // Post-grill Q11: post edits run through the same rich editor in a
+  // modal — they used to go through the Draft.js modal seeded from
+  // `text_content` (same flattening) with a console-only catch, so the
+  // routine 15-minute-window expiry told the user nothing. Failures
+  // now surface in the modal and the draft survives them.
+  const [isEditingPost, setIsEditingPost] = useState(false);
+  const [postDraftState, setPostDraftState] =
+    useState<SerializedEditorState<SerializedLexicalNode> | null>(null);
+  const [isSavingPost, setIsSavingPost] = useState(false);
+  const [postEditError, setPostEditError] = useState<string | null>(null);
   const [loggedInPostModal, setLoggedInPostModal] = useState({
     isOpen: false,
     onClose: () => {
@@ -103,32 +117,44 @@ export const SinglePostV2: React.FC<Props> = ({
     previewIndex: 0,
   });
 
+  // Post-grill Q16: view counting. The old signal — 80% of the card
+  // visible — is mathematically unreachable for a card taller than
+  // ~1.25x the viewport, so the most substantial posts never counted
+  // a view while short ones did; and replies fired a post-view ping
+  // with a COMMENT id that 404'd on every card (and burned the shared
+  // post-views rate limit). Now: any part of a POST card visible for
+  // a 1-second dwell counts once; replies never ping.
+  const isReplyCard =
+    postType === "reply" || postType === "reply-w-parent-header";
   const [currentPostRef, _currentPostInView, currentPostEntry] = useInView({
-    threshold: 0.8,
+    threshold: 0,
   });
+  const currentPostInView = !!currentPostEntry?.isIntersecting;
 
-  // When post is in viewport, call onPostInViewport
   useEffect(() => {
-    (async () => {
-      if (
-        !!loggedInUser &&
-        currentPostEntry &&
-        currentPostEntry.intersectionRatio > 0.8 &&
-        !post.viewed_by_loggedin_user
-      ) {
-        try {
-          await onPostInViewport();
-        } catch (error: any) {
-          customLog(["development"], error);
-        }
-      }
-    })();
+    if (
+      isReplyCard ||
+      !loggedInUser ||
+      !currentPostInView ||
+      post.viewed_by_loggedin_user
+    ) {
+      return;
+    }
+    const timer = setTimeout(() => {
+      // onPostInViewport is intentionally not a dep: its identity
+      // changes every render and would keep resetting the dwell.
+      onPostInViewport().catch((error: any) => {
+        customLog(["development"], error);
+      });
+    }, 1000);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
+    isReplyCard,
+    loggedInUser,
+    currentPostInView,
     post._id,
     post.viewed_by_loggedin_user,
-    currentPostEntry,
-    onPostInViewport,
-    loggedInUser,
   ]);
 
   const handleSaveReplyEdit = async () => {
@@ -136,7 +162,11 @@ export const SinglePostV2: React.FC<Props> = ({
     setIsSavingReply(true);
     setReplyEditError(null);
     try {
-      const updated = await editReply(post._id, replyDraft.trim());
+      // Q10: save the full editor state, not flattened plain text.
+      const updated = await editReplyRich(
+        post._id,
+        replyDraftState ?? post.post_editor_state
+      );
       setIsEditingReply(false);
       onReplyUpdated?.(updated);
     } catch (error: any) {
@@ -148,6 +178,51 @@ export const SinglePostV2: React.FC<Props> = ({
       setIsSavingReply(false);
     }
   };
+
+  const handleSavePostEdit = async () => {
+    if (isSavingPost) return;
+    const draft = postDraftState ?? post.post_editor_state;
+    // Q11: the empty check considers the post's existing media. A
+    // media-only post used to be uneditable — the old flow seeded an
+    // empty media array and then refused to save it as "empty".
+    if (
+      extractTextFromEditorState(draft).trim().length === 0 &&
+      (!post.media || post.media.length === 0)
+    ) {
+      setPostEditError("You can not make the post empty");
+      return;
+    }
+    setIsSavingPost(true);
+    setPostEditError(null);
+    try {
+      const updated = await editPostRich(post._id, draft);
+      // Swap the saved post into every store that can hold it — the
+      // same set the old refetch flow updated.
+      useFeedStore.getState().replaceEditedPost(updated);
+      useMyPostStore.getState().replaceEditedPost(updated);
+      useSinglePostStore.getState().replaceEditedPost(updated);
+      setIsEditingPost(false);
+    } catch (error: any) {
+      // Readable in-modal failure (incl. the 15-minute window
+      // expiring mid-edit); the modal stays open, draft intact.
+      setPostEditError(
+        apiErrorMessage(error, "Could not save your post. Please try again.")
+      );
+    } finally {
+      setIsSavingPost(false);
+    }
+  };
+
+  // The edit modal obeys the standing rule: escapable at every step
+  // (Escape here, backdrop click in the JSX) — except mid-save.
+  useEffect(() => {
+    if (!isEditingPost) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && !isSavingPost) setIsEditingPost(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [isEditingPost, isSavingPost]);
 
   // Feed product call Q21: tombstone — a deleted post/reply renders as
   // a placeholder so thread structure survives (replies under a deleted
@@ -248,31 +323,21 @@ export const SinglePostV2: React.FC<Props> = ({
             // replies page renders comments as "reply-w-parent-header"
             // and wires onReplyUpdated too; the post detail page's
             // firstPost uses that type for a real post but never passes
-            // onReplyUpdated, so it still edits through the post modal.
+            // onReplyUpdated, so it still edits through the post path.
+            // Post-grill Q10/Q11: BOTH paths now seed from the stored
+            // editor state — never from plain `text_content`.
             if (
               (postType === "reply" || postType === "reply-w-parent-header") &&
               onReplyUpdated
             ) {
-              setReplyDraft(post.text_content ?? "");
+              setReplyDraftState(post.post_editor_state);
               setReplyEditError(null);
               setIsEditingReply(true);
               return;
             }
-            setIsEditModalOpen(true);
-            openPostModal({
-              modalType: "edit",
-              postId: post._id,
-              posts: [
-                {
-                  uuid: post._id,
-                  post_text: post.text_content ?? "",
-                  entities: { mentions: [], hashtags: [] },
-                  media: [],
-                },
-              ],
-              shouldAddNewPost: false,
-              onCloseModal: () => setIsEditModalOpen(false),
-            });
+            setPostDraftState(post.post_editor_state);
+            setPostEditError(null);
+            setIsEditingPost(true);
           }}
         />
 
@@ -324,14 +389,14 @@ export const SinglePostV2: React.FC<Props> = ({
                 e.stopPropagation();
               }}
             >
-              <textarea
-                autoFocus
-                rows={3}
-                value={replyDraft}
-                disabled={isSavingReply}
-                onChange={(e) => setReplyDraft(e.target.value)}
-                className="w-full resize-none rounded-10px bg-elevation-2 p-3 text-sm text-white outline-none"
-              />
+              {/* Q10: the rich editor over the stored state — a plain
+                  textarea here is what flattened every edited reply. */}
+              <div className="rounded-10px bg-elevation-2 p-3">
+                <RichTextInlineEditor
+                  initialState={post.post_editor_state}
+                  onChange={setReplyDraftState}
+                />
+              </div>
               {replyEditError && (
                 <p className="mt-2 text-xs font-medium text-danger">
                   {replyEditError}
@@ -350,7 +415,12 @@ export const SinglePostV2: React.FC<Props> = ({
                 </button>
                 <button
                   onClick={handleSaveReplyEdit}
-                  disabled={isSavingReply || !replyDraft.trim()}
+                  disabled={
+                    isSavingReply ||
+                    !replyDraftState ||
+                    extractTextFromEditorState(replyDraftState).trim()
+                      .length === 0
+                  }
                   className="rounded-10px bg-brand-primary px-4 py-1.5 text-sm font-semibold text-white disabled:opacity-50"
                 >
                   {isSavingReply ? "Saving…" : "Save"}
@@ -420,7 +490,55 @@ export const SinglePostV2: React.FC<Props> = ({
 
       <ShowThread post={post} shouldShowThread={shouldShowThread} />
 
-      {isEditModalOpen && <PostModal modalTitle="Edit Post" />}
+      {/* Post-grill Q11: rich post-edit modal (replaces the Draft.js
+          PostModal for edits). Seeded from the stored editor state;
+          failures render inside the modal and the draft survives. */}
+      {isEditingPost && (
+        <ModalPortal wrapperId="post-edit-modal">
+          <div
+            className="fixed inset-0 z-[1050] flex items-center justify-center overflow-y-auto overflow-x-hidden font-monto backdrop-blur-lg backdrop-filter"
+            onClick={() => {
+              if (!isSavingPost) setIsEditingPost(false);
+            }}
+          >
+            <div
+              className="mx-2 w-full max-w-[656px] rounded-2xl bg-popup-0 p-4 fmd:p-6"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <header className="flex items-center justify-between text-white">
+                <h3 className="text-lg font-semibold">Edit Post</h3>
+              </header>
+              <div className="mt-4 rounded-10px bg-elevation-2 p-3">
+                <RichTextInlineEditor
+                  initialState={post.post_editor_state}
+                  onChange={setPostDraftState}
+                />
+              </div>
+              {postEditError && (
+                <p className="mt-3 text-sm font-medium text-danger">
+                  {postEditError}
+                </p>
+              )}
+              <div className="mt-4 flex justify-end gap-2">
+                <button
+                  onClick={() => setIsEditingPost(false)}
+                  disabled={isSavingPost}
+                  className="rounded-10px bg-elevation-2 px-4 py-1.5 text-sm font-semibold text-white disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSavePostEdit}
+                  disabled={isSavingPost}
+                  className="rounded-10px bg-brand-primary px-4 py-1.5 text-sm font-semibold text-white disabled:opacity-50"
+                >
+                  {isSavingPost ? "Saving…" : "Save"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </ModalPortal>
+      )}
 
       <LoggedInModal
         isOpen={loggedInPostModal.isOpen}

@@ -1,5 +1,6 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import { useInView } from "react-intersection-observer";
 import { useShallow } from "zustand/react/shallow";
 import clsx from "clsx";
@@ -14,14 +15,14 @@ import {
   SinglePostV2,
   apiErrorMessage,
   archivePost,
+  unArchivePost,
   deletePost,
   deleteReply,
   createPostView,
 } from "@/components/feed.components";
 import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
 import { PostEditorModal } from "@/components/post-editor/post-editor-modal";
-import { ArchivedPost, CompletedPost, Post } from "@/models/post";
-import { customLog } from "@/utils/custom.log";
+import { Post } from "@/models/post";
 import { AppRoutes } from "@/constants/app.routes";
 import { BackButton } from "@/components/button/back-button";
 import { NoPostMessage } from "./_components";
@@ -32,16 +33,19 @@ const SinglePostPage: NextPageWithLayout = () => {
   const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
 
   const {
+    postId: storePostId,
     posts,
     fetchPost,
     resetStore,
     postLoading,
     replies,
+    repliesLoading,
     repliesOffset,
+    repliesHasMore,
     fetchReplies,
     likePostAPI,
     updateRepliesOffset,
-    removePost,
+    updatePost,
     replaceEditedPost,
     createPostViewInStore,
   } = useSinglePostStore();
@@ -50,28 +54,17 @@ const SinglePostPage: NextPageWithLayout = () => {
     removePost: state.removePost,
   }));
 
-  const { firstPost, threadPosts } = useMemo(() => {
-    if (!!posts.length) {
-      const firstPostIndex = posts.findIndex(
-        (p) => p._id === router.query.post_id
-      );
+  // Post-grill Q8: normalize the id ONCE. The store is keyed by the
+  // lowercased id; the old code compared the raw query value against
+  // store ids, so a case-mangled link loaded fine from the server and
+  // then "found" no post — parent vanished, orphaned replies rendered.
+  const postIdParam = router.query.post_id?.toString().toLowerCase();
 
-      if (firstPostIndex === -1) {
-        return { firstPost: null, threadPosts: [] };
-      }
-
-      return {
-        firstPost: posts[firstPostIndex] as Post,
-        threadPosts: [
-          ...posts
-            .filter((p) => p.status !== "deleted")
-            .slice(firstPostIndex + 1),
-        ] as (CompletedPost | ArchivedPost)[],
-      };
-    }
-
-    return { firstPost: null, threadPosts: [] };
-  }, [posts, router.query.post_id]);
+  const firstPost = useMemo(() => {
+    if (!posts.length || !postIdParam) return null;
+    const found = posts.find((p) => p._id === postIdParam);
+    return (found as Post) ?? null;
+  }, [posts, postIdParam]);
 
   const { openModal: openPostModal } = usePostEditorStore(
     useShallow((state) => state.actions)
@@ -95,54 +88,99 @@ const SinglePostPage: NextPageWithLayout = () => {
     window.scrollTo(0, 0);
   }, []);
 
+  // Post-grill Q7: reset only when the POST changes. The old effect
+  // depended on the session OBJECT (new identity on every SWR
+  // revalidation) and its cleanup reset the store — tab away and back
+  // and the page flashed to a skeleton and lost reply pagination.
   useEffect(() => {
-    if (router.query.post_id) {
-      resetStore(router.query.post_id.toString().toLowerCase(), "loading");
-      fetchPost(!!loggedInUser);
+    if (postIdParam) {
+      resetStore(postIdParam, "loading");
     }
-
     return () => {
       resetStore("", "idle");
     };
-  }, [router.query.post_id, resetStore, fetchPost, loggedInUser]);
+  }, [postIdParam, resetStore]);
 
-  const handleAction = async (
-    postId: string,
-    postType: "main" | "reply" | "thread-post",
-    actionFunction: (postId: string) => Promise<void>
-  ) => {
+  // Fetch once per (post, auth-mode). When the session arrives, one
+  // soft refetch upgrades to the with-auth variant (liked state)
+  // WITHOUT a reset — content stays on screen (see the store). A
+  // session revalidation with the same user id refetches nothing.
+  const authUserId = loggedInUser?._id;
+  const fetchedKeyRef = useRef("");
+  useEffect(() => {
+    if (!postIdParam) return;
+    const key = `${postIdParam}|${authUserId ? "auth" : "anon"}`;
+    if (fetchedKeyRef.current === key) return;
+    fetchedKeyRef.current = key;
+    fetchPost(!!authUserId);
+  }, [postIdParam, authUserId, fetchPost]);
+
+  // ------------------------------------------------------------------
+  // Post-grill Q14: ONE readable error surface for every action on
+  // this page. Delete/archive failures used to end in a console-only
+  // customLog — a failed delete left the user believing the post was
+  // gone. Archive also confirmed in place instead of ejecting the
+  // author to the feed with no word about what happened.
+  // ------------------------------------------------------------------
+  const [actionError, setActionError] = useState<string | null>(null);
+  const [actionNotice, setActionNotice] = useState<string | null>(null);
+
+  const handleDeleteMainPost = async (postId: string) => {
     try {
-      await actionFunction(postId);
-      if (postType === "reply") {
-        removePost(postId, postType);
-      } else if (postType === "thread-post") {
-        removePost(postId, postType);
-        // Decrement post count on profile card
-        useProfileCardStore.getState().decrementPostsCount();
-      } else {
-        feedStore.removePost(postId);
-        // Decrement post count on profile card
-        useProfileCardStore.getState().decrementPostsCount();
-        router.replace(AppRoutes.feed.index);
-      }
+      setActionError(null);
+      await deletePost(postId);
+      feedStore.removePost(postId);
+      // Decrement post count on profile card
+      useProfileCardStore.getState().decrementPostsCount();
+      router.replace(AppRoutes.feed.index);
     } catch (error: any) {
-      customLog(["development"], error);
+      setActionError(
+        apiErrorMessage(error, "Could not delete this post. Please try again.")
+      );
+    }
+  };
+
+  const handleArchiveMainPost = async (postId: string) => {
+    try {
+      setActionError(null);
+      await archivePost(postId);
+      // Reflect it in place (Q15 rendering takes over: banner +
+      // Restore) and confirm what happened — no silent ejection.
+      updatePost(postId, () => ({ is_archived: true }));
+      setActionNotice(
+        "Post archived. It's hidden from everyone else — restore it any time from here or your archived posts."
+      );
+    } catch (error: any) {
+      setActionError(
+        apiErrorMessage(error, "Could not archive this post. Please try again.")
+      );
+    }
+  };
+
+  const handleRestoreMainPost = async (postId: string) => {
+    try {
+      setActionError(null);
+      await unArchivePost(postId);
+      updatePost(postId, () => ({ is_archived: false }));
+      setActionNotice("Post restored — it's visible again.");
+    } catch (error: any) {
+      setActionError(
+        apiErrorMessage(error, "Could not restore this post. Please try again.")
+      );
     }
   };
 
   // Feed product calls Q12/Q13: reply delete is a soft delete — the
   // server returns the tombstone and it replaces the reply in place
   // (thread structure survives), instead of the old flow that removed
-  // it from the list. Failures surface in a dismissible banner.
-  const [replyActionError, setReplyActionError] = useState<string | null>(null);
-
+  // it from the list. Failures surface in the same banner as above.
   const handleDeleteReply = async (replyId: string) => {
     try {
-      setReplyActionError(null);
+      setActionError(null);
       const tombstone = await deleteReply(replyId);
       replaceEditedPost(tombstone);
     } catch (error: any) {
-      setReplyActionError(
+      setActionError(
         apiErrorMessage(error, "Could not delete your reply. Please try again.")
       );
     }
@@ -152,20 +190,70 @@ const SinglePostPage: NextPageWithLayout = () => {
     try {
       await createPostView(postId);
       createPostViewInStore(postId);
-    } catch (error: any) {
-      customLog(["development"], error);
+    } catch {
+      // View pings are best-effort metrics (Q16) — never surface.
     }
   };
+
+  // ------------------------------------------------------------------
+  // Post-grill Q12: reply deep-link anchor. Notification and share
+  // links carry ?reply=<comment_id>; when the reply is loaded, scroll
+  // to it and highlight it; when it sits deeper in keyset pagination,
+  // page forward (bounded) until it lands.
+  // ------------------------------------------------------------------
+  const anchorReplyId =
+    typeof router.query.reply === "string" ? router.query.reply : null;
+  const [highlightedReplyId, setHighlightedReplyId] = useState<string | null>(
+    null
+  );
+  const anchorAttemptsRef = useRef(0);
+
+  useEffect(() => {
+    anchorAttemptsRef.current = 0;
+  }, [anchorReplyId]);
+
+  useEffect(() => {
+    if (!anchorReplyId || postLoading !== "loaded") return;
+
+    const found = replies.some((reply) => reply._id === anchorReplyId);
+    if (found) {
+      const el = document.getElementById(`reply-${anchorReplyId}`);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+        setHighlightedReplyId(anchorReplyId);
+        const timer = setTimeout(() => setHighlightedReplyId(null), 3000);
+        return () => clearTimeout(timer);
+      }
+      return;
+    }
+
+    if (repliesHasMore && anchorAttemptsRef.current < 10) {
+      anchorAttemptsRef.current += 1;
+      fetchReplies();
+    }
+  }, [anchorReplyId, postLoading, replies, repliesHasMore, fetchReplies]);
 
   return (
     <>
       <BackButton />
-      {replyActionError && (
+      {actionError && (
         <div className="mb-3 flex items-center justify-between rounded-10px bg-elevation-1 p-3 text-sm font-medium text-danger">
-          <span>{replyActionError}</span>
+          <span>{actionError}</span>
           <button
             aria-label="Dismiss"
-            onClick={() => setReplyActionError(null)}
+            onClick={() => setActionError(null)}
+            className="ml-3 text-white/70 hover:text-white"
+          >
+            ✕
+          </button>
+        </div>
+      )}
+      {actionNotice && (
+        <div className="mb-3 flex items-center justify-between rounded-10px bg-elevation-1 p-3 text-sm font-medium text-white">
+          <span>{actionNotice}</span>
+          <button
+            aria-label="Dismiss"
+            onClick={() => setActionNotice(null)}
             className="ml-3 text-white/70 hover:text-white"
           >
             ✕
@@ -178,25 +266,22 @@ const SinglePostPage: NextPageWithLayout = () => {
             <SinglePostV2
               key={firstPost._id}
               post={firstPost}
-              parentPost={
-                firstPost.parent_post
-                  ? firstPost.parent_post
-                  : firstPost.thread_index && firstPost.thread_index > 0
-                  ? posts[0]
-                  : undefined
-              }
+              parentPost={firstPost.parent_post}
               postType={
-                firstPost.parent_post
+                // Post-grill Q15: an archived post renders AS archived
+                // (banner + Restore, no redundant Archive) — it used
+                // to render as a live post because the mapper never
+                // surfaced the flag.
+                firstPost.is_archived
+                  ? "archived"
+                  : firstPost.parent_post
                   ? "reply-w-parent-header"
-                  : !!firstPost.thread_index // means if thread_index is not undefined or greater than 0
-                  ? "thread-post-w-parent-header"
                   : "main"
               }
               placement={"single-post-page"}
               borderRadius={{
                 top: true,
-                bottom:
-                  threadPosts.length > 0 || replies.length > 0 ? false : true,
+                bottom: replies.length > 0 ? false : true,
               }}
               onClickLike={async () => {
                 await likePostAPI(
@@ -214,12 +299,9 @@ const SinglePostPage: NextPageWithLayout = () => {
                   shouldAddNewPost: true,
                 });
               }}
-              onClickArchive={() =>
-                handleAction(firstPost._id, "main", archivePost)
-              }
-              onClickDelete={() =>
-                handleAction(firstPost._id, "main", deletePost)
-              }
+              onClickArchive={() => handleArchiveMainPost(firstPost._id)}
+              onClickRestore={() => handleRestoreMainPost(firstPost._id)}
+              onClickDelete={() => handleDeleteMainPost(firstPost._id)}
               onPostInViewport={() => handleCreatePostView(firstPost._id)}
             />
           )}
@@ -231,70 +313,32 @@ const SinglePostPage: NextPageWithLayout = () => {
             />
           )}
 
-          {threadPosts.map((post) => {
-            return (
-              <div
-                key={post._id}
-                onClick={() => {
-                  router.push({
-                    pathname: AppRoutes.feed.single_post,
-                    query: {
-                      post_id: post._id,
-                    },
-                  });
-                }}
-              >
-                <SinglePostV2
-                  post={post}
-                  parentPost={undefined}
-                  postType={"thread-post"}
-                  placement={"single-post-page"}
-                  borderRadius={{
-                    top: false,
-                    bottom:
-                      // if it is last post in threadPosts and there are no replies
-                      threadPosts[threadPosts.length - 1]._id === post._id &&
-                      replies.length === 0
-                        ? true
-                        : false,
-                  }}
-                  onClickLike={async () => {
-                    await likePostAPI(
-                      post._id,
-                      post.liked_by_loggedin_user ? "unlike" : "like",
-                      "thread-post"
-                    );
-                  }}
-                  onClickReply={() => {
-                    setIsReplyModalOpen(true);
-                    openPostModal({
-                      modalType: "reply-of-thread-post",
-                      parentPostId: post._id,
-                      onCloseModal: () => setIsReplyModalOpen(false),
-                      shouldAddNewPost: true,
-                    });
-                  }}
-                  onClickArchive={() =>
-                    handleAction(post._id, "thread-post", archivePost)
-                  }
-                  onClickDelete={() =>
-                    handleAction(post._id, "thread-post", deletePost)
-                  }
-                  onPostInViewport={() => handleCreatePostView(post._id)}
-                />
-              </div>
-            );
-          })}
+          {/* Post-grill Q18: the thread-post rendering block is gone.
+              Threads were replaced by comments in Phase 2 —
+              handleSinglePost returns exactly one post and mapPostRow
+              hardcodes is_thread:false, so the block was unreachable
+              dead code wired to live delete/archive handlers, with a
+              parent-header fallback that pointed a post at itself. */}
 
           {replies.map((reply) => {
             return (
               <div
                 key={reply._id}
+                id={`reply-${reply._id}`}
+                className={clsx(
+                  highlightedReplyId === reply._id &&
+                    "rounded-10px ring-2 ring-brand-primary"
+                )}
                 onClick={() => {
+                  // Post-grill Q5: a reply's address is its PARENT post
+                  // anchored to the reply — this used to push
+                  // /post/<comment_id>, which renders "The post does
+                  // not exist."
                   router.push({
                     pathname: AppRoutes.feed.single_post,
                     query: {
-                      post_id: reply._id,
+                      post_id: storePostId,
+                      reply: reply._id,
                     },
                   });
                 }}
@@ -328,12 +372,8 @@ const SinglePostPage: NextPageWithLayout = () => {
                       shouldAddNewPost: true,
                     });
                   }}
-                  onClickArchive={() =>
-                    handleAction(reply._id, "reply", archivePost)
-                  }
                   onClickDelete={() => handleDeleteReply(reply._id)}
                   onReplyUpdated={(updated) => replaceEditedPost(updated)}
-                  onPostInViewport={() => handleCreatePostView(reply._id)}
                 />
               </div>
             );
@@ -342,8 +382,33 @@ const SinglePostPage: NextPageWithLayout = () => {
           {/* For fetch on scroll */}
           {!!replies.length && <div ref={lastReplyRef} />}
 
+          {/* Post-grill Q9: a failed replies page is visible and
+              retryable — it used to silently truncate the thread. */}
+          {repliesLoading === "failed" && (
+            <div className="mt-3 flex items-center justify-between rounded-10px bg-elevation-1 p-3 text-sm font-medium text-white">
+              <span>Couldn’t load replies.</span>
+              <button
+                onClick={() => fetchReplies()}
+                className="ml-3 font-semibold text-brand-primary hover:underline"
+              >
+                Retry
+              </button>
+            </div>
+          )}
+
           {(!posts || !posts.length) && (
-            <NoPostMessage message="The post does not exist." />
+            <div>
+              <NoPostMessage message="The post does not exist." />
+              {/* Q19: give the visitor a way forward, not a dead end. */}
+              <div className="mt-3 text-center">
+                <Link
+                  href={AppRoutes.feed.index}
+                  className="text-sm font-semibold text-brand-primary hover:underline"
+                >
+                  Go to feed
+                </Link>
+              </div>
+            </div>
           )}
         </>
       )}
@@ -353,7 +418,19 @@ const SinglePostPage: NextPageWithLayout = () => {
       )}
 
       {postLoading === "failed" && (
-        <NoPostMessage message="Something went wrong!" />
+        <div>
+          <NoPostMessage message="Something went wrong!" />
+          {/* Q9: the failure state carries its own retry — the only
+              escape used to be a manual reload the UI never suggested. */}
+          <div className="mt-3 text-center">
+            <button
+              onClick={() => fetchPost(!!loggedInUser)}
+              className="text-sm font-semibold text-brand-primary hover:underline"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
       )}
 
       {isReplyModalOpen && loggedInUser && (

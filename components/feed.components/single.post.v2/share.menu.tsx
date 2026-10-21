@@ -25,8 +25,22 @@ export const ShareMenu: React.FC<SinglePostProps> = ({
   ...props
 }) => {
   const shareUrl = useMemo(() => {
+    // Post-grill Q5: sharing a REPLY used to build /post/<comment_id>
+    // — a dead link ("The post does not exist.") for every recipient,
+    // because that route resolves posts only. A reply's address is
+    // its parent post, anchored to the reply (Q12): /post/<parent_id>
+    // ?reply=<reply_id>, which the detail page scrolls to + highlights.
+    const parentId =
+      (post as CompletedPost).parent_post?._id ??
+      (post as ArchivedPost).parent_post_id;
+    if (
+      (postType === "reply" || postType === "reply-w-parent-header") &&
+      parentId
+    ) {
+      return `${window.location.origin}/post/${parentId}?reply=${post._id}`;
+    }
     return `${window.location.origin}/post/${post._id}`;
-  }, [post._id]);
+  }, [post, postType]);
 
   const [shareMenuState, setShareMenuState] = useState<"menu-1" | "menu-2">(
     "menu-1"

@@ -56,32 +56,38 @@ export const PostActionMenu: React.FC<Props> = ({
               </MenuButton>
             )}
 
-            <MenuButton
-              onClick={async (e) => {
-                const button = e.currentTarget;
-                if (button.disabled) return;
+            {/* Post-grill Q13: replies have no archive concept
+                server-side (the item PATCHed a comment id into the
+                posts archive route → guaranteed 404, silently
+                swallowed). Don't offer an action that cannot work. */}
+            {postType !== "reply" && postType !== "reply-w-parent-header" && (
+              <MenuButton
+                onClick={async (e) => {
+                  const button = e.currentTarget;
+                  if (button.disabled) return;
 
-                button.disabled = true;
+                  button.disabled = true;
 
-                if (postType === "archived") {
-                  await onClickRestore();
-                } else {
-                  await onClickArchive();
-                }
-                button.disabled = false;
-              }}
-              className="group"
-            >
-              {postType !== "archived" ? (
-                <HiOutlineArchive className="h-[18px] w-[18px]" />
-              ) : (
-                <MdSettingsBackupRestore className="h-[18px] w-[18px]" />
-              )}
-              <span className="flex-grow text-left">
-                {postType !== "archived" ? "Archive" : "Restore Post"}
-              </span>
-              <CgSpinner className="hidden h-4 w-4 animate-spin group-disabled:block" />
-            </MenuButton>
+                  if (postType === "archived") {
+                    await onClickRestore();
+                  } else {
+                    await onClickArchive();
+                  }
+                  button.disabled = false;
+                }}
+                className="group"
+              >
+                {postType !== "archived" ? (
+                  <HiOutlineArchive className="h-[18px] w-[18px]" />
+                ) : (
+                  <MdSettingsBackupRestore className="h-[18px] w-[18px]" />
+                )}
+                <span className="flex-grow text-left">
+                  {postType !== "archived" ? "Archive" : "Restore Post"}
+                </span>
+                <CgSpinner className="hidden h-4 w-4 animate-spin group-disabled:block" />
+              </MenuButton>
+            )}
 
             <MenuButton
               onClick={() => setIsDeleteModalOpen(true)}
@@ -99,6 +105,11 @@ export const PostActionMenu: React.FC<Props> = ({
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onDelete={onClickDelete}
+        itemLabel={
+          postType === "reply" || postType === "reply-w-parent-header"
+            ? "Reply"
+            : "Post"
+        }
       />
     </>
   );
