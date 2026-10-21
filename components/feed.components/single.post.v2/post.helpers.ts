@@ -1,3 +1,4 @@
+import { SerializedEditorState, SerializedLexicalNode } from "lexical";
 import { CompletedPost, Post } from "@/models/post";
 import { axiosApi369x } from "@/utils/axios";
 
@@ -67,5 +68,34 @@ export const deleteReply = async (replyId: string): Promise<CompletedPost> => {
   const { data } = await axiosApi369x.delete(
     `/api/socials/comments/${replyId}`
   );
+  return data.posts[0] as CompletedPost;
+};
+
+/**
+ * Post-grill Q10/Q11: rich edits. The old edit paths sent plain
+ * `{ text }`, and the server wrapped it into a single-paragraph state —
+ * one typo fix irreversibly flattened mentions, links, and formatting.
+ * These send the full editor state (the PATCH endpoints already accept
+ * and sanitize it), so an edit changes only what the user changed.
+ * Both return the mapped post/reply for a direct store swap.
+ */
+export const editReplyRich = async (
+  replyId: string,
+  editorState: SerializedEditorState<SerializedLexicalNode>
+): Promise<CompletedPost> => {
+  const { data } = await axiosApi369x.patch(
+    `/api/socials/comments/${replyId}`,
+    { post_editor_state: editorState }
+  );
+  return data.posts[0] as CompletedPost;
+};
+
+export const editPostRich = async (
+  postId: string,
+  editorState: SerializedEditorState<SerializedLexicalNode>
+): Promise<CompletedPost> => {
+  const { data } = await axiosApi369x.patch(`/api/socials/posts/${postId}`, {
+    post_editor_state: editorState,
+  });
   return data.posts[0] as CompletedPost;
 };

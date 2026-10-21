@@ -23,6 +23,13 @@ export interface BasePost {
   edited_at?: string | null;
   /** Tombstone flag: deleted posts/replies render as a placeholder. */
   is_deleted?: boolean;
+  /**
+   * Post-grill Q15: archived flag for posts (mapPostRow surfaces it).
+   * An archived post opened by its owner must render as archived —
+   * banner + Restore — not as a live post offering Archive again.
+   * Always false/absent for replies (comments can't be archived).
+   */
+  is_archived?: boolean;
 }
 
 export interface DeletedPost extends BasePost {

@@ -1,1 +1,4 @@
-export { getPostAndUpdateStores } from "./get-post-and-update-stores";
+export {
+  getPostAndUpdateStores,
+  updateStoresWithCreatedPost,
+} from "./get-post-and-update-stores";

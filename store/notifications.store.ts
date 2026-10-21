@@ -169,6 +169,13 @@ interface BaseNotification {
   status: "read" | "unread";
   createdAt: string;
   updatedAt: string;
+
+  /**
+   * Post-grill Q12: when the notification is about a specific reply,
+   * the comment id — the deep link becomes /post/<id>?reply=<id> and
+   * the detail page scrolls to + highlights that reply.
+   */
+  comment_id?: string | null;
 }
 
 interface PostLikeNotification extends BaseNotification {

@@ -501,6 +501,17 @@ export const notifications = pgTable("notifications", {
     onDelete: "cascade",
   }),
   postId: uuid("post_id").references(() => posts.id, { onDelete: "cascade" }),
+  /**
+   * Post-grill Q12: when the notification is about a specific reply
+   * (a mention inside a comment, or the post_reply ping for one), the
+   * comment it points at. Lets the deep link land on the post page
+   * scrolled to that reply, and scopes the mention edit-dedupe per
+   * comment instead of per post. SET NULL: the notification survives
+   * (pointing at the post) if the comment row ever goes away.
+   */
+  commentId: uuid("comment_id").references(() => comments.id, {
+    onDelete: "set null",
+  }),
   status: text("status").notNull().default("unread"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });

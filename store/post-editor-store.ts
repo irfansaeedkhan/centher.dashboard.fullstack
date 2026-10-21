@@ -8,7 +8,7 @@ import {
   MediaFile,
   SelectedFile,
 } from "@/components/post-editor/shared/types";
-import { getPostAndUpdateStores } from "@/components/post-editor/utils";
+import { updateStoresWithCreatedPost } from "@/components/post-editor/utils";
 import { LoggedInUser } from "@/models/user";
 import { ICreatePost, createPosts } from "@/lib/social-posts";
 
@@ -160,13 +160,31 @@ export const usePostEditorStore = create<PostEditorStore>()(
               posts,
             });
 
-            await getPostAndUpdateStores({
+            // Post-grill Q1: the create response already carries the
+            // fully mapped post/reply — sync the stores from THAT.
+            // The old flow refetched via GET /socials/posts/:id, which
+            // resolves posts only: a reply's comment id 404'd, the
+            // failure was swallowed, and the modal closed as if the
+            // reply had landed when it never appeared.
+            const created = newPosts?.[0];
+            if (!created) {
+              throw new Error("Failed to post. Please try again.");
+            }
+            const synced = updateStoresWithCreatedPost({
+              post: created,
               modalType: get().modalType,
               parentPostId: get().parentPostId,
-              postId: newPosts[0]._id,
               newPostsCount: newPosts.length,
-              isAuthenticated: true,
             });
+            if (!synced) {
+              // Never a silent success illusion: the post exists on
+              // the server, so say exactly that and keep the composer
+              // open with the draft intact.
+              toast.error(
+                "Your post was saved, but this page couldn't refresh. Please reload to see it."
+              );
+              return;
+            }
 
             // Reset post editor state after successful post creation
             get().actions.closeModal();
