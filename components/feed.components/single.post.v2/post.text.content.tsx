@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import Link from "next/link";
 import { v4 as uuidv4 } from "uuid";
 import { ArchivedPost, CompletedPost } from "@/models/post";
+import { safeHttpUrl } from "@/lib/feed/editor-state";
 import cn from "@/utils/cn";
 
 interface Props {
@@ -119,13 +120,31 @@ export const PostTextContent: React.FC<Props> = ({ post }) => {
                 {node.text}
               </span>
             );
-          case "link":
-            const isSameOrigin =
-              new URL(node.url).host === window.location.host;
+          case "link": {
+            // Feed-grill Q1/Q2 (defense in depth): the server sanitizes
+            // editor state at write time, but rows stored before that fix
+            // can still carry javascript:/data: hrefs or unparseable URLs
+            // (which used to throw in `new URL(...)` and crash the card
+            // for every viewer). Anything that isn't a clean http/https
+            // URL renders as plain text — never as a link, never a crash.
+            const safeUrl = safeHttpUrl(node.url);
+            if (!safeUrl) {
+              return (
+                <span key={node.id} className="break-words">
+                  {node.text}
+                </span>
+              );
+            }
+            let isSameOrigin = false;
+            try {
+              isSameOrigin = new URL(safeUrl).host === window.location.host;
+            } catch {
+              isSameOrigin = false;
+            }
             return (
               <Link
                 key={node.id}
-                href={node.url}
+                href={safeUrl}
                 className="text-gradient break-words"
                 target={!isSameOrigin ? "_blank" : undefined}
                 rel={!isSameOrigin ? "noopener noreferrer nofollow" : undefined}
@@ -133,11 +152,12 @@ export const PostTextContent: React.FC<Props> = ({ post }) => {
                   e.stopPropagation();
                 }}
               >
-                <span data-lexical-link="true" data-lexical-url={node.url}>
+                <span data-lexical-link="true" data-lexical-url={safeUrl}>
                   {node.text}
                 </span>
               </Link>
             );
+          }
           case "hashtag":
             return (
               <span

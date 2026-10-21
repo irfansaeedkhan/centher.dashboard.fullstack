@@ -22,6 +22,11 @@ export interface SinglePostStore {
   repliesOffset: number;
   updateRepliesOffset: () => void;
 
+  // Feed-grill Q10: keyset cursor for reply paging (last reply id of
+  // the previous page); repliesOffset is only the load-more trigger.
+  repliesCursor: string | null;
+  repliesHasMore: boolean;
+
   fetchPost: (isAuthenticated: boolean) => Promise<void>;
   fetchReplies: () => Promise<void>;
 
@@ -67,7 +72,10 @@ export const useSinglePostStore = create<SinglePostStore>()(
 
       repliesOffset: 0,
       updateRepliesOffset: () =>
-        set((state) => ({ repliesOffset: state.replies.length })),
+        set((state) => ({ repliesOffset: state.repliesOffset + 1 })),
+
+      repliesCursor: null,
+      repliesHasMore: true,
 
       posts: [],
       replies: [],
@@ -99,6 +107,9 @@ export const useSinglePostStore = create<SinglePostStore>()(
             postLoading: "loaded",
             replies: repliesRes.data.posts,
             repliesLoading: "loaded",
+            repliesCursor: repliesRes.data.next_cursor ?? null,
+            repliesHasMore:
+              repliesRes.data.has_more ?? repliesRes.data.next_cursor != null,
           });
         } catch (error: any) {
           if (error.response?.status === 404) {
@@ -118,12 +129,22 @@ export const useSinglePostStore = create<SinglePostStore>()(
 
       fetchReplies: async () => {
         try {
+          const postId = get().postId;
+          const cursor = get().repliesCursor;
+
+          // Feed-grill Q10: keyset paging — without a cursor there is no
+          // next page (the initial page came with fetchPost).
+          if (!cursor || !get().repliesHasMore) {
+            set({ repliesLoading: "loaded" });
+            return;
+          }
+
           set({ repliesLoading: "loading" });
 
-          const postId = get().postId;
-          const repliesOffset = get().repliesOffset;
           const repliesLimit = 10;
-          const repliesUrl = `/api/socials/posts/${postId}/replies?offset=${repliesOffset}&limit=${repliesLimit}`;
+          const repliesUrl = `/api/socials/posts/${postId}/replies?cursor=${encodeURIComponent(
+            cursor
+          )}&limit=${repliesLimit}`;
 
           const { data } = await axiosApi369x.get(repliesUrl);
 
@@ -139,6 +160,8 @@ export const useSinglePostStore = create<SinglePostStore>()(
           set({
             replies: [...filteredStateReplies, ..._replies] as CompletedPost[],
             repliesLoading: "loaded",
+            repliesCursor: data.next_cursor ?? null,
+            repliesHasMore: data.has_more ?? data.next_cursor != null,
           });
         } catch (error) {
           set({ repliesLoading: "failed" });
@@ -291,6 +314,8 @@ export const useSinglePostStore = create<SinglePostStore>()(
           replies: [],
           repliesLoading: loading,
           repliesOffset: 0,
+          repliesCursor: null,
+          repliesHasMore: true,
         });
       },
 

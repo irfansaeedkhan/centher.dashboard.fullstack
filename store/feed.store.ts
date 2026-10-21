@@ -9,7 +9,13 @@ import { customLog } from "@/utils/custom.log";
 
 export interface FeedStore {
   posts: CompletedPost[];
-  fetchPosts: () => Promise<void>;
+  fetchPosts: (isAuthenticated?: boolean) => Promise<void>;
+
+  // Feed-grill Q10: keyset cursor (last post id of the previous page) —
+  // replaces offset-based paging, which silently skipped posts.
+  cursor: string | null;
+  hasMore: boolean;
+  fetchedWithAuth: boolean;
 
   addNewPost: (post: CompletedPost) => void;
   removePost: (postId: string) => void;
@@ -39,9 +45,16 @@ export const useFeedStore = create<FeedStore>()(
     (set, get) => ({
       loading: "idle",
 
+      // `offset` is now only the page's load-more trigger counter (the
+      // feed page refetches when it changes); paging itself is keyset —
+      // see `cursor` below.
       offset: 0,
 
-      updateOffset: () => set((state) => ({ offset: state.posts.length })),
+      updateOffset: () => set((state) => ({ offset: state.offset + 1 })),
+
+      cursor: null,
+      hasMore: true,
+      fetchedWithAuth: false,
 
       posts: [],
 
@@ -51,14 +64,42 @@ export const useFeedStore = create<FeedStore>()(
         }));
       },
 
-      fetchPosts: async () => {
+      fetchPosts: async (isAuthenticated = false) => {
         try {
+          // Feed-grill Q19: logged-in users read the /with-auth variant
+          // so like buttons render their real state (same pattern as the
+          // other stores). If the auth mode flips after pages were
+          // loaded anonymously, restart from page 1 in the new mode so
+          // liked state is correct instead of mixed.
+          const useAuth =
+            isAuthenticated &&
+            process.env.NEXT_PUBLIC_APP_ENV !== "development";
+
+          let { cursor, hasMore } = get();
+          if (get().posts.length > 0 && get().fetchedWithAuth !== useAuth) {
+            cursor = null;
+            hasMore = true;
+            set({ posts: [], cursor: null, hasMore: true });
+          }
+          set({ fetchedWithAuth: useAuth });
+
+          // No cursor + posts already loaded means the last page said
+          // there is nothing more — don't refetch page 1 on scroll.
+          if (cursor === null && get().posts.length > 0) {
+            set({ loading: "loaded" });
+            return;
+          }
+          if (!hasMore && cursor !== null) {
+            set({ loading: "loaded" });
+            return;
+          }
+
           set({ loading: "loading" });
 
-          const offset = get().offset;
           const limit = 10;
-
-          const url = `/api/socials/posts?offset=${offset}&limit=${limit}`;
+          const url =
+            `/api/socials/posts${useAuth ? "/with-auth" : ""}?limit=${limit}` +
+            (cursor ? `&cursor=${encodeURIComponent(cursor)}` : "");
 
           const { data } = await axiosApi369x.get(url);
 
@@ -70,6 +111,8 @@ export const useFeedStore = create<FeedStore>()(
             return {
               posts: [...state.posts, ...filteredPosts] as CompletedPost[],
               loading: "loaded",
+              cursor: data.next_cursor ?? null,
+              hasMore: data.has_more ?? data.next_cursor != null,
             };
           });
         } catch (error) {
