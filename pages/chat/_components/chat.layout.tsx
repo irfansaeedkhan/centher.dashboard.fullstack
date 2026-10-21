@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import { ChatPagesWrapper } from "@/components/all.pages.wrapper/chat.pages.wrapper";
+import { usePresenceHeartbeat } from "@/hooks/chat/useChat";
 import ChatSidebar from "./chat.sidebar";
 
 type ChatLayoutProps = {
@@ -12,6 +13,8 @@ type ChatLayoutProps = {
  * visible whether you're on the chat list or inside a thread.
  */
 export const ChatLayout: React.FC<ChatLayoutProps> = ({ children }) => {
+  // Q24 presence: heartbeat for as long as any chat page is open.
+  usePresenceHeartbeat();
   const [loading, setLoading] = React.useState(true);
   React.useEffect(() => {
     const timer = setTimeout(() => {

@@ -93,6 +93,13 @@ export const profiles = pgTable("profiles", {
     consent_given: boolean;
     timestamp: string;
   }>(),
+  /**
+   * Chat completeness Q24 (presence): last heartbeat from the client.
+   * Written ONLY by POST /api/chat/presence, throttled server-side to one
+   * write per user per ~60s. "Online" = seen within the last 3 minutes
+   * (computed at read time in mapUserCard — never stored).
+   */
+  lastSeenAt: timestamp("last_seen_at"),
   /** Team bots (2026-10-16): demo team-member accounts that auto-reply in DMs. */
   isBot: boolean("is_bot").notNull().default(false),
   /**
@@ -235,6 +242,18 @@ export const conversations = pgTable("conversations", {
    * check-then-act scan. Backfilled for existing 2-member conversations.
    */
   dmPairKey: text("dm_pair_key").unique(),
+  /**
+   * Chat completeness Q26 (group lifecycle): who created the conversation.
+   * Only the creator may remove OTHER members; when the creator leaves,
+   * ownership passes to the longest-standing remaining member (succession
+   * is applied at removal time in removeChatMember). Backfilled in
+   * migration 0010 for pre-existing conversations (earliest-joined member).
+   * SET NULL if the creator's account is deleted — succession then assigns
+   * the longest-standing remaining member on the next removal.
+   */
+  createdBy: text("created_by").references(() => user.id, {
+    onDelete: "set null",
+  }),
 });
 
 // Phase 15: chat attachments (images, videos, audio, files, voice notes).
@@ -511,6 +530,15 @@ export const notifications = pgTable("notifications", {
    */
   commentId: uuid("comment_id").references(() => comments.id, {
     onDelete: "set null",
+  }),
+  /**
+   * Chat completeness Q24 (DM notifications): when the notification is
+   * about a chat message, the conversation it deep-links to
+   * (/chat/<conversation_id>). CASCADE: a notification pointing at a
+   * deleted conversation is useless (same reasoning as post_id).
+   */
+  conversationId: uuid("conversation_id").references(() => conversations.id, {
+    onDelete: "cascade",
   }),
   status: text("status").notNull().default("unread"),
   createdAt: timestamp("created_at").notNull().defaultNow(),

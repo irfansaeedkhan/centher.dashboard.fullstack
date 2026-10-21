@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import clsx from "clsx";
@@ -11,9 +11,11 @@ import { chatApi } from "@/lib/chat/api";
 import {
   conversationAvatar,
   conversationDisplayName,
+  dmPeer,
   type ChatConversation,
   type ChatMessage,
 } from "@/lib/chat/types";
+import { GroupMenu } from "./_components/group-menu";
 import { getMessageTime, isEditExpired } from "@/lib/chat/utils";
 import {
   MessageContent,
@@ -26,6 +28,16 @@ import useUser from "@/hooks/use.user";
 import { customLog } from "@/utils/custom.log";
 
 const QUICK_EMOJIS = ["👍", "❤️", "😂", "😮", "😢", "🙏"];
+
+/** Q24 presence subtitle for a DM peer who is not online right now. */
+function lastActiveLabel(iso: string): string {
+  const mins = Math.floor((Date.now() - +new Date(iso)) / 60000);
+  if (mins < 2) return "Active just now";
+  if (mins < 60) return `Active ${mins} m ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `Active ${hrs} h ago`;
+  return `Active ${Math.floor(hrs / 24)} d ago`;
+}
 
 const SingleChat: NextPageWithLayout = () => {
   const router = useRouter();
@@ -58,7 +70,7 @@ const SingleChat: NextPageWithLayout = () => {
 
   const myId = user?._id ?? "";
 
-  useEffect(() => {
+  const loadConvo = useCallback(() => {
     if (!chatId) return;
     chatApi
       .listConversations()
@@ -69,6 +81,10 @@ const SingleChat: NextPageWithLayout = () => {
       })
       .catch((e) => customLog(["development", "staging"], e));
   }, [chatId, router]);
+
+  useEffect(() => {
+    loadConvo();
+  }, [loadConvo]);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -106,6 +122,32 @@ const SingleChat: NextPageWithLayout = () => {
     window.setTimeout(() => el.classList.remove(...highlight), 1500);
   };
 
+  // Chat completeness Q24: arriving from message search (?highlight=<id>)
+  // jumps to + highlights that message. If it predates the loaded batch,
+  // page older messages in until it shows up (bounded — a stale link
+  // gives up quietly instead of paging forever).
+  const highlightId = router.query.highlight as string | undefined;
+  const highlightHandledRef = useRef<string | null>(null);
+  const highlightAttemptsRef = useRef(0);
+  useEffect(() => {
+    highlightAttemptsRef.current = 0;
+  }, [highlightId]);
+  useEffect(() => {
+    if (!highlightId || loading) return;
+    if (highlightHandledRef.current === highlightId) return;
+    if (messages.some((m) => m.id === highlightId)) {
+      highlightHandledRef.current = highlightId;
+      requestAnimationFrame(() => scrollToMessage(highlightId));
+      return;
+    }
+    if (hasMore && highlightAttemptsRef.current < 10) {
+      highlightAttemptsRef.current += 1;
+      loadOlder();
+    } else {
+      highlightHandledRef.current = highlightId;
+    }
+  }, [highlightId, messages, loading, hasMore, loadOlder]);
+
   const name = convo ? conversationDisplayName(convo, myId) : "Chat";
   const avatar = convo ? conversationAvatar(convo, myId) : null;
   // Team bots (2026-10-16): in a 1-on-1 DM, badge the bot peer.
@@ -113,25 +155,39 @@ const SingleChat: NextPageWithLayout = () => {
     !!convo &&
     convo.members.length === 2 &&
     convo.members.some((m) => m.user_id !== myId && m.is_bot);
+  // Q24 presence: the DM peer (dot + last-active in the header).
+  const peer = convo ? dmPeer(convo, myId) : null;
 
   return (
     <div className="flex h-[calc(100vh-60px)] w-full flex-col">
       <div className="flex items-center gap-3 border-b border-gray-shade-3 px-4 py-3">
         <BackButton className="flg:hidden" />
-        <div className="relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-full bg-elevation-2">
-          {avatar ? (
-            <Image src={avatar} alt={name} fill className="object-cover" />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center font-semibold text-white">
-              {name.charAt(0).toUpperCase()}
-            </div>
+        <div className="relative h-10 w-10 flex-shrink-0">
+          <div className="relative h-full w-full overflow-hidden rounded-full bg-elevation-2">
+            {avatar ? (
+              <Image src={avatar} alt={name} fill className="object-cover" />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center font-semibold text-white">
+                {name.charAt(0).toUpperCase()}
+              </div>
+            )}
+          </div>
+          {peer && (
+            <span
+              aria-label={peer.is_online ? "Online" : "Offline"}
+              title={peer.is_online ? "Online" : "Offline"}
+              className={clsx(
+                "absolute bottom-0 right-0 z-10 h-2.5 w-2.5 rounded-full border-2 border-background-shade-1",
+                peer.is_online ? "bg-green-shade-1" : "bg-gray-shade-7"
+              )}
+            />
           )}
         </div>
         <div className="min-w-0">
           <p className="flex items-center gap-2 truncate text-sm font-semibold text-white">
             <span className="truncate">{name}</span>
             {peerIsBot && (
-              <span className="bg-brand-primary/20 text-brand-primary flex-shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide">
+              <span className="flex-shrink-0 rounded-full bg-brand-primary/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-brand-primary">
                 Bot
               </span>
             )}
@@ -141,7 +197,23 @@ const SingleChat: NextPageWithLayout = () => {
               {convo.members.length} members
             </p>
           )}
+          {peer &&
+            (peer.is_online ? (
+              <p className="truncate text-xs text-gray-shade-7">Online</p>
+            ) : peer.last_seen_at ? (
+              <p className="truncate text-xs text-gray-shade-7">
+                {lastActiveLabel(peer.last_seen_at)}
+              </p>
+            ) : null)}
         </div>
+        {convo?.is_group && (
+          <GroupMenu
+            convo={convo}
+            myId={myId}
+            onChanged={(updated) => setConvo(updated)}
+            onLeft={() => router.push("/chat")}
+          />
+        )}
       </div>
 
       <div
@@ -209,7 +281,7 @@ const SingleChat: NextPageWithLayout = () => {
           <p className="truncate text-xs text-gray-shade-7">Editing message</p>
           <div className="flex gap-2">
             <button
-              className="bg-brand-primary rounded-lg px-3 py-1 text-xs font-semibold text-white"
+              className="rounded-lg bg-brand-primary px-3 py-1 text-xs font-semibold text-white"
               onClick={async () => {
                 const text = draft.trim();
                 if (!text) return;
@@ -374,7 +446,7 @@ const MessageBubble: React.FC<{
           className={clsx(
             "relative rounded-2xl px-4 py-2",
             mine
-              ? "bg-brand-primary rounded-br-md text-white"
+              ? "rounded-br-md bg-brand-primary text-white"
               : "rounded-bl-md bg-elevation-1 text-white",
             isMedia && "px-2 pt-2"
           )}

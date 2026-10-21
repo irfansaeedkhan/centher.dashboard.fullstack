@@ -4,12 +4,33 @@
 
 export interface ChatMember {
   user_id: string;
+  /** The API's user cards carry `_id` / `profile_image`; both spellings are
+   * declared so helpers can read whichever the payload used. */
+  _id?: string;
   display_name?: string | null;
   avatar_url?: string | null;
+  profile_image?: string | null;
   membership?: string | null;
   is_followed_by_logged_in_user?: boolean;
   /** Team bots (2026-10-16): demo team-member accounts that auto-reply. */
   is_bot?: boolean | null;
+  /** Chat completeness Q24 (presence): ISO last-heartbeat + derived flag. */
+  last_seen_at?: string | null;
+  is_online?: boolean | null;
+}
+
+/** The id of a member card, whichever spelling the payload used. */
+export function memberUserId(m: ChatMember): string {
+  return m._id ?? m.user_id;
+}
+
+/** The other person in a 2-member conversation (DM peer), if any. */
+export function dmPeer(
+  convo: ChatConversation,
+  myId: string
+): ChatMember | null {
+  if (convo.members.length !== 2) return null;
+  return convo.members.find((m) => memberUserId(m) !== myId) ?? null;
 }
 
 export interface ChatLastMessage {
@@ -24,9 +45,25 @@ export interface ChatConversation {
   title: string;
   created_at: string;
   is_pinned: boolean;
+  /** Chat completeness Q26: true for group chats (no DM dedup key). */
+  is_group: boolean;
+  /** Chat completeness Q26: the group creator's user id (null if unset). */
+  created_by: string | null;
   members: ChatMember[];
   last_message: ChatLastMessage | null;
   unread_count: number;
+}
+
+/** Chat completeness Q24: one message-search hit (GET /api/chat/search). */
+export interface ChatMessageSearchResult {
+  id: string;
+  conversation_id: string;
+  conversation_title: string;
+  body: string;
+  kind: ChatMessageKind;
+  sender_id: string | null;
+  created_at: string;
+  sender: ChatMember | null;
 }
 
 export interface ChatReaction {

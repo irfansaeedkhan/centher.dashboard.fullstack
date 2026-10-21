@@ -156,6 +156,8 @@ const getNotificationMessage = (
       return <>{NotificationByName} joined your network.</>;
     case "mention_in_post":
       return <>{NotificationByName} mentioned you in a post.</>;
+    case "chat_message":
+      return <>{NotificationByName} sent you a message.</>;
     case "invitation_received":
       return <>{NotificationByName} invited you to join team.</>;
     case "centher_purchase_ntr":
@@ -268,6 +270,14 @@ const getNotificationUrl = (
             : {}),
         },
       };
+    case "chat_message":
+      // Q24: deep-link straight into the conversation.
+      return notification.conversation_id
+        ? {
+            pathname: AppRoutes.chat.single_chat,
+            query: { chat_id: notification.conversation_id },
+          }
+        : { pathname: AppRoutes.chat.index };
     default:
       return null;
   }
@@ -291,6 +301,7 @@ const getNotificationImageUrl = (
     case "centher_purchase_busd":
     case "centher_purchase_ntr":
     case "mention_in_post":
+    case "chat_message":
       return {
         pathname: AppRoutes.profile.user_id,
         query: { user_id: notification.by._id },

@@ -263,6 +263,16 @@ interface PostMentionNotification extends BaseNotification {
   post: NotificationPost | null;
 }
 
+/**
+ * Chat completeness Q24: a new chat message (DM or group). Deep-links to
+ * /chat/<conversation_id>; null conversation_id falls back to /chat.
+ */
+interface ChatMessageNotification extends BaseNotification {
+  type: "chat_message";
+  by: NotificationBy;
+  conversation_id: string | null;
+}
+
 interface InvitationReceivedNotification extends BaseNotification {
   type: "invitation_received";
   by: NotificationBy;
@@ -280,4 +290,5 @@ export type Notification =
   | PresaleBookingNotification
   | PresaleBookingReferralNotification
   | PostMentionNotification
+  | ChatMessageNotification
   | InvitationReceivedNotification;
