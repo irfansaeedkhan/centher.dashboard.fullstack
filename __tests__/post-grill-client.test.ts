@@ -45,7 +45,7 @@ const POST = "cccccccc-cccc-4ccc-8ccc-cccccccccccc";
 const POST_B = "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb";
 const COMMENT = "ffffffff-ffff-4fff-8fff-ffffffffffff";
 
-const richState = {
+const richState: any = {
   root: {
     children: [
       {
@@ -157,6 +157,7 @@ describe("Q1: updateStoresWithCreatedPost", () => {
   test("a top-level post (no parent) syncs trivially true", async () => {
     const ok = await updateStoresWithCreatedPost({
       post: parentPost,
+      parentPostId: null,
       newPostsCount: 1,
       modalType: "new-post" as any,
     });

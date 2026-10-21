@@ -78,7 +78,7 @@ export const RichTextInlineEditor: React.FC<Props> = ({
             );
           }}
         />
-        {autoFocus && <AutoFocusPlugin />}
+        {autoFocus ? <AutoFocusPlugin /> : <></>}
         <HistoryPlugin />
         <MentionsPlugin />
         <HashtagPlugin />
