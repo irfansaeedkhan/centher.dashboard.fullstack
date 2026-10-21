@@ -380,6 +380,17 @@ const parseListQuery = (c: {
 };
 
 /** Phase 3: map a profile+user row to the user-card shape the UI expects. */
+/**
+ * Chat completeness Q24 (presence): a user counts as "online" when their
+ * last heartbeat (profiles.last_seen_at, written by POST /api/chat/presence)
+ * is younger than this window. Computed at read time — never stored — and
+ * it rides along on every user card, so surfaces that already fetch cards
+ * (chat list, thread senders) get presence with ZERO extra queries.
+ */
+const PRESENCE_ONLINE_MS = 3 * 60 * 1000;
+/** Heartbeat writes are throttled server-side: at most one per user / 60s. */
+const PRESENCE_WRITE_THROTTLE_MS = 60 * 1000;
+
 const mapUserCard = (
   row: {
     userId: string;
@@ -387,6 +398,7 @@ const mapUserCard = (
     avatarUrl: string | null;
     membership: string | null;
     isBot?: boolean | null;
+    lastSeenAt?: Date | string | null;
   },
   opts?: { isFollowedByLoggedInUser?: boolean }
 ) => ({
@@ -394,6 +406,13 @@ const mapUserCard = (
   display_name: row.displayName || "Centher User",
   profile_image: row.avatarUrl || "/images/centher.logo.favicon.png",
   is_bot: !!row.isBot,
+  last_seen_at: row.lastSeenAt
+    ? new Date(row.lastSeenAt as unknown as string).toISOString()
+    : null,
+  is_online: row.lastSeenAt
+    ? Date.now() - +new Date(row.lastSeenAt as unknown as string) <
+      PRESENCE_ONLINE_MS
+    : false,
   membership: {
     last_status:
       (row.membership as "citizen" | "verified" | "none") || "citizen",
@@ -448,6 +467,9 @@ const fetchUserCards = async (userIds: string[], viewerId: string | null) => {
       avatarUrl: profiles.avatarUrl,
       membership: profiles.membership,
       isBot: profiles.isBot,
+      // Q24 presence rides along in this same batched query — the chat
+      // grill (Q18) killed per-row queries; presence must not re-add any.
+      lastSeenAt: profiles.lastSeenAt,
     })
     .from(profiles)
     .where(inArray(profiles.userId, uniq));
@@ -471,6 +493,7 @@ const fetchUserCards = async (userIds: string[], viewerId: string | null) => {
         avatarUrl: u.image,
         membership: "citizen",
         isBot: false,
+        lastSeenAt: null,
       });
     }
   }
@@ -490,6 +513,8 @@ const createNotification = async (input: {
   postId?: string | null;
   /** Post-grill Q12: the reply this notification is about, if any. */
   commentId?: string | null;
+  /** Chat completeness Q24: the chat conversation this is about, if any. */
+  conversationId?: string | null;
 }) => {
   if (input.actorId && input.actorId === input.userId) return;
   await db.insert(notifications).values({
@@ -498,6 +523,7 @@ const createNotification = async (input: {
     actorId: input.actorId,
     postId: input.postId ?? null,
     commentId: input.commentId ?? null,
+    conversationId: input.conversationId ?? null,
     status: "unread",
   });
 };
@@ -639,6 +665,7 @@ const mapNotificationRow = (row: {
   createdAt: Date | string;
   postId: string | null;
   commentId?: string | null;
+  conversationId?: string | null;
   actorId: string | null;
   actorName: string | null;
   actorAvatar: string | null;
@@ -656,6 +683,9 @@ const mapNotificationRow = (row: {
   // so the UI can deep-link to /post/<id>?reply=<comment_id> and the
   // post page can scroll to + highlight that exact reply.
   comment_id: row.commentId ?? null,
+  // Chat completeness Q24: chat-message notifications deep-link to the
+  // conversation (/chat/<conversation_id>).
+  conversation_id: row.conversationId ?? null,
   // Phase 12: nested shape the notifications UI reads (notification.post._id).
   post: row.postId ? { _id: row.postId, user_id: "" } : null,
   by: {
@@ -2837,6 +2867,7 @@ export const createHonoApp = () => {
         createdAt: notifications.createdAt,
         postId: notifications.postId,
         commentId: notifications.commentId,
+        conversationId: notifications.conversationId,
         actorId: notifications.actorId,
         actorName: profiles.displayName,
         actorAvatar: profiles.avatarUrl,
@@ -3232,6 +3263,144 @@ export const createHonoApp = () => {
     return m!;
   };
 
+  /**
+   * Chat completeness Q26: membership gate for group-lifecycle ops.
+   * Unlike the read routes (404 — never leak that a conversation exists),
+   * lifecycle ops answer 403: the caller is trying to CHANGE a group, and
+   * the spec'd contract is "members only (403 otherwise)".
+   */
+  const requireGroupMembership = async (
+    conversationId: string,
+    userId: string
+  ) => {
+    const [m] = await db
+      .select()
+      .from(conversationMembers)
+      .where(
+        and(
+          eq(conversationMembers.conversationId, conversationId),
+          eq(conversationMembers.userId, userId)
+        )
+      )
+      .limit(1);
+    if (!m)
+      apiError("You are not a member of this conversation", "FORBIDDEN", 403);
+    return m!;
+  };
+
+  /**
+   * Chat completeness Q26: the conversation must be a GROUP. A DM is any
+   * conversation carrying a dm_pair_key (set at 1-on-1 creation); groups
+   * never have one, even if leaves shrink them to 2 members.
+   */
+  const requireGroup = async (conversationId: string) => {
+    const [convo] = await db
+      .select()
+      .from(conversations)
+      .where(eq(conversations.id, conversationId))
+      .limit(1);
+    if (!convo) apiError("Conversation not found", "NOT_FOUND", 404);
+    if (convo!.dmPairKey)
+      apiError(
+        "This is a direct message — group settings are only available in group chats",
+        "NOT_A_GROUP",
+        400
+      );
+    return convo!;
+  };
+
+  /**
+   * Chat completeness Q26: remove one member, applying creator succession
+   * and last-member cleanup. Shared by the leave route and the lifecycle
+   * remove route so the rules can't drift.
+   * - Last member out → the conversation row is deleted (existing leave
+   *   semantics).
+   * - Creator out (or creator unset, e.g. their account was deleted) →
+   *   ownership passes to the longest-standing remaining member
+   *   (earliest joined_at, user_id tie-break — deterministic).
+   */
+  const removeChatMember = async (
+    conversationId: string,
+    targetUserId: string
+  ) => {
+    await db
+      .delete(conversationMembers)
+      .where(
+        and(
+          eq(conversationMembers.conversationId, conversationId),
+          eq(conversationMembers.userId, targetUserId)
+        )
+      );
+    const remaining = await db
+      .select({
+        userId: conversationMembers.userId,
+        joinedAt: conversationMembers.joinedAt,
+      })
+      .from(conversationMembers)
+      .where(eq(conversationMembers.conversationId, conversationId))
+      .orderBy(
+        asc(conversationMembers.joinedAt),
+        asc(conversationMembers.userId)
+      );
+    if (remaining.length === 0) {
+      await db
+        .delete(conversations)
+        .where(eq(conversations.id, conversationId));
+      return { conversationDeleted: true };
+    }
+    const [convo] = await db
+      .select({ createdBy: conversations.createdBy })
+      .from(conversations)
+      .where(eq(conversations.id, conversationId))
+      .limit(1);
+    const creator = convo?.createdBy ?? null;
+    if (creator === null || creator === targetUserId) {
+      await db
+        .update(conversations)
+        .set({ createdBy: remaining[0].userId })
+        .where(eq(conversations.id, conversationId));
+    }
+    return { conversationDeleted: false };
+  };
+
+  /**
+   * Chat completeness Q24: ping the other members about a new message.
+   * Rules (deliberately conservative — the chat badge already covers
+   * passive discovery, the bell is for pull):
+   * - never for a soft-deleted/redacted message (guard kept explicit even
+   *   though a fresh insert is never deleted);
+   * - never when the sender is a team bot — bots reply in DMs on a cron,
+   *   and bell-spam per bot reply would bury real signals;
+   * - never for the sender themselves (createNotification also guards);
+   * - group messages notify every other member, DMs the one peer.
+   */
+  const notifyChatMessage = async (input: {
+    conversationId: string;
+    senderId: string;
+    isDeleted: boolean | null | undefined;
+  }) => {
+    if (input.isDeleted) return;
+    const [senderProfile] = await db
+      .select({ isBot: profiles.isBot })
+      .from(profiles)
+      .where(eq(profiles.userId, input.senderId))
+      .limit(1);
+    if (senderProfile?.isBot) return;
+    const memberRows = await db
+      .select({ userId: conversationMembers.userId })
+      .from(conversationMembers)
+      .where(eq(conversationMembers.conversationId, input.conversationId));
+    for (const m of memberRows) {
+      if (m.userId === input.senderId) continue;
+      await createNotification({
+        userId: m.userId,
+        type: "chat_message",
+        actorId: input.senderId,
+        conversationId: input.conversationId,
+      });
+    }
+  };
+
   /** Full conversation shape for the client (members, last message, unread). */
   const buildConversation = async (
     conversationId: string,
@@ -3295,6 +3464,10 @@ export const createHonoApp = () => {
       title: convo!.title,
       created_at: convo!.createdAt,
       is_pinned: myMem?.isPinned ?? false,
+      // Q26: a conversation is a group iff it has no DM dedup key (groups
+      // can shrink to 2 members via leaves — member count is NOT the test).
+      is_group: convo!.dmPairKey == null,
+      created_by: convo!.createdBy ?? null,
       members: memberCards,
       last_message: lastMsg
         ? {
@@ -3317,6 +3490,8 @@ export const createHonoApp = () => {
     _id: "",
     display_name: "Deleted user",
     profile_image: "/images/centher.logo.favicon.png",
+    last_seen_at: null,
+    is_online: false,
     membership: {
       last_status: "citizen" as const,
       status: "citizen" as const,
@@ -3593,6 +3768,8 @@ export const createHonoApp = () => {
           title: convo.title,
           created_at: convo.createdAt,
           is_pinned: myMemByConvo.get(cid)?.isPinned ?? false,
+          is_group: convo.dmPairKey == null,
+          created_by: convo.createdBy ?? null,
           members: (memberIdsByConvo.get(cid) ?? [])
             .map((uid) => cardById.get(uid))
             .filter((mc): mc is (typeof cards)[number] => !!mc),
@@ -3650,7 +3827,11 @@ export const createHonoApp = () => {
       const pairKey = dmPairKey(userId!, other);
       const [convo] = await db
         .insert(conversations)
-        .values({ title: body.title?.trim() || "", dmPairKey: pairKey })
+        .values({
+          title: body.title?.trim() || "",
+          dmPairKey: pairKey,
+          createdBy: userId!,
+        })
         .onConflictDoNothing({ target: conversations.dmPairKey })
         .returning();
       if (convo) {
@@ -3674,7 +3855,7 @@ export const createHonoApp = () => {
 
     const [convo] = await db
       .insert(conversations)
-      .values({ title: body.title?.trim() || "" })
+      .values({ title: body.title?.trim() || "", createdBy: userId! })
       .returning();
     await db.insert(conversationMembers).values(
       [userId!, ...otherIds].map((id) => ({
@@ -3686,29 +3867,243 @@ export const createHonoApp = () => {
   });
 
   // Leave a conversation (deletes it when the last member leaves).
+  // Q26: removal + creator succession + cleanup live in removeChatMember,
+  // shared with the group-lifecycle remove route.
   app.delete("/chat/conversations/:id", async (c) => {
     const userId = c.get("userId");
     if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
     const { id } = chatIdParam.parse(c.req.param());
 
     await requireMembership(id, userId!);
+    await removeChatMember(id, userId!);
+    return c.json({ ok: true });
+  });
+
+  // ---------------------------------------------------------------------
+  // Chat completeness Q24/Q26 (2026-10-21): presence heartbeat, message
+  // search, and the group lifecycle (rename / add / remove members).
+  // ---------------------------------------------------------------------
+
+  // Presence heartbeat: stamp MY last_seen_at — at most one write per
+  // ~60s, enforced by the WHERE clause (a fresh row simply doesn't match,
+  // so chatty clients can't amplify writes). Self only, by construction.
+  app.post("/chat/presence", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+
     await db
-      .delete(conversationMembers)
+      .update(profiles)
+      .set({ lastSeenAt: new Date() })
+      .where(
+        and(
+          eq(profiles.userId, userId!),
+          or(
+            isNull(profiles.lastSeenAt),
+            lt(
+              profiles.lastSeenAt,
+              new Date(Date.now() - PRESENCE_WRITE_THROTTLE_MS)
+            )
+          )
+        )
+      );
+    return c.json({ ok: true });
+  });
+
+  // Message search across MY conversations. The membership join IS the
+  // security boundary: a message is only searchable by someone who belongs
+  // to its conversation. ILIKE on body (escaped, so %/_ in the query are
+  // literals); the (conversation_id, created_at, id) keyset index from
+  // 0006 keeps it bounded. Deleted messages are excluded — their bodies
+  // are redacted everywhere else too. Full-text (tsvector) is the future
+  // upgrade if ILIKE latency ever shows up in practice.
+  app.get("/chat/search", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+
+    const query = z
+      .object({
+        q: z.string().trim().min(2).max(100),
+        limit: z.coerce.number().int().min(1).max(50).optional(),
+        before: z.string().uuid().optional(),
+      })
+      .parse(c.req.query());
+    const limit = query.limit ?? 20;
+
+    let cursor: { createdAt: Date; id: string } | undefined;
+    if (query.before) {
+      const [ref] = await db
+        .select({ createdAt: messages.createdAt, id: messages.id })
+        .from(messages)
+        .innerJoin(
+          conversationMembers,
+          and(
+            eq(conversationMembers.conversationId, messages.conversationId),
+            eq(conversationMembers.userId, userId!)
+          )
+        )
+        .where(eq(messages.id, query.before))
+        .limit(1);
+      if (!ref) apiError("Message not found", "NOT_FOUND", 404);
+      cursor = { createdAt: ref!.createdAt, id: ref!.id };
+    }
+
+    const pattern = `%${query.q.replace(/[%_\\]/g, (ch) => `\\${ch}`)}%`;
+    const rows = await db
+      .select({
+        id: messages.id,
+        conversationId: messages.conversationId,
+        conversationTitle: conversations.title,
+        body: messages.body,
+        kind: messages.kind,
+        senderId: messages.senderId,
+        createdAt: messages.createdAt,
+      })
+      .from(messages)
+      .innerJoin(
+        conversationMembers,
+        and(
+          eq(conversationMembers.conversationId, messages.conversationId),
+          eq(conversationMembers.userId, userId!)
+        )
+      )
+      .innerJoin(conversations, eq(conversations.id, messages.conversationId))
+      .where(
+        and(
+          ilike(messages.body, pattern),
+          eq(messages.isDeleted, false),
+          cursor
+            ? sql`(${messages.createdAt}, ${messages.id}) < (${cursor.createdAt}, ${cursor.id})`
+            : undefined
+        )
+      )
+      .orderBy(desc(messages.createdAt), desc(messages.id))
+      .limit(limit);
+
+    const senderIds = [
+      ...new Set(rows.map((r) => r.senderId).filter((s): s is string => !!s)),
+    ];
+    const cards = await fetchUserCards(senderIds, userId!);
+    const cardById = new Map<string, (typeof cards)[number]>();
+    for (const cd of cards) cardById.set((cd as any)._id, cd);
+
+    return c.json({
+      results: rows.map((r) => ({
+        id: r.id,
+        conversation_id: r.conversationId,
+        conversation_title: r.conversationTitle,
+        body: r.body,
+        kind: r.kind ?? "text",
+        sender_id: r.senderId,
+        created_at: r.createdAt,
+        sender: r.senderId
+          ? (cardById.get(r.senderId) as any) ?? null
+          : deletedUserCard(),
+      })),
+      has_more: rows.length === limit,
+    });
+  });
+
+  // Rename a group (any member may rename; members only — 403 otherwise).
+  app.patch("/chat/conversations/:id", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const { id } = chatIdParam.parse(c.req.param());
+    const body = z
+      .object({ title: z.string().trim().min(1).max(100) })
+      .parse(await c.req.json());
+
+    await requireGroupMembership(id, userId!);
+    await requireGroup(id);
+    await db
+      .update(conversations)
+      .set({ title: body.title })
+      .where(eq(conversations.id, id));
+    return c.json(await buildConversation(id, userId!));
+  });
+
+  // Add members to a group (any current member may add; adding someone
+  // who is already in is a no-op success; the 50-member cap from creation
+  // applies here too).
+  app.post("/chat/conversations/:id/members", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const { id } = chatIdParam.parse(c.req.param());
+    const body = z
+      .object({
+        user_ids: z.array(z.string().min(1)).min(1).max(50),
+      })
+      .parse(await c.req.json());
+
+    await requireGroupMembership(id, userId!);
+    await requireGroup(id);
+
+    const requestedIds = [...new Set(body.user_ids)];
+    const existingUsers = await db
+      .select({ id: user.id })
+      .from(user)
+      .where(inArray(user.id, requestedIds));
+    if (existingUsers.length !== requestedIds.length)
+      apiError("Unknown user", "NOT_FOUND", 404);
+
+    const current = await db
+      .select({ userId: conversationMembers.userId })
+      .from(conversationMembers)
+      .where(eq(conversationMembers.conversationId, id));
+    const currentSet = new Set(current.map((m) => m.userId));
+    const toAdd = requestedIds.filter((uid) => !currentSet.has(uid));
+    if (current.length + toAdd.length > 50)
+      apiError("Groups are limited to 50 members", "BAD_REQUEST", 400);
+
+    if (toAdd.length > 0) {
+      await db
+        .insert(conversationMembers)
+        .values(toAdd.map((uid) => ({ conversationId: id, userId: uid })))
+        .onConflictDoNothing();
+    }
+    return c.json(await buildConversation(id, userId!));
+  });
+
+  // Remove a member / leave a group. Removing YOURSELF is always allowed
+  // (that's leaving); removing SOMEONE ELSE requires being the creator.
+  app.delete("/chat/conversations/:id/members/:user_id", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const params = z
+      .object({ id: z.string().uuid(), user_id: z.string().min(1) })
+      .parse(c.req.param());
+    const id = params.id;
+    const targetUserId = params.user_id;
+
+    await requireGroupMembership(id, userId!);
+    const convo = await requireGroup(id);
+
+    if (targetUserId !== userId! && convo.createdBy !== userId!)
+      apiError(
+        "Only the group creator can remove other members",
+        "FORBIDDEN",
+        403
+      );
+
+    const [targetMem] = await db
+      .select({ userId: conversationMembers.userId })
+      .from(conversationMembers)
       .where(
         and(
           eq(conversationMembers.conversationId, id),
-          eq(conversationMembers.userId, userId!)
+          eq(conversationMembers.userId, targetUserId)
         )
-      );
-    const remaining = await db
-      .select({ userId: conversationMembers.userId })
-      .from(conversationMembers)
-      .where(eq(conversationMembers.conversationId, id))
+      )
       .limit(1);
-    if (remaining.length === 0) {
-      await db.delete(conversations).where(eq(conversations.id, id));
-    }
-    return c.json({ ok: true });
+    if (!targetMem)
+      apiError(
+        "That user is not a member of this conversation",
+        "NOT_FOUND",
+        404
+      );
+
+    await removeChatMember(id, targetUserId);
+    if (targetUserId === userId!) return c.json({ ok: true, left: true });
+    return c.json(await buildConversation(id, userId!));
   });
 
   // Pin / unpin a conversation for me.
@@ -3969,6 +4364,12 @@ export const createHonoApp = () => {
     // before the send — marking them "read" sight unseen. The poller's
     // markAsRead (which only advances to messages actually fetched) is the
     // correct mechanism.
+    // Chat completeness Q24: notify the other members (DM peer / group).
+    await notifyChatMessage({
+      conversationId: id,
+      senderId: userId!,
+      isDeleted: msg.isDeleted,
+    });
     return c.json(await buildMessage(msg.id, userId!), 201);
   });
 
