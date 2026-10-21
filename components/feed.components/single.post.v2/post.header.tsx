@@ -152,6 +152,8 @@ export const PostHeader: React.FC<Props> = ({
               )}
             >
               {createdTime}
+              {/* Feed product call Q14: "edited" mark, same as chat. */}
+              {post.edited_at && <span className="italic"> · edited</span>}
             </p>
           </div>
 

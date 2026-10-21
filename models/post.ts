@@ -15,6 +15,14 @@ export interface BasePost {
   version: number;
   /** Plain-text extracted from the stored editor state (Phase 2). */
   text_content: string;
+  /**
+   * Feed product calls (2026-10-21): ISO timestamp of the last edit
+   * (15-minute window, server-enforced), null if never edited. Rendered
+   * as the subtle "edited" mark next to the post time.
+   */
+  edited_at?: string | null;
+  /** Tombstone flag: deleted posts/replies render as a placeholder. */
+  is_deleted?: boolean;
 }
 
 export interface DeletedPost extends BasePost {

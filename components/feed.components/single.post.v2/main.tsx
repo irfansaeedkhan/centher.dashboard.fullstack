@@ -9,6 +9,7 @@ import { ArchivedPost, CompletedPost, ParentPost } from "@/models/post";
 import { customLog } from "@/utils/custom.log";
 import { PostModal } from "../create.post/post.modal";
 import { PostHeader } from "./post.header";
+import { apiErrorMessage, editReply } from "./post.helpers";
 import { PostMedia } from "./post.media";
 import { PostTextContent } from "./post.text.content";
 import { PostFooter } from "./post.footer";
@@ -46,6 +47,12 @@ interface Props {
   onPostInViewport?: () => Promise<void>;
   onClickReply?: () => void;
   onClickEdit?: () => void;
+  /**
+   * Feed product call Q13: when wired (post detail view), a reply's
+   * Edit action switches to inline editing (like chat's) and the saved
+   * reply is handed back here so the parent can swap it into its store.
+   */
+  onReplyUpdated?: (post: CompletedPost) => void;
   onClickLike?: () => Promise<void>;
   onClickArchive?: () => Promise<void>;
   onClickRestore?: () => Promise<void>;
@@ -69,9 +76,15 @@ export const SinglePostV2: React.FC<Props> = ({
   onClickArchive = async () => {},
   onClickRestore = async () => {},
   onClickDelete = async () => {},
+  onReplyUpdated,
 }) => {
   const { user: loggedInUser } = useUser();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  // Q13: inline reply-edit state (draft, saving flag, readable error).
+  const [isEditingReply, setIsEditingReply] = useState(false);
+  const [replyDraft, setReplyDraft] = useState("");
+  const [isSavingReply, setIsSavingReply] = useState(false);
+  const [replyEditError, setReplyEditError] = useState<string | null>(null);
   const { openModal: openPostModal } = useNewPostStore(
     useShallow((state) => state.actions)
   );
@@ -116,6 +129,50 @@ export const SinglePostV2: React.FC<Props> = ({
     onPostInViewport,
     loggedInUser,
   ]);
+
+  const handleSaveReplyEdit = async () => {
+    if (isSavingReply) return;
+    setIsSavingReply(true);
+    setReplyEditError(null);
+    try {
+      const updated = await editReply(post._id, replyDraft.trim());
+      setIsEditingReply(false);
+      onReplyUpdated?.(updated);
+    } catch (error: any) {
+      // Readable failure, editor stays open with the draft intact.
+      setReplyEditError(
+        apiErrorMessage(error, "Could not save your reply. Please try again.")
+      );
+    } finally {
+      setIsSavingReply(false);
+    }
+  };
+
+  // Feed product call Q21: tombstone — a deleted post/reply renders as
+  // a placeholder so thread structure survives (replies under a deleted
+  // post stay reachable from the detail page). No body, media, or
+  // actions are rendered for it.
+  if ((post.status as string) === "deleted") {
+    return (
+      <div
+        className={clsx(
+          `w-full max-w-[544px] rounded-10px bg-elevation-1 p-4`,
+          {
+            "rounded-t-none": !borderRadius.top,
+            "rounded-b-none": !borderRadius.bottom,
+          },
+          className
+        )}
+        data-post-id={post._id}
+      >
+        <p className="text-sm italic text-gray-shade-7">
+          {postType === "reply"
+            ? "This reply was deleted"
+            : "This post was deleted"}
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -184,6 +241,15 @@ export const SinglePostV2: React.FC<Props> = ({
           onClickRestore={onClickRestore}
           onClickDelete={onClickDelete}
           onClickEdit={() => {
+            // Q13: replies edit inline (like chat) when the parent wired
+            // onReplyUpdated — the post modal would PATCH the post
+            // endpoint with a comment id and silently fail.
+            if (postType === "reply" && onReplyUpdated) {
+              setReplyDraft(post.text_content ?? "");
+              setReplyEditError(null);
+              setIsEditingReply(true);
+              return;
+            }
             setIsEditModalOpen(true);
             openPostModal({
               modalType: "edit",
@@ -243,7 +309,49 @@ export const SinglePostV2: React.FC<Props> = ({
             />
           )}
 
-          {post.post_editor_state && <PostTextContent post={post} />}
+          {isEditingReply ? (
+            <div
+              className="mt-2"
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            >
+              <textarea
+                autoFocus
+                rows={3}
+                value={replyDraft}
+                disabled={isSavingReply}
+                onChange={(e) => setReplyDraft(e.target.value)}
+                className="w-full resize-none rounded-10px bg-elevation-2 p-3 text-sm text-white outline-none"
+              />
+              {replyEditError && (
+                <p className="mt-2 text-xs font-medium text-danger">
+                  {replyEditError}
+                </p>
+              )}
+              <div className="mt-2 flex justify-end gap-2">
+                <button
+                  onClick={() => {
+                    setIsEditingReply(false);
+                    setReplyEditError(null);
+                  }}
+                  disabled={isSavingReply}
+                  className="rounded-10px bg-elevation-2 px-4 py-1.5 text-sm font-semibold text-white disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSaveReplyEdit}
+                  disabled={isSavingReply || !replyDraft.trim()}
+                  className="rounded-10px bg-brand-primary px-4 py-1.5 text-sm font-semibold text-white disabled:opacity-50"
+                >
+                  {isSavingReply ? "Saving…" : "Save"}
+                </button>
+              </div>
+            </div>
+          ) : (
+            post.post_editor_state && <PostTextContent post={post} />
+          )}
 
           {/*  Fullscreen Lightbox */}
           {fullscreenPreview.isOpen && post.media && !!post.media.length && (

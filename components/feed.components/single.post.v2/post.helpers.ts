@@ -1,5 +1,9 @@
-import { Post } from "@/models/post";
+import { CompletedPost, Post } from "@/models/post";
 import { axiosApi369x } from "@/utils/axios";
+
+/** Surface the server's readable error message (never a silent failure). */
+export const apiErrorMessage = (error: any, fallback: string): string =>
+  error?.response?.data?.message || fallback;
 
 export const getPost = async (postId: string, isAuthenticated: boolean) => {
   const withAuth =
@@ -39,4 +43,29 @@ export const createPostView = async (post_id: string) => {
   await axiosApi369x.post(`/api/socials/analytics/post-views`, {
     post_id,
   });
+};
+
+/**
+ * Feed product calls Q12/Q13: reply edit/delete hit the comments
+ * endpoints (replies used to be write-once — the old UI pointed the
+ * post endpoints at a comment id and silently 404'd). Both return the
+ * mapped reply so the caller can swap it into its store; delete returns
+ * the tombstone (status "deleted"), not a removal.
+ */
+export const editReply = async (
+  replyId: string,
+  text: string
+): Promise<CompletedPost> => {
+  const { data } = await axiosApi369x.patch(
+    `/api/socials/comments/${replyId}`,
+    { text }
+  );
+  return data.posts[0] as CompletedPost;
+};
+
+export const deleteReply = async (replyId: string): Promise<CompletedPost> => {
+  const { data } = await axiosApi369x.delete(
+    `/api/socials/comments/${replyId}`
+  );
+  return data.posts[0] as CompletedPost;
 };
