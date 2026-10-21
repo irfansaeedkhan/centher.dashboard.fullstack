@@ -9,6 +9,7 @@ import {
   gt,
   ilike,
   inArray,
+  isNull,
   lt,
   lte,
   ne,
@@ -54,8 +55,9 @@ import {
   CHAT_VIDEO_MIMES,
 } from "@/lib/media/cloudinary";
 import { isTrustedAttachmentUrl } from "@/lib/chat/attachments";
-import { dmPairKey, EDIT_WINDOW_MS } from "@/lib/chat/utils";
+import { dmPairKey, EDIT_WINDOW_MS, isEditExpired } from "@/lib/chat/utils";
 import { sanitizeEditorState } from "@/lib/feed/editor-state";
+import { extractMentionUserIds } from "@/lib/feed/mentions";
 import {
   mediaKindForMime,
   mediaKindForUrl,
@@ -152,6 +154,17 @@ const parseStoredPostBody = (body: string) => {
   };
 };
 
+const EMPTY_EDITOR_STATE = {
+  root: {
+    children: [],
+    direction: "ltr",
+    format: "",
+    indent: 0,
+    type: "root",
+    version: 1,
+  },
+};
+
 const mapPostRow = (
   row: {
     id: string;
@@ -164,10 +177,18 @@ const mapPostRow = (
     authorAvatar: string | null;
     membership: string | null;
     mediaUrls?: unknown;
+    editedAt?: Date | string | null;
+    deletedAt?: Date | string | null;
   },
   opts?: { likedByLoggedInUser?: boolean }
 ) => {
-  const { text, post_editor_state } = parseStoredPostBody(row.body);
+  // Feed product call Q21 (tombstone): a deleted post's body and media
+  // never leave the server — the row renders as the client's "deleted"
+  // stub while its replies stay reachable underneath (chat Q16 rule).
+  const deleted = !!row.deletedAt;
+  const { text, post_editor_state } = deleted
+    ? { text: "", post_editor_state: EMPTY_EDITOR_STATE }
+    : parseStoredPostBody(row.body);
   return {
     _id: row.id,
     user: {
@@ -194,18 +215,27 @@ const mapPostRow = (
         ? row.createdAt.toISOString()
         : String(row.createdAt),
     version: 2,
-    status: "complete" as const,
+    status: deleted ? ("deleted" as const) : ("complete" as const),
+    // Feed product calls: "edited" mark (Q14) + tombstone flag (Q21).
+    edited_at: row.editedAt
+      ? row.editedAt instanceof Date
+        ? row.editedAt.toISOString()
+        : String(row.editedAt)
+      : null,
+    is_deleted: deleted,
     parent_post: undefined,
     post_editor_state,
     text_content: text,
     // Feed-grill Q16: real media kind (was hardcoded "image", so videos
     // rendered as broken <img>s). normalizePostMedia handles both the
     // legacy string[] rows and the new {url,type}[] rows.
-    media: normalizePostMedia(row.mediaUrls).map((m) => ({
-      object_name: m.url,
-      url: m.url,
-      type: m.type,
-    })),
+    media: deleted
+      ? []
+      : normalizePostMedia(row.mediaUrls).map((m) => ({
+          object_name: m.url,
+          url: m.url,
+          type: m.type,
+        })),
   };
 };
 
@@ -223,6 +253,8 @@ const mapCommentRow = (
     authorName: string | null;
     authorAvatar: string | null;
     membership: string | null;
+    editedAt?: Date | string | null;
+    deletedAt?: Date | string | null;
   },
   parent: {
     id: string;
@@ -243,6 +275,10 @@ const mapCommentRow = (
     authorName: row.authorName,
     authorAvatar: row.authorAvatar,
     membership: row.membership,
+    // Feed product calls Q12/Q13: reply edited mark + tombstone ride the
+    // same mapPostRow redaction as posts.
+    editedAt: row.editedAt,
+    deletedAt: row.deletedAt,
   });
   return {
     ...mapped,
@@ -303,6 +339,8 @@ const fetchPostRow = async (id: string) => {
       authorAvatar: profiles.avatarUrl,
       membership: profiles.membership,
       mediaUrls: posts.mediaUrls,
+      editedAt: posts.editedAt,
+      deletedAt: posts.deletedAt,
     })
     .from(posts)
     .leftJoin(profiles, eq(posts.authorId, profiles.userId))
@@ -449,6 +487,116 @@ const createNotification = async (input: {
     postId: input.postId ?? null,
     status: "unread",
   });
+};
+
+/**
+ * Feed product call Q23: notify users @mentioned in a post or reply.
+ *
+ * The type is `mention_in_post` — the notifications UI already renders
+ * it ("mentioned you in a post", deep-links to the post), so no new
+ * client type was needed. Rules:
+ *  - Mentions come from the editor state's mention nodes (the same
+ *    parse the renderer uses — see lib/feed/mentions.ts).
+ *  - The mentioned user must exist (profile row) and their
+ *    `mention_permission` must allow this actor: everyone / followers
+ *    (they follow the actor) / followings (actor follows them) /
+ *    followers_and_followings / no_one.
+ *  - The author never notifies themselves (createNotification guards,
+ *    and self-mentions are filtered here too).
+ *  - On edits (`onlyNew`), anyone who already has a mention
+ *    notification for this post from this actor is skipped — an edit
+ *    must not re-ping; brand-new mentions on the edit still notify.
+ */
+const notifyMentions = async (input: {
+  editorState: unknown;
+  actorId: string;
+  postId: string;
+  onlyNew?: boolean;
+}) => {
+  const mentionedIds = extractMentionUserIds(input.editorState).filter(
+    (id) => id !== input.actorId
+  );
+  if (mentionedIds.length === 0) return;
+
+  const profileRows = await db
+    .select({
+      userId: profiles.userId,
+      mentionPermission: profiles.mentionPermission,
+    })
+    .from(profiles)
+    .where(inArray(profiles.userId, mentionedIds));
+  if (profileRows.length === 0) return;
+
+  // Follow graph for the permission check, in one query both directions.
+  const followRows = await db
+    .select({
+      followerId: follows.followerId,
+      followingId: follows.followingId,
+    })
+    .from(follows)
+    .where(
+      or(
+        and(
+          inArray(follows.followerId, mentionedIds),
+          eq(follows.followingId, input.actorId)
+        ),
+        and(
+          eq(follows.followerId, input.actorId),
+          inArray(follows.followingId, mentionedIds)
+        )
+      )
+    );
+  const mentionedFollowsActor = new Set(
+    followRows
+      .filter((r) => r.followingId === input.actorId)
+      .map((r) => r.followerId)
+  );
+  const actorFollowsMentioned = new Set(
+    followRows
+      .filter((r) => r.followerId === input.actorId)
+      .map((r) => r.followingId)
+  );
+
+  const allowed = profileRows.filter((p) => {
+    const perm = p.mentionPermission ?? "everyone";
+    if (perm === "everyone") return true;
+    if (perm === "no_one") return false;
+    if (perm === "followers") return mentionedFollowsActor.has(p.userId);
+    if (perm === "followings") return actorFollowsMentioned.has(p.userId);
+    if (perm === "followers_and_followings")
+      return (
+        mentionedFollowsActor.has(p.userId) &&
+        actorFollowsMentioned.has(p.userId)
+      );
+    return true;
+  });
+  if (allowed.length === 0) return;
+
+  let targets = allowed.map((p) => p.userId);
+  if (input.onlyNew) {
+    const already = await db
+      .select({ userId: notifications.userId })
+      .from(notifications)
+      .where(
+        and(
+          inArray(notifications.userId, targets),
+          eq(notifications.type, "mention_in_post"),
+          eq(notifications.postId, input.postId),
+          eq(notifications.actorId, input.actorId)
+        )
+      );
+    const alreadySet = new Set(already.map((r) => r.userId));
+    targets = targets.filter((id) => !alreadySet.has(id));
+  }
+
+  for (const userId of targets) {
+    await createNotification({
+      userId,
+      type: "mention_in_post",
+      actorId: input.actorId,
+      postId: input.postId,
+    });
+  }
 };
 
 /** Phase 3: map a notification row to the shape the notifications UI reads. */
@@ -1500,6 +1648,8 @@ export const createHonoApp = () => {
         authorAvatar: profiles.avatarUrl,
         membership: profiles.membership,
         mediaUrls: posts.mediaUrls,
+        editedAt: posts.editedAt,
+        deletedAt: posts.deletedAt,
       })
       .from(posts)
       .leftJoin(profiles, eq(posts.authorId, profiles.userId))
@@ -1614,10 +1764,19 @@ export const createHonoApp = () => {
         authorAvatar: profiles.avatarUrl,
         membership: profiles.membership,
         mediaUrls: posts.mediaUrls,
+        editedAt: posts.editedAt,
+        deletedAt: posts.deletedAt,
       })
       .from(posts)
       .leftJoin(profiles, eq(posts.authorId, profiles.userId))
-      .where(and(eq(posts.authorId, userId!), eq(posts.isArchived, true)))
+      .where(
+        and(
+          eq(posts.authorId, userId!),
+          eq(posts.isArchived, true),
+          // A deleted post is a tombstone, not an archived post to manage.
+          isNull(posts.deletedAt)
+        )
+      )
       .orderBy(desc(posts.createdAt))
       .limit(limit)
       .offset(offset);
@@ -1646,6 +1805,8 @@ export const createHonoApp = () => {
         authorAvatar: profiles.avatarUrl,
         membership: profiles.membership,
         parentPostId: comments.postId,
+        editedAt: comments.editedAt,
+        deletedAt: comments.deletedAt,
       })
       .from(comments)
       .leftJoin(profiles, eq(comments.authorId, profiles.userId))
@@ -1689,6 +1850,8 @@ export const createHonoApp = () => {
         authorAvatar: profiles.avatarUrl,
         membership: profiles.membership,
         mediaUrls: posts.mediaUrls,
+        editedAt: posts.editedAt,
+        deletedAt: posts.deletedAt,
       })
       .from(posts)
       .leftJoin(profiles, eq(posts.authorId, profiles.userId))
@@ -1771,6 +1934,8 @@ export const createHonoApp = () => {
         authorName: profiles.displayName,
         authorAvatar: profiles.avatarUrl,
         membership: profiles.membership,
+        editedAt: comments.editedAt,
+        deletedAt: comments.deletedAt,
       })
       .from(comments)
       .leftJoin(profiles, eq(comments.authorId, profiles.userId))
@@ -1812,6 +1977,10 @@ export const createHonoApp = () => {
   );
 
   // Edit a post (owner only)
+  // Feed product call Q14 (Irfan 2026-10-21): same rule as chat — a
+  // 15-minute edit window, enforced server-side, and an "edited" mark
+  // (edited_at) the client renders. Before this, edits were silent and
+  // unlimited: a year-old post could be rewritten with zero trace.
   app.patch("/socials/posts/:id", async (c) => {
     const userId = c.get("userId");
     if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
@@ -1828,8 +1997,23 @@ export const createHonoApp = () => {
     const existing = await fetchPostRow(id);
     if (!existing) apiError("Post not found", "NOT_FOUND", 404);
     if (existing!.authorId !== userId) apiError("Forbidden", "FORBIDDEN", 403);
+    if (existing!.deletedAt)
+      apiError("This post has been deleted", "POST_DELETED", 400);
+    if (isEditExpired(existing!.createdAt))
+      apiError(
+        "Posts can only be edited within 15 minutes",
+        "EDIT_WINDOW_EXPIRED",
+        400
+      );
 
-    let newBody: string;
+    // Judge follow-up (PR #29): a PATCH carrying ONLY deleted_media is
+    // a real update — the old code 400'd "Nothing to update" before the
+    // deletions were ever applied, so the removal silently failed.
+    const hasTextUpdate = !!payload.post_editor_state?.root || !!payload.text;
+    if (!hasTextUpdate && payload.deleted_media.length === 0)
+      apiError("Nothing to update", "BAD_REQUEST", 400);
+
+    let newBody = existing!.body;
     if (payload.post_editor_state?.root) {
       // Feed-grill Q1: sanitize before persisting (see POST /socials/posts).
       newBody = JSON.stringify(
@@ -1840,9 +2024,6 @@ export const createHonoApp = () => {
         0,
         20000
       );
-    } else {
-      apiError("Nothing to update", "BAD_REQUEST", 400);
-      newBody = "";
     }
 
     // Feed-grill Q15: honor deleted_media — it was parsed and then never
@@ -1860,9 +2041,22 @@ export const createHonoApp = () => {
       .set({
         body: newBody,
         mediaUrls: remainingMedia.length > 0 ? remainingMedia : null,
+        editedAt: new Date(),
       })
       .where(eq(posts.id, id))
       .returning();
+
+    // Q23: mentions newly added by this edit notify (onlyNew — people
+    // already notified for this post are never re-pinged by an edit).
+    if (hasTextUpdate) {
+      await notifyMentions({
+        editorState: parseStoredPostBody(newBody).post_editor_state,
+        actorId: userId!,
+        postId: id,
+        onlyNew: true,
+      });
+    }
+
     const mapped = mapPostRow({
       id: updated.id,
       body: updated.body,
@@ -1874,6 +2068,8 @@ export const createHonoApp = () => {
       authorAvatar: existing!.authorAvatar,
       membership: existing!.membership,
       mediaUrls: updated.mediaUrls ?? [],
+      editedAt: updated.editedAt,
+      deletedAt: updated.deletedAt,
     });
     return c.json({ posts: [mapped], data: [mapped] });
   });
@@ -1887,6 +2083,8 @@ export const createHonoApp = () => {
     const existing = await fetchPostRow(id);
     if (!existing) apiError("Post not found", "NOT_FOUND", 404);
     if (existing!.authorId !== userId) apiError("Forbidden", "FORBIDDEN", 403);
+    if (existing!.deletedAt)
+      apiError("This post has been deleted", "POST_DELETED", 400);
 
     await db
       .update(posts)
@@ -1897,7 +2095,13 @@ export const createHonoApp = () => {
   app.patch("/socials/posts/:id/archive", (c) => handleArchive(c, true));
   app.patch("/socials/posts/:id/unarchive", (c) => handleArchive(c, false));
 
-  // Delete a post (owner only; comments + likes cascade)
+  // Delete a post (owner only)
+  // Feed product call Q21 (Irfan 2026-10-21): tombstone, NOT a hard
+  // delete. The old handler removed the row and ON DELETE CASCADE wiped
+  // every reply other people had written under it. Now deleted_at is
+  // set; mapPostRow redacts body/media and renders the "deleted" stub,
+  // replies stay visible, and the detail page still resolves so reply
+  // links never 404. (Same call Irfan made for chat user deletion.)
   app.delete("/socials/posts/:id", async (c) => {
     const userId = c.get("userId");
     if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
@@ -1907,8 +2111,156 @@ export const createHonoApp = () => {
     if (!existing) apiError("Post not found", "NOT_FOUND", 404);
     if (existing!.authorId !== userId) apiError("Forbidden", "FORBIDDEN", 403);
 
-    await db.delete(posts).where(eq(posts.id, id));
-    return c.json({ deleted: true, post_id: id });
+    if (!existing!.deletedAt) {
+      await db
+        .update(posts)
+        .set({ deletedAt: new Date() })
+        .where(eq(posts.id, id));
+    }
+    const mapped = mapPostRow({ ...existing!, deletedAt: new Date() });
+    return c.json({
+      deleted: true,
+      post_id: id,
+      posts: [mapped],
+      data: [mapped],
+    });
+  });
+
+  // ---------------------------------------------------------------------
+  // Feed product calls Q12/Q13: reply edit/delete. Replies used to have
+  // NO endpoints at all — write-once forever. These mirror the post and
+  // chat-message conventions: author only, 15-minute edit window +
+  // edited_at mark, soft delete with a placeholder so the thread
+  // structure survives (parent comment_count is left untouched — the
+  // placeholder still occupies its slot, like chat's deleted messages).
+  // ---------------------------------------------------------------------
+
+  const fetchCommentRow = async (id: string) => {
+    const [row] = await db
+      .select({
+        id: comments.id,
+        postId: comments.postId,
+        body: comments.body,
+        createdAt: comments.createdAt,
+        authorId: comments.authorId,
+        authorName: profiles.displayName,
+        authorAvatar: profiles.avatarUrl,
+        membership: profiles.membership,
+        editedAt: comments.editedAt,
+        deletedAt: comments.deletedAt,
+      })
+      .from(comments)
+      .leftJoin(profiles, eq(comments.authorId, profiles.userId))
+      .where(eq(comments.id, id))
+      .limit(1);
+    return row ?? null;
+  };
+
+  const mapFetchedComment = async (
+    row: NonNullable<Awaited<ReturnType<typeof fetchCommentRow>>>
+  ) => {
+    const parent = await fetchPostRow(row.postId);
+    return mapCommentRow(row, {
+      id: row.postId,
+      createdAt: parent?.createdAt ?? row.createdAt,
+      authorId: parent?.authorId ?? row.authorId,
+      authorName: parent?.authorName ?? null,
+      authorAvatar: parent?.authorAvatar ?? null,
+      membership: parent?.membership ?? null,
+    });
+  };
+
+  // Edit a reply (author only, 15-minute window)
+  app.patch("/socials/comments/:id", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const id = z.string().uuid().parse(c.req.param("id"));
+
+    const payload = z
+      .object({
+        post_editor_state: z.any().optional(),
+        text: z.string().min(1).max(5000).optional(),
+      })
+      .parse(await c.req.json());
+
+    const existing = await fetchCommentRow(id);
+    if (!existing) apiError("Reply not found", "NOT_FOUND", 404);
+    if (existing!.authorId !== userId) apiError("Forbidden", "FORBIDDEN", 403);
+    if (existing!.deletedAt)
+      apiError("This reply has been deleted", "REPLY_DELETED", 400);
+    if (isEditExpired(existing!.createdAt))
+      apiError(
+        "Replies can only be edited within 15 minutes",
+        "EDIT_WINDOW_EXPIRED",
+        400
+      );
+
+    let newBody: string;
+    if (payload.post_editor_state?.root) {
+      // Same stored-XSS guard as post writes (feed-grill Q1).
+      newBody = JSON.stringify(
+        sanitizeEditorState(payload.post_editor_state)
+      ).slice(0, 20000);
+    } else if (payload.text) {
+      newBody = JSON.stringify(wrapPlainTextEditorState(payload.text)).slice(
+        0,
+        20000
+      );
+    } else {
+      apiError("Nothing to update", "BAD_REQUEST", 400);
+      newBody = "";
+    }
+
+    const [updated] = await db
+      .update(comments)
+      .set({ body: newBody, editedAt: new Date() })
+      .where(eq(comments.id, id))
+      .returning();
+
+    // Q23: mentions newly added by this edit notify (onlyNew dedupe,
+    // scoped to this actor on the parent post).
+    await notifyMentions({
+      editorState: parseStoredPostBody(newBody).post_editor_state,
+      actorId: userId!,
+      postId: existing!.postId,
+      onlyNew: true,
+    });
+
+    const mapped = await mapFetchedComment({
+      ...existing!,
+      body: updated.body,
+      editedAt: updated.editedAt,
+      deletedAt: updated.deletedAt,
+    });
+    return c.json({ posts: [mapped], data: [mapped] });
+  });
+
+  // Delete a reply (author only, soft delete → placeholder)
+  app.delete("/socials/comments/:id", async (c) => {
+    const userId = c.get("userId");
+    if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    const id = z.string().uuid().parse(c.req.param("id"));
+
+    const existing = await fetchCommentRow(id);
+    if (!existing) apiError("Reply not found", "NOT_FOUND", 404);
+    if (existing!.authorId !== userId) apiError("Forbidden", "FORBIDDEN", 403);
+
+    if (!existing!.deletedAt) {
+      await db
+        .update(comments)
+        .set({ deletedAt: new Date() })
+        .where(eq(comments.id, id));
+    }
+    const mapped = await mapFetchedComment({
+      ...existing!,
+      deletedAt: new Date(),
+    });
+    return c.json({
+      deleted: true,
+      comment_id: id,
+      posts: [mapped],
+      data: [mapped],
+    });
   });
 
   // Like / unlike toggle
@@ -1925,6 +2277,10 @@ export const createHonoApp = () => {
 
     const target = await fetchPostRow(postId);
     if (!target) apiError("Post not found", "NOT_FOUND", 404);
+    // Q21: a tombstoned post accepts no new likes/views and its counts
+    // are frozen — liking one returns a readable error, not silent drift.
+    if (target!.deletedAt)
+      apiError("This post has been deleted", "POST_DELETED", 400);
 
     if (actionType === "like") {
       // Feed-grill Q5: notify ONLY when the like row was actually
@@ -1984,11 +2340,20 @@ export const createHonoApp = () => {
       .parse(await c.req.json());
 
     const [existing] = await db
-      .select({ id: posts.id, viewCount: posts.viewCount })
+      .select({
+        id: posts.id,
+        viewCount: posts.viewCount,
+        deletedAt: posts.deletedAt,
+      })
       .from(posts)
       .where(eq(posts.id, post_id))
       .limit(1);
     if (!existing) apiError("Post not found", "NOT_FOUND", 404);
+    // Q21: views on a tombstone don't count — but this endpoint fires
+    // automatically on scroll, so it returns the frozen count instead of
+    // an error (the user is never stranded by an impression ping).
+    if (existing!.deletedAt)
+      return c.json({ view_count: existing!.viewCount, post_id });
 
     const viewDate = new Date().toISOString().slice(0, 10);
     const inserted = await db
@@ -2503,6 +2868,10 @@ export const createHonoApp = () => {
       // same guard as GET /:id (no reading or replying to them).
       if (parentRow!.isArchived && parentRow!.authorId !== userId)
         apiError("Parent post not found", "NOT_FOUND", 404);
+      // Q21: a tombstoned post is closed — its existing replies stay
+      // readable, but no new ones land under a "deleted" stub.
+      if (parentRow!.deletedAt)
+        apiError("This post has been deleted", "POST_DELETED", 400);
     }
 
     const postsInput = z
@@ -2552,6 +2921,12 @@ export const createHonoApp = () => {
         await createNotification({
           userId: parentRow.authorId,
           type: "post_reply",
+          actorId: userId!,
+          postId: parentRow.id,
+        });
+        // Q23: notify anyone @mentioned in the reply.
+        await notifyMentions({
+          editorState,
           actorId: userId!,
           postId: parentRow.id,
         });
@@ -2606,6 +2981,13 @@ export const createHonoApp = () => {
           mediaUrls: mediaUrls.length > 0 ? mediaUrls : null,
         })
         .returning();
+
+      // Q23: notify anyone @mentioned in the post.
+      await notifyMentions({
+        editorState,
+        actorId: userId!,
+        postId: created.id,
+      });
 
       createdMapped.push(
         mapPostRow({

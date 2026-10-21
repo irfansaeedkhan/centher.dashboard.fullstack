@@ -21,7 +21,15 @@
  * applies the removal list to the stored media so an edit actually
  * deletes the rows (Cloudinary-side asset deletion is a follow-up — the
  * removed URL stops rendering everywhere immediately).
+ *
+ * Judge follow-up (PR #29 review) — the Q3 allowlist was write-side
+ * only: media stored BEFORE the fix (arbitrary-host URLs saved by the
+ * old code path) still rendered for every viewer. `normalizePostMedia`
+ * now applies `isTrustedAttachmentUrl` at read time too — the same
+ * defense-in-depth pattern chat uses for stored attachments — so legacy
+ * off-host rows are stripped from every API response.
  */
+import { isTrustedAttachmentUrl } from "@/lib/chat/attachments";
 
 export type PostMediaKind = "image" | "video";
 
@@ -51,16 +59,17 @@ export function mediaKindForMime(mime: unknown): PostMediaKind | null {
 /**
  * Normalize the `posts.media_urls` jsonb (legacy `string[]`, new
  * `{url,type}[]`, or a mix) into `{ url, type }` objects. Junk entries
- * are dropped.
+ * are dropped — and so is anything that isn't a trusted Cloudinary URL
+ * (read-side allowlist: rows stored before the Q3 write-side fix must
+ * not render either).
  */
 export function normalizePostMedia(raw: unknown): StoredPostMedia[] {
   if (!Array.isArray(raw)) return [];
   const out: StoredPostMedia[] = [];
   for (const item of raw) {
     if (typeof item === "string") {
-      // Legacy rows are bare URLs (the old write path only ever stored
-      // https:// strings) — anything else is junk, not media.
-      if (item.startsWith("https://") || item.startsWith("http://"))
+      // Legacy rows are bare URLs; only trusted Cloudinary ones survive.
+      if (isTrustedAttachmentUrl(item))
         out.push({ url: item, type: mediaKindForUrl(item) });
       continue;
     }
@@ -72,7 +81,7 @@ export function normalizePostMedia(raw: unknown): StoredPostMedia[] {
           : typeof (rec as { object_name?: unknown }).object_name === "string"
           ? ((rec as { object_name: string }).object_name as string)
           : "";
-      if (!url.startsWith("https://") && !url.startsWith("http://")) continue;
+      if (!isTrustedAttachmentUrl(url)) continue;
       const type =
         rec.type === "video" || rec.type === "image"
           ? (rec.type as PostMediaKind)

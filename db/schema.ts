@@ -152,6 +152,14 @@ export const posts = pgTable("posts", {
   isArchived: boolean("is_archived").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   mediaUrls: jsonb("media_urls"),
+  /**
+   * Feed product calls (Irfan 2026-10-21): editedAt backs the 15-minute
+   * post edit window + "edited" mark (same rule as chat); deletedAt is
+   * the tombstone — DELETE sets it instead of hard-deleting, so other
+   * people's replies survive under a "This post was deleted" stub.
+   */
+  editedAt: timestamp("edited_at"),
+  deletedAt: timestamp("deleted_at"),
 });
 
 export const postLikes = pgTable(
@@ -207,6 +215,13 @@ export const comments = pgTable("comments", {
     .references(() => user.id, { onDelete: "cascade" }),
   body: text("body").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
+  /**
+   * Feed product calls (Irfan 2026-10-21): replies get the same edit
+   * window + "edited" mark and soft-delete tombstone as posts/chat —
+   * they used to be write-once forever (no edit/delete endpoints).
+   */
+  editedAt: timestamp("edited_at"),
+  deletedAt: timestamp("deleted_at"),
 });
 
 export const conversations = pgTable("conversations", {
