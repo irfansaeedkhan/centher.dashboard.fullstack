@@ -42,9 +42,38 @@ export function safeHttpUrl(raw: unknown): string | null {
 type LexicalNode = {
   type?: string;
   url?: unknown;
+  text?: unknown;
   children?: unknown;
   [key: string]: unknown;
 };
+
+/**
+ * Plain-text extraction from a serialized editor state — the client
+ * twin of the server's extractor (same node set, same join). Used by
+ * the post-grill edit flows to run the "post can't be empty" check
+ * against the rich draft instead of a flattened string.
+ */
+export function extractTextFromEditorState(state: unknown): string {
+  const texts: string[] = [];
+  const walk = (nodes: unknown) => {
+    if (!Array.isArray(nodes)) return;
+    for (const node of nodes) {
+      if (!isNode(node)) continue;
+      if (
+        (node.type === "text" ||
+          node.type === "hashtag" ||
+          node.type === "mention" ||
+          node.type === "link") &&
+        typeof node.text === "string"
+      ) {
+        texts.push(node.text);
+      }
+      if (node.children) walk(node.children);
+    }
+  };
+  walk((state as { root?: { children?: unknown } } | null)?.root?.children);
+  return texts.join(" ").trim();
+}
 
 const isNode = (v: unknown): v is LexicalNode =>
   !!v && typeof v === "object" && !Array.isArray(v);

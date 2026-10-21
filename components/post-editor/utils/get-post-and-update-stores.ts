@@ -1,4 +1,5 @@
 import { getPostById } from "@/lib/social-posts";
+import { Post } from "@/models/post";
 import { useFeedStore } from "@/store/feed.store";
 import { useMyPostStore } from "@/store/my.post.store";
 import { useMyRepliesStore } from "@/store/my.replies.store";
@@ -6,26 +7,31 @@ import { ModalType } from "@/store/new.post.store";
 import { useProfileCardStore } from "@/store/profile.card.store";
 import { useSinglePostStore } from "@/store/single.post.store";
 
-export const getPostAndUpdateStores = async ({
+/**
+ * Post-grill Q1: apply an ALREADY-MAPPED created post/reply to the
+ * stores — no refetch. The old flow refetched the created object
+ * through `GET /socials/posts/:id`, which resolves POSTS only: for a
+ * reply (a comments-table id) that 404'd, the catch swallowed it, and
+ * the new reply never reached the single-post store — the page's
+ * primary action silently half-failed while the modal closed as if
+ * everything worked. The create endpoint already returns the fully
+ * mapped object (`createdMapped`); use it.
+ */
+export const updateStoresWithCreatedPost = ({
+  post,
   parentPostId,
-  postId,
   newPostsCount,
   modalType,
-  isAuthenticated,
 }: {
+  post: Post;
   parentPostId: string | null;
-  postId: string;
   newPostsCount: number;
   modalType: ModalType;
-  isAuthenticated: boolean;
-}): Promise<boolean> => {
+}): boolean => {
   // Add the post to the following stores:
   // - Feed store, My Posts Store (if it is not a reply)
   // - Single Post store, My Replies Store (if it is a reply)
-
   try {
-    const post = await getPostById(postId, isAuthenticated);
-
     if (modalType === null) return true;
 
     const feedStore = useFeedStore.getState();
@@ -83,6 +89,32 @@ export const getPostAndUpdateStores = async ({
     }
 
     return true;
+  } catch {
+    return false;
+  }
+};
+
+export const getPostAndUpdateStores = async ({
+  parentPostId,
+  postId,
+  newPostsCount,
+  modalType,
+  isAuthenticated,
+}: {
+  parentPostId: string | null;
+  postId: string;
+  newPostsCount: number;
+  modalType: ModalType;
+  isAuthenticated: boolean;
+}): Promise<boolean> => {
+  try {
+    const post = await getPostById(postId, isAuthenticated);
+    return updateStoresWithCreatedPost({
+      post,
+      parentPostId,
+      newPostsCount,
+      modalType,
+    });
   } catch {
     return false;
   }

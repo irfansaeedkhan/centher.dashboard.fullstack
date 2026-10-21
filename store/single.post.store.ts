@@ -81,74 +81,126 @@ export const useSinglePostStore = create<SinglePostStore>()(
       replies: [],
 
       fetchPost: async (isAuthenticated: boolean) => {
-        try {
+        // Post-grill Q6: capture the post this fetch is FOR. Responses
+        // that land after the user navigated to another post (or the
+        // store was reset) are discarded — a slow load for post A must
+        // never overwrite or contaminate post B's thread.
+        const requestedPostId = get().postId;
+        if (!requestedPostId) return;
+
+        // Soft refresh (Q7): if we already hold content, don't blank
+        // the page back to a skeleton — just swap the data in when it
+        // arrives (e.g. the anon → with-auth upgrade fetch).
+        if (get().posts.length === 0) {
           set({ postLoading: "loading", repliesLoading: "loading" });
+        }
 
-          const postId = get().postId;
-          let postUrl = `/api/socials/posts/${postId}`;
-          let repliesUrl = `/api/socials/posts/${postId}/replies`;
-          if (
-            isAuthenticated &&
-            process.env.NEXT_PUBLIC_APP_ENV !== "development"
-          ) {
-            postUrl += "/with-auth";
-            repliesUrl += "/with-auth";
+        let postUrl = `/api/socials/posts/${requestedPostId}`;
+        let repliesUrl = `/api/socials/posts/${requestedPostId}/replies`;
+        if (
+          isAuthenticated &&
+          process.env.NEXT_PUBLIC_APP_ENV !== "development"
+        ) {
+          postUrl += "/with-auth";
+          repliesUrl += "/with-auth";
+        }
+
+        // Post-grill Q9: the two loads are decoupled — a replies
+        // failure no longer takes the whole post page down with it.
+        const [postResult, repliesResult] = await Promise.allSettled([
+          axiosApi369x.get(postUrl),
+          axiosApi369x.get(repliesUrl),
+        ]);
+
+        if (get().postId !== requestedPostId) return; // Q6: stale
+
+        if (postResult.status === "rejected") {
+          const status = postResult.reason?.response?.status;
+          // Post-grill Q19: a malformed id is a 400 from the server's
+          // uuid parse — that's a bad address, not a server fire. It
+          // resolves to the same "does not exist" state as a 404.
+          if (status === 404 || status === 400) {
+            set({
+              posts: [],
+              postLoading: "loaded",
+              replies: [],
+              repliesLoading: "loaded",
+              repliesCursor: null,
+              repliesHasMore: false,
+            });
+          } else {
+            set({ postLoading: "failed" });
+            customLog(["development"], postResult.reason);
           }
+          return;
+        }
 
-          const promises = [
-            axiosApi369x.get(postUrl),
-            axiosApi369x.get(repliesUrl),
-          ];
+        set({
+          posts: postResult.value.data.posts as Post[],
+          postLoading: "loaded",
+        });
 
-          const [postRes, repliesRes] = await Promise.all(promises);
-
+        if (repliesResult.status === "fulfilled") {
+          const repliesRes = repliesResult.value;
           set({
-            posts: postRes.data.posts as Post[],
-            postLoading: "loaded",
             replies: repliesRes.data.posts,
             repliesLoading: "loaded",
             repliesCursor: repliesRes.data.next_cursor ?? null,
             repliesHasMore:
               repliesRes.data.has_more ?? repliesRes.data.next_cursor != null,
           });
-        } catch (error: any) {
-          if (error.response?.status === 404) {
-            set({
-              posts: [],
-              postLoading: "loaded",
-              replies: [],
-              repliesLoading: "loaded",
-            });
-          } else {
-            set({ postLoading: "failed", repliesLoading: "failed" });
-          }
-
-          customLog(["development"], error);
+        } else {
+          // The post renders; the page shows a replies error row with
+          // its own retry (Q9).
+          set({ repliesLoading: "failed" });
+          customLog(["development"], repliesResult.reason);
         }
       },
 
       fetchReplies: async () => {
+        const postId = get().postId;
+        const cursor = get().repliesCursor;
+
+        if (!postId) return;
+
+        // Post-grill Q9: with no cursor and no replies held, this is
+        // the retry path for a failed FIRST page (fetchPost's replies
+        // leg) — load page 1 and replace. With replies already held
+        // and no cursor, there is no next page.
+        const isFirstPageRetry = !cursor && get().replies.length === 0;
+        if (!isFirstPageRetry && (!cursor || !get().repliesHasMore)) {
+          set({ repliesLoading: "loaded" });
+          return;
+        }
+
+        set({ repliesLoading: "loading" });
+
         try {
-          const postId = get().postId;
-          const cursor = get().repliesCursor;
-
-          // Feed-grill Q10: keyset paging — without a cursor there is no
-          // next page (the initial page came with fetchPost).
-          if (!cursor || !get().repliesHasMore) {
-            set({ repliesLoading: "loaded" });
-            return;
-          }
-
-          set({ repliesLoading: "loading" });
-
           const repliesLimit = 10;
-          const repliesUrl = `/api/socials/posts/${postId}/replies?cursor=${encodeURIComponent(
-            cursor
-          )}&limit=${repliesLimit}`;
+          const repliesUrl = isFirstPageRetry
+            ? `/api/socials/posts/${postId}/replies?limit=${repliesLimit}`
+            : `/api/socials/posts/${postId}/replies?cursor=${encodeURIComponent(
+                cursor!
+              )}&limit=${repliesLimit}`;
 
           const { data } = await axiosApi369x.get(repliesUrl);
 
-          const _replies = data.posts;
+          // Q6: discard if the store moved on, or if a newer first
+          // page landed while this page was in flight.
+          if (get().postId !== postId) return;
+          if (!isFirstPageRetry && get().repliesCursor !== cursor) return;
+
+          const _replies = data.posts as CompletedPost[];
+
+          if (isFirstPageRetry) {
+            set({
+              replies: _replies,
+              repliesLoading: "loaded",
+              repliesCursor: data.next_cursor ?? null,
+              repliesHasMore: data.has_more ?? data.next_cursor != null,
+            });
+            return;
+          }
 
           const filteredStateReplies = get().replies.filter(
             (stateReply) =>
@@ -164,7 +216,9 @@ export const useSinglePostStore = create<SinglePostStore>()(
             repliesHasMore: data.has_more ?? data.next_cursor != null,
           });
         } catch (error) {
-          set({ repliesLoading: "failed" });
+          if (get().postId === postId) {
+            set({ repliesLoading: "failed" });
+          }
           process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
             console.error(error);
         }

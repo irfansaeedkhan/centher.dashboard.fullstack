@@ -664,18 +664,36 @@ export const useNewPostStore = create<NewPostStore>()(
             });
 
             // If no file media that means only text was available in post
-            await getPostAndUpdateStores({
+            const synced = await getPostAndUpdateStores({
               modalType: get().modalType,
               parentPostId: get().parentPostId,
               postId,
               newPostsCount: 0, // we are only editing the post, not creating new
               isAuthenticated: true,
             });
+            if (!synced) {
+              // Post-grill Q11: never a silent success illusion — the
+              // edit saved server-side but the page couldn't refresh.
+              set({ isPostModalLoading: false });
+              toast.error(
+                "Your post was saved, but this page couldn't refresh. Please reload to see it."
+              );
+              return;
+            }
             get().actions.closeModal();
             return;
           } catch (error: any) {
             set({ isPostModalLoading: false });
             customLog(["development"], "Error in edit post: ", error);
+            // Post-grill Q11: PATCH failures (incl. the routine
+            // 15-minute-window expiry) were console-only — the user
+            // retried forever or assumed it saved. Surface the
+            // server's readable message; the modal stays open with
+            // the draft intact.
+            toast.error(
+              error?.response?.data?.message ??
+                "Could not save your post. Please try again."
+            );
           }
         },
       },
