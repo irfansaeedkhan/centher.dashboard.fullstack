@@ -12,8 +12,10 @@ import { NextPageWithLayout } from "@/pages/_app.page";
 import {
   FeedPagesWrapper,
   SinglePostV2,
+  apiErrorMessage,
   archivePost,
   deletePost,
+  deleteReply,
   createPostView,
 } from "@/components/feed.components";
 import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
@@ -40,6 +42,7 @@ const SinglePostPage: NextPageWithLayout = () => {
     likePostAPI,
     updateRepliesOffset,
     removePost,
+    replaceEditedPost,
     createPostViewInStore,
   } = useSinglePostStore();
 
@@ -127,6 +130,24 @@ const SinglePostPage: NextPageWithLayout = () => {
     }
   };
 
+  // Feed product calls Q12/Q13: reply delete is a soft delete — the
+  // server returns the tombstone and it replaces the reply in place
+  // (thread structure survives), instead of the old flow that removed
+  // it from the list. Failures surface in a dismissible banner.
+  const [replyActionError, setReplyActionError] = useState<string | null>(null);
+
+  const handleDeleteReply = async (replyId: string) => {
+    try {
+      setReplyActionError(null);
+      const tombstone = await deleteReply(replyId);
+      replaceEditedPost(tombstone);
+    } catch (error: any) {
+      setReplyActionError(
+        apiErrorMessage(error, "Could not delete your reply. Please try again.")
+      );
+    }
+  };
+
   const handleCreatePostView = async (postId: string) => {
     try {
       await createPostView(postId);
@@ -139,6 +160,18 @@ const SinglePostPage: NextPageWithLayout = () => {
   return (
     <>
       <BackButton />
+      {replyActionError && (
+        <div className="mb-3 flex items-center justify-between rounded-10px bg-elevation-1 p-3 text-sm font-medium text-danger">
+          <span>{replyActionError}</span>
+          <button
+            aria-label="Dismiss"
+            onClick={() => setReplyActionError(null)}
+            className="ml-3 text-white/70 hover:text-white"
+          >
+            ✕
+          </button>
+        </div>
+      )}
       {postLoading === "loaded" && (
         <>
           {firstPost?.status === "complete" && (
@@ -298,9 +331,8 @@ const SinglePostPage: NextPageWithLayout = () => {
                   onClickArchive={() =>
                     handleAction(reply._id, "reply", archivePost)
                   }
-                  onClickDelete={() =>
-                    handleAction(reply._id, "reply", deletePost)
-                  }
+                  onClickDelete={() => handleDeleteReply(reply._id)}
+                  onReplyUpdated={(updated) => replaceEditedPost(updated)}
                   onPostInViewport={() => handleCreatePostView(reply._id)}
                 />
               </div>

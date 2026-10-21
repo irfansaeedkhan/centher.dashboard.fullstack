@@ -9,9 +9,10 @@ import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { usePostEditorStore } from "@/store/post-editor-store";
 import { PostEditorModal } from "@/components/post-editor/post-editor-modal";
 import {
+  apiErrorMessage,
   archivePost,
   createPostView,
-  deletePost,
+  deleteReply,
   SinglePostV2,
 } from "@/components/feed.components";
 import RepliesProfileSkeletons from "@/components/loading.skeletons/replies.profile";
@@ -39,6 +40,7 @@ const Replies: NextPageWithLayout = () => {
     resetPosts,
     fetchPosts,
     removePost,
+    replaceEditedPost,
     offset,
     updateOffset,
     loading,
@@ -48,6 +50,7 @@ const Replies: NextPageWithLayout = () => {
     posts: state.posts,
     fetchPosts: state.fetchPosts,
     removePost: state.removePost,
+    replaceEditedPost: state.replaceEditedPost,
     offset: state.offset,
     updateOffset: state.updateOffset,
     resetPosts: state.resetPosts,
@@ -100,6 +103,24 @@ const Replies: NextPageWithLayout = () => {
     }
   };
 
+  // Feed product calls Q12/Q13: these rows are comments, not posts —
+  // delete goes through the comments endpoint and the returned
+  // tombstone replaces the reply in place (same flow as the post
+  // detail page). Failures surface in a dismissible banner.
+  const [replyActionError, setReplyActionError] = useState<string | null>(null);
+
+  const handleDeleteReply = async (replyId: string) => {
+    try {
+      setReplyActionError(null);
+      const tombstone = await deleteReply(replyId);
+      replaceEditedPost(tombstone);
+    } catch (error: any) {
+      setReplyActionError(
+        apiErrorMessage(error, "Could not delete your reply. Please try again.")
+      );
+    }
+  };
+
   const handleCreatePostView = async (postId: string) => {
     try {
       await createPostView(postId);
@@ -111,6 +132,18 @@ const Replies: NextPageWithLayout = () => {
 
   return (
     <>
+      {replyActionError && (
+        <div className="mb-3 flex items-center justify-between rounded-10px bg-elevation-1 p-3 text-sm font-medium text-danger">
+          <span>{replyActionError}</span>
+          <button
+            aria-label="Dismiss"
+            onClick={() => setReplyActionError(null)}
+            className="ml-3 text-white/70 hover:text-white"
+          >
+            ✕
+          </button>
+        </div>
+      )}
       {posts.map((post) => {
         return (
           <div
@@ -150,7 +183,8 @@ const Replies: NextPageWithLayout = () => {
                 });
               }}
               onClickArchive={() => handleAction(post._id, archivePost)}
-              onClickDelete={() => handleAction(post._id, deletePost)}
+              onClickDelete={() => handleDeleteReply(post._id)}
+              onReplyUpdated={(updated) => replaceEditedPost(updated)}
               onPostInViewport={() => handleCreatePostView(post._id)}
             />
           </div>
