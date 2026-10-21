@@ -182,6 +182,7 @@ const mapPostRow = (
     mediaUrls?: unknown;
     editedAt?: Date | string | null;
     deletedAt?: Date | string | null;
+    isArchived?: boolean | null;
   },
   opts?: { likedByLoggedInUser?: boolean }
 ) => {
@@ -226,6 +227,12 @@ const mapPostRow = (
         : String(row.editedAt)
       : null,
     is_deleted: deleted,
+    // Post-grill Q15: the detail page must be able to tell an archived
+    // post apart from a live one — without this the owner's own
+    // archived post rendered as live, offered Archive again, and had
+    // no Restore path. (mapCommentRow's synthetic rows omit it →
+    // replies report false, correctly: comments can't be archived.)
+    is_archived: !!row.isArchived,
     parent_post: undefined,
     post_editor_state,
     text_content: text,
@@ -481,6 +488,8 @@ const createNotification = async (input: {
   type: string;
   actorId: string | null;
   postId?: string | null;
+  /** Post-grill Q12: the reply this notification is about, if any. */
+  commentId?: string | null;
 }) => {
   if (input.actorId && input.actorId === input.userId) return;
   await db.insert(notifications).values({
@@ -488,6 +497,7 @@ const createNotification = async (input: {
     type: input.type,
     actorId: input.actorId,
     postId: input.postId ?? null,
+    commentId: input.commentId ?? null,
     status: "unread",
   });
 };
@@ -509,11 +519,17 @@ const createNotification = async (input: {
  *  - On edits (`onlyNew`), anyone who already has a mention
  *    notification for this post from this actor is skipped — an edit
  *    must not re-ping; brand-new mentions on the edit still notify.
+ *  - Post-grill Q12: when the mention lives in a reply (`commentId`
+ *    set), the dedupe is scoped to THAT comment — a mention of the
+ *    same person in a different reply under the same post is a new
+ *    context and must still notify — and the notification carries
+ *    the comment id so the deep link can anchor to the reply.
  */
 const notifyMentions = async (input: {
   editorState: unknown;
   actorId: string;
   postId: string;
+  commentId?: string | null;
   onlyNew?: boolean;
 }) => {
   // Cap per event (MAX_MENTION_NOTIFICATIONS): first-seen unique
@@ -591,7 +607,13 @@ const notifyMentions = async (input: {
           inArray(notifications.userId, targets),
           eq(notifications.type, "mention_in_post"),
           eq(notifications.postId, input.postId),
-          eq(notifications.actorId, input.actorId)
+          eq(notifications.actorId, input.actorId),
+          // Q12: reply mentions dedupe per comment, not per post —
+          // without this, a genuinely new mention of the same person
+          // in a different reply was silently suppressed forever.
+          input.commentId
+            ? eq(notifications.commentId, input.commentId)
+            : undefined
         )
       );
     const alreadySet = new Set(already.map((r) => r.userId));
@@ -604,6 +626,7 @@ const notifyMentions = async (input: {
       type: "mention_in_post",
       actorId: input.actorId,
       postId: input.postId,
+      commentId: input.commentId ?? null,
     });
   }
 };
@@ -615,6 +638,7 @@ const mapNotificationRow = (row: {
   status: string | null;
   createdAt: Date | string;
   postId: string | null;
+  commentId?: string | null;
   actorId: string | null;
   actorName: string | null;
   actorAvatar: string | null;
@@ -628,6 +652,10 @@ const mapNotificationRow = (row: {
       ? row.createdAt.toISOString()
       : String(row.createdAt),
   post_id: row.postId,
+  // Post-grill Q12: the reply a mention/reply notification points at,
+  // so the UI can deep-link to /post/<id>?reply=<comment_id> and the
+  // post page can scroll to + highlight that exact reply.
+  comment_id: row.commentId ?? null,
   // Phase 12: nested shape the notifications UI reads (notification.post._id).
   post: row.postId ? { _id: row.postId, user_id: "" } : null,
   by: {
@@ -2079,6 +2107,7 @@ export const createHonoApp = () => {
       mediaUrls: updated.mediaUrls ?? [],
       editedAt: updated.editedAt,
       deletedAt: updated.deletedAt,
+      isArchived: updated.isArchived,
     });
     return c.json({ posts: [mapped], data: [mapped] });
   });
@@ -2226,12 +2255,15 @@ export const createHonoApp = () => {
       .where(eq(comments.id, id))
       .returning();
 
-    // Q23: mentions newly added by this edit notify (onlyNew dedupe,
-    // scoped to this actor on the parent post).
+    // Q23: mentions newly added by this edit notify (onlyNew dedupe).
+    // Post-grill Q12: the dedupe is scoped to THIS comment — the old
+    // post-level scope suppressed genuinely new mentions of the same
+    // person made in a different reply under the same post.
     await notifyMentions({
       editorState: parseStoredPostBody(newBody).post_editor_state,
       actorId: userId!,
       postId: existing!.postId,
+      commentId: id,
       onlyNew: true,
     });
 
@@ -2804,6 +2836,7 @@ export const createHonoApp = () => {
         status: notifications.status,
         createdAt: notifications.createdAt,
         postId: notifications.postId,
+        commentId: notifications.commentId,
         actorId: notifications.actorId,
         actorName: profiles.displayName,
         actorAvatar: profiles.avatarUrl,
@@ -2897,6 +2930,34 @@ export const createHonoApp = () => {
       .max(10)
       .parse(payload.posts);
 
+    // Post-grill Q3: replies are single, text-only comments — say so
+    // honestly instead of silently diverging. The old handler ignored
+    // `item.media` entirely (the comments table has no media column),
+    // so an attached photo was uploaded, accepted with a 201, and
+    // vanished; and a multi-item payload created one sibling comment
+    // per item while the client tracked only the first, drifting every
+    // count apart. Reject both shapes readably, before any insert.
+    if (parentRow) {
+      if (postsInput.length > 1)
+        apiError(
+          "A reply must be a single post — remove the extra drafts and try again",
+          "REPLY_SINGLE_ONLY",
+          400
+        );
+      const replyHasMedia = postsInput.some((item) =>
+        (item.media || []).some(
+          (m: any) =>
+            typeof m?.object_name === "string" && m.object_name.length > 0
+        )
+      );
+      if (replyHasMedia)
+        apiError(
+          "Replies can't include media yet — remove the attachment to post your reply",
+          "REPLY_MEDIA_UNSUPPORTED",
+          400
+        );
+    }
+
     const [authorProfile] = await db
       .select()
       .from(profiles)
@@ -2926,18 +2987,23 @@ export const createHonoApp = () => {
           .update(posts)
           .set({ commentCount: sql`${posts.commentCount} + 1` })
           .where(eq(posts.id, parentRow.id));
-        // Phase 3: notify the parent post author.
+        // Phase 3: notify the parent post author. Post-grill Q12:
+        // carry the reply id so the notification deep-links to the
+        // reply itself, not just the top of the post page.
         await createNotification({
           userId: parentRow.authorId,
           type: "post_reply",
           actorId: userId!,
           postId: parentRow.id,
+          commentId: reply.id,
         });
-        // Q23: notify anyone @mentioned in the reply.
+        // Q23: notify anyone @mentioned in the reply. Q12: same
+        // anchoring — the notification names the reply it came from.
         await notifyMentions({
           editorState,
           actorId: userId!,
           postId: parentRow.id,
+          commentId: reply.id,
         });
         createdMapped.push(
           mapCommentRow(
