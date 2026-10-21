@@ -11,7 +11,7 @@ import TrxInProgressModal from "@/utils/modal/trx-modal";
 import SuccessMessageModal from "@/utils/modal/success-modal";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
-import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
+import { BlockchainWrite } from "@/web3/blockchain";
 import { BlockchainConfig } from "@/web3/blockchain/config";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 import { useWallet } from "@/web3/hooks/use.wallet";
@@ -38,7 +38,6 @@ export const FixedPriceNFTBuyerDescription: React.FC<Props> = ({
   loggedInUser,
 }) => {
   const { getSigner, connectWallet } = useWallet();
-  const [isMigrated, setIsMigrated] = useState(false);
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
     title: "",
@@ -48,29 +47,17 @@ export const FixedPriceNFTBuyerDescription: React.FC<Props> = ({
   const { nftImageSrc, setNftImageSrc, DEFAULT_NFT_IMAGE_SRC } =
     useNFTImageSrc(nft);
 
-  useEffect(() => {
-    const CheckStatus = async () => {
-      if (nft.saleState === "List") {
-        const Status = await BlockchainRead.isCurrentMarketplaceOwner(
-          getSigner()!, // FIXME: getSigner can be null ???
-          nft.collection,
-          +nft.tokenId
-        );
-        setIsMigrated(Status);
-      }
-    };
-
-    CheckStatus();
-  }, [nft, getSigner]);
-
+  // Marketplace-grill Q10/Q11: this panel renders again now that the
+  // saleState vocabulary is aligned, but its legacy on-chain checkout
+  // must NOT come back with it — for DB-backed NFTs `nft.collection` is
+  // a uuid (not a contract address) and `+nft.tokenId` is NaN, so every
+  // legacy call is malformed. The mount-time marketplace-owner chain
+  // read is gone, and the checkout entry point is gated: buying happens
+  // through the DB trade panel below, and this button says so.
   const buyNFTStep1Func = () => {
-    const signer = getSigner();
-    if (!signer) {
-      toast.error("Connect your wallet");
-      return;
-    }
-    modal.dismissModal();
-    modal.createModal(ModalType.buyNFTStep1FuncModal);
+    toast.error(
+      "On-chain checkout isn't available for this item — use the trading panel below to buy it"
+    );
   };
 
   const ProceedFunc = () => {
@@ -252,21 +239,21 @@ export const FixedPriceNFTBuyerDescription: React.FC<Props> = ({
           {nft.ipfs_metadata.description}
         </p>
       </div>
-      <div className="buttonContainer flex items-center">
+      <div className="buttonContainer flex flex-col items-stretch gap-2">
         {getSigner() ? (
-          <Button
-            title={"Buy Now"}
-            disabled={!isMigrated}
-            variant={isMigrated ? "primary" : "secondary"}
-            onClick={async () => {
-              if (!loggedInUser) {
-                toast.error("Please login to buy this nft");
-                return;
-              }
-              buyNFTStep1Func();
-            }}
-            className="w-full rounded-[14px]"
-          />
+          <>
+            <Button
+              title={"Buy Now"}
+              disabled
+              variant="secondary"
+              onClick={buyNFTStep1Func}
+              className="w-full rounded-[14px]"
+            />
+            <p className={greyTxt}>
+              On-chain checkout isn&apos;t available for this item — use the
+              On-platform trading panel below to buy or bid.
+            </p>
+          </>
         ) : (
           <ConnectWalletComp
             authType="login"

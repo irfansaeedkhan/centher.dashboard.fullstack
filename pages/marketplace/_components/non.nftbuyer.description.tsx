@@ -8,7 +8,7 @@ import { CustomModal } from "@/components/modal/custom.modal";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
 import SuccessMessageModal from "@/utils/modal/success-modal";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
-import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
+import { BlockchainWrite } from "@/web3/blockchain";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 import Button from "@/components/button";
@@ -41,23 +41,14 @@ export const NonNFTBuyerDescription: React.FC<Props> = ({
   const [hours, setHours] = useState<number>(0);
   const [minutes, setMinutes] = useState<number>(0);
   const [seconds, setSeconds] = useState<number>(0);
-  const [isMigrated, setIsMigrated] = useState(false);
   const bnbPrice = useBNBPrice();
 
+  // Marketplace-grill Q10/Q11: the mount-time marketplace-owner chain
+  // read is removed — it could never succeed for DB-backed NFTs (uuid
+  // collection, NaN tokenId) and this panel only renders for unlisted
+  // items anyway. The Buy button below stays disabled with the reason
+  // stated; offers go through the DB trade panel.
   useEffect(() => {
-    const CheckStatus = async () => {
-      if (nft.saleState === "List") {
-        const Status = await BlockchainRead.isCurrentMarketplaceOwner(
-          getSigner()!, // FIXME: how are sure that getSigner() is not null?
-          nft.collection,
-          +nft.tokenId
-        );
-        setIsMigrated(Status);
-      }
-    };
-
-    CheckStatus();
-
     var updateTime = setInterval(() => {
       var now = new Date().getTime();
 
@@ -263,14 +254,20 @@ export const NonNFTBuyerDescription: React.FC<Props> = ({
       </div>
 
       {+nft.unlock < +new Date() / 1000 ? (
-        <div className="buttonContainer flex items-center">
-          <Button
-            title={"Buy Now"}
-            variant={nft.saleState === "NON" ? "primary" : "secondary"}
-            disabled={nft.saleState === "NON" || isMigrated}
-            onClick={buyNFTStep1Func}
-            className="w-full"
-          />
+        <div className="flex flex-col gap-2">
+          <div className="buttonContainer flex items-center">
+            <Button
+              title={"Buy Now"}
+              variant={nft.saleState === "NotForSale" ? "primary" : "secondary"}
+              disabled={nft.saleState === "NotForSale"}
+              onClick={buyNFTStep1Func}
+              className="w-full"
+            />
+          </div>
+          <p className={greyTxt}>
+            This item isn&apos;t listed for sale — you can make an offer in the
+            On-platform trading panel below.
+          </p>
         </div>
       ) : (
         <div className={greyBoxContainer}>

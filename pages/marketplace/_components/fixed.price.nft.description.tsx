@@ -4,15 +4,14 @@ import clsx from "clsx";
 import Button from "@/components/button";
 import { IModalProps } from "@/components/modal/standard.modal";
 import { CustomModal } from "@/components/modal/custom.modal";
-import { ModalMigrate } from "@/components/modal/modal.migrate";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
 import TrxInProgressModal from "@/utils/modal/trx-modal";
 import MessageModal from "@/utils/modal/message-modal";
 import SuccessMessageModal from "@/utils/modal/success-modal";
-import { BNBIcon, MigrateIcon } from "@/assets/svgs";
-import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
+import { BNBIcon } from "@/assets/svgs";
+import { BlockchainWrite } from "@/web3/blockchain";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { useWallet } from "@/web3/hooks/use.wallet";
 import { CFSNFTForPage } from "@/lib/get-single-nft-page-data/types";
@@ -43,89 +42,16 @@ export const FixedPriceNFTDescription: React.FC<Props> = ({
     title: "",
     content: "",
   });
-  const [migrateModal, setMigrateModal] = useState<IModalHandler>({
-    visibility: false,
-    title: "",
-    content: "",
-  });
 
-  useEffect(() => {
-    const CheckStatus = async () => {
-      if (nft.saleState === "List") {
-        const Status = await BlockchainRead.isCurrentMarketplaceOwner(
-          getSigner()!, // FIXME: getSinger() can be null ???
-          nft.collection,
-          +nft.tokenId
-        );
-        if (!Status) {
-          setMigrateModal({
-            visibility: true,
-            title: "Migrate NFT",
-            content: (
-              <div className="p-4">
-                <div className="mb-6 flex w-full justify-center">
-                  <MigrateIcon />
-                </div>
-                <h3 className="mb-2 flex w-full justify-center space-x-1 text-sm font-semibold text-white fsm:text-lg">
-                  <span>Migrate your</span>
-                  <span className="textGradient"> listed tokens</span>
-                </h3>
-                <p className="mb-6 text-center text-xs text-white fsm:text-sm">
-                  Migrate your tokens to our new marketplace for uninterrupted
-                  rewards and benefits. Don&apos;t miss out - act now!
-                </p>
-                <Button
-                  title={"Migrate Now"}
-                  variant="primary"
-                  className="w-full rounded-[14px]"
-                  onClick={migrateNowHandler}
-                />
-              </div>
-            ),
-          });
-        }
-      }
-    };
-
-    const migrateNowHandler = async () => {
-      const signer = getSigner();
-      if (!signer) {
-        toast.error("Connect your wallet");
-        return;
-      }
-
-      const response = { success: false, message: "" };
-
-      try {
-        setMigrateModal((prev) => ({ ...prev, visibility: false }));
-        setupWaitingModal();
-        const result = await BlockchainWrite.transferNftToCurrentMarketplace(
-          signer,
-          nft.collection,
-          +nft.tokenId,
-          +nft.listInfo.price,
-          +nft.auctionInfo.endTime
-        );
-
-        if (!result?.length) {
-          throw new Error("cannot migrate");
-        } else {
-          response.success = true;
-          response.message = "Congratulations! Migration is completed for ";
-        }
-      } catch (error) {
-        response.success = false;
-        response.message =
-          "It's not possible to transfer your NFT to new version";
-      } finally {
-        setupSuccessModal(response.success, response.message);
-      }
-    };
-
-    CheckStatus();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [nft, getSigner]);
+  // Marketplace-grill Q10/Q11: this panel renders again now that the
+  // saleState vocabulary is aligned, but the legacy chain actions must
+  // NOT come back with it. The old mount effect auto-opened a "Migrate
+  // NFT" modal (backed by a chain read with a possibly-null signer and
+  // a uuid as contract address) for every owner of a listed NFT — it is
+  // removed entirely. Edit/cancel below call the legacy contracts too;
+  // listing management has no DB endpoints yet (grill Q8, a pending
+  // product decision), so both actions are visibly disabled with the
+  // reason stated, and their modals can never open.
 
   const setupCancelItemPriceModal = () => {
     const signer = getSigner();
@@ -372,21 +298,29 @@ export const FixedPriceNFTDescription: React.FC<Props> = ({
           {nft.ipfs_metadata.description}
         </p>
       </div>
-      <div className="buttonContainer flex items-center gap-4">
-        <Button
-          title={"Cancel Listing"}
-          variant="secondary"
-          onClick={setupCancelItemPriceModal}
-          className="w-full rounded-[14px]"
-        />
-        <Button
-          title={"Edit"}
-          onClick={() => {
-            setupBidNftModal();
-          }}
-          variant="primary"
-          className="w-full"
-        />
+      <div className="buttonContainer flex flex-col gap-2">
+        <div className="flex items-center gap-4">
+          <Button
+            title={"Cancel Listing"}
+            variant="secondary"
+            disabled
+            onClick={setupCancelItemPriceModal}
+            className="w-full rounded-[14px]"
+          />
+          <Button
+            title={"Edit"}
+            disabled
+            onClick={() => {
+              setupBidNftModal();
+            }}
+            variant="primary"
+            className="w-full"
+          />
+        </div>
+        <p className={greyTxt}>
+          Editing or canceling a listing isn&apos;t available for marketplace
+          items yet.
+        </p>
       </div>
 
       {ModalModel.visibility && (
@@ -399,16 +333,6 @@ export const FixedPriceNFTDescription: React.FC<Props> = ({
         >
           {ModalModel.content}
         </CustomModal>
-      )}
-      {migrateModal.visibility && (
-        <ModalMigrate
-          onClose={() => {
-            setMigrateModal((prev) => ({ ...prev, visibility: false }));
-          }}
-          title={migrateModal.title as string}
-        >
-          {migrateModal.content}
-        </ModalMigrate>
       )}
     </div>
   );

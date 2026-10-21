@@ -1,4 +1,4 @@
-import { CFSCollection, CFSNFT } from "@/models/nft";
+import { CFSCollection, CFSNFT, NFTSaleState } from "@/models/nft";
 
 interface CFSNFTBid {
   bidder: string;
@@ -27,7 +27,9 @@ interface MarketplaceSaleHistory {
   txTime: string;
 }
 
-export interface CFSNFTForPage extends CFSNFT {
+export interface CFSNFTForPage extends Omit<CFSNFT, "saleState"> {
+  /** Canonical DB-marketplace vocabulary (marketplace-grill Q10). */
+  saleState: NFTSaleState;
   listInfo: CFSNFT["listInfo"] & {
     bids: CFSNFTBid[];
   };

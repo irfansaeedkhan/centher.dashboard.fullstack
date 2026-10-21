@@ -13,9 +13,12 @@ import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 import { AppRoutes } from "@/constants/app.routes";
 import { ShareBigIcon, LinkIcon, XIcon } from "@/assets/svgs";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
-import { eqAddress } from "@/lib/chat/utils";
 import { CFSNFTForPage } from "@/lib/get-single-nft-page-data/types";
 import { LoggedInUser } from "@/models/user";
+import {
+  nftDetailPanelFor,
+  type NftDetailPanel,
+} from "@/lib/marketplace/panel-state";
 import { NFTListing } from "./nft.listing";
 import { NFTOffers } from "./nft.offers";
 import { NFTTradePanel } from "./nft.trade.panel";
@@ -23,8 +26,6 @@ import { FixedPriceNFTDescription } from "./fixed.price.nft.description";
 import { NonNFTDescription } from "./non.nft.description";
 import { NonNFTBuyerDescription } from "./non.nftbuyer.description";
 import { FixedPriceNFTBuyerDescription } from "./fixed.price.nftbuyer.description";
-import { AuctionNFTBuyerDescription } from "./auction.nftbuyer.description";
-import { AuctionNftDescription } from "./auction.nft.description";
 
 interface Props {
   nft: CFSNFTForPage;
@@ -32,13 +33,18 @@ interface Props {
   refetchNFT: () => void;
 }
 
+// Marketplace-grill Q10: panel selection lives in lib/marketplace/
+// panel-state (unit-tested). There is no auction state for DB-backed
+// NFTs; the legacy auction panels are not mounted.
 export const NFTRightSideComponent: React.FC<Props> = ({
   nft,
   loggedInUser,
   refetchNFT,
 }) => {
   const router = useRouter();
-  const [nftState, setNftState] = useState("auctionNFTBuyer");
+  const [nftState, setNftState] = useState<NftDetailPanel>(() =>
+    nftDetailPanelFor(nft.saleState, nft.owner, loggedInUser._id)
+  );
   const [togglePop, setTogglePop] = useState(false);
   const verificationTickCreator = useVerificationTick({
     user: nft.creator_data,
@@ -52,15 +58,7 @@ export const NFTRightSideComponent: React.FC<Props> = ({
   }, [router.asPath]);
 
   useEffect(() => {
-    if (loggedInUser._id && eqAddress(loggedInUser._id, nft.owner)) {
-      if (nft.saleState === "Auction") setNftState("timeAuctionedNFT");
-      else if (nft.saleState === "List") setNftState("fixedPriceNFT");
-      else if (nft.saleState === "NON") setNftState("nonNFT");
-    } else {
-      if (nft.saleState === "Auction") setNftState("timeAuctionedNFTBuyer");
-      else if (nft.saleState === "List") setNftState("fixedPriceNFTBuyer");
-      else if (nft.saleState === "NON") setNftState("nonNFTBuyer");
-    }
+    setNftState(nftDetailPanelFor(nft.saleState, nft.owner, loggedInUser._id));
   }, [loggedInUser, nft]);
 
   // Copy nft share url to clipboard
@@ -249,21 +247,13 @@ export const NFTRightSideComponent: React.FC<Props> = ({
           loggedInUser={loggedInUser}
         />
       )}
-      {nftState === "timeAuctionedNFT" && (
-        <AuctionNftDescription nft={nft} refetchNFT={refetchNFT} />
-      )}
-      {nftState === "timeAuctionedNFTBuyer" && (
-        <AuctionNFTBuyerDescription nft={nft} refetchNFT={refetchNFT} />
-      )}
       <NFTTradePanel
         nft={nft}
         loggedInUser={loggedInUser}
         refetchNFT={refetchNFT}
       />
       <NFTListing data={nft.marketplaceSaleHistory} />
-      {nft.saleState === "Auction" && <NFTOffers bids={nft.auctionInfo.bids} />}
-      {nft.saleState === "List" && <NFTOffers bids={nft.listInfo.bids} />}
-      {nft.saleState === "NON" && <NFTOffers bids={nft.listInfo.bids} />}
+      <NFTOffers bids={nft.listInfo.bids} />
       {/* <NFTHistory prices={nft.priceHistory} /> */}
     </div>
   );

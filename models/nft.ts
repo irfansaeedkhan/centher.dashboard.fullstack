@@ -1,5 +1,15 @@
 import { User } from "./user";
 
+/**
+ * Marketplace-grill Q10: the canonical sale-state vocabulary for
+ * DB-backed NFTs, emitted by the API mapper (`mapCfsNft`) and consumed
+ * by the detail page. The DB state machine has exactly two states —
+ * listed for fixed-price sale, or not — so there is no "Auction" value:
+ * the legacy panels that branched on "List"/"Auction"/"NON" while the
+ * API emitted "Sale"/"NotForSale" never rendered at all.
+ */
+export type NFTSaleState = "Sale" | "NotForSale";
+
 export interface CollectionAdditionalInfo {
   listedPercent: number;
   minPrice: number;

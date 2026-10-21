@@ -22,8 +22,9 @@ const sepolia = {
   name: "SEPOLIA",
   currency: "ETH",
   explorerUrl: "https://sepolia.etherscan.io/",
-  rpcUrl:
-    "https://ethereum-sepolia.core.chainstack.com/bfa8949f46986d75815e86ab166ce3ea",
+  // Same env-sourced RPC as BlockchainConfig (marketplace-grill Q13) —
+  // never hardcode a keyed RPC URL here.
+  rpcUrl: BlockchainConfig.rpcProvider,
 };
 
 // 3. Create modal

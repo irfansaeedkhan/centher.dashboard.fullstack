@@ -50,7 +50,8 @@ export const NFTTradePanel: React.FC<Props> = ({
   const [actingOn, setActingOn] = useState<string | null>(null);
 
   const isOwner = eqAddress(loggedInUser._id, nft.owner);
-  const isListed = nft.saleState === "Sale" || nft.saleState === "List";
+  // Canonical saleState vocabulary (marketplace-grill Q10).
+  const isListed = nft.saleState === "Sale";
   const activeBids = bids.filter((b) => b.status === "active");
   const highestBid = activeBids[0] ?? null;
 
@@ -162,7 +163,7 @@ export const NFTTradePanel: React.FC<Props> = ({
             <input
               type="number"
               min="0"
-              step="0.0001"
+              step="any"
               value={bidAmount}
               onChange={(e) => setBidAmount(e.target.value)}
               placeholder={

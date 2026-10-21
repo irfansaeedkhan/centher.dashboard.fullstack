@@ -11,7 +11,6 @@ import SuccessMessageModal from "@/utils/modal/success-modal";
 import TrxInProgressModal from "@/utils/modal/trx-modal";
 import MessageModal from "@/utils/modal/message-modal";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
-import { useGetApprovedForAll } from "@/web3/hooks/use.contracts.functions";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { TransferableTokenBlackList } from "@/web3/blockchain/helpers/blacklist.helper";
@@ -57,7 +56,15 @@ export const NonNFTDescription: React.FC<Props> = ({
   const [sendNftModal, setSendNftModal] = useState(false);
   const [transferable, setTransferable] = useState(false);
   const bnbPrice = useBNBPrice();
-  const isApproved = useGetApprovedForAll(loggedInUser._id, nft.collection);
+  // Marketplace-grill Q10/Q11: this panel renders again now that the
+  // saleState vocabulary is aligned, but its legacy chain actions must
+  // NOT come back with it — Sell (list/auction) and Send call contracts
+  // with a uuid as the collection address and `+nft.tokenId` = NaN, and
+  // listing has no DB endpoints yet (grill Q8, pending decision). The
+  // approve-all chain read that used to fire on mount is gone, and both
+  // actions below are visibly disabled with the reason stated; their
+  // submit handlers are unreachable.
+  const isApproved = false;
 
   useEffect(() => {
     if (nft) {
@@ -477,22 +484,29 @@ export const NonNFTDescription: React.FC<Props> = ({
         </p>
       </div>
       {+nft.unlock < +new Date() / 1000 ? (
-        <div className="buttonContainer flex items-center gap-4">
-          <Button
-            title="Sell"
-            onClick={listingFunc}
-            variant="primary"
-            className="h-11 w-full"
-            borderRounded="14px"
-          />
-          {transferable && (
+        <div className="flex flex-col gap-2">
+          <div className="buttonContainer flex items-center gap-4">
             <Button
-              title={"Send"}
-              onClick={() => setSendNftModal(true)}
-              variant="secondary"
-              className="h-11 w-full rounded-[14px]"
+              title="Sell"
+              disabled
+              onClick={listingFunc}
+              variant="primary"
+              className="h-11 w-full"
+              borderRounded="14px"
             />
-          )}
+            {transferable && (
+              <Button
+                title={"Send"}
+                disabled
+                onClick={() => setSendNftModal(true)}
+                variant="secondary"
+                className="h-11 w-full rounded-[14px]"
+              />
+            )}
+          </div>
+          <p className={greyTxt}>
+            Listing and sending aren&apos;t available for marketplace items yet.
+          </p>
         </div>
       ) : (
         <div className={greyBoxContainer}>

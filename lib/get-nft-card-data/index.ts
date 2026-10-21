@@ -17,7 +17,9 @@ export const getNFTCardData = (nft: CFSNFT): NFTCardData => {
     mintHash: nft.mintHash,
     type: nft.ipfs_metadata.type,
     unlock: nft.unlock,
-    endTime: nft.saleState === "Auction" ? nft.auctionInfo.endTime : "0",
+    // The DB marketplace has no auction state (marketplace-grill Q10);
+    // the API never emits one, so there is never an auction end time.
+    endTime: "0",
     creator_data: nft.creator_data,
     owner_data: nft.owner_data,
     ipfs_metadata: nft.ipfs_metadata,
@@ -34,7 +36,7 @@ export const getNFTImageCardData = (nft: CFSNFT): NFTImageCardData => {
     ipfs: nft.ipfs,
     saleState: nft.saleState,
     owner: nft.owner,
-    endTime: nft.saleState === "Auction" ? nft.auctionInfo.endTime : "0",
+    endTime: "0",
     unlock: nft.unlock,
     mintHash: nft.mintHash,
     owner_data: nft.owner_data,
