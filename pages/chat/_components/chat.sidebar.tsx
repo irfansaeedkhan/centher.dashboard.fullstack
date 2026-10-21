@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import clsx from "clsx";
@@ -9,10 +9,13 @@ import { BackButton } from "@/components/button/back-button";
 import Button from "@/components/button";
 import { AppRoutes } from "@/constants/app.routes";
 import { useChatConversations } from "@/hooks/chat/useChat";
+import { chatApi } from "@/lib/chat/api";
 import {
   conversationAvatar,
   conversationDisplayName,
+  dmPeer,
   type ChatConversation,
+  type ChatMessageSearchResult,
 } from "@/lib/chat/types";
 import { getDateDifferent } from "@/lib/chat/utils";
 import useUser from "@/hooks/use.user";
@@ -57,6 +60,50 @@ const ChatSidebar = () => {
   }, [conversations, query, myId]);
 
   const activeId = router.query.chat_id as string | undefined;
+
+  // Chat completeness Q24: with 2+ characters the search box ALSO searches
+  // message bodies across my conversations (server-side; membership is the
+  // boundary). Name filtering keeps working above the message results.
+  const searchQuery = query.trim();
+  const searchMode = searchQuery.length >= 2;
+  const [msgResults, setMsgResults] = useState<ChatMessageSearchResult[]>([]);
+  const [msgSearching, setMsgSearching] = useState(false);
+  const [msgSearchError, setMsgSearchError] = useState<string | null>(null);
+  const searchSeq = useRef(0);
+
+  useEffect(() => {
+    if (!searchMode) {
+      setMsgResults([]);
+      setMsgSearchError(null);
+      setMsgSearching(false);
+      return;
+    }
+    const seq = ++searchSeq.current;
+    setMsgSearching(true);
+    const t = setTimeout(async () => {
+      try {
+        const { results } = await chatApi.searchMessages(searchQuery, {
+          limit: 20,
+        });
+        if (searchSeq.current !== seq) return;
+        setMsgResults(results);
+        setMsgSearchError(null);
+      } catch (e: any) {
+        if (searchSeq.current !== seq) return;
+        setMsgResults([]);
+        setMsgSearchError(e?.message || "Search failed — please try again");
+      } finally {
+        if (searchSeq.current === seq) setMsgSearching(false);
+      }
+    }, 350);
+    return () => clearTimeout(t);
+  }, [searchQuery, searchMode]);
+
+  const convoNameForResult = (r: ChatMessageSearchResult): string => {
+    const c = conversations.find((x) => x.id === r.conversation_id);
+    if (c) return conversationDisplayName(c, myId);
+    return r.conversation_title?.trim() || "Chat";
+  };
 
   const handleDelete = async () => {
     if (!deleteTarget) return;
@@ -132,27 +179,83 @@ const ChatSidebar = () => {
             />
           </div>
         ) : (
-          filtered.map((item) => (
-            <ConversationRow
-              key={item.id}
-              convo={item}
-              myId={myId}
-              active={activeId === item.id}
-              onOpen={() => router.push(`/chat/${item.id}`)}
-              onTogglePin={() =>
-                togglePin(item).catch((e: any) =>
-                  toast.error(e?.message || "Could not update pin")
-                )
-              }
-              onDelete={() => setDeleteTarget(item)}
-            />
-          ))
+          <>
+            {filtered.map((item) => (
+              <ConversationRow
+                key={item.id}
+                convo={item}
+                myId={myId}
+                active={activeId === item.id}
+                onOpen={() => router.push(`/chat/${item.id}`)}
+                onTogglePin={() =>
+                  togglePin(item).catch((e: any) =>
+                    toast.error(e?.message || "Could not update pin")
+                  )
+                }
+                onDelete={() => setDeleteTarget(item)}
+              />
+            ))}
+            {searchMode && (
+              <div className="pb-4">
+                <p className="px-6 pb-1 pt-4 text-xs font-semibold uppercase tracking-wide text-gray-shade-7">
+                  Messages
+                </p>
+                {msgSearching && (
+                  <p className="px-6 py-4 text-sm text-gray-shade-7">
+                    Searching messages…
+                  </p>
+                )}
+                {msgSearchError && (
+                  <p className="px-6 py-4 text-sm text-red-400">
+                    {msgSearchError}
+                  </p>
+                )}
+                {!msgSearching &&
+                  !msgSearchError &&
+                  msgResults.length === 0 && (
+                    <p className="px-6 py-4 text-sm text-gray-shade-7">
+                      No messages match &ldquo;{searchQuery}&rdquo;.
+                    </p>
+                  )}
+                {msgResults.map((r) => (
+                  <button
+                    key={r.id}
+                    className="block w-full px-6 py-3 text-left hover:bg-elevation-1"
+                    onClick={() =>
+                      router.push(
+                        `/chat/${r.conversation_id}?highlight=${r.id}`
+                      )
+                    }
+                  >
+                    <span className="flex items-baseline justify-between gap-2">
+                      <span className="truncate text-sm font-semibold text-white">
+                        {r.sender?.display_name || "Someone"}
+                        <span className="font-normal text-gray-shade-7">
+                          {" "}
+                          · {convoNameForResult(r)}
+                        </span>
+                      </span>
+                      <span className="flex-shrink-0 text-xs text-gray-shade-7">
+                        {getDateDifferent(r.created_at)}
+                      </span>
+                    </span>
+                    <span className="mt-0.5 block truncate text-sm text-gray-shade-7">
+                      <HighlightedSnippet body={r.body} query={searchQuery} />
+                    </span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </>
         )}
-        {!loading && filtered.length === 0 && conversations.length > 0 && (
-          <p className="px-6 py-8 text-center text-sm text-gray-shade-7">
-            No conversations match your search.
-          </p>
-        )}
+        {!loading &&
+          !searchMode &&
+          filtered.length === 0 &&
+          conversations.length > 0 && (
+            <p className="px-6 py-8 text-center text-sm text-gray-shade-7">
+              No conversations match your search.
+            </p>
+          )}
       </div>
 
       {showNewModal && (
@@ -211,6 +314,9 @@ const ConversationRow: React.FC<{
   const name = conversationDisplayName(convo, myId);
   const avatar = conversationAvatar(convo, myId);
   const lastAt = convo.last_message?.created_at ?? convo.created_at;
+  // Q24 presence: DM rows show the peer's online dot (rides along on the
+  // member cards — no extra fetch).
+  const peer = dmPeer(convo, myId);
 
   return (
     <div
@@ -221,13 +327,25 @@ const ConversationRow: React.FC<{
       onClick={onOpen}
       onMouseLeave={() => setShowActions(false)}
     >
-      <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-full bg-elevation-2">
-        {avatar ? (
-          <Image src={avatar} alt={name} fill className="object-cover" />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center text-lg font-semibold text-white">
-            {name.charAt(0).toUpperCase()}
-          </div>
+      <div className="relative h-12 w-12 flex-shrink-0">
+        <div className="relative h-full w-full overflow-hidden rounded-full bg-elevation-2">
+          {avatar ? (
+            <Image src={avatar} alt={name} fill className="object-cover" />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center text-lg font-semibold text-white">
+              {name.charAt(0).toUpperCase()}
+            </div>
+          )}
+        </div>
+        {peer && (
+          <span
+            aria-label={peer.is_online ? "Online" : "Offline"}
+            title={peer.is_online ? "Online" : "Offline"}
+            className={clsx(
+              "absolute bottom-0 right-0 z-10 h-3 w-3 rounded-full border-2 border-background-shade-1",
+              peer.is_online ? "bg-green-shade-1" : "bg-gray-shade-7"
+            )}
+          />
         )}
       </div>
       <div className="min-w-0 flex-1">
@@ -245,7 +363,7 @@ const ConversationRow: React.FC<{
             {convo.last_message?.body ?? "No messages yet"}
           </p>
           {convo.unread_count > 0 && (
-            <span className="bg-brand-primary flex h-5 min-w-[20px] flex-shrink-0 items-center justify-center rounded-full px-1 text-xs font-semibold text-white">
+            <span className="flex h-5 min-w-[20px] flex-shrink-0 items-center justify-center rounded-full bg-brand-primary px-1 text-xs font-semibold text-white">
               {convo.unread_count > 99 ? "99+" : convo.unread_count}
             </span>
           )}
@@ -288,6 +406,29 @@ const ConversationRow: React.FC<{
         )}
       </div>
     </div>
+  );
+};
+
+/** Q24: message-search snippet — a window around the first match, with the
+ * match itself highlighted. Falls back to the head of the body. */
+const HighlightedSnippet: React.FC<{ body: string; query: string }> = ({
+  body,
+  query,
+}) => {
+  const idx = body.toLowerCase().indexOf(query.toLowerCase());
+  if (idx === -1) return <>{body.slice(0, 90)}</>;
+  const start = Math.max(0, idx - 35);
+  const end = Math.min(body.length, idx + query.length + 45);
+  return (
+    <>
+      {start > 0 ? "…" : ""}
+      {body.slice(start, idx)}
+      <span className="font-semibold text-brand-primary">
+        {body.slice(idx, idx + query.length)}
+      </span>
+      {body.slice(idx + query.length, end)}
+      {end < body.length ? "…" : ""}
+    </>
   );
 };
 

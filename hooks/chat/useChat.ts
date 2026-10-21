@@ -83,6 +83,26 @@ export const useChatConversations = () => {
   };
 };
 
+/**
+ * Chat completeness Q24 (presence): heartbeat while the chat UI is open.
+ * Fires immediately on mount, then every 60s; the server throttles the
+ * actual write to one per user per ~60s, so this stays a single cheap
+ * request — never a write storm. Failures are silent (presence is a
+ * nice-to-have; the global 401 handler heals dead sessions).
+ */
+export const usePresenceHeartbeat = () => {
+  const { user } = useUser();
+  useEffect(() => {
+    if (!user) return;
+    const beat = () => {
+      chatApi.sendPresence().catch(() => {});
+    };
+    beat();
+    const t = setInterval(beat, 60_000);
+    return () => clearInterval(t);
+  }, [user]);
+};
+
 const POLL_MS = 5000;
 
 export const useChatMessages = (chatId: string | undefined) => {

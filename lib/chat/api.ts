@@ -8,6 +8,7 @@ import type {
   ChatConversation,
   ChatMessage,
   ChatMessageKind,
+  ChatMessageSearchResult,
   TypingUser,
 } from "./types";
 
@@ -119,6 +120,44 @@ export const chatApi = {
       axiosApi369x.post<{ ok: true; reacted: boolean }>(
         `/api/chat/messages/${messageId}/reactions`,
         { emoji }
+      )
+    ),
+
+  // Chat completeness Q24: search message bodies across my conversations.
+  searchMessages: (q: string, opts?: { limit?: number; before?: string }) =>
+    req(
+      axiosApi369x.get<{
+        results: ChatMessageSearchResult[];
+        has_more?: boolean;
+      }>("/api/chat/search", {
+        params: { q, limit: opts?.limit, before: opts?.before },
+      })
+    ),
+
+  // Chat completeness Q24: presence heartbeat (server throttles writes).
+  sendPresence: () =>
+    req(axiosApi369x.post<{ ok: true }>("/api/chat/presence")),
+
+  // Chat completeness Q26: group lifecycle.
+  renameConversation: (id: string, title: string) =>
+    req(
+      axiosApi369x.patch<ChatConversation>(`/api/chat/conversations/${id}`, {
+        title,
+      })
+    ),
+
+  addMembers: (id: string, user_ids: string[]) =>
+    req(
+      axiosApi369x.post<ChatConversation>(
+        `/api/chat/conversations/${id}/members`,
+        { user_ids }
+      )
+    ),
+
+  removeMember: (id: string, userId: string) =>
+    req(
+      axiosApi369x.delete<ChatConversation | { ok: true; left: true }>(
+        `/api/chat/conversations/${id}/members/${encodeURIComponent(userId)}`
       )
     ),
 };
