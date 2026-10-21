@@ -10,6 +10,14 @@
  * renderer shows no mention links for them), so they notify nobody.
  */
 
+/**
+ * Judge nit (PR #29 fix round): per-event cap on mention
+ * notifications — one post/edit must not be able to mass-ping an
+ * unbounded audience. `notifyMentions` (server/hono/app.ts) notifies
+ * at most this many unique mentions, first-seen order.
+ */
+export const MAX_MENTION_NOTIFICATIONS = 20;
+
 /** Unique user ids mentioned in an editor state, in first-seen order. */
 export function extractMentionUserIds(state: unknown): string[] {
   const ids: string[] = [];

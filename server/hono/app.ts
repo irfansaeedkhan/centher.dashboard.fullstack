@@ -57,7 +57,10 @@ import {
 import { isTrustedAttachmentUrl } from "@/lib/chat/attachments";
 import { dmPairKey, EDIT_WINDOW_MS, isEditExpired } from "@/lib/chat/utils";
 import { sanitizeEditorState } from "@/lib/feed/editor-state";
-import { extractMentionUserIds } from "@/lib/feed/mentions";
+import {
+  extractMentionUserIds,
+  MAX_MENTION_NOTIFICATIONS,
+} from "@/lib/feed/mentions";
 import {
   mediaKindForMime,
   mediaKindForUrl,
@@ -513,9 +516,11 @@ const notifyMentions = async (input: {
   postId: string;
   onlyNew?: boolean;
 }) => {
-  const mentionedIds = extractMentionUserIds(input.editorState).filter(
-    (id) => id !== input.actorId
-  );
+  // Cap per event (MAX_MENTION_NOTIFICATIONS): first-seen unique
+  // mentions only — a huge body must not mass-ping ~200 people.
+  const mentionedIds = extractMentionUserIds(input.editorState)
+    .filter((id) => id !== input.actorId)
+    .slice(0, MAX_MENTION_NOTIFICATIONS);
   if (mentionedIds.length === 0) return;
 
   const profileRows = await db
@@ -572,7 +577,11 @@ const notifyMentions = async (input: {
   });
   if (allowed.length === 0) return;
 
-  let targets = allowed.map((p) => p.userId);
+  // Hard cap at the notification stage as well: no more than
+  // MAX_MENTION_NOTIFICATIONS pings leave this function per event.
+  let targets = allowed
+    .map((p) => p.userId)
+    .slice(0, MAX_MENTION_NOTIFICATIONS);
   if (input.onlyNew) {
     const already = await db
       .select({ userId: notifications.userId })

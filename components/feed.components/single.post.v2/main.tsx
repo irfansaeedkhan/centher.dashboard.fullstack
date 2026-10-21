@@ -48,9 +48,10 @@ interface Props {
   onClickReply?: () => void;
   onClickEdit?: () => void;
   /**
-   * Feed product call Q13: when wired (post detail view), a reply's
-   * Edit action switches to inline editing (like chat's) and the saved
-   * reply is handed back here so the parent can swap it into its store.
+   * Feed product call Q13: when wired (post detail view, profile
+   * replies page), a reply's Edit action switches to inline editing
+   * (like chat's) and the saved reply is handed back here so the
+   * parent can swap it into its store.
    */
   onReplyUpdated?: (post: CompletedPost) => void;
   onClickLike?: () => Promise<void>;
@@ -166,7 +167,7 @@ export const SinglePostV2: React.FC<Props> = ({
         data-post-id={post._id}
       >
         <p className="text-sm italic text-gray-shade-7">
-          {postType === "reply"
+          {postType === "reply" || postType === "reply-w-parent-header"
             ? "This reply was deleted"
             : "This post was deleted"}
         </p>
@@ -243,8 +244,15 @@ export const SinglePostV2: React.FC<Props> = ({
           onClickEdit={() => {
             // Q13: replies edit inline (like chat) when the parent wired
             // onReplyUpdated — the post modal would PATCH the post
-            // endpoint with a comment id and silently fail.
-            if (postType === "reply" && onReplyUpdated) {
+            // endpoint with a comment id and silently fail. The profile
+            // replies page renders comments as "reply-w-parent-header"
+            // and wires onReplyUpdated too; the post detail page's
+            // firstPost uses that type for a real post but never passes
+            // onReplyUpdated, so it still edits through the post modal.
+            if (
+              (postType === "reply" || postType === "reply-w-parent-header") &&
+              onReplyUpdated
+            ) {
               setReplyDraft(post.text_content ?? "");
               setReplyEditError(null);
               setIsEditingReply(true);

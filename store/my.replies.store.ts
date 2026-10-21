@@ -16,6 +16,7 @@ export interface RepliesStore {
 
   addNewPost: (post: CompletedPost) => void;
   removePost: (postId: string) => void;
+  replaceEditedPost: (post: CompletedPost) => void;
   incrementPostRepliesCount: (postId?: string) => void;
   updatePostLikesCount: (
     actionType: "increment" | "decrement",
@@ -85,6 +86,20 @@ export const useMyRepliesStore = create<RepliesStore>()(
       removePost: (postId) => {
         set((state) => ({
           posts: state.posts.filter((post) => post._id !== postId),
+        }));
+      },
+
+      // Same swap the single-post store does (replaceEditedPost):
+      // an edited reply — or a delete's tombstone — replaces the old
+      // row in place instead of removing it from the list.
+      replaceEditedPost: (post) => {
+        set((state) => ({
+          posts: state.posts.map((statePost) => {
+            if (statePost._id === post._id) {
+              return post;
+            }
+            return statePost;
+          }),
         }));
       },
 
