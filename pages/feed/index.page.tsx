@@ -72,15 +72,13 @@ const Feed: NextPageWithLayout = () => {
     }
   }, [lastPostRef, lastPostEntry, updateOffset]);
 
+  // Feed-grill Q19: pass auth so the store reads the /with-auth feed
+  // variant (real liked state). `offset` changing is the scroll
+  // load-more trigger; the store pages by keyset cursor internally.
+  const isAuthenticated = !!user;
   useEffect(() => {
-    if (offset > 0) {
-      fetchPosts();
-    }
-  }, [offset, fetchPosts]);
-
-  useEffect(() => {
-    fetchPosts();
-  }, [fetchPosts]);
+    fetchPosts(isAuthenticated);
+  }, [offset, isAuthenticated, fetchPosts]);
 
   const handleAction = async (
     postId: string,
