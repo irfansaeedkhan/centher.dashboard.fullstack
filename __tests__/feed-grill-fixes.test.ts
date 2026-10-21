@@ -543,6 +543,8 @@ describe("Q15+Q1: PATCH honors deleted_media and sanitizes editor state", () => 
   test("deleted media is removed from the stored rows; the rest survive typed", async () => {
     const existing = postRow({
       authorId: ME,
+      // Fresh timestamp: edits are window-checked (feed product call Q14).
+      createdAt: new Date(),
       mediaUrls: [CLOUD_IMG, { url: CLOUD_VID, type: "video" }],
     });
     impl = (op, table) => {
@@ -568,7 +570,7 @@ describe("Q15+Q1: PATCH honors deleted_media and sanitizes editor state", () => 
   });
 
   test("PATCH with a javascript: link stores a sanitized body", async () => {
-    const existing = postRow({ authorId: ME });
+    const existing = postRow({ authorId: ME, createdAt: new Date() });
     impl = (op, table) => {
       if (op === "select" && table === "posts") return [existing];
       if (op === "update" && table === "posts") {
