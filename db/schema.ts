@@ -168,6 +168,35 @@ export const postLikes = pgTable(
   (t) => [primaryKey({ columns: [t.postId, t.userId] })]
 );
 
+/**
+ * Feed-grill Q18: per-user-per-day view ledger. `POST
+ * /socials/analytics/post-views` used to increment `posts.view_count`
+ * unconditionally, so a loop could inflate any post's count without
+ * bound. The handler now inserts here first (unique post+user+day,
+ * conflict-ignore) and only bumps the counter when a row was created.
+ */
+export const postViews = pgTable(
+  "post_views",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    postId: uuid("post_id")
+      .notNull()
+      .references(() => posts.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    viewDate: text("view_date").notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex("post_views_post_user_day_idx").on(
+      t.postId,
+      t.userId,
+      t.viewDate
+    ),
+  ]
+);
+
 export const comments = pgTable("comments", {
   id: uuid("id").defaultRandom().primaryKey(),
   postId: uuid("post_id")

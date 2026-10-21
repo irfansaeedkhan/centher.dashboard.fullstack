@@ -38,6 +38,7 @@ import {
   orgInvites,
   orgMembers,
   postLikes,
+  postViews,
   posts,
   profiles,
   recentSearches,
@@ -54,6 +55,13 @@ import {
 } from "@/lib/media/cloudinary";
 import { isTrustedAttachmentUrl } from "@/lib/chat/attachments";
 import { dmPairKey, EDIT_WINDOW_MS } from "@/lib/chat/utils";
+import { sanitizeEditorState } from "@/lib/feed/editor-state";
+import {
+  mediaKindForMime,
+  mediaKindForUrl,
+  normalizePostMedia,
+  withoutDeletedMedia,
+} from "@/lib/feed/media";
 
 type AppEnv = {
   Variables: {
@@ -190,13 +198,14 @@ const mapPostRow = (
     parent_post: undefined,
     post_editor_state,
     text_content: text,
-    media: (Array.isArray(row.mediaUrls) ? row.mediaUrls : [])
-      .filter((u): u is string => typeof u === "string" && u.length > 0)
-      .map((url) => ({
-        object_name: url,
-        url,
-        type: "image" as const,
-      })),
+    // Feed-grill Q16: real media kind (was hardcoded "image", so videos
+    // rendered as broken <img>s). normalizePostMedia handles both the
+    // legacy string[] rows and the new {url,type}[] rows.
+    media: normalizePostMedia(row.mediaUrls).map((m) => ({
+      object_name: m.url,
+      url: m.url,
+      type: m.type,
+    })),
   };
 };
 
@@ -554,6 +563,34 @@ export const createHonoApp = () => {
 
     return c.json({ token: mintVoiceToken(userId!) });
   });
+
+  /**
+   * Feed-grill Q4: per-user write throttle for the feed surface, same
+   * in-memory sliding-window pattern as the voice-token limiter above
+   * (best-effort per instance; auth is the real gate). Keyed per route
+   * bucket so e.g. liking can't starve posting. Throws a readable 429 —
+   * the client surfaces it as a toast, never a silent failure.
+   */
+  const feedWriteHits = new Map<string, number[]>();
+  const rateLimitFeedWrite = (
+    bucket: string,
+    userId: string,
+    maxPerMinute: number
+  ) => {
+    const key = `${bucket}:${userId}`;
+    const nowMs = Date.now();
+    const hits = (feedWriteHits.get(key) || []).filter(
+      (t) => nowMs - t < 60_000
+    );
+    if (hits.length >= maxPerMinute)
+      apiError(
+        "You're doing that too fast — wait a few seconds and try again",
+        "RATE_LIMITED",
+        429
+      );
+    hits.push(nowMs);
+    feedWriteHits.set(key, hits);
+  };
 
   /**
    * Phase 4: single source of truth for the LoggedInUser shape.
@@ -1401,7 +1438,20 @@ export const createHonoApp = () => {
     handleProfileCard(c)
   );
 
-  app.get("/socials/posts", async (c) => {
+  /**
+   * Feed list. Feed-grill Q10: keyset pagination on (created_at, id) —
+   * the old OFFSET window silently skipped posts whenever anything was
+   * created above the fold. Clients pass `cursor` = the last post id of
+   * the previous page (chat-grill Q12 pattern); the response carries
+   * `next_cursor`. `offset`/`page` are still honored when no cursor is
+   * given, for older clients.
+   *
+   * Feed-grill Q19: `/with-auth` variant (same split as /:id and
+   * /user/:userId) so the main feed can render `liked_by_loggedin_user` —
+   * without it every like button on the highest-traffic page showed
+   * "not liked".
+   */
+  const handleFeedList = async (c: any, withAuth: boolean) => {
     const limit = z.coerce
       .number()
       .int()
@@ -1409,6 +1459,19 @@ export const createHonoApp = () => {
       .max(50)
       .default(10)
       .parse(c.req.query("limit") ?? 10);
+
+    const cursorParam = c.req.query("cursor");
+    let cursor: { createdAt: Date | string; id: string } | undefined;
+    if (cursorParam) {
+      const cursorId = z.string().uuid().parse(cursorParam);
+      const [ref] = await db
+        .select({ createdAt: posts.createdAt, id: posts.id })
+        .from(posts)
+        .where(eq(posts.id, cursorId))
+        .limit(1);
+      if (!ref) apiError("Invalid feed cursor", "BAD_REQUEST", 400);
+      cursor = { createdAt: ref!.createdAt, id: ref!.id };
+    }
 
     const offsetParam = c.req.query("offset");
     const pageParam = c.req.query("page") ?? c.req.query("Page");
@@ -1424,7 +1487,7 @@ export const createHonoApp = () => {
             1) *
           limit;
 
-    const rows = await db
+    const baseQuery = db
       .select({
         id: posts.id,
         body: posts.body,
@@ -1440,20 +1503,40 @@ export const createHonoApp = () => {
       })
       .from(posts)
       .leftJoin(profiles, eq(posts.authorId, profiles.userId))
-      .where(eq(posts.isArchived, false))
-      .orderBy(desc(posts.createdAt))
-      .limit(limit)
-      .offset(offset);
+      .where(
+        and(
+          eq(posts.isArchived, false),
+          cursor
+            ? sql`(${posts.createdAt}, ${posts.id}) < (${cursor.createdAt}, ${cursor.id})`
+            : undefined
+        )
+      )
+      .orderBy(desc(posts.createdAt), desc(posts.id))
+      .limit(limit);
 
-    const mapped = rows.map((row) => mapPostRow(row));
+    const rows = await (cursor ? baseQuery : baseQuery.offset(offset));
+
+    const liked = withAuth
+      ? await getLikedPostIds(
+          c.get("userId"),
+          rows.map((r) => r.id)
+        )
+      : new Set<string>();
+    const mapped = rows.map((row) =>
+      mapPostRow(row, { likedByLoggedInUser: liked.has(row.id) })
+    );
 
     return c.json({
       posts: mapped,
       data: mapped,
-      offset,
+      offset: cursor ? 0 : offset,
       limit,
+      next_cursor: rows.length === limit ? rows[rows.length - 1].id : null,
+      has_more: rows.length === limit,
     });
-  });
+  };
+  app.get("/socials/posts", (c) => handleFeedList(c, false));
+  app.get("/socials/posts/with-auth", (c) => handleFeedList(c, true));
 
   app.get("/socials/posts/mention", async (c) => {
     // Sanitize BEFORE use: LIKE wildcards (% / _) and the escape char (\)
@@ -1650,6 +1733,10 @@ export const createHonoApp = () => {
   app.get("/socials/posts/:id/with-auth", (c) => handleSinglePost(c, true));
 
   // Replies to a post (from the comments table)
+  // Feed-grill Q10: keyset pagination on (created_at, id) via `cursor`
+  // (last reply id of the previous page), same as the feed list; OFFSET
+  // silently skipped replies when new ones landed above the fold.
+  // `offset` still works when no cursor is given (older clients).
   const handlePostReplies = async (c: any, withAuth: boolean) => {
     const id = z.string().uuid().parse(c.req.param("id"));
     const { limit, offset } = parseListQuery(c);
@@ -1662,7 +1749,20 @@ export const createHonoApp = () => {
     if (parent!.isArchived && parent!.authorId !== viewerId)
       apiError("Post not found", "NOT_FOUND", 404);
 
-    const rows = await db
+    let cursor: { createdAt: Date | string; id: string } | undefined;
+    const cursorParam = c.req.query("cursor");
+    if (cursorParam) {
+      const cursorId = z.string().uuid().parse(cursorParam);
+      const [ref] = await db
+        .select({ createdAt: comments.createdAt, id: comments.id })
+        .from(comments)
+        .where(and(eq(comments.id, cursorId), eq(comments.postId, id)))
+        .limit(1);
+      if (!ref) apiError("Invalid replies cursor", "BAD_REQUEST", 400);
+      cursor = { createdAt: ref!.createdAt, id: ref!.id };
+    }
+
+    const baseQuery = db
       .select({
         id: comments.id,
         body: comments.body,
@@ -1674,10 +1774,18 @@ export const createHonoApp = () => {
       })
       .from(comments)
       .leftJoin(profiles, eq(comments.authorId, profiles.userId))
-      .where(eq(comments.postId, id))
-      .orderBy(desc(comments.createdAt))
-      .limit(limit)
-      .offset(offset);
+      .where(
+        and(
+          eq(comments.postId, id),
+          cursor
+            ? sql`(${comments.createdAt}, ${comments.id}) < (${cursor.createdAt}, ${cursor.id})`
+            : undefined
+        )
+      )
+      .orderBy(desc(comments.createdAt), desc(comments.id))
+      .limit(limit);
+
+    const rows = await (cursor ? baseQuery : baseQuery.offset(offset));
 
     const mapped = rows.map((row) =>
       mapCommentRow(row, {
@@ -1689,7 +1797,14 @@ export const createHonoApp = () => {
         membership: parent!.membership,
       })
     );
-    return c.json({ posts: mapped, data: mapped, offset, limit });
+    return c.json({
+      posts: mapped,
+      data: mapped,
+      offset: cursor ? 0 : offset,
+      limit,
+      next_cursor: rows.length === limit ? rows[rows.length - 1].id : null,
+      has_more: rows.length === limit,
+    });
   };
   app.get("/socials/posts/:id/replies", (c) => handlePostReplies(c, false));
   app.get("/socials/posts/:id/replies/with-auth", (c) =>
@@ -1716,7 +1831,10 @@ export const createHonoApp = () => {
 
     let newBody: string;
     if (payload.post_editor_state?.root) {
-      newBody = JSON.stringify(payload.post_editor_state).slice(0, 20000);
+      // Feed-grill Q1: sanitize before persisting (see POST /socials/posts).
+      newBody = JSON.stringify(
+        sanitizeEditorState(payload.post_editor_state)
+      ).slice(0, 20000);
     } else if (payload.text) {
       newBody = JSON.stringify(wrapPlainTextEditorState(payload.text)).slice(
         0,
@@ -1727,9 +1845,22 @@ export const createHonoApp = () => {
       newBody = "";
     }
 
+    // Feed-grill Q15: honor deleted_media — it was parsed and then never
+    // read, so "removed" photos kept rendering for everyone. The stored
+    // media rows are now actually dropped (the URLs stop rendering
+    // everywhere immediately; Cloudinary-side asset deletion is a
+    // follow-up).
+    const remainingMedia = withoutDeletedMedia(
+      existing!.mediaUrls,
+      payload.deleted_media
+    );
+
     const [updated] = await db
       .update(posts)
-      .set({ body: newBody })
+      .set({
+        body: newBody,
+        mediaUrls: remainingMedia.length > 0 ? remainingMedia : null,
+      })
       .where(eq(posts.id, id))
       .returning();
     const mapped = mapPostRow({
@@ -1742,7 +1873,7 @@ export const createHonoApp = () => {
       authorName: existing!.authorName,
       authorAvatar: existing!.authorAvatar,
       membership: existing!.membership,
-      mediaUrls: (updated.mediaUrls as string[] | null) || [],
+      mediaUrls: updated.mediaUrls ?? [],
     });
     return c.json({ posts: [mapped], data: [mapped] });
   });
@@ -1784,6 +1915,7 @@ export const createHonoApp = () => {
   app.post("/socials/analytics/likes", async (c) => {
     const userId = c.get("userId");
     if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    rateLimitFeedWrite("likes", userId!, 60);
     const { postId, actionType } = z
       .object({
         postId: z.string().uuid(),
@@ -1795,17 +1927,24 @@ export const createHonoApp = () => {
     if (!target) apiError("Post not found", "NOT_FOUND", 404);
 
     if (actionType === "like") {
-      await db
+      // Feed-grill Q5: notify ONLY when the like row was actually
+      // inserted. The old code notified unconditionally after
+      // onConflictDoNothing, so a double-click (or like→unlike→like)
+      // wrote N "liked your post" notifications for one like.
+      const inserted = await db
         .insert(postLikes)
         .values({ postId, userId: userId! })
-        .onConflictDoNothing();
-      // Phase 3: notify the post author (never self — helper guards it).
-      await createNotification({
-        userId: target!.authorId,
-        type: "post_like",
-        actorId: userId!,
-        postId,
-      });
+        .onConflictDoNothing()
+        .returning({ postId: postLikes.postId });
+      if (inserted.length > 0) {
+        // Phase 3: notify the post author (never self — helper guards it).
+        await createNotification({
+          userId: target!.authorId,
+          type: "post_like",
+          actorId: userId!,
+          postId,
+        });
+      }
     } else {
       await db
         .delete(postLikes)
@@ -1831,20 +1970,43 @@ export const createHonoApp = () => {
   });
 
   // Post view (impression) tracking
+  // Feed-grill Q18: server-side dedup via the post_views ledger — one
+  // counted view per user per post per day. The old handler incremented
+  // unconditionally, so a loop could inflate any post's count without
+  // bound. Repeat views still return the current count (no error — the
+  // client fires this on scroll and must never be stranded by it).
   app.post("/socials/analytics/post-views", async (c) => {
     const userId = c.get("userId");
     if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    rateLimitFeedWrite("post-views", userId!, 120);
     const { post_id } = z
       .object({ post_id: z.string().uuid() })
       .parse(await c.req.json());
 
-    const [updated] = await db
-      .update(posts)
-      .set({ viewCount: sql`${posts.viewCount} + 1` })
+    const [existing] = await db
+      .select({ id: posts.id, viewCount: posts.viewCount })
+      .from(posts)
       .where(eq(posts.id, post_id))
-      .returning({ viewCount: posts.viewCount });
-    if (!updated) apiError("Post not found", "NOT_FOUND", 404);
-    return c.json({ view_count: updated!.viewCount, post_id });
+      .limit(1);
+    if (!existing) apiError("Post not found", "NOT_FOUND", 404);
+
+    const viewDate = new Date().toISOString().slice(0, 10);
+    const inserted = await db
+      .insert(postViews)
+      .values({ postId: post_id, userId: userId!, viewDate })
+      .onConflictDoNothing()
+      .returning({ id: postViews.id });
+
+    let viewCount = existing!.viewCount;
+    if (inserted.length > 0) {
+      const [updated] = await db
+        .update(posts)
+        .set({ viewCount: sql`${posts.viewCount} + 1` })
+        .where(eq(posts.id, post_id))
+        .returning({ viewCount: posts.viewCount });
+      viewCount = updated?.viewCount ?? viewCount + 1;
+    }
+    return c.json({ view_count: viewCount, post_id });
   });
 
   // ---------------------------------------------------------------------------
@@ -1874,6 +2036,7 @@ export const createHonoApp = () => {
   app.post("/socials/followers", async (c) => {
     const userId = c.get("userId");
     if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    rateLimitFeedWrite("follows", userId!, 60);
     const { following_id } = z
       .object({ following_id: z.string().min(1) })
       .parse(await c.req.json());
@@ -1910,18 +2073,25 @@ export const createHonoApp = () => {
       return c.json({ message: "unfollow_success" });
     }
 
-    await db
+    // Feed-grill Q6: notify ONLY when the follow row was actually
+    // inserted. The old check-then-act raced: two concurrent follows both
+    // saw "no existing", both inserted (one no-oped on the PK), and both
+    // notified — duplicate "X followed you" from a single double-click.
+    const inserted = await db
       .insert(follows)
       .values({
         followerId: userId!,
         followingId: following_id,
       })
-      .onConflictDoNothing();
-    await createNotification({
-      userId: following_id,
-      type: "follow",
-      actorId: userId!,
-    });
+      .onConflictDoNothing()
+      .returning({ followerId: follows.followerId });
+    if (inserted.length > 0) {
+      await createNotification({
+        userId: following_id,
+        type: "follow",
+        actorId: userId!,
+      });
+    }
     return c.json({ message: "follow_success" });
   });
 
@@ -2305,6 +2475,7 @@ export const createHonoApp = () => {
   app.post("/socials/posts", async (c) => {
     const userId = c.get("userId");
     if (!userId) apiError("Unauthorized", "UNAUTHORIZED", 401);
+    rateLimitFeedWrite("posts", userId!, 20);
 
     const payload = await c.req.json();
 
@@ -2343,6 +2514,9 @@ export const createHonoApp = () => {
         })
       )
       .min(1)
+      // Feed-grill Q4: was unbounded — one request could insert thousands
+      // of posts. 10 covers the UI's longest thread with headroom.
+      .max(10)
       .parse(payload.posts);
 
     const [authorProfile] = await db
@@ -2353,11 +2527,12 @@ export const createHonoApp = () => {
 
     const createdMapped = [];
     for (const item of postsInput) {
-      const text =
-        extractTextFromEditorState(item.post_editor_state) || "(empty post)";
-      const storedBody = item.post_editor_state?.root
-        ? JSON.stringify(item.post_editor_state)
-        : text;
+      // Feed-grill Q1: sanitize the editor state before it is extracted
+      // from or persisted — link nodes with javascript:/data: hrefs are
+      // unwrapped to plain text (see lib/feed/editor-state.ts).
+      const editorState = sanitizeEditorState(item.post_editor_state);
+      const text = extractTextFromEditorState(editorState) || "(empty post)";
+      const storedBody = editorState?.root ? JSON.stringify(editorState) : text;
 
       if (parentRow) {
         // Reply: store in comments, bump the parent's comment count
@@ -2405,10 +2580,23 @@ export const createHonoApp = () => {
         continue;
       }
 
-      // Phase 11: persist uploaded media URLs (Cloudinary secure_urls).
+      // Phase 11 + feed-grill Q3/Q16: persist uploaded media (Cloudinary
+      // secure_urls). Q3: only trusted Cloudinary hosts survive — any
+      // other https URL is dropped, so a post can't make every viewer's
+      // browser fetch an attacker URL. Q16: the media kind is persisted
+      // alongside the URL ({url, type}) so videos stop rendering as
+      // broken images.
       const mediaUrls = (item.media || [])
-        .map((m: any) => m?.object_name)
-        .filter((u: any) => typeof u === "string" && u.startsWith("https://"));
+        .map((m: any) => {
+          const url = m?.object_name;
+          if (typeof url !== "string" || !isTrustedAttachmentUrl(url))
+            return null;
+          return {
+            url,
+            type: mediaKindForMime(m?.type) ?? mediaKindForUrl(url),
+          };
+        })
+        .filter((m: { url: string } | null) => m !== null);
 
       const [created] = await db
         .insert(posts)
@@ -2431,7 +2619,7 @@ export const createHonoApp = () => {
           authorAvatar:
             authorProfile?.avatarUrl || "/images/centher.logo.favicon.png",
           membership: authorProfile?.membership || "citizen",
-          mediaUrls: (created.mediaUrls as string[] | null) || [],
+          mediaUrls: created.mediaUrls ?? [],
         })
       );
     }
