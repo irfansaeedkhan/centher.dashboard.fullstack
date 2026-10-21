@@ -17,7 +17,10 @@ process.env.DATABASE_URL =
   process.env.DATABASE_URL || "postgresql://test:test@localhost:5432/test";
 
 import { posts, comments } from "@/db/schema";
-import { extractMentionUserIds } from "@/lib/feed/mentions";
+import {
+  extractMentionUserIds,
+  MAX_MENTION_NOTIFICATIONS,
+} from "@/lib/feed/mentions";
 import { normalizePostMedia } from "@/lib/feed/media";
 
 // ---------------------------------------------------------------------------
@@ -609,6 +612,21 @@ describe("Q23: mention notifications on create", () => {
       actorId: ME,
       postId: POST,
     });
+  });
+
+  test("mention notifications cap at the first 20 unique mentions", async () => {
+    const ids = Array.from({ length: 25 }, (_, i) => `user-cap-${i + 1}`);
+    impl = createImpl(
+      ids.map((userId) => ({ userId, mentionPermission: "everyone" }))
+    );
+    const res = await createPost(editorStateWithMentions(ids));
+    expect(res.status).toBe(201);
+    const notifs = insertValues("notifications");
+    expect(notifs).toHaveLength(MAX_MENTION_NOTIFICATIONS);
+    expect(notifs.map((n) => n.userId)).toEqual(
+      ids.slice(0, MAX_MENTION_NOTIFICATIONS)
+    );
+    expect(notifs.map((n) => n.userId)).not.toContain(ids[24]);
   });
 
   test("mentioning yourself notifies nobody", async () => {
