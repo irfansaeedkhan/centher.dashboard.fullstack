@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { useOnClickOutside } from "usehooks-ts";
+import React, { useEffect, useState } from "react";
 import clsx from "clsx";
 import { BsThreeDots } from "react-icons/bs";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
@@ -32,15 +31,58 @@ export const PostActionMenu: React.FC<Props> = ({
 
   const menuRef = React.useRef<HTMLDivElement>(null);
 
-  useOnClickOutside(menuRef, () => setIsOpen(false));
+  // Feed fix 2026-10-29 (menu not opening / second click): the old
+  // menu was a bare SVG icon with an onClick toggle plus a
+  // permanently-mounted useOnClickOutside (mousedown) listener — the
+  // same class of bug as the profile header menu, which needed a
+  // second click. Two changes, both about the opening click:
+  //  1. The toggle is a real <button> (keyboard/focusable, full hit
+  //     area, aria-expanded) instead of a bare SVG icon, and it
+  //     stops propagation so the feed/profile card's navigate-on-
+  //     click wrapper can never swallow the toggle.
+  //  2. The outside-close listener is mounted ONLY while the menu is
+  //     open, on the click phase. A permanently-mounted outside
+  //     listener can race the toggle on the very click that opens
+  //     the menu (open-then-immediately-close reads as "did not
+  //     open"); a listener added by the open render cannot fire for
+  //     the click that caused that render. Escape also closes.
+  useEffect(() => {
+    if (!isOpen) return;
+    const onDocumentClick = (event: MouseEvent) => {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setIsOpen(false);
+    };
+    document.addEventListener("click", onDocumentClick);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("click", onDocumentClick);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [isOpen]);
 
   return (
     <>
       <div className="relative" ref={menuRef}>
-        <BsThreeDots
-          className="h-6 w-6 cursor-pointer fill-gray-shade-7"
-          onClick={() => setIsOpen((prev) => !prev)}
-        />
+        <button
+          type="button"
+          aria-label="Post actions"
+          aria-haspopup="menu"
+          aria-expanded={isOpen}
+          className="flex cursor-pointer items-center justify-center rounded-md p-1"
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsOpen((prev) => !prev);
+          }}
+        >
+          <BsThreeDots className="h-6 w-6 fill-gray-shade-7" />
+        </button>
 
         {isOpen && (
           <div
@@ -48,9 +90,15 @@ export const PostActionMenu: React.FC<Props> = ({
               "absolute right-0 top-full z-[500] overflow-hidden rounded-10px bg-black-shade-12",
               postType === "archived" ? "w-[190px]" : "w-[170px]"
             )}
+            onClick={(e) => e.stopPropagation()}
           >
             {isBefore15Minutes && postType !== "archived" && (
-              <MenuButton onClick={onClickEdit}>
+              <MenuButton
+                onClick={() => {
+                  setIsOpen(false);
+                  onClickEdit();
+                }}
+              >
                 <FiEdit className="h-[18px] w-[18px]" />
                 <span>Edit</span>
               </MenuButton>
@@ -67,6 +115,7 @@ export const PostActionMenu: React.FC<Props> = ({
                   if (button.disabled) return;
 
                   button.disabled = true;
+                  setIsOpen(false);
 
                   if (postType === "archived") {
                     await onClickRestore();
@@ -90,7 +139,10 @@ export const PostActionMenu: React.FC<Props> = ({
             )}
 
             <MenuButton
-              onClick={() => setIsDeleteModalOpen(true)}
+              onClick={() => {
+                setIsOpen(false);
+                setIsDeleteModalOpen(true);
+              }}
               className={clsx({
                 "text-danger": postType === "archived",
               })}
@@ -125,6 +177,7 @@ const MenuButton: React.FC<MenuButtonProps> = ({
 }) => {
   return (
     <button
+      type="button"
       className={clsx(
         `flex w-full items-center gap-x-2.5 px-5 py-4 text-sm font-semibold text-white hover:bg-background-shade-2`,
         className

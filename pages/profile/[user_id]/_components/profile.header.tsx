@@ -577,7 +577,7 @@ const ProfileHeader: React.FC<Props> = ({
                       Post
                     </span>
                     <span className="text-xs font-semibold text-white">
-                      {profileCardDetails.posts_count ?? "--"}
+                      {profileCardDetails.isLoaded ? profileCardDetails.posts_count : "--"}
                     </span>
                   </div>
                   <div className="w-16 space-y-1.5 text-center">
@@ -585,7 +585,7 @@ const ProfileHeader: React.FC<Props> = ({
                       Followers
                     </span>
                     <span className="text-xs font-semibold text-white">
-                      {profileCardDetails.followers_count ?? "--"}
+                      {profileCardDetails.isLoaded ? profileCardDetails.followers_count : "--"}
                     </span>
                   </div>
                   <div className="w-16 space-y-1.5 text-center">
@@ -593,7 +593,7 @@ const ProfileHeader: React.FC<Props> = ({
                       Following
                     </span>
                     <span className="text-xs font-semibold text-white">
-                      {profileCardDetails.following_count ?? "--"}
+                      {profileCardDetails.isLoaded ? profileCardDetails.following_count : "--"}
                     </span>
                   </div>
                   <div className="w-16 space-y-1.5 text-center">
@@ -601,7 +601,7 @@ const ProfileHeader: React.FC<Props> = ({
                       Referrals
                     </span>
                     <span className="text-xs font-semibold text-white">
-                      {profileCardDetails.total_referrees ?? "--"}
+                      {profileCardDetails.isLoaded ? profileCardDetails.total_referrees : "--"}
                     </span>
                   </div>
                 </div>

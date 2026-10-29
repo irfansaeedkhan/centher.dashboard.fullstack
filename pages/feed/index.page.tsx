@@ -82,17 +82,28 @@ const Feed: NextPageWithLayout = () => {
 
   const handleAction = async (
     postId: string,
-    actionFunction: (postId: string) => Promise<void>
+    actionFunction: (postId: string) => Promise<void>,
+    ownerId?: string
   ) => {
     try {
       await actionFunction(postId);
       removePost(postId);
-      // Decrement post count on profile card
-      useProfileCardStore.getState().decrementPostsCount();
+      // Decrement post count on profile card (owner-guarded in the
+      // store; a no-op while the card has not loaded).
+      useProfileCardStore.getState().decrementPostsCount(ownerId);
     } catch (error: any) {
       customLog(["development"], error);
     }
   };
+
+  // Feed fix 2026-10-29 (deleted placeholders): top-level deleted
+  // posts are hidden from the feed list. This is display filtering
+  // only — no seeded data is deleted, and the tombstone in
+  // SinglePostV2 is kept for replies inside a thread/detail view
+  // (those render postType "reply", never through this list).
+  const visiblePosts = (posts ?? []).filter(
+    (post) => (post.status as string) !== "deleted"
+  );
 
   const handleCreatePostView = async (postId: string) => {
     try {
@@ -124,7 +135,7 @@ const Feed: NextPageWithLayout = () => {
         (posts?.length ?? 0) > 0) &&
         user && <CreatePostCard user={user} />}
 
-      {(posts ?? []).map((post, index) => {
+      {visiblePosts.map((post, index) => {
         return (
           <div key={post._id}>
             <div
@@ -162,8 +173,8 @@ const Feed: NextPageWithLayout = () => {
                     shouldAddNewPost: true,
                   });
                 }}
-                onClickArchive={() => handleAction(post._id, archivePost)}
-                onClickDelete={() => handleAction(post._id, deletePost)}
+                onClickArchive={() => handleAction(post._id, archivePost, post.user._id)}
+                onClickDelete={() => handleAction(post._id, deletePost, post.user._id)}
                 onPostInViewport={() => handleCreatePostView(post._id)}
               />
             </div>
@@ -222,7 +233,7 @@ const Feed: NextPageWithLayout = () => {
         );
       })}
 
-      {!!(posts?.length ?? 0) && <div ref={lastPostRef} />}
+      {!!visiblePosts.length && <div ref={lastPostRef} />}
 
       {(loading === "loading" || loading === "idle") && (
         <>
@@ -232,7 +243,7 @@ const Feed: NextPageWithLayout = () => {
         </>
       )}
 
-      {loading === "loaded" && (posts?.length ?? 0) === 0 && (
+      {loading === "loaded" && visiblePosts.length === 0 && (
         <div>
           <div className="mt-[60px] flex justify-center">
             <NoPost />

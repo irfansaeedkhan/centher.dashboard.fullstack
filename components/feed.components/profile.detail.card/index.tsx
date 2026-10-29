@@ -102,7 +102,12 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
               <h4 className={clsx(label)}>Posts</h4>
             </div>
             <h5 className={clsx(count)}>
-              {profileCardDetails.posts_count ?? "--"}
+              {/* Feed fix 2026-10-29: never show the initial 0 as a
+                  count; "--" until the card has loaded. A real 0
+                  still shows once isLoaded is true. */}
+              {profileCardDetails.isLoaded
+                ? profileCardDetails.posts_count
+                : "--"}
             </h5>
           </div>
           <div className="flex w-1/2 flex-col items-start">
@@ -111,7 +116,9 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
               <h4 className={clsx(label)}>Referrals</h4>
             </div>
             <h5 className={clsx(count)}>
-              {profileCardDetails.total_referrees ?? "--"}
+              {profileCardDetails.isLoaded
+                ? profileCardDetails.total_referrees
+                : "--"}
             </h5>
           </div>
         </div>
@@ -122,7 +129,9 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
               <h4 className={clsx(label)}>Followers</h4>
             </div>
             <h5 className={clsx(count)}>
-              {profileCardDetails.followers_count ?? "--"}
+              {profileCardDetails.isLoaded
+                ? profileCardDetails.followers_count
+                : "--"}
             </h5>
           </div>
           <div className="flex w-1/2 flex-col items-start">
@@ -131,14 +140,17 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
               <h4 className={clsx(label)}>Following</h4>
             </div>
             <h5 className={clsx(count)}>
-              {profileCardDetails.following_count ?? "--"}
+              {profileCardDetails.isLoaded
+                ? profileCardDetails.following_count
+                : "--"}
             </h5>
           </div>
         </div>
       </div>
 
-      {(profileCardDetails.profile_views_count === 0 ||
-        profileCardDetails.profile_views_count) && (
+      {profileCardDetails.isLoaded &&
+        (profileCardDetails.profile_views_count === 0 ||
+          profileCardDetails.profile_views_count) && (
         <div className={`flex items-center justify-between px-4 py-2`}>
           <h5 className={clsx(label)}>Your Profile viewed by</h5>
           <h6 className={clsx(countBrand)}>
@@ -147,8 +159,9 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
         </div>
       )}
 
-      {(profileCardDetails.posts_views_count === 0 ||
-        profileCardDetails.posts_views_count) && (
+      {profileCardDetails.isLoaded &&
+        (profileCardDetails.posts_views_count === 0 ||
+          profileCardDetails.posts_views_count) && (
         <div className={`flex items-center justify-between px-4 py-2`}>
           <h5 className={clsx(label)}>Your Posts views</h5>
           <h6 className={clsx(countBrand)}>
