@@ -40,6 +40,15 @@ const StakingReferrals: NextPageWithLayout = () => {
   const [poolId, setPoolId] = useState("0");
   const [connectWalletModal, setConnectWalletModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  // Portfolio-library fix (Centher item 4, same trap as the pool detail
+  // route): dismissing the wallet gate must stick, and a dismissed gate
+  // renders a wallet-required notice with a back path instead of the
+  // modal-only view or a spinner that never resolves without a wallet.
+  const [walletGateDismissed, setWalletGateDismissed] = useState(false);
+  const closeWalletModal = () => {
+    setConnectWalletModal(false);
+    setWalletGateDismissed(true);
+  };
 
   const [totalClaimed, setTotalClaimed] = useState(0);
   const [totalClaimable, setTotalClaimable] = useState("0");
@@ -128,11 +137,14 @@ const StakingReferrals: NextPageWithLayout = () => {
 
   useEffect(() => {
     if (!getSigner()) {
-      setConnectWalletModal(true);
+      if (!walletGateDismissed) {
+        setConnectWalletModal(true);
+      }
     } else {
       setConnectWalletModal(false);
+      setWalletGateDismissed(false);
     }
-  }, [getSigner]);
+  }, [getSigner, walletGateDismissed]);
 
   useEffect(() => {
     if (!stakingPool && poolId && sdk && connectedAddress) {
@@ -178,13 +190,51 @@ const StakingReferrals: NextPageWithLayout = () => {
 
   const modal = new ModalManager(setModalModel, modalTemplateCollection);
 
+  // Dismissed gate: notice with a back path, never the modal again and
+  // never the spinner (which cannot resolve without a wallet, since
+  // loadData only runs with a connected address). No wallet is
+  // connected here and no transaction is attempted.
+  if (walletGateDismissed && !stakingPool) {
+    return (
+      <div className="flex w-full flex-col items-center justify-center gap-4 px-6 py-16 text-center">
+        <h2 className="text-xl font-semibold text-white">
+          Wallet required to view referral rewards
+        </h2>
+        <p className="max-w-[480px] text-sm font-normal leading-6 text-gray-shade-14">
+          Referral rewards load from your connected wallet. You closed the
+          wallet-connect dialog, so nothing is connected and no referral
+          data can be shown yet.
+        </p>
+        <div className="flex flex-wrap items-center justify-center gap-3">
+          <button
+            type="button"
+            onClick={() => router.push("/staking")}
+            className="rounded-lg bg-brand-primary px-5 py-2 text-sm font-semibold text-white"
+          >
+            Back to staking
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setWalletGateDismissed(false);
+              setConnectWalletModal(true);
+            }}
+            className="rounded-lg border border-gray-shade-3 px-5 py-2 text-sm font-semibold text-white"
+          >
+            Connect wallet
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return connectWalletModal ? (
     <ConnectWalletModal
       open={connectWalletModal}
       authType="login"
       connectWallet={connectWallet}
-      onClose={() => setConnectWalletModal(false)}
-      crossIcon={false}
+      onClose={closeWalletModal}
+      allowDismiss
     />
   ) : isLoading ? (
     <div className="flex h-[calc(100vh-60px)] w-full items-center justify-center">

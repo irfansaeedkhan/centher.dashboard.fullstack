@@ -14,6 +14,16 @@ interface Props {
   ) => Promise<void>;
   onClose: () => void;
   crossIcon?: boolean;
+  /**
+   * Portfolio-library fix (Centher item 4): when true, the modal is
+   * dismissible by a visible close button AND Escape AND backdrop click.
+   * Defaults to false so existing callers keep their current behavior;
+   * the staking pool detail route opts in, because its old
+   * crossIcon={false} + shouldCloseOnEsc={false} +
+   * shouldCloseOnOverlayClick={false} combination trapped navigation
+   * with no visible way out.
+   */
+  allowDismiss?: boolean;
 }
 
 const ConnectWalletModal: React.FC<Props> = ({
@@ -22,6 +32,7 @@ const ConnectWalletModal: React.FC<Props> = ({
   connectWallet,
   onClose,
   crossIcon = true,
+  allowDismiss = false,
 }) => {
   const [runningOnInjectedProvider, setRunningOnInjectedProvider] =
     useState<boolean>(false);
@@ -54,15 +65,19 @@ const ConnectWalletModal: React.FC<Props> = ({
       isOpen={open}
       onClose={onClose}
       modalContentClassName="max-w-2xl p-6 rounded-2xl"
-      shouldCloseOnOverlayClick={false}
-      shouldCloseOnEsc={false}
+      shouldCloseOnOverlayClick={allowDismiss}
+      shouldCloseOnEsc={allowDismiss}
     >
       <div className="flex items-center">
         <h3 className="flex-grow text-center text-xl font-semibold text-white">
           Connect to wallet
         </h3>
-        {crossIcon && (
-          <button className="text-white" onClick={onClose}>
+        {(crossIcon || allowDismiss) && (
+          <button
+            className="text-white"
+            onClick={onClose}
+            aria-label="Close wallet connect dialog"
+          >
             <IoClose className="h-6 w-6" />
           </button>
         )}
