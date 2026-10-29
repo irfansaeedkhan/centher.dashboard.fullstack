@@ -38,6 +38,52 @@ export const VoiSpaceFeedCard: React.FC<prop> = ({ isRendered }: prop) => {
   const [liveCreated, setLiveCreated] = useState<boolean>(false);
   const [amaCreated, setAmaCreated] = useState<boolean>(false);
 
+  // Portfolio-library fix (2026-10-29, Irfan's rule: hide the create
+  // button when audio/video is not working, keep it when it works).
+  // The create-room modal reported "no microphone found" with Next
+  // disabled, and a mic cannot be claimed working without evidence, so
+  // the "New" button only renders when the browser actually enumerates
+  // an audio input device. This check never prompts for permission (a
+  // feed render must not pop a mic prompt); it re-checks on devicechange
+  // so plugging a mic in reveals the button. Caveat, stated honestly:
+  // browsers that enumerate zero devices until permission is granted
+  // will hide the button until a device appears — the safe outcome when
+  // availability cannot be proven.
+  const [audioAvailable, setAudioAvailable] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    if (!isRendered) return;
+    let cancelled = false;
+    const checkAudio = async () => {
+      try {
+        if (
+          typeof navigator === "undefined" ||
+          !navigator.mediaDevices?.enumerateDevices
+        ) {
+          if (!cancelled) setAudioAvailable(false);
+          return;
+        }
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        if (!cancelled) {
+          setAudioAvailable(
+            devices.some((d) => d.kind === "audioinput")
+          );
+        }
+      } catch {
+        if (!cancelled) setAudioAvailable(false);
+      }
+    };
+    checkAudio();
+    navigator.mediaDevices?.addEventListener?.("devicechange", checkAudio);
+    return () => {
+      cancelled = true;
+      navigator.mediaDevices?.removeEventListener?.(
+        "devicechange",
+        checkAudio
+      );
+    };
+  }, [isRendered]);
+
   const { amaAgent, liveAgent, useSubscribeToAllBroadcasts } = useStream();
 
   const {
@@ -208,13 +254,15 @@ export const VoiSpaceFeedCard: React.FC<prop> = ({ isRendered }: prop) => {
               <h5 className={`text-gradient-1 text-base font-semibold`}>
                 VoiSpace
               </h5>
-              <Button
-                title={"New"}
-                variant="primary"
-                onClick={handleCreateChannel}
-                borderRounded="10px"
-                className={`text-xs font-medium`}
-              />
+              {audioAvailable === true && (
+                <Button
+                  title={"New"}
+                  variant="primary"
+                  onClick={handleCreateChannel}
+                  borderRounded="10px"
+                  className={`text-xs font-medium`}
+                />
+              )}
             </div>
           </div>
           <div className="mx-auto grid grid-cols-4 gap-4 px-4 py-4">

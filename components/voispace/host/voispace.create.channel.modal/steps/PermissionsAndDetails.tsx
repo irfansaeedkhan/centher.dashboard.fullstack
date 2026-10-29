@@ -64,40 +64,64 @@ const PermissionsAndDetails = ({
     cameras.length,
   ]);
 
+  // Portfolio-library fix (2026-10-29): the old version decided from the
+  // hook's state AFTER awaiting updateDevices(), but React state had not
+  // re-rendered yet, so it always saw the initial empty list and reported
+  // "no microphone found" on first open. It also let a throwing
+  // navigator.permissions.query (Firefox/Safari do not support the
+  // microphone/camera permission names) skip the flag assignments, leaving
+  // the step permanently invalid and Next disabled. Now every decision
+  // uses the freshly returned lists, and a throwing permission query
+  // falls back to the device list + getUserMedia outcome instead of
+  // silently leaving the step invalid.
   const setupDevices = async () => {
     let showAudioError = false;
     let showVideoError = false;
     try {
-      await getMediaPermissions(formState.type);
-      await updateDevices();
+      if (
+        typeof navigator === "undefined" ||
+        !navigator.mediaDevices?.enumerateDevices
+      ) {
+        setShowGetPermission({ audioErr: true, videoErr: true });
+        return;
+      }
+      const granted = await getMediaPermissions(formState.type);
+      const { microphones: freshMics, cameras: freshCams } =
+        await updateDevices();
 
-      const audioPermission = await navigator.permissions.query({
-        name: "microphone" as PermissionName,
-      });
+      const queryPermission = async (
+        name: "microphone" | "camera"
+      ): Promise<PermissionState | null> => {
+        try {
+          const result = await navigator.permissions.query({
+            name: name as PermissionName,
+          });
+          return result.state;
+        } catch {
+          return null;
+        }
+      };
 
-      if (microphones.length === 0 || audioPermission.state !== "granted") {
+      const audioPermission = await queryPermission("microphone");
+      const audioGranted = granted || audioPermission === "granted";
+      if (freshMics.length === 0 || (!audioGranted && audioPermission === "denied")) {
         showAudioError = true;
       }
-
-      if (microphones.length > 0 || audioPermission.state == "granted") {
-        if (!formState.audioDevice) {
-          handleInputChange("audioDevice", microphones[0]);
-        }
+      if (freshMics.length > 0 && !formState.audioDevice) {
+        handleInputChange("audioDevice", freshMics[0]);
       }
 
       if (formState.type === BroadcastTypeEnum.LIVE) {
-        const videoPermission = await navigator.permissions.query({
-          name: "camera" as PermissionName,
-        });
-
-        if (cameras.length === 0 || videoPermission.state !== "granted") {
+        const videoPermission = await queryPermission("camera");
+        const videoGranted = granted || videoPermission === "granted";
+        if (
+          freshCams.length === 0 ||
+          (!videoGranted && videoPermission === "denied")
+        ) {
           showVideoError = true;
         }
-
-        if (cameras.length > 0 || videoPermission.state == "granted") {
-          if (!formState.videoDevice) {
-            handleInputChange("videoDevice", cameras[0]);
-          }
+        if (freshCams.length > 0 && !formState.videoDevice) {
+          handleInputChange("videoDevice", freshCams[0]);
         }
       }
     } catch (error) {
@@ -110,9 +134,13 @@ const PermissionsAndDetails = ({
     }
   };
 
+  // One setup run per room type: the fresh-list logic above no longer
+  // needs the old re-run-on-length-change loop (which re-prompted for
+  // permission every time the enumerated list changed).
   useEffect(() => {
     setupDevices().then();
-  }, [formState.type, microphones.length, cameras.length]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formState.type]);
 
   useEffect(() => {
     if (rawImage) {
