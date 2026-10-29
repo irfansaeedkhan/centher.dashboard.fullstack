@@ -6,7 +6,8 @@ import Button from "@/components/button";
 import { IModalProps } from "@/components/modal/standard.modal";
 import { BNBIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
-import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
+import { formatEther2Number } from "@/utils/format.address";
+import { formatUsdFromWei } from "./usd-value";
 import TrxInProgressModal from "@/utils/modal/trx-modal";
 import SuccessMessageModal from "@/utils/modal/success-modal";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
@@ -151,7 +152,7 @@ export const FixedPriceNFTBuyerDescription: React.FC<Props> = ({
             )} BNB`}{" "}
             <span className="text-gray-shade-2 ">
               {" "}
-              =${formatBNB2USD(nft.listInfo.price, bnbPrice)}
+              {formatUsdFromWei(nft.listInfo.price, bnbPrice)}
             </span>
           </h6>
           <div className={`flex items-center gap-4`}>
@@ -227,7 +228,7 @@ export const FixedPriceNFTBuyerDescription: React.FC<Props> = ({
           </h5>
           <h6 className={greyTxt}>
             {" "}
-            =${formatBNB2USD(nft.listInfo.price, bnbPrice)}
+            {formatUsdFromWei(nft.listInfo.price, bnbPrice)}
           </h6>
         </div>
       </div>
