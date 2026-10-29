@@ -21,6 +21,27 @@ enum ModalType {
   previewCollection = "previewCollection",
 }
 
+// Portfolio-library fix (2026-10-29): the URL placeholder rendered
+// `https://https://...` whenever NEXT_PUBLIC_BRAND_DOMAIN itself carried
+// a scheme, and a pasted doubled-scheme value was stored verbatim.
+// normalizeUrl guarantees exactly one scheme: repeated schemes collapse
+// to one, and a bare domain/path gains a single https:// prefix.
+export const normalizeUrl = (value: unknown): string => {
+  if (typeof value !== "string") return "";
+  const trimmed = value.trim();
+  if (!trimmed) return "";
+  const withoutRepeatedScheme = trimmed.replace(/^(https?:\/\/)+/i, "");
+  const schemeMatch = trimmed.match(/^(https?:\/\/)/i);
+  const scheme = schemeMatch ? schemeMatch[1].toLowerCase() : "https://";
+  return `${scheme}${withoutRepeatedScheme}`;
+};
+
+// The brand domain may or may not carry a scheme depending on env, so
+// strip it here — the placeholder adds https:// exactly once.
+const brandDomainForUrl = (process.env.NEXT_PUBLIC_BRAND_DOMAIN ?? "")
+  .replace(/^https?:\/\//i, "")
+  .replace(/\/+$/, "");
+
 // form validations
 const schema = Joi.object({
   name: Joi.string().required().max(150).label("NFT Name").messages({
@@ -157,10 +178,10 @@ export const CreateNFTCollectionForm = ({
       totalsupply: ethers.constants.MaxUint256,
       description: data.description,
       category: selectedOption,
-      url: data.url,
-      yoursite: data.yoursite,
-      facebook: data.facebook,
-      twitter: data.twitter,
+      url: normalizeUrl(data.url),
+      yoursite: normalizeUrl(data.yoursite),
+      facebook: normalizeUrl(data.facebook),
+      twitter: normalizeUrl(data.twitter),
     };
 
     createCollection(collectionData);
@@ -278,8 +299,8 @@ export const CreateNFTCollectionForm = ({
               type="text"
               id="url"
               autoComplete="off"
-              {...register("url")}
-              placeholder={`eg. https://${process.env.NEXT_PUBLIC_BRAND_DOMAIN}/collection/skull-price`}
+              {...register("url", { setValueAs: normalizeUrl })}
+              placeholder={`eg. https://${brandDomainForUrl || "your-domain"}/collection/skull-price`}
               className={!formState.errors.url ? inputField : inputFieldError}
             />
           </div>
@@ -302,7 +323,7 @@ export const CreateNFTCollectionForm = ({
                     type="text"
                     id="yoursite"
                     autoComplete="off"
-                    {...register("yoursite")}
+                    {...register("yoursite", { setValueAs: normalizeUrl })}
                     placeholder="eg. https://yoursite.io"
                     className={
                       !formState.errors.yoursite ? linkField : linkFieldError
@@ -324,7 +345,7 @@ export const CreateNFTCollectionForm = ({
                     type="text"
                     id="facebook"
                     autoComplete="off"
-                    {...register("facebook")}
+                    {...register("facebook", { setValueAs: normalizeUrl })}
                     placeholder="eg. https://facebook.com/username"
                     className={
                       !formState.errors.facebook ? linkField : linkFieldError
@@ -347,7 +368,7 @@ export const CreateNFTCollectionForm = ({
                     type="text"
                     id="twitter"
                     autoComplete="off"
-                    {...register("twitter")}
+                    {...register("twitter", { setValueAs: normalizeUrl })}
                     placeholder="eg. https://X.com/username"
                     className={
                       !formState.errors.twitter ? linkField : linkFieldError

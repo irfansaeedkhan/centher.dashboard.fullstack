@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -14,16 +14,74 @@ const Citizenship: NextPageWithLayout = () => {
   const router = useRouter();
   const [showBuyCitizenshipModal, setShowBuyCitizenshipModal] = useState(false);
 
+  const isCitizen = loggedInUser?.membership.status === "citizen";
+
+  // Portfolio-library fix (2026-10-29): "View your passport" used to
+  // route to Settings Team Members, which has no passport card or modal
+  // — a dead end. No passport view existed anywhere in code, so the
+  // citizenship page itself now carries the passport section below, and
+  // every "view passport" entry point routes here (?view=passport).
+  useEffect(() => {
+    if (router.query.view === "passport" && isCitizen) {
+      document
+        .getElementById("passport")
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [router.query.view, isCitizen]);
+
   const handleShowBuyCitizenshipModal = () => {
-    if (loggedInUser?.membership.status === "citizen") {
-      router.push(AppRoutes.settings.citizen.team_members);
+    if (isCitizen) {
+      document
+        .getElementById("passport")
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
       return;
     }
     setShowBuyCitizenshipModal(true);
   };
 
   return (
-    <div className="flex min-h-[calc(100vh-60px-64px)] w-full items-center">
+    <div className="flex min-h-[calc(100vh-60px-64px)] w-full flex-col items-center">
+      {isCitizen && loggedInUser && (
+        <section
+          id="passport"
+          aria-label="Citizen Passport"
+          className="w-full max-w-[544px] rounded-2xl border border-gray-shade-3 bg-background-shade-3 p-6"
+        >
+          <p className="text-xs font-semibold uppercase tracking-widest text-gray-shade-7">
+            Citizen Passport
+          </p>
+          <div className="mt-4 flex items-center gap-4">
+            {loggedInUser.profile_image && (
+              <Image
+                src={loggedInUser.profile_image}
+                alt={loggedInUser.display_name}
+                width={56}
+                height={56}
+                className="h-14 w-14 rounded-full object-cover"
+              />
+            )}
+            <div className="min-w-0">
+              <p className="truncate text-lg font-semibold text-white">
+                {loggedInUser.display_name}
+              </p>
+              <p className="text-sm text-gray-shade-7">
+                Status:{" "}
+                <span className="font-semibold text-white">Citizen</span>
+              </p>
+            </div>
+          </div>
+          <p className="mt-4 text-sm text-gray-shade-7">
+            This passport unlocks premium features: Staking as a Service,
+            Create Collections, Premium Chat Service, Advertising and more.
+          </p>
+          <Link
+            href={AppRoutes.settings.citizen.team_members}
+            className="mt-4 inline-block text-sm font-semibold text-gradient"
+          >
+            Manage team members →
+          </Link>
+        </section>
+      )}
       <div className="relative flex h-full w-full items-center justify-center bg-[url('/images/comingsoon.png')] bg-top bg-no-repeat">
         <div className="flex flex-col items-center justify-center gap-5 pt-[13rem] fsm:mt-0">
           <div>
