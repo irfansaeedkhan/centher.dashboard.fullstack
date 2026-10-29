@@ -103,8 +103,17 @@ export const useFeedStore = create<FeedStore>()(
 
           const { data } = await axiosApi369x.get(url);
 
+          // Round 2 (deleted placeholders, first-load hardening): the
+          // feed page already filters status "deleted" at render, but
+          // that leaves the invariant to one render path. Filter at
+          // ingest too, so no consumer of this store can ever render
+          // a deleted top-level post. Reply tombstones are unaffected:
+          // they live in the single-post / my-post stores, never here.
+          const incoming = (data.posts ?? []).filter(
+            (post: CompletedPost) => (post.status as string) !== "deleted"
+          );
           set((state) => {
-            const filteredPosts = data.posts.filter(
+            const filteredPosts = incoming.filter(
               (post: CompletedPost) =>
                 !state.posts.some((statePost) => statePost._id === post._id)
             );

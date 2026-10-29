@@ -64,10 +64,22 @@ export const VoiSpaceFeedCard: React.FC<prop> = ({ isRendered }: prop) => {
           return;
         }
         const devices = await navigator.mediaDevices.enumerateDevices();
+        let hasAudioInput = devices.some((d) => d.kind === "audioinput");
+        // Round 2: enumeration alone cannot prove capture works, but a
+        // denied microphone permission proves it cannot work. Denied
+        // hides the button even when a device is listed; any other
+        // state (prompt / granted / query unsupported) keeps the
+        // enumeration result. No permission prompt is ever triggered.
+        try {
+          const permission = await navigator.permissions?.query?.({
+            name: "microphone",
+          } as PermissionDescriptor);
+          if (permission?.state === "denied") hasAudioInput = false;
+        } catch {
+          // Permissions API unsupported: keep the enumeration result.
+        }
         if (!cancelled) {
-          setAudioAvailable(
-            devices.some((d) => d.kind === "audioinput")
-          );
+          setAudioAvailable(hasAudioInput);
         }
       } catch {
         if (!cancelled) setAudioAvailable(false);

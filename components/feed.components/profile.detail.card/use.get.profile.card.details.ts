@@ -11,6 +11,7 @@ export const useGetProfileCardDetails = (user: User) => {
   const { profileCard, setProfileCard, markProfileCardLoading } =
     useProfileCardStore();
   const lastUserIdRef = useRef<string | null>(null);
+  const lastAuthRef = useRef<boolean | null>(null);
 
   useEffect(() => {
     const userId = user._id;
@@ -26,6 +27,18 @@ export const useGetProfileCardDetails = (user: User) => {
         lastUserIdRef.current = userId;
         markProfileCardLoading();
       }
+      // Round 2 (stats flash 0, first-load window): this effect also
+      // re-runs when the session object identity changes, e.g. the
+      // anonymous -> authenticated flip right after login. A card
+      // fetched before auth resolved must not keep rendering as real
+      // counts, so an auth-state flip is treated like a user change:
+      // show "--" until the authed refetch lands. Plain revalidations
+      // (truthy -> truthy) do not flash.
+      const authed = !!loggedInUser;
+      if (lastAuthRef.current !== null && lastAuthRef.current !== authed) {
+        markProfileCardLoading();
+      }
+      lastAuthRef.current = authed;
       let cancelled = false;
       (async () => {
         try {

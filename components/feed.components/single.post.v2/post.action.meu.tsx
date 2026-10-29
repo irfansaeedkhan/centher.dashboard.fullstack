@@ -80,6 +80,13 @@ export const PostActionMenu: React.FC<Props> = ({
             e.stopPropagation();
             setIsOpen((prev) => !prev);
           }}
+          // Round 2 (Escape must close): the document-level Escape
+          // listener in the effect above already exists; this
+          // focus-local handler is a second path so Escape closes the
+          // menu even when focus sits on the toggle itself.
+          onKeyDown={(e) => {
+            if (e.key === "Escape" && isOpen) setIsOpen(false);
+          }}
         >
           <BsThreeDots className="h-6 w-6 fill-gray-shade-7" />
         </button>

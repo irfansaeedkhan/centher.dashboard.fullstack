@@ -72,14 +72,25 @@ const LaunchpadList: NextPageWithLayout = () => {
         })
       );
 
-      // Portfolio-library fix (Centher item 2): the API can return the
-      // same project id more than once (6 cards, 4 unique projects).
-      // Display dedupe only, by project id, keeping the first occurrence;
-      // seeded data is never deleted.
-      const seenIds = new Set<string>();
+      // Round 2 (launchpad duplicates): round 1 deduped by item.id, but
+      // the REST rows carry distinct ids even for the same project, so
+      // that key never collided and duplicates survived (6 cards, 4
+      // unique projects on main). The rows also carry no round
+      // identity at all, and the card's currentRound/totalRounds are
+      // synthetic (live -> 1, else 0; total always 1), so this list
+      // models projects, not rounds: dedupe by project name + symbol,
+      // keeping the first occurrence. Display dedupe only; seeded data
+      // is never deleted. If two rows with one symbol ever prove to be
+      // genuinely distinct rounds, the API needs a round field first —
+      // none exists in this payload to key on.
+      const seenProjects = new Set<string>();
       const deduped = mapped.filter((item) => {
-        if (seenIds.has(item.id)) return false;
-        seenIds.add(item.id);
+        const key =
+          item.token_name || item.token_symbol
+            ? `${item.token_name}::${item.token_symbol}`
+            : item.id;
+        if (seenProjects.has(key)) return false;
+        seenProjects.add(key);
         return true;
       });
 

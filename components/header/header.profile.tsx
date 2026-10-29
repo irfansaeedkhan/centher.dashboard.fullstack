@@ -1,5 +1,4 @@
 import React, { useRef, useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import Image from "next/image";
 import Link from "next/link";
 import toast from "react-hot-toast";
@@ -40,7 +39,6 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
   onOpen,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
-  const router = useRouter();
   const { user: loggedInUser } = useUser();
   const { unreadTotal: unreadConversations } = useChatConversations();
   const [unreadNotifications, setUnreadNotifications] = React.useState(0);
@@ -70,6 +68,18 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
   };
 
   useOnClickOutside(ref, handleClickOutside);
+
+  // Round 2 (menus must close on Escape): the avatar menu previously
+  // had only an outside-click close, so Escape left it open. This
+  // menu is mounted only while open, so the listener lifetime is the
+  // open lifetime.
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClickOutside();
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [onClickOutside]);
 
   useEffect(() => {
     if (!connectedAddress || !loggedInUser) {
@@ -159,34 +169,44 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
         <></>
       )}
       <div className="border-b border-gray-shade-border-color p-4 ">
-        <Button
-          title={
-            loggedInUser?.membership.status !== "citizen"
-              ? "Subscribe to Citizen Passport"
-              : "View my Citizen Passport"
-          }
-          onClick={
-            loggedInUser?.membership.status !== "citizen"
-              ? () => {
-                  onClickOutside();
-                  openBuyCitizenshipModal();
-                }
-              : () => {
-                  // Portfolio-library fix (2026-10-29): this used to route
-                  // to Settings Team Members, which shows no passport card
-                  // or modal. It now opens the passport section on the
-                  // citizenship page (no passport view exists elsewhere).
-                  onClickOutside();
-                  router.push({
-                    pathname: AppRoutes.citizenship,
-                    query: { view: "passport" },
-                  });
-                }
-          }
-          variant="primary"
-          className="text-sm"
-          borderRounded="10px"
-        />
+        {loggedInUser?.membership.status !== "citizen" ? (
+          <Button
+            title="Subscribe to Citizen Passport"
+            onClick={() => {
+              onClickOutside();
+              openBuyCitizenshipModal();
+            }}
+            variant="primary"
+            className="text-sm"
+            borderRounded="10px"
+          />
+        ) : (
+          // Round 2 (passport navigation): the citizen action is a
+          // declarative Link, like every other working menu item, so
+          // navigation no longer depends on the Button onClick +
+          // router.push ordering. Destination unchanged:
+          // /citizenship?view=passport, the real passport section
+          // built in round 1. Gradient matches the primary button
+          // palette (the button CSS module is button-element
+          // qualified, so the same gradient is applied inline here).
+          <Link
+            href={{
+              pathname: AppRoutes.citizenship,
+              query: { view: "passport" },
+            }}
+            onClick={onClickOutside}
+            className="relative flex cursor-pointer items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition duration-100 ease-in-out"
+            style={{
+              backgroundImage:
+                "linear-gradient(90deg, #21bf7f 0%, #115dcb 100%)",
+              borderRadius: "10px",
+            }}
+          >
+            <span className="relative text-white">
+              View my Citizen Passport
+            </span>
+          </Link>
+        )}
       </div>
       <div className="border-b border-gray-shade-border-color py-3">
         <Link

@@ -127,10 +127,12 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
           <div className="flex w-full items-center justify-between gap-3">
             <p className="text-sm text-gray-shade-14">Lockup Time:</p>
             <p className="text-sm font-medium text-white">
-              {/* QA-fix: lockup_time can be "-" (unknown) — never render NaN. */}
+              {/* QA-fix: lockup_time can be "-" (unknown) — never render NaN.
+                  Round 2: an unknown lockup reads "Not available", like
+                  the detail page, not a bare dash. */}
               {Number.isFinite(Number(lockup_time))
                 ? `${Number(lockup_time) * 30} days`
-                : "—"}
+                : "Not available"}
             </p>
           </div>
           <div className="flex w-full items-center justify-between gap-3">
@@ -190,7 +192,9 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
           </p>
           {status === "ended" || !targetDate ? (
             // QA-fix: no valid target date — never render a 0:0:0:0 countdown.
-            <p className={textActive}>--</p>
+            // Round 2: an absent sale window reads "Not available", like
+            // the detail page, not a bare "--".
+            <p className={textActive}>Not available</p>
           ) : (
             <Countdown date={targetDate} renderer={countdownRenderer} />
           )}
@@ -220,9 +224,10 @@ const countdownRenderer: CountdownRendererFn = ({
   // Portfolio-library fix (Centher item 3): a target date in the past
   // (e.g. an upcoming card whose start_date is the creation timestamp)
   // used to render a misleading 0:0:0:0 countdown. A finished countdown
-  // has no target to count to, so render the unavailable marker instead.
+  // has no target to count to, so render "Not available" instead,
+  // consistent with the detail page.
   if (completed) {
-    return <p className={textActive}>—</p>;
+    return <p className={textActive}>Not available</p>;
   }
   return (
     <div className="flex">
