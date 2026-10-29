@@ -9,11 +9,26 @@ interface Props {
 
 const SingleFaq: FC<Props> = ({ faq }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const toggle = () => setIsOpen((prev) => !prev);
   return (
+    // Portfolio-library fix (Centher item 5): the whole row expands /
+    // collapses, not just the plus icon. The row is a keyboard-operable
+    // button region (Enter/Space) with aria-expanded; the icon keeps
+    // its own click handler for the same toggle.
     <div
       key={faq.id}
+      role="button"
+      tabIndex={0}
+      aria-expanded={isOpen}
+      onClick={toggle}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          toggle();
+        }
+      }}
       className={clsx(
-        "flex h-auto min-h-[86px] w-full justify-between gap-2 rounded-xl border border-gray-shade-3 bg-background-shade-3 px-4 py-4 fsm:rounded-3xl fsm:px-8",
+        "flex h-auto min-h-[86px] w-full cursor-pointer justify-between gap-2 rounded-xl border border-gray-shade-3 bg-background-shade-3 px-4 py-4 fsm:rounded-3xl fsm:px-8",
         isOpen ? "" : "items-center"
       )}
     >
@@ -31,12 +46,20 @@ const SingleFaq: FC<Props> = ({ faq }) => {
       {isOpen ? (
         <FiMinus
           className="flex-shrink-0 cursor-pointer text-base text-white"
-          onClick={() => setIsOpen(false)}
+          onClick={(e) => {
+            // The row itself toggles on click; stop the icon click
+            // bubbling up or it would toggle twice (a no-op).
+            e.stopPropagation();
+            toggle();
+          }}
         />
       ) : (
         <FiPlus
           className="flex-shrink-0 cursor-pointer text-base text-white"
-          onClick={() => setIsOpen(true)}
+          onClick={(e) => {
+            e.stopPropagation();
+            toggle();
+          }}
         />
       )}
     </div>

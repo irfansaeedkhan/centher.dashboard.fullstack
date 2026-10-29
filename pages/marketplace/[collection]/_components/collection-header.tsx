@@ -350,14 +350,16 @@ export const CollectionHeader: React.FC<Props> = ({
                 <div className="text-left fmd:text-center">
                   <h4 className={detailsCardTitle}>Floor Price</h4>
                   <h5 className={detailsCardValue}>
-                    $
                     {(() => {
                       const floor =
                         Number(collection?.stats?.floorPrice ?? 0) ||
                         Number(collectionAdditionalInfo?.minPrice ?? 0);
-                      return floor > 0
-                        ? formatNumber(formatBNB2USD(floor, bnbPrice))
-                        : 0;
+                      // No listed floor exists -> never render a fake $0.
+                      // A non-zero floor with no price feed renders
+                      // "USD unavailable" (see usd-value.ts).
+                      if (floor <= 0) return "—";
+                      if (bnbPrice <= 0) return "USD unavailable";
+                      return `$${formatNumber(formatBNB2USD(floor, bnbPrice))}`;
                     })()}
                   </h5>
                 </div>
@@ -371,13 +373,16 @@ export const CollectionHeader: React.FC<Props> = ({
                 <div className="text-left fmd:text-center">
                   <h4 className={detailsCardTitle}>Total Volume</h4>
                   <h5 className={detailsCardValue}>
-                    $
-                    {formatNumber(
-                      collection?.tradingVolumn &&
-                        Number(collection.tradingVolumn) > 0
-                        ? formatBNB2USD(collection.tradingVolumn, bnbPrice)
-                        : 0
-                    )}
+                    {(() => {
+                      const volume = Number(collection?.tradingVolumn ?? 0);
+                      // Zero volume is genuinely $0; a non-zero volume with
+                      // no price feed is "USD unavailable", never a fake $0.
+                      if (volume <= 0) return "$0";
+                      if (bnbPrice <= 0) return "USD unavailable";
+                      return `$${formatNumber(
+                        formatBNB2USD(collection.tradingVolumn, bnbPrice)
+                      )}`;
+                    })()}
                   </h5>
                 </div>
               </div>

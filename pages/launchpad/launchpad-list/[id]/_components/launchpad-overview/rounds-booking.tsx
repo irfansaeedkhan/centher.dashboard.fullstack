@@ -19,6 +19,8 @@ export const RoundsBooking: React.FC<PresaleDataProps> = ({
   tokenPurchaseWithBNB,
   tokenPurchaseWithBUSD,
   fundType,
+  maxTokensToSell,
+  totalPurchasesInBuyingToken,
 }) => {
   const thisRound =
     currentRound > -1 ? currentRound - 1 : Number(roundDeep) - 1;
@@ -48,6 +50,29 @@ export const RoundsBooking: React.FC<PresaleDataProps> = ({
     100;
 
   percentSoldOut = Number(percentSoldOut) / 1e18;
+
+  // Portfolio-library fix (Centher item 3): with no per-token price the
+  // purchase-row math above is 0/0 = NaN, so the bar used to render a
+  // "NaN%" width while the list card showed real raised-vs-cap
+  // progress. Derive progress from the fields that exist instead:
+  // raised (totalPurchasesInBuyingToken) vs soft cap (maxTokensToSell,
+  // plain backend units), clamped to 0-100. The totals row below shows
+  // the same derived pair in that case, so bar and numbers agree.
+  const softCapPlain = Number(maxTokensToSell);
+  const raisedPlain = Number(totalPurchasesInBuyingToken);
+  const useDerivedProgress =
+    !Number.isFinite(percentSoldOut) || tokenSellForThisRound <= 0;
+  if (useDerivedProgress && softCapPlain > 0) {
+    percentSoldOut = Math.min(
+      100,
+      Math.max(0, (raisedPlain / softCapPlain) * 100)
+    );
+  }
+  // Degenerate case (no cap, no price): keep the bar width valid CSS
+  // instead of "NaN%".
+  if (!Number.isFinite(percentSoldOut)) {
+    percentSoldOut = 0;
+  }
 
   const currentTime = Number((Date.now() / 1000).toFixed());
   let timeToShow;
@@ -153,15 +178,19 @@ export const RoundsBooking: React.FC<PresaleDataProps> = ({
           </div>
           <div className="flex items-center justify-between gap-3 text-xs font-medium text-gray-shade-14">
             <p>
-              {(Number(totalPurchaseInQuote) / 1e18).toFixed(
-                purchaseThrough === "BNB" ? 4 : 0
-              )}{" "}
+              {useDerivedProgress && softCapPlain > 0
+                ? `${raisedPlain} `
+                : `${(Number(totalPurchaseInQuote) / 1e18).toFixed(
+                    purchaseThrough === "BNB" ? 4 : 0
+                  )} `}
               {purchaseThrough}
             </p>
             <p>
-              {Number(tokenSellForThisRound / 1e18).toFixed(
-                purchaseThrough === "BNB" ? 4 : 0
-              )}{" "}
+              {useDerivedProgress && softCapPlain > 0
+                ? `${softCapPlain} `
+                : `${Number(tokenSellForThisRound / 1e18).toFixed(
+                    purchaseThrough === "BNB" ? 4 : 0
+                  )} `}
               {purchaseThrough}
             </p>
           </div>
@@ -186,7 +215,14 @@ const countdownRenderer: CountdownRendererFn = ({
   hours,
   minutes,
   seconds,
+  completed,
 }) => {
+  // Portfolio-library fix (Centher item 3): a finished countdown (e.g.
+  // the adapter's created-at + 30 days window already passed) must not
+  // render misleading 0 DAYS / 0 HOURS / 0 MIN / 0 SEC.
+  if (completed) {
+    return <p className={textActive}>—</p>;
+  }
   return (
     <div className="flex gap-5">
       <div className="flex flex-col items-center">

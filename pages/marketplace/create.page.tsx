@@ -19,6 +19,7 @@ import { BlockchainWrite } from "@/web3/blockchain";
 import { BlockchainConfig } from "@/web3/blockchain/config";
 import { useWallet } from "@/web3/hooks/use.wallet";
 import { INFTData } from "./_components/create.nft.form";
+import { formatUsdFromBnb } from "./_components/usd-value";
 import { UploadNFT, CreateNFTForm } from "./_components";
 
 enum ModalType {
@@ -187,9 +188,8 @@ const CreateNFT: NextPageWithLayout = () => {
               {normalizeValue(nftData?.price)} BNB{" "}
               <span className="text-gray-shade-2 ">
                 {" "}
-                =
                 <span className="font-normal">
-                  ${Number((nftData?.price * bnbPrice).toFixed(5))}
+                  {formatUsdFromBnb(nftData?.price, bnbPrice)}
                 </span>
               </span>
             </h6>

@@ -36,13 +36,30 @@ const adaptToPresale = (lp: RestLaunchpadDetail): PresaleDataType => {
     Math.floor(Number(v) || 0).toString();
   const softCap = intStr(lp.soft_cap);
   const raised = intStr(lp.raised);
+  // Portfolio-library fix (Centher item 3): the backend exposes ONLY
+  // raised / soft_cap / status / created_at — no total supply, no hard
+  // cap, no vesting months, no min/max buy. The old adapter filled those
+  // with "0" (and the soft cap with a plain number the overview then
+  // divided by 1e18), so detail showed total supply / soft cap / hard
+  // cap all 0, vesting 0 months, minimum buy 0, and a tiny maximum buy
+  // despite a real raised-vs-cap progress. Honest mapping instead:
+  // - Soft cap is real: the overview renders it via formatUnits(..., 18),
+  //   so it is stored wei-scaled (plain value * 1e18, exact for the
+  //   integer strings above) and renders as the true cap.
+  // - Total supply, hard cap, vesting, min/max buy are genuinely
+  //   missing: empty strings, which the overview renders as
+  //   "Not available" instead of a misleading 0. Nothing is invented.
+  // - maxTokensToSell keeps the plain soft cap so the bookings progress
+  //   bar can derive raised-vs-cap progress (see rounds-booking).
+  const toWei = (plainInt: string) =>
+    plainInt === "0" ? "0" : `${plainInt}${"0".repeat(18)}`;
   return {
     id: lp.id,
     token: lp.id,
     creator: "",
     owner: "",
     fundType: 0,
-    minTokensToSell: "0",
+    minTokensToSell: toWei(softCap),
     maxTokensToSell: softCap,
     isRefSupport: false,
     levelOne: "0",
@@ -53,7 +70,7 @@ const adaptToPresale = (lp: RestLaunchpadDetail): PresaleDataType => {
     levelSix: "0",
     coinFeeRate: "0",
     tokenFeeRate: "0",
-    releaseMonth: "0",
+    releaseMonth: "",
     refundAmount: "0",
     metadata: "",
     isActive: lp.status === "live",
@@ -66,8 +83,8 @@ const adaptToPresale = (lp: RestLaunchpadDetail): PresaleDataType => {
         startTime: String(createdAtSec),
         endTime: String(endAtSec),
         lockMonths: "0",
-        minContribution: "0",
-        maxContribution: softCap,
+        minContribution: "",
+        maxContribution: "",
         tokensToSell: softCap,
         pricePerToken: "0",
       },

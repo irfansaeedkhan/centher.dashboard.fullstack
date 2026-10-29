@@ -65,6 +65,7 @@ export const NFTRightSideComponent: React.FC<Props> = ({
   const copyShareUrl = async () => {
     await copyText(shareUrl);
     toast.success("NFT link copied!");
+    setTogglePop(false);
   };
   // ref for toggle function
   const toggleContainerRef = useRef<HTMLDivElement>(null);
@@ -81,31 +82,46 @@ export const NFTRightSideComponent: React.FC<Props> = ({
       <div className={`flex items-end justify-between fmd:items-start`}>
         <h1 className={title}>{nft.ipfs_metadata.name}</h1>
         <div ref={toggleContainerRef} className={`relative`}>
-          <button onClick={togglePopFunc} className="fxl:translate-y-[14px]">
+          <button
+            onClick={togglePopFunc}
+            aria-expanded={togglePop}
+            aria-label="Share this NFT"
+            className="fxl:translate-y-[14px]"
+          >
             <ShareBigIcon />
           </button>
-          <div
-            className={clsx(
-              `absolute right-0 top-6 hidden w-[240px] overflow-hidden rounded-10px bg-black-shade-12 shadow-sm`,
-              togglePop && "z-50 !block"
-            )}
-          >
-            <button onClick={copyShareUrl} className={toggleListBtn}>
-              <LinkIcon className={toggleListIcons} /> Copy link
-            </button>
+          {/* Portfolio-library fix (Centher item 6): the old popup was
+              shown/hidden by toggling `hidden` against `!block`, so a
+              click produced no visible change. Render it conditionally
+              instead, so open state and visible state cannot disagree,
+              and close it once an option is chosen. */}
+          {togglePop && (
+            <div className="absolute right-0 top-6 z-50 w-[240px] overflow-hidden rounded-10px bg-black-shade-12 shadow-sm">
+              <button onClick={copyShareUrl} className={toggleListBtn}>
+                <LinkIcon className={toggleListIcons} /> Copy link
+              </button>
 
-            <WhatsappShareButton url={shareUrl} className="w-full">
-              <span className={toggleListBtn}>
-                <SiWhatsapp className={toggleListIcons} /> Share on whatsapp
-              </span>
-            </WhatsappShareButton>
+              <WhatsappShareButton
+                url={shareUrl}
+                className="w-full"
+                onClick={() => setTogglePop(false)}
+              >
+                <span className={toggleListBtn}>
+                  <SiWhatsapp className={toggleListIcons} /> Share on whatsapp
+                </span>
+              </WhatsappShareButton>
 
-            <TwitterShareButton url={shareUrl} className="w-full">
-              <span className={toggleListBtn}>
-                <XIcon className={toggleListIcons} /> Share on twitter
-              </span>
-            </TwitterShareButton>
-          </div>
+              <TwitterShareButton
+                url={shareUrl}
+                className="w-full"
+                onClick={() => setTogglePop(false)}
+              >
+                <span className={toggleListBtn}>
+                  <XIcon className={toggleListIcons} /> Share on twitter
+                </span>
+              </TwitterShareButton>
+            </div>
+          )}
         </div>
       </div>
 

@@ -7,9 +7,9 @@ import { BNBIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import {
   formatAddress,
-  formatBNB2USD,
   formatEther2Number,
 } from "@/utils/format.address";
+import { formatUsdFromWei } from "./usd-value";
 import TrxInProgressModal from "@/utils/modal/trx-modal";
 import MessageModal from "@/utils/modal/message-modal";
 import SuccessMessageModal from "@/utils/modal/success-modal";
@@ -252,7 +252,7 @@ export const AuctionNFTBuyerDescription: React.FC<Props> = ({
           <h5 className={`text-base font-bold text-white`}>
             {`${normalizeValue(formatEther2Number(price))} BNB`}
           </h5>
-          <h6 className={greyTxt}> =${formatBNB2USD(price, bnbPrice)}</h6>
+          <h6 className={greyTxt}> {formatUsdFromWei(price, bnbPrice)}</h6>
         </div>
       </div>
       <div className={greyBoxContainer}>

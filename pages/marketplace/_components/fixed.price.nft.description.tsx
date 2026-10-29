@@ -6,7 +6,8 @@ import { IModalProps } from "@/components/modal/standard.modal";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
-import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
+import { formatEther2Number } from "@/utils/format.address";
+import { formatUsdFromWei } from "./usd-value";
 import TrxInProgressModal from "@/utils/modal/trx-modal";
 import MessageModal from "@/utils/modal/message-modal";
 import SuccessMessageModal from "@/utils/modal/success-modal";
@@ -286,7 +287,7 @@ export const FixedPriceNFTDescription: React.FC<Props> = ({
           </div>
           <h6 className={greyTxt}>
             {" "}
-            =${formatBNB2USD(nft.listInfo.price, bnbPrice)}
+            {formatUsdFromWei(nft.listInfo.price, bnbPrice)}
           </h6>
         </div>
       </div>

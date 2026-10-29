@@ -43,7 +43,6 @@ export const PresaleData: React.FC<PresaleDataProps> = ({
   description,
   token,
   roundInfos,
-  maxTokensToSell,
   minTokensToSell,
   releaseMonth,
   presaleActive,
@@ -216,11 +215,10 @@ export const PresaleData: React.FC<PresaleDataProps> = ({
           </div>
           <div className={mainDiv}>
             <div className={textLeft}>Total supply</div>
-            <div className={textRight}>
-              {Number(normalizeValue(formatUnits(maxTokensToSell, 18))).toFixed(
-                fundType === 0 ? 4 : 0
-              )}
-            </div>
+            {/* Portfolio-library fix (Centher item 3): the backend has no
+                total-supply field, so this is genuinely unknown — never a
+                misleading 0. Do not derive it from the soft cap. */}
+            <div className={textRight}>Not available</div>
           </div>
           <div className={mainDiv}>
             <div className={textLeft}>Soft cap</div>
@@ -232,11 +230,10 @@ export const PresaleData: React.FC<PresaleDataProps> = ({
           </div>
           <div className={mainDiv}>
             <div className={textLeft}>Hard cap</div>
-            <div className={textRight}>
-              {Number(normalizeValue(formatUnits(maxTokensToSell, 18))).toFixed(
-                fundType === 0 ? 4 : 0
-              )}
-            </div>
+            {/* Portfolio-library fix (Centher item 3): the backend has no
+                hard-cap field — genuinely unknown, never a misleading 0
+                and never a copy of the soft cap. */}
+            <div className={textRight}>Not available</div>
           </div>
           <div className={mainDiv}>
             <div className={textLeft}>Presale start time</div>
@@ -257,7 +254,12 @@ export const PresaleData: React.FC<PresaleDataProps> = ({
           <div className={mainDiv}>
             <div className={textLeft}>Vesting Period</div>
             <div className={textRight}>
-              {releaseMonth} {releaseMonth === "1" ? "Month" : "Months"}
+              {/* Portfolio-library fix (Centher item 3): an empty
+                  releaseMonth means the backend has no vesting value —
+                  render it as unavailable, never "0 Months". */}
+              {releaseMonth
+                ? `${releaseMonth} ${releaseMonth === "1" ? "Month" : "Months"}`
+                : "Not available"}
             </div>
           </div>
           {/* <div className={mainDiv}>

@@ -7,9 +7,9 @@ import { BNBIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import {
   formatAddress,
-  formatBNB2USD,
   formatEther2Number,
 } from "@/utils/format.address";
+import { formatUsdFromWei } from "./usd-value";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import MessageModal from "@/utils/modal/message-modal";
 import TrxInProgressModal from "@/utils/modal/trx-modal";
@@ -252,7 +252,7 @@ export const AuctionNftDescription: React.FC<Props> = ({ nft, refetchNFT }) => {
           </h5>
           <h6 className={greyTxt}>
             {" "}
-            =${formatBNB2USD(nft.auctionInfo.highestBidPrice, bnbPrice)}
+            {formatUsdFromWei(nft.auctionInfo.highestBidPrice, bnbPrice)}
           </h6>
         </div>
       </div>

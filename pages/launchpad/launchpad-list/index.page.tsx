@@ -72,12 +72,23 @@ const LaunchpadList: NextPageWithLayout = () => {
         })
       );
 
+      // Portfolio-library fix (Centher item 2): the API can return the
+      // same project id more than once (6 cards, 4 unique projects).
+      // Display dedupe only, by project id, keeping the first occurrence;
+      // seeded data is never deleted.
+      const seenIds = new Set<string>();
+      const deduped = mapped.filter((item) => {
+        if (seenIds.has(item.id)) return false;
+        seenIds.add(item.id);
+        return true;
+      });
+
       if (sort === "asc") {
-        mapped.sort((a, b) => (a.token_name < b.token_name ? -1 : 1));
+        deduped.sort((a, b) => (a.token_name < b.token_name ? -1 : 1));
       } else if (sort === "dsc") {
-        mapped.sort((a, b) => (a.token_name < b.token_name ? 1 : -1));
+        deduped.sort((a, b) => (a.token_name < b.token_name ? 1 : -1));
       }
-      setProjects(mapped);
+      setProjects(deduped);
     } catch (e) {
       customLog(["development", "staging"], "failed to load launchpads", e);
       setProjects([]);

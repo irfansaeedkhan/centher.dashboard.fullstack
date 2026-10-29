@@ -16,6 +16,22 @@ export const getNFTListOfSingleCollection = async ({
   skip?: number;
 }): Promise<CFSNFT[]> => {
   try {
+    // Portfolio-library fix (Centher item 1): the collection UI filter
+    // vocabulary ("List"/"NON") is NOT the API vocabulary ("Sale"/
+    // "NotForSale"). The server treats any value other than "Sale" as
+    // not-listed, so the old pass-through made "Listed For Sale" return
+    // the UNLISTED items: with 5 items, 4 listed (header: 80%), the
+    // filter showed the 1 unlisted item. Translate here so the filter,
+    // the header listed %, and the items shown all derive from the same
+    // `listed` column. "Auction" has no server state (the DB marketplace
+    // has no auctions), so it is left untranslated rather than silently
+    // mapped onto listed items.
+    const apiSaleState =
+      saleState === "List"
+        ? "Sale"
+        : saleState === "NON"
+        ? "NotForSale"
+        : saleState;
     const { data } = await axiosCFS.get<{ nfts: CFSNFT[] }>(
       `/api/marketplace/nfts/${collection_address}`,
       {
@@ -23,7 +39,7 @@ export const getNFTListOfSingleCollection = async ({
           first: limit,
           skip,
           orderDir,
-          saleState,
+          saleState: apiSaleState,
         },
       }
     );

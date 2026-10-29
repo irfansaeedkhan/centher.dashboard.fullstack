@@ -3,7 +3,8 @@ import Link from "next/link";
 import clsx from "clsx";
 import cloneDeep from "clone-deep";
 import { AppRoutes } from "@/constants/app.routes";
-import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
+import { formatEther2Number } from "@/utils/format.address";
+import { formatUsdFromWei } from "./usd-value";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
@@ -79,7 +80,7 @@ export const NFTOffers: React.FC<Props> = ({ bids }) => {
                             )} BNB`}
                           </td>
                           <td className={td}>
-                            ${formatBNB2USD(item.price, bnbPrice)}
+                            {formatUsdFromWei(item.price, bnbPrice)}
                           </td>
                           <td className={td}>{month.toFixed(2)} month</td>
                           <td className={`${td} textGradient`}>
