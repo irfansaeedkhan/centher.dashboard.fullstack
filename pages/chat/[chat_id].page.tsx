@@ -219,7 +219,7 @@ const SingleChat: NextPageWithLayout = () => {
       <div
         ref={listRef}
         onScroll={handleListScroll}
-        className="customScrollbar flex-1 overflow-y-auto bg-[url(/images/chat-bg-with-centher-logo.png)] bg-cover bg-center px-4 py-4"
+        className="customScrollbar flex-1 overflow-y-auto bg-background-shade-1 bg-[url(/images/chat-bg-with-centher-logo.png)] bg-cover bg-center px-4 py-4"
       >
         {loadingOlder && (
           <p className="mb-2 text-center text-xs text-gray-shade-7">
@@ -227,14 +227,33 @@ const SingleChat: NextPageWithLayout = () => {
           </p>
         )}{" "}
         {loading ? (
-          <div className="flex h-full items-center justify-center">
-            <Image
-              src="/images/preloader.png"
-              alt="Loading"
-              width={48}
-              height={48}
-              className="h-12 w-12 object-cover"
-            />
+          // Portfolio-library fix (2026-10-29): never a blank/black pane
+          // while the first batch loads — skeleton bubbles on a solid
+          // background, instead of one small spinner over the dark bg image.
+          <div aria-busy="true" aria-label="Loading messages">
+            <p className="sr-only">Loading messages…</p>
+            {[
+              { mine: false, w: "w-3/5" },
+              { mine: true, w: "w-1/2" },
+              { mine: false, w: "w-2/5" },
+              { mine: true, w: "w-3/5" },
+              { mine: false, w: "w-1/2" },
+            ].map((row, i) => (
+              <div
+                key={i}
+                className={clsx(
+                  "mb-3 flex",
+                  row.mine ? "justify-end" : "justify-start"
+                )}
+              >
+                <div
+                  className={clsx(
+                    "h-12 animate-pulse rounded-2xl bg-elevation-2",
+                    row.w
+                  )}
+                />
+              </div>
+            ))}
           </div>
         ) : messages.length === 0 ? (
           <div className="flex h-full items-center justify-center">

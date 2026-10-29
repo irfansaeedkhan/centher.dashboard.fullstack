@@ -1,5 +1,4 @@
 import React from "react";
-import Image from "next/image";
 import { ChatPagesWrapper } from "@/components/all.pages.wrapper/chat.pages.wrapper";
 import { usePresenceHeartbeat } from "@/hooks/chat/useChat";
 import ChatSidebar from "./chat.sidebar";
@@ -15,32 +14,18 @@ type ChatLayoutProps = {
 export const ChatLayout: React.FC<ChatLayoutProps> = ({ children }) => {
   // Q24 presence: heartbeat for as long as any chat page is open.
   usePresenceHeartbeat();
-  const [loading, setLoading] = React.useState(true);
-  React.useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, []);
-
+  // Portfolio-library fix (2026-10-29): the old 1s fake preloader kept the
+  // thread unmounted after navigation, so the first open showed a blank
+  // right pane and only started fetching once the timer fired (a second
+  // navigation reused the mounted layout and looked instant). Render the
+  // sidebar + thread immediately so the thread fetch starts on first open;
+  // each pane shows its own loading state instead of a global gate.
   return (
     <ChatPagesWrapper pageTitle="Chat">
-      {loading ? (
-        <div className="flex h-[calc(100vh-60px)] w-full items-center justify-center">
-          <Image
-            src="/images/preloader.png"
-            alt="Preloader"
-            width={64}
-            height={64}
-            className="h-16 w-16 flex-shrink-0 object-cover"
-          />
-        </div>
-      ) : (
-        <div className="flex">
-          <ChatSidebar />
-          {children}
-        </div>
-      )}
+      <div className="flex">
+        <ChatSidebar />
+        {children}
+      </div>
     </ChatPagesWrapper>
   );
 };
