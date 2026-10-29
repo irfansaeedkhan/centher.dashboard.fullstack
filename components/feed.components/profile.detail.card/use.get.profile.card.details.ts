@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useProfileCardStore } from "@/store/profile.card.store";
 import { User } from "@/models/user";
 import { axiosApi369x } from "@/utils/axios";
@@ -10,15 +10,22 @@ export const useGetProfileCardDetails = (user: User) => {
   const { user: loggedInUser } = useUser();
   const { profileCard, setProfileCard, markProfileCardLoading } =
     useProfileCardStore();
+  const lastUserIdRef = useRef<string | null>(null);
 
   useEffect(() => {
     const userId = user._id;
 
     if (userId) {
       // Feed fix 2026-10-29 (stats flicker): mark stale BEFORE the
-      // fetch so no consumer renders the previous user's counts, or
-      // the initial 0s, as this user's counts.
-      markProfileCardLoading();
+      // fetch, but only when the profile actually changed. On a
+      // same-user refetch (e.g. session revalidation) the previous
+      // value is kept on screen instead of flashing to "--".
+      // A first mount, or a switch to another user, shows "--"
+      // until the new card loads — never the initial 0s.
+      if (lastUserIdRef.current !== userId) {
+        lastUserIdRef.current = userId;
+        markProfileCardLoading();
+      }
       let cancelled = false;
       (async () => {
         try {
@@ -40,8 +47,8 @@ export const useGetProfileCardDetails = (user: User) => {
           customLog(["development"], error);
           // Feed fix 2026-10-29: do NOT reset to initialProfileCard
           // here. Its zeros used to render as real counts on error.
-          // Leaving isLoaded false keeps consumers on "--".
-          if (!cancelled) markProfileCardLoading();
+          // Keep whatever was on screen (or "--" if nothing ever
+          // loaded); a failed refetch must not invent a 0.
         }
       })();
       return () => {
