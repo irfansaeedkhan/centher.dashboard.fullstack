@@ -69,17 +69,28 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
 
   useOnClickOutside(ref, handleClickOutside);
 
-  // Round 2 (menus must close on Escape): the avatar menu previously
-  // had only an outside-click close, so Escape left it open. This
-  // menu is mounted only while open, so the listener lifetime is the
-  // open lifetime.
+  // Round 3 (avatar menu Escape must close): round 2 added a
+  // bubble-phase document listener, but it had two fragilities. It
+  // depended on the parent's inline onClickOutside callback, a new
+  // identity on every Header render, so the listener was constantly
+  // torn down and re-added; and a React synthetic stopPropagation
+  // anywhere on the keydown path prevents a bubble-phase document
+  // listener from ever firing (React 17+ listens at the root, so
+  // stopping there swallows the event before it reaches document).
+  // Subscribe exactly once, through a ref that always holds the
+  // latest callback, on window in the capture phase, so this handler
+  // runs before any downstream handler can swallow the event. The
+  // menu is mounted only while open, so the listener lifetime is
+  // still the open lifetime.
+  const onClickOutsideRef = useRef(onClickOutside);
+  onClickOutsideRef.current = onClickOutside;
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClickOutside();
+      if (e.key === "Escape") onClickOutsideRef.current();
     };
-    document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
-  }, [onClickOutside]);
+    window.addEventListener("keydown", onKeyDown, true);
+    return () => window.removeEventListener("keydown", onKeyDown, true);
+  }, []);
 
   useEffect(() => {
     if (!connectedAddress || !loggedInUser) {

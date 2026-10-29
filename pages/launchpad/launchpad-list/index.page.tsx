@@ -83,11 +83,23 @@ const LaunchpadList: NextPageWithLayout = () => {
       // is never deleted. If two rows with one symbol ever prove to be
       // genuinely distinct rounds, the API needs a round field first —
       // none exists in this payload to key on.
+      // Round 3 (duplicates that display identically): round 2 keyed on
+      // the raw strings, but REST rows for one project can differ in
+      // ways the card never shows (trailing or double spaces, case),
+      // so visually identical pairs survived the raw key. Normalize
+      // the key (trim, collapse whitespace, casefold) so any pair
+      // that renders identically dedupes identically. Display text
+      // is untouched; only the key is normalized.
+      const projectKey = (name: string, symbol: string) => {
+        const norm = (s: string) =>
+          (s ?? "").trim().replace(/\s+/g, " ").toLowerCase();
+        return `${norm(name)}::${norm(symbol)}`;
+      };
       const seenProjects = new Set<string>();
       const deduped = mapped.filter((item) => {
         const key =
           item.token_name || item.token_symbol
-            ? `${item.token_name}::${item.token_symbol}`
+            ? projectKey(item.token_name, item.token_symbol)
             : item.id;
         if (seenProjects.has(key)) return false;
         seenProjects.add(key);

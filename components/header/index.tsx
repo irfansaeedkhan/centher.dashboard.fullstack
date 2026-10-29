@@ -120,6 +120,19 @@ const Header = () => {
               <div
                 ref={modalOpenerRef}
                 onClick={() => setOpenModal((prev) => !prev)}
+                // Round 3 (avatar menu Escape must close): focus-local
+                // second path, mirroring the post menu's round 2 fix.
+                // The old toggle was a plain div, so it could never
+                // receive focus and Escape had no local handler to
+                // land on. tabIndex makes the opening click focus the
+                // toggle, so a later Escape targets it and closes the
+                // menu even if the document-level listener is ever
+                // defeated. Closing an already-closed menu is a
+                // no-op, so this is safe when the menu is shut.
+                onKeyDown={(e) => {
+                  if (e.key === "Escape") setOpenModal(false);
+                }}
+                tabIndex={0}
                 role="button"
                 className="h-10 w-10 rounded-full"
               >
