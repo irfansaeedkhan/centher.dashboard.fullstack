@@ -1625,10 +1625,22 @@ export const createHonoApp = () => {
    */
   const handleProfileCard = async (c: any) => {
     const userId = z.string().min(1).parse(c.req.param("userId"));
+    // Feed fix 2026-10-29 (count lag after delete): soft-deleted
+    // posts (deletedAt set) used to still count here, so every
+    // profile-card refetch overwrote the client's optimistic
+    // decrement and the count "lagged" back to the pre-delete value
+    // — including when navigating feed -> profile after a delete.
+    // Deleted posts are not live posts, so they are excluded.
     const [{ count: postsCount }] = await db
       .select({ count: sql<number>`count(*)::int` })
       .from(posts)
-      .where(and(eq(posts.authorId, userId), eq(posts.isArchived, false)));
+      .where(
+        and(
+          eq(posts.authorId, userId),
+          eq(posts.isArchived, false),
+          isNull(posts.deletedAt)
+        )
+      );
     const [{ views: postsViews }] = await db
       .select({ views: sql<number>`coalesce(sum(${posts.viewCount}),0)::int` })
       .from(posts)
@@ -2421,6 +2433,7 @@ export const createHonoApp = () => {
         id: posts.id,
         viewCount: posts.viewCount,
         deletedAt: posts.deletedAt,
+        authorId: posts.authorId,
       })
       .from(posts)
       .where(eq(posts.id, post_id))
@@ -2430,6 +2443,15 @@ export const createHonoApp = () => {
     // automatically on scroll, so it returns the frozen count instead of
     // an error (the user is never stranded by an impression ping).
     if (existing!.deletedAt)
+      return c.json({ view_count: existing!.viewCount, post_id });
+    // Feed fix 2026-10-29 (owner views): the author's own view never
+    // counts, same frozen-count response as a tombstone. The client
+    // also skips the ping (SinglePostV2); this is defence in depth
+    // for any other caller.
+    if (
+      existing!.authorId &&
+      existing!.authorId.toLowerCase() === userId!.toLowerCase()
+    )
       return c.json({ view_count: existing!.viewCount, post_id });
 
     const viewDate = new Date().toISOString().slice(0, 10);
@@ -2463,6 +2485,22 @@ export const createHonoApp = () => {
     const { user_id } = z
       .object({ user_id: z.string().min(1) })
       .parse(await c.req.json());
+
+    // Feed fix 2026-10-29 (owner views): the owner's own visit never
+    // counts. Return the current count unchanged (same shape as the
+    // increment path). The client hook also skips the ping; this is
+    // defence in depth for any other caller.
+    const [existing] = await db
+      .select({ viewCount: profiles.viewCount })
+      .from(profiles)
+      .where(eq(profiles.userId, user_id))
+      .limit(1);
+    if (!existing) apiError("User not found", "NOT_FOUND", 404);
+    if (user_id.toLowerCase() === userId!.toLowerCase())
+      return c.json({
+        profile_views_count: existing!.viewCount,
+        user_id,
+      });
 
     const [updated] = await db
       .update(profiles)
