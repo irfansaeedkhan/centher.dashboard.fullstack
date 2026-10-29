@@ -6,7 +6,6 @@ import { BNBIcon, USDTIcon } from "@/assets/svgs";
 import { LaunchpadDataType } from "./launchpad-card-data";
 import { AppRoutes } from "@/constants/app.routes";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
-import { parseEther } from "ethers/lib/utils";
 export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
   id,
   token_name,
@@ -20,7 +19,6 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
   fundType,
   progress,
   currentRound,
-  minTokensToSell,
 }) => {
   const router = useRouter();
   // QA-fix round 2: start_date/end_date can be Invalid Date (truthy!) when the
@@ -36,6 +34,19 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
     rawTargetDate instanceof Date && !isNaN(rawTargetDate.getTime())
       ? rawTargetDate
       : undefined;
+  // Portfolio-library fix (Centher item 3): the REST API returns raised /
+  // soft_cap as plain numbers (e.g. "320000.00"), NOT wei. The old card
+  // divided them by 1e18 (rendering ~0) and showed the "Soft" row from
+  // minTokensToSell, which the list mapping hardcodes to 0. Render the
+  // plain-unit values directly.
+  const plainNumber = (value: unknown): string => {
+    const n = Number(
+      typeof value === "object" && value !== null && "toString" in value
+        ? value.toString()
+        : value
+    );
+    return Number.isFinite(n) ? String(Math.floor(n)) : "—";
+  };
   return (
     <div className="col-span-1 h-auto w-full rounded-3xl border border-gray-shade-3">
       <div className="flex h-[calc(100%-138px)] flex-col gap-4 bg-transparent p-5">
@@ -72,7 +83,7 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
                 {fundType === "BNB" ? <BNBIcon /> : <USDTIcon />}
               </span>
               <span>
-                {minTokensToSell.div(parseEther("1")).toString()} {fundType}
+                {plainNumber(soft_cap)} {fundType}
               </span>
             </p>
             <p className="text-sm leading-6 text-gray-shade-14">
@@ -100,10 +111,10 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
           <div className="mt-1">
             <div className="flex items-center justify-between gap-3 text-sm leading-6 text-gray-shade-14">
               <p>
-                {Math.floor(Number(currentPurchasesValue) / 1e18)} {fundType}
+                {plainNumber(currentPurchasesValue)} {fundType}
               </p>
               <p>
-                {Number(soft_cap) / 1e18} {fundType}
+                {plainNumber(soft_cap)} {fundType}
               </p>
             </div>
           </div>
@@ -204,7 +215,15 @@ const countdownRenderer: CountdownRendererFn = ({
   hours,
   minutes,
   seconds,
+  completed,
 }) => {
+  // Portfolio-library fix (Centher item 3): a target date in the past
+  // (e.g. an upcoming card whose start_date is the creation timestamp)
+  // used to render a misleading 0:0:0:0 countdown. A finished countdown
+  // has no target to count to, so render the unavailable marker instead.
+  if (completed) {
+    return <p className={textActive}>—</p>;
+  }
   return (
     <div className="flex">
       <h6 className={textActive}>{days}:</h6>
