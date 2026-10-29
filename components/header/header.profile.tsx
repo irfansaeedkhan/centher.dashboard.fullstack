@@ -172,8 +172,14 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
                   openBuyCitizenshipModal();
                 }
               : () => {
+                  // Portfolio-library fix (2026-10-29): this used to route
+                  // to Settings Team Members, which shows no passport card
+                  // or modal. It now opens the passport section on the
+                  // citizenship page (no passport view exists elsewhere).
+                  onClickOutside();
                   router.push({
-                    pathname: AppRoutes.settings.citizen.team_members,
+                    pathname: AppRoutes.citizenship,
+                    query: { view: "passport" },
                   });
                 }
           }
