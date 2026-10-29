@@ -506,7 +506,18 @@ export const NonNFTDescription: React.FC<Props> = ({
             )}
           </div>
           <p className={greyTxt}>
-            Listing and sending aren&apos;t available for marketplace items yet.
+            {/* Portfolio-library fix (Centher item 6): the old note
+                referenced sending even when no Send button is rendered
+                (blocklisted items hide it via `transferable`), which
+                read as a send dialog with no send button. The Send
+                dialog itself is deliberately NOT wired up: its submit
+                performs real chain writes (approve + transfer) with a
+                database uuid as the collection address, which must not
+                come back for marketplace items. So the note now names
+                only the actions actually shown, disabled, above it. */}
+            {transferable
+              ? "Listing and sending aren\u2019t available for marketplace items yet."
+              : "Listing isn\u2019t available for marketplace items yet."}
           </p>
         </div>
       ) : (
