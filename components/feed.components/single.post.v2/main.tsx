@@ -126,6 +126,15 @@ export const SinglePostV2: React.FC<Props> = ({
   // a 1-second dwell counts once; replies never ping.
   const isReplyCard =
     postType === "reply" || postType === "reply-w-parent-header";
+  // Feed fix 2026-10-29 (owner views): the author's own scroll-past
+  // must never count as audience growth. This is the single choke
+  // point — every caller (feed, profile, post detail) fires its view
+  // ping through onPostInViewport, so guarding here covers all of
+  // them. The server enforces the same rule as defence in depth.
+  const isOwnerCard =
+    !!loggedInUser &&
+    !!post.user?._id &&
+    loggedInUser._id.toLowerCase() === post.user._id.toLowerCase();
   const [currentPostRef, _currentPostInView, currentPostEntry] = useInView({
     threshold: 0,
   });
@@ -134,6 +143,7 @@ export const SinglePostV2: React.FC<Props> = ({
   useEffect(() => {
     if (
       isReplyCard ||
+      isOwnerCard ||
       !loggedInUser ||
       !currentPostInView ||
       post.viewed_by_loggedin_user
@@ -151,6 +161,7 @@ export const SinglePostV2: React.FC<Props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isReplyCard,
+    isOwnerCard,
     loggedInUser,
     currentPostInView,
     post._id,

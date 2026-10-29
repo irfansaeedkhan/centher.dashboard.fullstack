@@ -80,6 +80,13 @@ const ArchivedPosts: NextPageWithLayout = () => {
     }
   };
 
+  // Feed fix 2026-10-29: a deleted archived post is a tombstone,
+  // not something to manage from the archive list — hide it here
+  // (display only). Replies are not rendered on this page.
+  const visiblePosts = (posts ?? []).filter(
+    (post) => (post.status as string) !== "deleted"
+  );
+
   return (
     <>
       <BackButton />
@@ -87,7 +94,7 @@ const ArchivedPosts: NextPageWithLayout = () => {
         Items in your archive are only visible to you.
       </div>
       <div className="space-y-3">
-        {posts.map((post) => {
+        {visiblePosts.map((post) => {
           return (
             <div key={post._id}>
               <SinglePostV2
@@ -115,7 +122,7 @@ const ArchivedPosts: NextPageWithLayout = () => {
           );
         })}
 
-        {!!posts.length && <div ref={lastPostRef} />}
+        {!!visiblePosts.length && <div ref={lastPostRef} />}
 
         {(loading === "loading" || loading === "idle") && (
           <>
@@ -125,7 +132,7 @@ const ArchivedPosts: NextPageWithLayout = () => {
           </>
         )}
 
-        {loading === "loaded" && posts.length === 0 && (
+        {loading === "loaded" && visiblePosts.length === 0 && (
           <div>
             <div className="mt-[60px] flex justify-center">
               <ArchiveEmptyIcon />
