@@ -8,6 +8,7 @@ import { useProfileCardStore } from "@/store/profile.card.store";
 import { useFeedStore } from "@/store/feed.store";
 import { usePostEditorStore } from "@/store/post-editor-store";
 import { useSinglePostStore } from "@/store/single.post.store";
+import { useMyPostStore } from "@/store/my.post.store";
 import useUser from "@/hooks/use.user";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import {
@@ -51,6 +52,9 @@ const SinglePostPage: NextPageWithLayout = () => {
   } = useSinglePostStore();
 
   const feedStore = useFeedStore((state) => ({
+    removePost: state.removePost,
+  }));
+  const myPostStore = useMyPostStore((state) => ({
     removePost: state.removePost,
   }));
 
@@ -130,8 +134,16 @@ const SinglePostPage: NextPageWithLayout = () => {
       setActionError(null);
       await deletePost(postId);
       feedStore.removePost(postId);
-      // Decrement post count on profile card
-      useProfileCardStore.getState().decrementPostsCount();
+      // Feed fix 2026-10-29 (count lag): the old handler removed
+      // the post from the feed store only, so the profile list
+      // (my-post store) kept the deleted post until its next fetch
+      // returned it as a tombstone. Remove it there too.
+      myPostStore.removePost(postId);
+      // Decrement post count on profile card (owner-guarded in the
+      // store; a no-op while the card has not loaded).
+      useProfileCardStore
+        .getState()
+        .decrementPostsCount(firstPost?.user._id);
       router.replace(AppRoutes.feed.index);
     } catch (error: any) {
       setActionError(
