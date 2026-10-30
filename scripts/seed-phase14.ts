@@ -16,7 +16,7 @@ import { eq, and, like } from "drizzle-orm";
 import { collections, nfts, user } from "../db/schema";
 
 const url = readFileSync(
-  process.env.HOME + "/.neon-sociaket-db-url",
+  process.env.HOME + "/.neon-centher-db-url",
   "utf8"
 ).trim();
 const db = drizzle(neon(url));

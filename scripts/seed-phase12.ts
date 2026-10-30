@@ -301,7 +301,7 @@ async function main() {
     await ensurePost(
       sofia,
       "Launchpad Alpha filled its soft cap in 6 hours. The SocialFi narrative is real.",
-      [pic("centher-launchpad")]
+      [pic("sociaket-launchpad")]
     ),
     await ensurePost(
       kai,
@@ -311,7 +311,7 @@ async function main() {
     await ensurePost(
       kai,
       "Weekend voice room schedule is live — trading talk Friday, NFT showcase Saturday. See you there!",
-      [pic("centher-voice-room")]
+      [pic("sociaket-voice-room")]
     )
   );
   console.error(`Posts with images: ${seededPosts.length}`);
