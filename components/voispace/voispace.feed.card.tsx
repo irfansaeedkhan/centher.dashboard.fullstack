@@ -73,7 +73,7 @@ export const VoiSpaceFeedCard: React.FC<prop> = ({ isRendered }: prop) => {
         try {
           const permission = await navigator.permissions?.query?.({
             name: "microphone",
-          } as PermissionDescriptor);
+          } as unknown as PermissionDescriptor);
           if (permission?.state === "denied") hasAudioInput = false;
         } catch {
           // Permissions API unsupported: keep the enumeration result.
@@ -89,10 +89,7 @@ export const VoiSpaceFeedCard: React.FC<prop> = ({ isRendered }: prop) => {
     navigator.mediaDevices?.addEventListener?.("devicechange", checkAudio);
     return () => {
       cancelled = true;
-      navigator.mediaDevices?.removeEventListener?.(
-        "devicechange",
-        checkAudio
-      );
+      navigator.mediaDevices?.removeEventListener?.("devicechange", checkAudio);
     };
   }, [isRendered]);
 

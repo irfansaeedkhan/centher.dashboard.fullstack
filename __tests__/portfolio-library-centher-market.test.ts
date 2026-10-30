@@ -21,9 +21,7 @@ describe("Centher item 1: USD values never render a fake $0", () => {
   });
 
   test("a non-zero amount with no feed price is unavailable, not $0", () => {
-    expect(formatUsdFromWei("1000000000000000000", 0)).toBe(
-      "USD unavailable"
-    );
+    expect(formatUsdFromWei("1000000000000000000", 0)).toBe("USD unavailable");
     expect(formatUsdFromBnb(2, 0)).toBe("USD unavailable");
   });
 
@@ -50,7 +48,7 @@ describe("Centher item 1: USD values never render a fake $0", () => {
 describe("Centher items 2-3: launchpad list and detail honesty", () => {
   test("list dedupes by project id and renders plain-unit caps", () => {
     const list = read("pages/launchpad/launchpad-list/index.page.tsx");
-    expect(list).toMatch(/seenIds/);
+    expect(list).toMatch(/seenProjects/);
     const card = read(
       "pages/launchpad/launchpad-list/_components/launchpad-card.tsx"
     );
