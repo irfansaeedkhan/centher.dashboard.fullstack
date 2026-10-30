@@ -27,15 +27,15 @@ const BotTradingComingSoon: NextPageWithLayout = () => {
             Coming Soon
           </div>
           <div className="max-w-[300px] text-center text-sm text-gray-shade-7 md:max-w-[534px]">
-            Automate your trades with fast execution speed around the clock,
-            24/7
+            Put your trading on autopilot with quick fills at any hour, every
+            day of the week
           </div>
           <div className="max-w-[300px] text-center text-sm text-gray-shade-7 md:max-w-[534px]">
             <ul className="space-y-2">
-              <li>Easy set-up</li>
-              <li>Test bots</li>
-              <li>Lower Entry Price</li>
-              <li>Connect with APIs</li>
+              <li>Simple setup</li>
+              <li>Try bots first</li>
+              <li>Start small</li>
+              <li>Plug in your APIs</li>
             </ul>
           </div>
           <div className="max-w-[300px] text-center text-sm text-gray-shade-7 md:max-w-[534px]">

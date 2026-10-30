@@ -4,7 +4,7 @@ import { devtools } from "zustand/middleware";
 import type { CompletedPost, Post } from "@/models/post";
 import type { LoadingState } from "@/models/common";
 import { likePost } from "@/components/feed.components";
-import { axiosApi369x } from "@/utils/axios";
+import { axiosApi } from "@/utils/axios";
 import { customLog } from "@/utils/custom.log";
 
 import { useFeedStore } from "./feed.store";
@@ -108,8 +108,8 @@ export const useSinglePostStore = create<SinglePostStore>()(
         // Post-grill Q9: the two loads are decoupled — a replies
         // failure no longer takes the whole post page down with it.
         const [postResult, repliesResult] = await Promise.allSettled([
-          axiosApi369x.get(postUrl),
-          axiosApi369x.get(repliesUrl),
+          axiosApi.get(postUrl),
+          axiosApi.get(repliesUrl),
         ]);
 
         if (get().postId !== requestedPostId) return; // Q6: stale
@@ -183,7 +183,7 @@ export const useSinglePostStore = create<SinglePostStore>()(
                 cursor!
               )}&limit=${repliesLimit}`;
 
-          const { data } = await axiosApi369x.get(repliesUrl);
+          const { data } = await axiosApi.get(repliesUrl);
 
           // Q6: discard if the store moved on, or if a newer first
           // page landed while this page was in flight.

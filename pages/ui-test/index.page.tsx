@@ -1,6 +1,6 @@
 import { NextPage } from "next";
 
-import UserProfileCard from "../../components/voispace/shared/profile";
+import UserProfileCard from "../../components/sociaket-space/shared/profile";
 
 const UiTest: NextPage = () => {
   return (

@@ -14,7 +14,7 @@
  * Run every 2 minutes, e.g.:
  *   npx tsx scripts/bot-responder.ts
  *
- * The Neon URL is read from ~/.neon-centher-db-url (0600) and never printed.
+ * The Neon URL is read from ~/.neon-sociaket-db-url (0600) and never printed.
  */
 import { readFileSync } from "node:fs";
 import { homedir } from "node:os";
@@ -30,7 +30,7 @@ import { claimReply, releaseClaim, type SqlQuery } from "../lib/bots/claims";
 const REPLY_DELAY_SEC = 60;
 
 function dbUrl(): string {
-  const p = join(homedir(), ".neon-centher-db-url");
+  const p = join(homedir(), ".neon-sociaket-db-url");
   const url = readFileSync(p, "utf8").trim();
   if (!url) throw new Error("Empty DB URL file");
   return url;

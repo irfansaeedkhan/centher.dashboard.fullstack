@@ -27,17 +27,17 @@ const StakingComingSoon: NextPageWithLayout = () => {
             Staking As A Service!
           </div>
           <div className="max-w-[300px] text-center text-sm text-gray-shade-7 md:max-w-[534px]">
-            We are about to launch out Staking Service for businesses who want
-            to offer to their community the possibility to stake their coins and
-            get rewards based on APY specific to each project.
+            We are about to launch our Staking Service for businesses that want
+            to let their community stake coins and earn rewards, with APY set
+            separately for each project.
           </div>
           <div className="max-w-[300px] text-center text-sm text-gray-shade-7 md:max-w-[534px]">
-            Get a Business Account and become a{" "}
+            Open a Business Account and become a{" "}
             <Link className="text-gradient" href={AppRoutes.citizenship}>
               {process.env.NEXT_PUBLIC_BRAND_NAME} Citizen
             </Link>{" "}
-            to enjoy the premium packages offered to Citizens. Stay tuned for
-            more exciting news!
+            to unlock the premium packages made for Citizens. More news is on
+            the way!
           </div>
           <Link href={AppRoutes.feed.index}>
             <Button

@@ -8,7 +8,7 @@ import { LaunchpadDataType } from "./_components/launchpad-card-data";
 import { LaunchpadCard } from "./_components/launchpad-card";
 import { EmptyLaunchpad } from "@/assets/svgs/launchpad-v2";
 import { BigNumber } from "ethers";
-import { axiosApi369x } from "@/utils/axios/centher-api";
+import { axiosApi } from "@/utils/axios/sociaket-api";
 import { customLog } from "@/utils/custom.log";
 
 interface RestLaunchpad {
@@ -33,7 +33,7 @@ const LaunchpadList: NextPageWithLayout = () => {
     try {
       const type =
         list_type === "live" || list_type === "upcoming" ? list_type : "all";
-      const { data } = await axiosApi369x.get<{
+      const { data } = await axiosApi.get<{
         launchpads: RestLaunchpad[];
       }>("/api/launchpads", { params: { list_type: type } });
 

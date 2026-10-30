@@ -326,7 +326,7 @@ async function ensureMessage(
 async function main() {
   const demoUser = await ensureAuthUser(
     DEMO_EMAIL,
-    "Centher Demo",
+    "Sociaket Demo",
     DEMO_PASSWORD
   );
   const idsByUsername: Record<string, string> = { demo: demoUser.id };
@@ -346,7 +346,7 @@ async function main() {
         username: member.username,
         bio: member.bio,
         membership: member.membership,
-        avatarUrl: "/images/centher.logo.favicon.png",
+        avatarUrl: "/images/sociaket.logo.favicon.png",
         isBot: true,
         // Chat-grill Q20: freeze the role at seed time so a later bio edit
         // can't silently re-personality the bot.

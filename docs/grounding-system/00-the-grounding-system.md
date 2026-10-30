@@ -47,7 +47,7 @@ Behavior on failure: the output is flagged, not shipped. The checker returns the
 
 What it is not: a judge model. Judge scores (specificity, helpfulness, tone) are signal, not proof, and are always reported separately from the four deterministic gates. A high judge score never overrides a failed gate.
 
-Where it applies per app (each project plan names its own sets): file paths and task ids in DayMirror; medicines, tests, and patient record ids in Clinic; component and screen names in Centher; topics and question ids in Elite JS and Viva.
+Where it applies per app (each project plan names its own sets): file paths and task ids in DayMirror; medicines, tests, and patient record ids in Clinic; component and screen names in Sociaket; topics and question ids in Elite JS and Viva.
 
 ## Component G3: Model-call gateway (trace and content cache)
 
@@ -98,7 +98,7 @@ Gates per phase, in every plan:
 
 1. DayMirror first: the proving ground. The shared core (G1 script, G2 checker, G3 gateway) is built and proven here, where the crew and gates are most mature.
 2. Clinic second: the highest-stakes rollout, with the full roadmap in its own plan. G5 tenant isolation and G2 citation checks for the doctor-helper AI are the priority, ahead of any other component.
-3. Company OS / Viyacor, Centher, Elite JS, Viva after: each plan adopts the proven core and adds only its own sets, tenants, and call sites. No project rebuilds the core from scratch. No project waits for another project's phases; once the DayMirror core is proven, rollouts run in parallel in their own chats.
+3. Company OS / Viyacor, Sociaket, Elite JS, Viva after: each plan adopts the proven core and adds only its own sets, tenants, and call sites. No project rebuilds the core from scratch. No project waits for another project's phases; once the DayMirror core is proven, rollouts run in parallel in their own chats.
 
 ## Research notes folded into this system (2026-10-29)
 
@@ -112,5 +112,5 @@ Gates per phase, in every plan:
 - 00-the-grounding-system.md (this file): the shared system.
 - daymirror-plan.md: DayMirror proving-ground plan.
 - clinic-os-roadmap.md: full Clinic roadmap, tenant isolation first.
-- company-os-viyacor-plan.md, centher-plan.md, elite-js-plan.md, viva-plan.md: rollout plans per project.
+- company-os-viyacor-plan.md, sociaket-plan.md, elite-js-plan.md, viva-plan.md: rollout plans per project.
 - Each file is delivered as Markdown and PDF. Implementation starts in each project's own chat, from its plan, after the plans land.

@@ -1,6 +1,6 @@
 import { SerializedEditorState, SerializedLexicalNode } from "lexical";
 import toast from "react-hot-toast";
-import { axiosApi369x } from "@/utils/axios";
+import { axiosApi } from "@/utils/axios";
 import { AppError } from "@/utils/app-error";
 import { MediaFileNew } from "@/components/post-editor/shared/types";
 import {
@@ -106,7 +106,7 @@ export const createPosts = async ({
     }
 
     // Create posts
-    const response = await axiosApi369x.post(`/api/socials/posts`, {
+    const response = await axiosApi.post(`/api/socials/posts`, {
       replying_to,
       posts: postsToCreate,
     });

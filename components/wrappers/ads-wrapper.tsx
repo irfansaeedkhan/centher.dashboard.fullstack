@@ -12,7 +12,7 @@ const AdsWrapper: React.FC<Props> = ({ children }) => {
         <div className="flex h-12 w-12">
           <Image
             alt={`${process.env.NEXT_PUBLIC_BRAND_NAME}`}
-            src="/images/vibra-token.png"
+            src="/images/sponsor-token.png"
             width={48}
             height={48}
             className="h-12 w-12 flex-shrink-0 rounded-full object-cover"

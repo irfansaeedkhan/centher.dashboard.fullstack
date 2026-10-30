@@ -108,7 +108,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
       return;
     }
     if (maxCentherAmountToSell <= 0) {
-      toast.error("Max CENTHER amount to sell must be greater than zero.");
+      toast.error("Max SOCIAKET amount to sell must be greater than zero.");
       return;
     }
     // if(lockMonths <= 0) {
@@ -118,7 +118,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
 
     if (enableBusd) {
       if (centherPriceForBusd <= 0) {
-        toast.error("Centher price must be greater than zero.");
+        toast.error("Sociaket price must be greater than zero.");
         return;
       }
       if (minBusdAmountPerUser <= 0) {
@@ -135,7 +135,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
       }
     } else {
       if (centherPriceForNtr <= 0) {
-        toast.error("Centher price must be greater than zero.");
+        toast.error("Sociaket price must be greater than zero.");
         return;
       }
       if (minNtrAmountPerUser <= 0) {

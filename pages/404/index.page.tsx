@@ -15,8 +15,8 @@ const ErrorPage: NextPageWithLayout = () => {
             Page not Found
           </div>
           <div className="mb-8 text-gray-shade-7 sm:max-w-[300px] sm:text-sm md:max-w-[550px] md:text-xl">
-            Seems our developers forgot to manage the delivery of a certain URL
-            here.
+            Looks like our developers never got around to this particular
+            address.
           </div>
           <Link href={AppRoutes.feed.index}>
             <Button

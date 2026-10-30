@@ -5,7 +5,7 @@ import { SiBinance } from "react-icons/si";
 import { isAddress } from "ethers/lib/utils";
 import {
   LinkNewIcon,
-  X369XIcon,
+  SociaketIcon,
   NewTelegramIcon,
   Whitepaper,
   XIcon,
@@ -146,7 +146,7 @@ const Details: React.FC<{ data: OptionalType<ListCardDataOBj> }> = ({
                 className="product-social-button flex select-none items-center gap-2 rounded-[11px] bg-elevation-1 px-[10px] py-[6px] text-xs font-medium text-gray-shade-14"
               >
                 <span className="h-5 w-5 flex-shrink-0">
-                  <X369XIcon />
+                  <SociaketIcon />
                 </span>
                 <span>{process.env.NEXT_PUBLIC_BRAND_NAME}</span>
               </a>

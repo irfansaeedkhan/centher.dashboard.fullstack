@@ -11,7 +11,7 @@ const SingleFaq: FC<Props> = ({ faq }) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen((prev) => !prev);
   return (
-    // Portfolio-library fix (Centher item 5): the whole row expands /
+    // Portfolio-library fix (Sociaket item 5): the whole row expands /
     // collapses, not just the plus icon. The row is a keyboard-operable
     // button region (Enter/Space) with aria-expanded; the icon keeps
     // its own click handler for the same toggle.

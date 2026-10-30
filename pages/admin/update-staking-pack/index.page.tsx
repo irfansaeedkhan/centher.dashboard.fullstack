@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import AdminHeader from "@/components/header/admin.header";
 import { AdminSidebar } from "@/components/sidebar/admin.sidebar";
-import { axiosApi369x } from "@/utils/axios/centher-api";
+import { axiosApi } from "@/utils/axios/sociaket-api";
 import { AppRoutes } from "@/constants/app.routes";
 
 interface Pool {
@@ -32,7 +32,7 @@ const UpdateStakingPack: NextPageWithLayout = () => {
   });
 
   useEffect(() => {
-    axiosApi369x
+    axiosApi
       .get("/api/staking/pools")
       .then((res) => setPools(res.data?.pools ?? []))
       .catch(() => toast.error("Could not load staking packs"));
@@ -65,7 +65,7 @@ const UpdateStakingPack: NextPageWithLayout = () => {
     }
     setSaving(true);
     try {
-      await axiosApi369x.patch(`/api/admin/staking-pools/${poolId}`, {
+      await axiosApi.patch(`/api/admin/staking-pools/${poolId}`, {
         name: form.name.trim(),
         price: Number(form.price) || 0,
         apy: Number(form.apy) || 0,

@@ -10,7 +10,7 @@ import { CitizenShipType, useCitizenStore } from "@/store/citizen.store";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { useWallet } from "@/web3/hooks/use.wallet";
-import { axiosApi369x } from "@/utils/axios/centher-api";
+import { axiosApi } from "@/utils/axios/sociaket-api";
 import { customLog } from "@/utils/custom.log";
 import { formatEther2Number } from "@/utils/format.address";
 import cn from "@/utils/cn";
@@ -95,7 +95,7 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
         await buyCitizenShip(getSigner()!, tab, connectedAddress);
         // Record the purchase server-side (chain stays source of truth).
         try {
-          await axiosApi369x.post("/api/citizenship/purchase", { tier: tab });
+          await axiosApi.post("/api/citizenship/purchase", { tier: tab });
         } catch (e) {
           customLog(["development", "staging"], "citizenship record failed", e);
         }
@@ -188,7 +188,7 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
                       <li className="list-item-with-image">
                         Staking as a service
                       </li>
-                      <li className="list-item-with-image">Voispace</li>
+                      <li className="list-item-with-image">Sociaket Space</li>
                       <li className="list-item-with-image">
                         Create collections
                       </li>

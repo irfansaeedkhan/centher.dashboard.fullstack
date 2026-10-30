@@ -1,7 +1,7 @@
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
 
 /**
- * Portfolio-library fix (Centher item 1): the BNB price hook returns 0 both
+ * Portfolio-library fix (Sociaket item 1): the BNB price hook returns 0 both
  * while the Moralis feed is loading AND when it has failed (it has no error
  * state), so a bare `formatBNB2USD(...)` renders a fake "$0" next to real
  * BNB prices. Never render $0 from an unknown feed:

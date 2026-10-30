@@ -34,7 +34,7 @@ export const dexSwappingConfig: IDexConfig = {
     },
     {
       address: "0xabf0295bEaa3e69bf09b3e20634463E2439A2B3A",
-      icon: "dexa-icon.png",
+      icon: "token-icon.png",
       is_native: false,
       name: "DeXa Coin",
       symbol: "DXC",
@@ -66,7 +66,7 @@ export const dexSwappingConfig: IDexConfig = {
     },
     {
       address: "0xEcb4c542DE0d7AF3aA294c5c4Ae0BefE8E93bD9c",
-      icon: "dexa-icon.png",
+      icon: "token-icon.png",
       is_native: false,
       name: "DeXa Coin",
       symbol: "DXC",

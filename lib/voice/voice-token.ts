@@ -1,5 +1,5 @@
 /**
- * Short-lived JWTs for the Centher voice server (VoiSpace rooms).
+ * Short-lived JWTs for the Sociaket voice server (Sociaket Space rooms).
  *
  * Contract (locked — the voice server verifies exactly this):
  * - alg: HS256, secret = BETTER_AUTH_SECRET

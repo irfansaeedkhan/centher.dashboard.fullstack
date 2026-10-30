@@ -69,7 +69,7 @@ module.exports = {
           "linear-gradient(270.23deg,#5691ff -9.34%,#72f6d1 17.09%,#76e268 48.54%,#ffd505 78.11%,#ff5e52 107.63%)",
       },
 
-      // Centher theme gradients restored from centher-app era
+      // Sociaket theme gradients restored from sociaket-app era
 
       colors: {
         app: {

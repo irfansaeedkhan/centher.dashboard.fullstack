@@ -37,7 +37,7 @@ import {
 import ProfileModal from "@/components/modal/profile.modal";
 import Button from "@/components/button";
 import { useGetProfileCardDetails } from "@/components/feed.components/profile.detail.card/use.get.profile.card.details";
-import { axiosApi369x } from "@/utils/axios";
+import { axiosApi } from "@/utils/axios";
 import { sliceAccountAddress } from "@/utils/user.helpers";
 import { customLog } from "@/utils/custom.log";
 import { copyText } from "@/utils/copy.text";
@@ -135,7 +135,7 @@ const ProfileHeader: React.FC<Props> = ({
         ) {
           url += `/with-auth`;
         }
-        const { data } = await axiosApi369x.get(url);
+        const { data } = await axiosApi.get(url);
         setFollow(data.is_followed);
       } catch (error: any) {
         customLog(["development"], error);
@@ -256,7 +256,7 @@ const ProfileHeader: React.FC<Props> = ({
   const followUser = async (following_id: string) => {
     try {
       setLoadingState(true);
-      const response = await axiosApi369x.post("/api/socials/followers", {
+      const response = await axiosApi.post("/api/socials/followers", {
         following_id,
       });
       if (response.data.message == "follow_success") {
@@ -577,7 +577,9 @@ const ProfileHeader: React.FC<Props> = ({
                       Post
                     </span>
                     <span className="text-xs font-semibold text-white">
-                      {profileCardDetails.isLoaded ? profileCardDetails.posts_count : "--"}
+                      {profileCardDetails.isLoaded
+                        ? profileCardDetails.posts_count
+                        : "--"}
                     </span>
                   </div>
                   <div className="w-16 space-y-1.5 text-center">
@@ -585,7 +587,9 @@ const ProfileHeader: React.FC<Props> = ({
                       Followers
                     </span>
                     <span className="text-xs font-semibold text-white">
-                      {profileCardDetails.isLoaded ? profileCardDetails.followers_count : "--"}
+                      {profileCardDetails.isLoaded
+                        ? profileCardDetails.followers_count
+                        : "--"}
                     </span>
                   </div>
                   <div className="w-16 space-y-1.5 text-center">
@@ -593,7 +597,9 @@ const ProfileHeader: React.FC<Props> = ({
                       Following
                     </span>
                     <span className="text-xs font-semibold text-white">
-                      {profileCardDetails.isLoaded ? profileCardDetails.following_count : "--"}
+                      {profileCardDetails.isLoaded
+                        ? profileCardDetails.following_count
+                        : "--"}
                     </span>
                   </div>
                   <div className="w-16 space-y-1.5 text-center">
@@ -601,7 +607,9 @@ const ProfileHeader: React.FC<Props> = ({
                       Referrals
                     </span>
                     <span className="text-xs font-semibold text-white">
-                      {profileCardDetails.isLoaded ? profileCardDetails.total_referrees : "--"}
+                      {profileCardDetails.isLoaded
+                        ? profileCardDetails.total_referrees
+                        : "--"}
                     </span>
                   </div>
                 </div>

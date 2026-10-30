@@ -4,7 +4,7 @@ import { devtools } from "zustand/middleware";
 import { likePost } from "@/components/feed.components";
 import { CompletedPost } from "@/models/post";
 import { LoadingState } from "@/models/common";
-import { axiosApi369x } from "@/utils/axios";
+import { axiosApi } from "@/utils/axios";
 import { customLog } from "@/utils/custom.log";
 
 export interface FeedStore {
@@ -101,7 +101,7 @@ export const useFeedStore = create<FeedStore>()(
             `/api/socials/posts${useAuth ? "/with-auth" : ""}?limit=${limit}` +
             (cursor ? `&cursor=${encodeURIComponent(cursor)}` : "");
 
-          const { data } = await axiosApi369x.get(url);
+          const { data } = await axiosApi.get(url);
 
           // Round 2 (deleted placeholders, first-load hardening): the
           // feed page already filters status "deleted" at render, but

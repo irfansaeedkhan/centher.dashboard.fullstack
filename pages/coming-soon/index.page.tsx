@@ -13,8 +13,8 @@ const ComingSoonPage: NextPageWithLayout = () => {
           COMING SOON
         </div>
         <div className="text-center text-gray-shade-7 sm:max-w-[300px] sm:text-sm md:max-w-[534px] md:text-base">
-          More interesting things are coming soon to our platform, in the
-          meantime you can explore for great things with us.
+          More good things are on the way to our platform. Until then, take a
+          look around and enjoy what is already here.
         </div>
         <Link href={AppRoutes.feed.index} className="text-center">
           <Button

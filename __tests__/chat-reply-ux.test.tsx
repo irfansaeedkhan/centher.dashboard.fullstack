@@ -12,13 +12,13 @@ describe("chat reply UX", () => {
     id: "msg-123",
     body: "New proposal is up for voting",
     kind: "text",
-    sender_name: "Centher Demo",
+    sender_name: "Sociaket Demo",
   };
 
   it("ReplyPreview renders as an interactive button", () => {
     render(<ReplyPreview reply={reply} mine={false} />);
     const btn = screen.getByRole("button", {
-      name: "Jump to message from Centher Demo",
+      name: "Jump to message from Sociaket Demo",
     });
     expect(btn.tagName).toBe("BUTTON");
     expect(btn.className).toContain("cursor-pointer");
@@ -30,7 +30,7 @@ describe("chat reply UX", () => {
       <ReplyPreview reply={reply} mine={false} onReplyClick={onReplyClick} />
     );
     fireEvent.click(
-      screen.getByRole("button", { name: "Jump to message from Centher Demo" })
+      screen.getByRole("button", { name: "Jump to message from Sociaket Demo" })
     );
     expect(onReplyClick).toHaveBeenCalledTimes(1);
     expect(onReplyClick).toHaveBeenCalledWith("msg-123");

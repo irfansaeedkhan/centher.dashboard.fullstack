@@ -17,8 +17,8 @@ const V2: NextPageWithLayout = () => {
             COMING SOON
           </div>
           <div className="max-w-[300px] text-center text-sm text-gray-shade-7 md:max-w-[534px] ">
-            We are in the process of releasing Launchpad 2.0. Stay tuned for
-            more exciting projects to come on
+            We are getting Launchpad 2.0 ready. Stay tuned for more exciting
+            projects to come on
           </div>
           <Link
             href={AppRoutes.auth.login}

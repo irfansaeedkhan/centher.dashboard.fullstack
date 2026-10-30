@@ -27,14 +27,14 @@ const SignalServiceComingSoon: NextPageWithLayout = () => {
             Coming Soon
           </div>
           <div className="max-w-[300px] text-center text-sm text-gray-shade-7 md:max-w-[534px]">
-            Copy profitable strategies on both CEX and DEX, while sharing
-            profits
+            Follow winning strategies on CEX and DEX, and share the gains with
+            the traders behind them
           </div>
           <div className="max-w-[300px] text-center text-sm text-gray-shade-7 md:max-w-[534px]">
             <ul className="space-y-2">
-              <li>No minimum invest</li>
-              <li>Non-custodial</li>
-              <li>Stop copying anytime</li>
+              <li>No minimum amount</li>
+              <li>Your funds stay yours</li>
+              <li>Unfollow whenever you like</li>
             </ul>
           </div>
           <div className="max-w-[300px] text-center text-sm text-gray-shade-7 md:max-w-[534px]">

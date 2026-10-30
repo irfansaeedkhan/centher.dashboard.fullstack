@@ -26,7 +26,7 @@ export const PromotionCard3: React.FC<Props> = ({ className, ...props }) => {
         </span>
         <p className="text-xs font-semibold text-[#A0A4BB]">
           <span className="text-white">V2</span> NFT Marketplace with LOCK
-          feature is
+          protection is
         </p>
         <h3 className="!text-[16px] font-bold  leading-[28px] tracking-widest text-white">
           LIVE NOW

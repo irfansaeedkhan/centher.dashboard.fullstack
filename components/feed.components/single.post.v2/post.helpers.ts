@@ -1,6 +1,6 @@
 import { SerializedEditorState, SerializedLexicalNode } from "lexical";
 import { CompletedPost, Post } from "@/models/post";
-import { axiosApi369x } from "@/utils/axios";
+import { axiosApi } from "@/utils/axios";
 
 /** Surface the server's readable error message (never a silent failure). */
 export const apiErrorMessage = (error: any, fallback: string): string =>
@@ -12,36 +12,36 @@ export const getPost = async (postId: string, isAuthenticated: boolean) => {
       ? "/with-auth"
       : "";
 
-  const { data } = await axiosApi369x.get(
+  const { data } = await axiosApi.get(
     `/api/socials/posts/${postId}${withAuth}?exact_post=true`
   );
   return data.posts[0] as Post;
 };
 
 export const archivePost = async (postId: string) => {
-  await axiosApi369x.patch(`/api/socials/posts/${postId}/archive`);
+  await axiosApi.patch(`/api/socials/posts/${postId}/archive`);
 };
 
 export const unArchivePost = async (postId: string) => {
-  await axiosApi369x.patch(`/api/socials/posts/${postId}/unarchive`);
+  await axiosApi.patch(`/api/socials/posts/${postId}/unarchive`);
 };
 
 export const deletePost = async (postId: string) => {
-  await axiosApi369x.delete(`/api/socials/posts/${postId}`);
+  await axiosApi.delete(`/api/socials/posts/${postId}`);
 };
 
 export const likePost = async (
   postId: string,
   actionType: "like" | "unlike"
 ) => {
-  await axiosApi369x.post("/api/socials/analytics/likes", {
+  await axiosApi.post("/api/socials/analytics/likes", {
     postId,
     actionType: actionType,
   });
 };
 
 export const createPostView = async (post_id: string) => {
-  await axiosApi369x.post(`/api/socials/analytics/post-views`, {
+  await axiosApi.post(`/api/socials/analytics/post-views`, {
     post_id,
   });
 };
@@ -57,17 +57,14 @@ export const editReply = async (
   replyId: string,
   text: string
 ): Promise<CompletedPost> => {
-  const { data } = await axiosApi369x.patch(
-    `/api/socials/comments/${replyId}`,
-    { text }
-  );
+  const { data } = await axiosApi.patch(`/api/socials/comments/${replyId}`, {
+    text,
+  });
   return data.posts[0] as CompletedPost;
 };
 
 export const deleteReply = async (replyId: string): Promise<CompletedPost> => {
-  const { data } = await axiosApi369x.delete(
-    `/api/socials/comments/${replyId}`
-  );
+  const { data } = await axiosApi.delete(`/api/socials/comments/${replyId}`);
   return data.posts[0] as CompletedPost;
 };
 
@@ -83,10 +80,9 @@ export const editReplyRich = async (
   replyId: string,
   editorState: SerializedEditorState<SerializedLexicalNode>
 ): Promise<CompletedPost> => {
-  const { data } = await axiosApi369x.patch(
-    `/api/socials/comments/${replyId}`,
-    { post_editor_state: editorState }
-  );
+  const { data } = await axiosApi.patch(`/api/socials/comments/${replyId}`, {
+    post_editor_state: editorState,
+  });
   return data.posts[0] as CompletedPost;
 };
 
@@ -94,7 +90,7 @@ export const editPostRich = async (
   postId: string,
   editorState: SerializedEditorState<SerializedLexicalNode>
 ): Promise<CompletedPost> => {
-  const { data } = await axiosApi369x.patch(`/api/socials/posts/${postId}`, {
+  const { data } = await axiosApi.patch(`/api/socials/posts/${postId}`, {
     post_editor_state: editorState,
   });
   return data.posts[0] as CompletedPost;

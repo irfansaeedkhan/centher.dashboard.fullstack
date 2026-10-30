@@ -51,7 +51,7 @@ export const RoundsBooking: React.FC<PresaleDataProps> = ({
 
   percentSoldOut = Number(percentSoldOut) / 1e18;
 
-  // Portfolio-library fix (Centher item 3): with no per-token price the
+  // Portfolio-library fix (Sociaket item 3): with no per-token price the
   // purchase-row math above is 0/0 = NaN, so the bar used to render a
   // "NaN%" width while the list card showed real raised-vs-cap
   // progress. Derive progress from the fields that exist instead:
@@ -217,7 +217,7 @@ const countdownRenderer: CountdownRendererFn = ({
   seconds,
   completed,
 }) => {
-  // Portfolio-library fix (Centher item 3): a finished countdown (e.g.
+  // Portfolio-library fix (Sociaket item 3): a finished countdown (e.g.
   // the adapter's created-at + 30 days window already passed) must not
   // render misleading 0 DAYS / 0 HOURS / 0 MIN / 0 SEC.
   if (completed) {

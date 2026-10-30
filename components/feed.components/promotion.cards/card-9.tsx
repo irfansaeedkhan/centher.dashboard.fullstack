@@ -13,7 +13,7 @@ export const PromotionCard9: React.FC<Props> = ({ className, ...props }) => {
       {...props}
     >
       <video autoPlay muted loop className="rounded-10px">
-        <source src="/images/apex-video.mp4" type="video/mp4" />
+        <source src="/images/promo-video.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
     </div>

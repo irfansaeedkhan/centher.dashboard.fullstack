@@ -28,7 +28,7 @@ import useUser from "@/hooks/use.user";
 import { customLog } from "@/utils/custom.log";
 import { AppRoutes } from "@/constants/app.routes";
 import { NoPost } from "@/assets/svgs";
-import { VoiSpaceFeedCard } from "@/components/voispace/voispace.feed.card";
+import { SociaketSpaceFeedCard } from "@/components/sociaket-space/sociaket-space.feed.card";
 
 const Feed: NextPageWithLayout = () => {
   const { user } = useUser();
@@ -129,7 +129,7 @@ const Feed: NextPageWithLayout = () => {
   return (
     <>
       <div className="mt-3 block w-full f2xl:hidden">
-        <VoiSpaceFeedCard isRendered={!is2XLScreen} />
+        <SociaketSpaceFeedCard isRendered={!is2XLScreen} />
       </div>
       {((loading === "loaded" && (posts?.length ?? 0) === 0) ||
         (posts?.length ?? 0) > 0) &&
@@ -173,8 +173,12 @@ const Feed: NextPageWithLayout = () => {
                     shouldAddNewPost: true,
                   });
                 }}
-                onClickArchive={() => handleAction(post._id, archivePost, post.user._id)}
-                onClickDelete={() => handleAction(post._id, deletePost, post.user._id)}
+                onClickArchive={() =>
+                  handleAction(post._id, archivePost, post.user._id)
+                }
+                onClickDelete={() =>
+                  handleAction(post._id, deletePost, post.user._id)
+                }
                 onPostInViewport={() => handleCreatePostView(post._id)}
               />
             </div>

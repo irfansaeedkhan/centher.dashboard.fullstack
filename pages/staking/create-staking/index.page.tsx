@@ -351,7 +351,7 @@ const CreateStaking: NextPageWithLayout = () => {
     start_date: Joi.string().max(150).label("start date"),
     claim_period: Joi.string().max(150).label("claim period"),
     rewards_release_start: Joi.string().max(150).label("rewards release start"),
-    show_on_centher: Joi.string().max(10).label("show on centher"),
+    show_on_centher: Joi.string().max(10).label("show on sociaket"),
     liquidity_pool_provided: Joi.string()
       .max(10)
       .label("liquidity pool provided"),
@@ -1589,7 +1589,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     </p>
                   )}
                 </div>
-                {/*  Show on Centher */}
+                {/*  Show on Sociaket */}
                 <div className="col-span-2 mb-6 w-full text-sm font-medium text-white md:col-span-1 md:mb-0">
                   <label
                     htmlFor="show_on_centher"

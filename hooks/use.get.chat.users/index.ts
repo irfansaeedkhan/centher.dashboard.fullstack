@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { axiosApi369x } from "@/utils/axios";
+import { axiosApi } from "@/utils/axios";
 
 const useGetChatUsers = () => {
   const [users, setUsers] = useState<any[]>([]);
@@ -46,7 +46,7 @@ const useGetChatUsers = () => {
   };
 
   const getUsersRequest = (users: string[]): Promise<any> => {
-    return axiosApi369x.get(`/api/users?user_ids=${users.join(",")}`);
+    return axiosApi.get(`/api/users?user_ids=${users.join(",")}`);
   };
 
   return {

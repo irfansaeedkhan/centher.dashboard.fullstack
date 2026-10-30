@@ -15,15 +15,8 @@ const Faqs: NextPageWithLayout = () => {
         Staking FAQ&apos;s
       </h5>
       <div className="tracking-[1.4px] text-white">
-        You haven&apos;t found what you were searching for? visit{" "}
-        <Link
-          className="text-gradient"
-          href={"https://369x.io/academy"}
-          target="_blank"
-        >
-          {process.env.NEXT_PUBLIC_BRAND_NAME} Academy
-        </Link>{" "}
-        to find out more about Staking and much else!
+        You haven&apos;t found what you were searching for? Keep exploring to
+        find out more about Staking and much else!
       </div>
 
       <div className="flex w-full flex-col gap-4">

@@ -80,8 +80,8 @@ const Header = () => {
         className="flex items-center justify-start gap-4"
       >
         <Image
-          src="/images/centher.logo.png"
-          alt="Centher Logo"
+          src="/images/sociaket.logo.png"
+          alt="Sociaket Logo"
           width={160}
           height={64}
           className="h-auto w-40"

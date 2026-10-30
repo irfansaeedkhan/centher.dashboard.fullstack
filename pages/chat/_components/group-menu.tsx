@@ -9,7 +9,7 @@ import {
   type ChatConversation,
   type ChatMember,
 } from "@/lib/chat/types";
-import { axiosApi369x } from "@/utils/axios/centher-api";
+import { axiosApi } from "@/utils/axios/sociaket-api";
 import { customLog } from "@/utils/custom.log";
 
 /**
@@ -300,7 +300,7 @@ const AddMembers: React.FC<{
     setSearching(true);
     const t = setTimeout(async () => {
       try {
-        const res = await axiosApi369x.get("/api/search", {
+        const res = await axiosApi.get("/api/search", {
           params: { q: term, limit: 10 },
         });
         setResults(res.data?.search_results ?? []);

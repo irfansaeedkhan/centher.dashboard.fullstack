@@ -71,12 +71,12 @@ const Citizenship: NextPageWithLayout = () => {
             </div>
           </div>
           <p className="mt-4 text-sm text-gray-shade-7">
-            This passport unlocks premium features: Staking as a Service,
-            Create Collections, Premium Chat Service, Advertising and more.
+            This passport opens premium features: Staking as a Service, Create
+            Collections, Premium Chat Service, Advertising, and more.
           </p>
           <Link
             href={AppRoutes.settings.citizen.team_members}
-            className="mt-4 inline-block text-sm font-semibold text-gradient"
+            className="text-gradient mt-4 inline-block text-sm font-semibold"
           >
             Manage team members →
           </Link>
@@ -100,31 +100,31 @@ const Citizenship: NextPageWithLayout = () => {
             (Business Account)
           </div>
           <div className="max-w-[300px] text-center text-sm text-gray-shade-7 md:max-w-[534px]">
-            At {process.env.NEXT_PUBLIC_BRAND_NAME} we are building an
-            environment in which users who want to open a business account will
-            get {process.env.NEXT_PUBLIC_BRAND_NAME} Citizenship with Passport.
+            At {process.env.NEXT_PUBLIC_BRAND_NAME} we are building a place
+            where anyone opening a business account gets
+            {process.env.NEXT_PUBLIC_BRAND_NAME} Citizenship with a Passport.
           </div>
           <div className="max-w-[300px] text-center text-sm text-gray-shade-7 md:max-w-[534px]">
-            This Passport will grant the users access to premium features like{" "}
+            This Passport opens premium features like{" "}
             <Link
               className="text-gradient"
               href={AppRoutes.staking_coming_soon}
             >
               Staking as a Service
             </Link>
-            , Create Collections, Bulk messaging via{" "}
+            , Create Collections, bulk messaging through the{" "}
             <Link className="text-gradient" href={AppRoutes.chat.index}>
               Premium Chat Service
             </Link>
-            , Advertising and much, much more!
+            , Advertising, and plenty more!
           </div>
           {loggedInUser?.membership.status !== "citizen" && (
             <div className="max-w-[300px] text-center text-sm text-gray-shade-7 md:max-w-[534px]">
-              Get your Passport now and become a{" "}
+              Grab your Passport now and become a{" "}
               <span className="text-gradient">
                 {process.env.NEXT_PUBLIC_BRAND_NAME} Citizen
               </span>{" "}
-              to power up your business!
+              to give your business a boost!
             </div>
           )}
 
@@ -153,7 +153,7 @@ const Citizenship: NextPageWithLayout = () => {
 
 Citizenship.getLayout = (page) => {
   return (
-    <AllPagesWrapper pageTitle="Centher Citizenship">{page}</AllPagesWrapper>
+    <AllPagesWrapper pageTitle="Sociaket Citizenship">{page}</AllPagesWrapper>
   );
 };
 

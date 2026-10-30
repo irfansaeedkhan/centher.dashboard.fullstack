@@ -24,11 +24,10 @@ const ArbitrageComingSoon: NextPageWithLayout = () => {
             Arbitrage Coming Soon
           </div>
           <div className="max-w-[300px] text-center text-sm text-gray-shade-7 md:max-w-[534px]">
-            In economics and finance,Arbitrage is the practice of taking
-            advantage of a difference in prices in two or more markets; striking
-            a combination of matching deals to capitalise on the difference, the
-            profit being the difference between the market prices at which the
-            unit is traded.
+            In economics and finance, arbitrage means spotting a price gap
+            between two or more markets and acting on it. Traders pair matching
+            deals to capture that gap, and the gain is simply the difference
+            between the prices at which the asset changes hands.
           </div>
           <div className="max-w-[300px] text-center text-sm text-gray-shade-7 md:max-w-[534px]">
             Only for {process.env.NEXT_PUBLIC_BRAND_NAME} Citizens. You{" "}

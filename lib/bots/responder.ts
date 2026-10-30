@@ -29,7 +29,7 @@ export interface BotReplyInput {
   role: BotRole;
   /** Bot's display name, e.g. "Alex Novak". */
   botName: string;
-  /** Human's display name, e.g. "Centher Demo". */
+  /** Human's display name, e.g. "Sociaket Demo". */
   humanName: string;
   /** Raw incoming message body. */
   humanMessage: string;

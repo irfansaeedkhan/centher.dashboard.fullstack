@@ -219,7 +219,7 @@ const SingleChat: NextPageWithLayout = () => {
       <div
         ref={listRef}
         onScroll={handleListScroll}
-        className="customScrollbar flex-1 overflow-y-auto bg-background-shade-1 bg-[url(/images/chat-bg-with-centher-logo.png)] bg-cover bg-center px-4 py-4"
+        className="customScrollbar flex-1 overflow-y-auto bg-background-shade-1 bg-[url(/images/chat-bg-with-sociaket-logo.png)] bg-cover bg-center px-4 py-4"
       >
         {loadingOlder && (
           <p className="mb-2 text-center text-xs text-gray-shade-7">

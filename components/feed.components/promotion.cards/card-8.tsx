@@ -17,8 +17,8 @@ export const PromotionCard8: React.FC<Props> = ({ className, ...props }) => {
       {...props}
     >
       <Image
-        src="/images/apex-mobile.png"
-        alt="apex-mobile"
+        src="/images/promo-phone.png"
+        alt="promo-phone"
         width={175}
         height={181}
         className="h-[181px] w-[175px] object-contain"

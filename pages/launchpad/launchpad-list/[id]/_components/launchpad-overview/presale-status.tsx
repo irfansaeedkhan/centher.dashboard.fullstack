@@ -19,7 +19,7 @@ export const PresaleStatus: React.FC<PresaleDataProps> = ({
 
   const roundDetails = roundInfos[currentRound - 1];
 
-  // Portfolio-library fix (Centher item 3): the backend has no min/max
+  // Portfolio-library fix (Sociaket item 3): the backend has no min/max
   // buy values, so the adapter passes empty strings. An empty (or
   // unparseable) value is genuinely unknown — render "Not available",
   // never a misleading 0 or a soft-cap-derived tiny maximum buy.

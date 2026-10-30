@@ -18,8 +18,8 @@ export const AuthLeft: React.FC<SignupProps> = (props) => {
         <div className={`w-fit`}>
           <Link href={AppRoutes.home}>
             <Image
-              src="/images/centher.logo.png"
-              alt="Centher Logo"
+              src="/images/sociaket.logo.png"
+              alt="Sociaket Logo"
               width={180}
               height={72}
               className="h-auto w-44"
@@ -32,8 +32,8 @@ export const AuthLeft: React.FC<SignupProps> = (props) => {
             className={`flex flex-col items-center justify-center md:px-10 lg:px-20 f2xl:px-32`}
           >
             <Image
-              src="/images/centher.logo.png"
-              alt="Centher Logo"
+              src="/images/sociaket.logo.png"
+              alt="Sociaket Logo"
               width={280}
               height={96}
               className="h-auto w-64"

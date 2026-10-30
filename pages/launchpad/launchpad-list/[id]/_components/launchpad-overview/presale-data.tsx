@@ -215,7 +215,7 @@ export const PresaleData: React.FC<PresaleDataProps> = ({
           </div>
           <div className={mainDiv}>
             <div className={textLeft}>Total supply</div>
-            {/* Portfolio-library fix (Centher item 3): the backend has no
+            {/* Portfolio-library fix (Sociaket item 3): the backend has no
                 total-supply field, so this is genuinely unknown — never a
                 misleading 0. Do not derive it from the soft cap. */}
             <div className={textRight}>Not available</div>
@@ -230,7 +230,7 @@ export const PresaleData: React.FC<PresaleDataProps> = ({
           </div>
           <div className={mainDiv}>
             <div className={textLeft}>Hard cap</div>
-            {/* Portfolio-library fix (Centher item 3): the backend has no
+            {/* Portfolio-library fix (Sociaket item 3): the backend has no
                 hard-cap field — genuinely unknown, never a misleading 0
                 and never a copy of the soft cap. */}
             <div className={textRight}>Not available</div>
@@ -254,7 +254,7 @@ export const PresaleData: React.FC<PresaleDataProps> = ({
           <div className={mainDiv}>
             <div className={textLeft}>Vesting Period</div>
             <div className={textRight}>
-              {/* Portfolio-library fix (Centher item 3): an empty
+              {/* Portfolio-library fix (Sociaket item 3): an empty
                   releaseMonth means the backend has no vesting value —
                   render it as unavailable, never "0 Months". */}
               {releaseMonth

@@ -22,7 +22,7 @@ import {
 } from "../db/schema";
 
 const url = readFileSync(
-  process.env.HOME + "/.neon-centher-db-url",
+  process.env.HOME + "/.neon-sociaket-db-url",
   "utf8"
 ).trim();
 const db = drizzle(neon(url));
