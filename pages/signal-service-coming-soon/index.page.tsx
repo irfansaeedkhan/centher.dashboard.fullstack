@@ -38,9 +38,8 @@ const SignalServiceComingSoon: NextPageWithLayout = () => {
             </ul>
           </div>
           <div className="max-w-[300px] text-center text-sm text-gray-shade-7 md:max-w-[534px]">
-            Only for {process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"}{" "}
-            Citizens. You {"haven't"} gotten your{" "}
-            {process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"} Passport yet?{" "}
+            Only for {"Sociaket"} Citizens. You {"haven't"} gotten your{" "}
+            {"Sociaket"} Passport yet?{" "}
             <Link href={AppRoutes.citizenship} className="text-gradient">
               Click Here
             </Link>{" "}

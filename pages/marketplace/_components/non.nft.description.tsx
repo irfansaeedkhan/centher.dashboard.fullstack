@@ -368,7 +368,7 @@ export const NonNFTDescription: React.FC<Props> = ({
               <span className="word-break text-white">
                 {nft.ipfs_metadata.name}
               </span>{" "}
-              NFT on <b>{process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"} </b>
+              NFT on <b>{"Sociaket"} </b>
               platform.
             </p>
           }

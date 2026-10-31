@@ -54,8 +54,6 @@ Register.getLayout = (page) => {
 export default Register;
 
 const signupLeftData = {
-  title: `Join ${process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"}`,
-  content: `Make an account and get the full ${
-    process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"
-  } SocialFi world`,
+  title: `Join Sociaket`,
+  content: `Make an account and get the full Sociaket SocialFi world`,
 };

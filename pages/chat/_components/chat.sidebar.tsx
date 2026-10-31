@@ -141,7 +141,7 @@ const ChatSidebar = () => {
           </h3>
           <p className="text-xs font-medium leading-[14.63px] text-gray-shade-7 sm:text-sm sm:leading-[17.07px]">
             Direct Messages are private conversations between you and other
-            people on {process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"}.
+            people on {"Sociaket"}.
           </p>
           <Button
             title="Start conversation"
