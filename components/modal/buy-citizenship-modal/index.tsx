@@ -131,7 +131,7 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
                   <h3
                     className={`animationTextHeading flex-grow text-left text-base font-semibold text-white fsm:text-xl`}
                   >
-                    {process.env.NEXT_PUBLIC_BRAND_NAME} Passport
+                    {process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"} Passport
                   </h3>
                   <h5 className="text-sm font-medium text-gray-shade-14 fsm:text-base">
                     Breaking the limit

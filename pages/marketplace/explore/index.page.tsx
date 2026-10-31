@@ -17,7 +17,9 @@ const ExplorePage: NextPageWithLayout = () => {
 ExplorePage.getLayout = (page) => {
   return (
     <AllPagesWrapper
-      pageTitle={`Explore - ${process.env.NEXT_PUBLIC_BRAND_NAME}`}
+      pageTitle={`Explore - ${
+        process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"
+      }`}
     >
       {page}
     </AllPagesWrapper>

@@ -246,7 +246,8 @@ export const FixedPriceNFTDescription: React.FC<Props> = ({
                 {nft.ipfs_metadata.name}
               </span>{" "}
               on
-              <b> {process.env.NEXT_PUBLIC_BRAND_NAME} </b> NFT platform.
+              <b> {process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"} </b> NFT
+              platform.
             </p>
           }
           txStatus={txStatus}

@@ -19,8 +19,8 @@ export const PromotionCard2: React.FC<Props> = ({ className, ...props }) => {
         <p
           className={`w-full max-w-[220px] text-center text-sm font-bold uppercase leading-[17.07px] text-white`}
         >
-          Stake on {process.env.NEXT_PUBLIC_BRAND_NAME} and earn rewards on your
-          holdings
+          Stake on {process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"} and earn
+          rewards on your holdings
         </p>
         <Link
           href={AppRoutes.staking.index}

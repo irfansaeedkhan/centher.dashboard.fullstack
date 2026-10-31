@@ -25,9 +25,13 @@ export const SociaketTable: React.FC<SociaketTableProps> = ({
   const [modal, setModal] = useState<ModalState>({
     isOpen: false,
     status: "warning",
-    title: `Claim ${process.env.NEXT_PUBLIC_BRAND_NAME}`,
-    subtitle: `Do you want to claim ${process.env.NEXT_PUBLIC_BRAND_NAME}?`,
-    bodyText: `Click the button below to claim ${process.env.NEXT_PUBLIC_BRAND_NAME}.`,
+    title: `Claim ${process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"}`,
+    subtitle: `Do you want to claim ${
+      process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"
+    }?`,
+    bodyText: `Click the button below to claim ${
+      process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"
+    }.`,
     confirmButtonText: "Claim Now",
     onClose: () => {
       setModal((prev) => ({
@@ -69,8 +73,10 @@ export const SociaketTable: React.FC<SociaketTableProps> = ({
       ...prev,
       isOpen: true,
       status: "warning",
-      title: `Claim ${process.env.NEXT_PUBLIC_BRAND_NAME}`,
-      subtitle: `Do you want to claim ${process.env.NEXT_PUBLIC_BRAND_NAME}?`,
+      title: `Claim ${process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"}`,
+      subtitle: `Do you want to claim ${
+        process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"
+      }?`,
       bodyText: `Click the button below to claim CTHR.`,
       confirmButtonText: "Claim Now",
       onClickConfirm: () => handleClaim(claimFrom),

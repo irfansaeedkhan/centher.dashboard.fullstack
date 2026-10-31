@@ -38,7 +38,7 @@ export const SwapLicenseModal = () => {
             Your old Real Estate Licenses are not compatible with the current
             version of our Marketplace. Please click the button below to swap
             your license with a new version compatible with{" "}
-            {process.env.NEXT_PUBLIC_BRAND_NAME}.
+            {process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"}.
           </p>
         </div>
         {/* <Link

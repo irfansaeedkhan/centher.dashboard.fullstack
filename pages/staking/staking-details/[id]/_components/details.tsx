@@ -148,7 +148,7 @@ const Details: React.FC<{ data: OptionalType<ListCardDataOBj> }> = ({
                 <span className="h-5 w-5 flex-shrink-0">
                   <SociaketIcon />
                 </span>
-                <span>{process.env.NEXT_PUBLIC_BRAND_NAME}</span>
+                <span>{process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"}</span>
               </a>
             ) : null}
           </div>

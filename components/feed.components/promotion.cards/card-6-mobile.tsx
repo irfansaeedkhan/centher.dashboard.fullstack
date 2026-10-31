@@ -23,8 +23,8 @@ export const PromotionCard6Mobile: React.FC<Props> = ({
         <p
           className={`text-center text-sm font-medium leading-[17.07px] text-white`}
         >
-          Already a {process.env.NEXT_PUBLIC_BRAND_NAME} Citizen? Try Staking as
-          a Service today!
+          Already a {process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"} Citizen?
+          Try Staking as a Service today!
         </p>
       </div>
       <Link

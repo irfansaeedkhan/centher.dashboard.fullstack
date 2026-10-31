@@ -132,9 +132,9 @@ const ConnectWalletModal: React.FC<Props> = ({
           </div>
         ) : null}
         <p className="w-full max-w-[366px] text-center text-xs text-gray-shade-14">
-          Feeling lost? Login to {process.env.NEXT_PUBLIC_BRAND_NAME} like you
-          do with other social networks simply using username and password
-          instead!
+          Feeling lost? Login to{" "}
+          {process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"} like you do with
+          other social networks simply using username and password instead!
         </p>
       </div>
     </ModalContainer>

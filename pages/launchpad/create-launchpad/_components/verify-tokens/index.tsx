@@ -62,7 +62,9 @@ export const VerifyTokenForm: React.FC<Props> = ({
             type="text"
             id="token_address"
             name="token_address"
-            placeholder={`${process.env.NEXT_PUBLIC_BRAND_NAME} Token`}
+            placeholder={`${
+              process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"
+            } Token`}
             className={gradientBorderInput}
             value={formState.verify_token.token_address}
             onChange={handleChange}

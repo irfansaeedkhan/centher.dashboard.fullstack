@@ -38,7 +38,9 @@ export const normalizeUrl = (value: unknown): string => {
 
 // The brand domain may or may not carry a scheme depending on env, so
 // strip it here — the placeholder adds https:// exactly once.
-const brandDomainForUrl = (process.env.NEXT_PUBLIC_BRAND_DOMAIN ?? "")
+const brandDomainForUrl = (
+  process.env.NEXT_PUBLIC_BRAND_DOMAIN || "sociaket.com"
+)
   .replace(/^https?:\/\//i, "")
   .replace(/\/+$/, "");
 
@@ -300,7 +302,9 @@ export const CreateNFTCollectionForm = ({
               id="url"
               autoComplete="off"
               {...register("url", { setValueAs: normalizeUrl })}
-              placeholder={`eg. https://${brandDomainForUrl || "your-domain"}/collection/skull-price`}
+              placeholder={`eg. https://${
+                brandDomainForUrl || "your-domain"
+              }/collection/skull-price`}
               className={!formState.errors.url ? inputField : inputFieldError}
             />
           </div>
