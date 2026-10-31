@@ -5,10 +5,7 @@ import { IModalProps } from "@/components/modal/standard.modal";
 import Button from "@/components/button";
 import { BNBIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
-import {
-  formatAddress,
-  formatEther2Number,
-} from "@/utils/format.address";
+import { formatAddress, formatEther2Number } from "@/utils/format.address";
 import { formatUsdFromWei } from "./usd-value";
 import TrxInProgressModal from "@/utils/modal/trx-modal";
 import MessageModal from "@/utils/modal/message-modal";
@@ -209,7 +206,7 @@ export const AuctionNFTBuyerDescription: React.FC<Props> = ({
               <span className="word-break text-white">
                 {nft.ipfs_metadata.name}{" "}
               </span>{" "}
-              NFT on <b> {process.env.NEXT_PUBLIC_BRAND_NAME} </b>
+              NFT on <b> {process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"} </b>
               platform.
             </p>
           }

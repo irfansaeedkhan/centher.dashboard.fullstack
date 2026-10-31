@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import AdminHeader from "@/components/header/admin.header";
 import { AdminSidebar } from "@/components/sidebar/admin.sidebar";
-import { axiosApi369x } from "@/utils/axios/centher-api";
+import { axiosApi } from "@/utils/axios/sociaket-api";
 
 interface AdminUser {
   id: string;
@@ -18,7 +18,7 @@ const AdminUsers: NextPageWithLayout = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axiosApi369x
+    axiosApi
       .get("/api/admin/users", { params: { limit: 100 } })
       .then((res) => setUsers(res.data?.users ?? []))
       .catch((err: any) => {

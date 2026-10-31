@@ -40,7 +40,7 @@ const StakingReferrals: NextPageWithLayout = () => {
   const [poolId, setPoolId] = useState("0");
   const [connectWalletModal, setConnectWalletModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  // Portfolio-library fix (Centher item 4, same trap as the pool detail
+  // Portfolio-library fix (Sociaket item 4, same trap as the pool detail
   // route): dismissing the wallet gate must stick, and a dismissed gate
   // renders a wallet-required notice with a back path instead of the
   // modal-only view or a spinner that never resolves without a wallet.
@@ -112,7 +112,6 @@ const StakingReferrals: NextPageWithLayout = () => {
           e.claimableReward &&
           +e.claimableReward == 0
         ) {
-         
           e.claimableReward = calculateNextRefReward(
             mappedPool,
             e.stakedAmount,
@@ -202,8 +201,8 @@ const StakingReferrals: NextPageWithLayout = () => {
         </h2>
         <p className="max-w-[480px] text-sm font-normal leading-6 text-gray-shade-14">
           Referral rewards load from your connected wallet. You closed the
-          wallet-connect dialog, so nothing is connected and no referral
-          data can be shown yet.
+          wallet-connect dialog, so nothing is connected and no referral data
+          can be shown yet.
         </p>
         <div className="flex flex-wrap items-center justify-center gap-3">
           <button
@@ -293,7 +292,7 @@ const StakingReferrals: NextPageWithLayout = () => {
                 Total Claimable Rewards
               </p>
               <p className="mt-[6px] font-semibold text-white">
-                {(+totalClaimable / 10**18).toFixed(3)} {}
+                {(+totalClaimable / 10 ** 18).toFixed(3)} {}
                 {
                   coinsDetails.find((e) =>
                     eqAddress(

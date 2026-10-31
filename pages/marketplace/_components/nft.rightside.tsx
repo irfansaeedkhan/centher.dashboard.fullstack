@@ -90,7 +90,7 @@ export const NFTRightSideComponent: React.FC<Props> = ({
           >
             <ShareBigIcon />
           </button>
-          {/* Portfolio-library fix (Centher item 6): the old popup was
+          {/* Portfolio-library fix (Sociaket item 6): the old popup was
               shown/hidden by toggling `hidden` against `!block`, so a
               click produced no visible change. Render it conditionally
               instead, so open state and visible state cannot disagree,

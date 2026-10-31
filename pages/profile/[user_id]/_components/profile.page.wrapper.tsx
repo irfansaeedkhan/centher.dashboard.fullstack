@@ -7,7 +7,7 @@ import UserProfileHeaderSkeleton from "@/components/loading.skeletons/user.profi
 import { PromotionCard6 } from "@/components/feed.components/promotion.cards/card-6";
 import useUser from "@/hooks/use.user";
 import useGetUser from "@/hooks/use.get.user";
-import { axiosApi369x } from "@/utils/axios";
+import { axiosApi } from "@/utils/axios";
 import { customLog } from "@/utils/custom.log";
 import { MutualFollowersData } from "@/models/user";
 import ProfileHeader from "./profile.header";
@@ -41,7 +41,7 @@ export const ProfilePageWrapper: React.FC<AllPagesWrapperProps> = ({
 
   useEffect(() => {
     if (router.query.user_id === undefined) return;
-    axiosApi369x
+    axiosApi
       .get(`/api/socials/users/${router.query.user_id}/mutual-followers`)
       .then((res) => {
         setMutualFollowersData(res.data.mutual_followers);

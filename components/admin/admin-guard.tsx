@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { axiosApi369x } from "@/utils/axios/centher-api";
+import { axiosApi } from "@/utils/axios/sociaket-api";
 import { AppRoutes } from "@/constants/app.routes";
 
 /**
@@ -19,7 +19,7 @@ export const AdminGuard: React.FC<{ children: React.ReactNode }> = ({
     let cancelled = false;
     (async () => {
       try {
-        await axiosApi369x.get("/api/admin/check");
+        await axiosApi.get("/api/admin/check");
         if (!cancelled) setAllowed(true);
       } catch {
         if (!cancelled) router.replace(AppRoutes.feed.index);

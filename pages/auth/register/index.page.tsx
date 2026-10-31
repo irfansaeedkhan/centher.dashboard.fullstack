@@ -25,8 +25,8 @@ Register.getLayout = (page) => {
         <div className="mb-10 w-fit sm:flex md:hidden">
           <Link href={AppRoutes.home}>
             <Image
-              src="/images/centher.logo.png"
-              alt="Centher Logo"
+              src="/images/sociaket.logo.png"
+              alt="Sociaket Logo"
               width={160}
               height={64}
               className="h-auto w-40"
@@ -54,8 +54,8 @@ Register.getLayout = (page) => {
 export default Register;
 
 const signupLeftData = {
-  title: `Register to ${process.env.NEXT_PUBLIC_BRAND_NAME || "Centher"}`,
-  content: `Create an account to take advantage of the whole ${
-    process.env.NEXT_PUBLIC_BRAND_NAME || "Centher"
+  title: `Join ${process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"}`,
+  content: `Make an account and get the full ${
+    process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"
   } SocialFi world`,
 };

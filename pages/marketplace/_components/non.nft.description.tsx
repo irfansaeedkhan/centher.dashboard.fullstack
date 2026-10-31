@@ -368,7 +368,7 @@ export const NonNFTDescription: React.FC<Props> = ({
               <span className="word-break text-white">
                 {nft.ipfs_metadata.name}
               </span>{" "}
-              NFT on <b>{process.env.NEXT_PUBLIC_BRAND_NAME} </b>
+              NFT on <b>{process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"} </b>
               platform.
             </p>
           }
@@ -506,7 +506,7 @@ export const NonNFTDescription: React.FC<Props> = ({
             )}
           </div>
           <p className={greyTxt}>
-            {/* Portfolio-library fix (Centher item 6): the old note
+            {/* Portfolio-library fix (Sociaket item 6): the old note
                 referenced sending even when no Send button is rendered
                 (blocklisted items hide it via `transferable`), which
                 read as a send dialog with no send button. The Send

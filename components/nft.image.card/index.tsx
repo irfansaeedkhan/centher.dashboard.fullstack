@@ -6,7 +6,12 @@ import { useRouter } from "next/router";
 import { CgSpinner } from "react-icons/cg";
 import { toast } from "react-hot-toast";
 import { AppRoutes } from "@/constants/app.routes";
-import { HammerIconBG, LockIcon, X369XIcon, LockVector } from "@/assets/svgs";
+import {
+  HammerIconBG,
+  LockIcon,
+  SociaketIcon,
+  LockVector,
+} from "@/assets/svgs";
 import { getUTCNow } from "@/web3/utils/utils";
 import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
 import { BlockchainConfig } from "@/web3/blockchain/config";
@@ -217,10 +222,10 @@ export const NFTImageCard: React.FC<NFTImageCardProps> = ({ data }) => {
             >
               <div className="flex items-center gap-[6px]">
                 <span className="flex size-4 flex-shrink-0 fsm:size-5">
-                  <X369XIcon />
+                  <SociaketIcon />
                 </span>
                 <span className="hidden f2xl:block">
-                  {process.env.NEXT_PUBLIC_BRAND_NAME}
+                  {process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"}
                 </span>
               </div>
             </div>

@@ -271,17 +271,17 @@ async function main() {
     await ensurePost(
       leo,
       "BTC breaking out of the 4h range — volume confirms. Targeting 98k by Friday. Who's positioned?",
-      [pic("centher-trading-chart")]
+      [pic("sociaket-trading-chart")]
     ),
     await ensurePost(
       leo,
-      "VoiSpace AMA tonight was packed. Love this community's energy around SocialFi.",
+      "Sociaket Space AMA tonight was packed. Love this community's energy around SocialFi.",
       null
     ),
     await ensurePost(
       nina,
       "Just curated three new drops for the marketplace. This generative art collection is unreal — swipe through the previews.",
-      [pic("centher-nft-drop-1"), pic("centher-nft-drop-2")]
+      [pic("sociaket-nft-drop-1"), pic("sociaket-nft-drop-2")]
     ),
     await ensurePost(
       nina,
@@ -291,7 +291,7 @@ async function main() {
     await ensurePost(
       omar,
       "12.5% APY on the Flex pool while I sleep. Staking maxi life chose me.",
-      [pic("centher-staking-dashboard")]
+      [pic("sociaket-staking-dashboard")]
     ),
     await ensurePost(
       omar,
@@ -301,7 +301,7 @@ async function main() {
     await ensurePost(
       sofia,
       "Launchpad Alpha filled its soft cap in 6 hours. The SocialFi narrative is real.",
-      [pic("centher-launchpad")]
+      [pic("sociaket-launchpad")]
     ),
     await ensurePost(
       kai,
@@ -311,7 +311,7 @@ async function main() {
     await ensurePost(
       kai,
       "Weekend voice room schedule is live — trading talk Friday, NFT showcase Saturday. See you there!",
-      [pic("centher-voice-room")]
+      [pic("sociaket-voice-room")]
     )
   );
   console.error(`Posts with images: ${seededPosts.length}`);
@@ -321,7 +321,7 @@ async function main() {
   const t1 = await ensurePost(
     nina,
     "Dropping my 'Neon Dreams' collection tomorrow — 50 pieces, 0.5 BNB mint. Who wants the allowlist?",
-    [pic("centher-neon-dreams")]
+    [pic("sociaket-neon-dreams")]
   );
   await ensureComment(
     t1,
@@ -406,7 +406,7 @@ async function main() {
     "/images/collections/pixel-banner.jpg"
   );
   const stakingBadges = await ensureCollection(
-    "Centher Staking Badges",
+    "Sociaket Staking Badges",
     "Soulbound badges for pool participants.",
     "/images/collections/badges-avatar.webp",
     demoId,
@@ -418,7 +418,7 @@ async function main() {
       neonDreams,
       "Neon Dream #001",
       "Midnight pulse — the genesis piece.",
-      pic("centher-nft-nd1"),
+      pic("sociaket-nft-nd1"),
       nina,
       "0.5000",
     ],
@@ -426,7 +426,7 @@ async function main() {
       neonDreams,
       "Neon Dream #002",
       "Electric dusk over the grid.",
-      pic("centher-nft-nd2"),
+      pic("sociaket-nft-nd2"),
       nina,
       "0.4500",
     ],
@@ -434,7 +434,7 @@ async function main() {
       neonDreams,
       "Neon Dream #003",
       "Static bloom in cyan.",
-      pic("centher-nft-nd3"),
+      pic("sociaket-nft-nd3"),
       leo,
       "0.6000",
     ],
@@ -442,7 +442,7 @@ async function main() {
       neonDreams,
       "Neon Dream #004",
       "After-hours glow.",
-      pic("centher-nft-nd4"),
+      pic("sociaket-nft-nd4"),
       nina,
       "0.4000",
     ],
@@ -450,7 +450,7 @@ async function main() {
       pixelPioneers,
       "Pioneer #101",
       "Laser eyes, diamond hands.",
-      pic("centher-nft-pp1"),
+      pic("sociaket-nft-pp1"),
       leo,
       "0.2500",
     ],
@@ -458,7 +458,7 @@ async function main() {
       pixelPioneers,
       "Pioneer #102",
       "Cap and gown graduate.",
-      pic("centher-nft-pp2"),
+      pic("sociaket-nft-pp2"),
       maya,
       "0.2200",
     ],
@@ -466,7 +466,7 @@ async function main() {
       pixelPioneers,
       "Pioneer #103",
       "Hoodie dev archetype.",
-      pic("centher-nft-pp3"),
+      pic("sociaket-nft-pp3"),
       leo,
       "0.3000",
     ],
@@ -474,7 +474,7 @@ async function main() {
       stakingBadges,
       "Flex Staker Badge",
       "Awarded for 30 days in the Flex pool.",
-      pic("centher-nft-sb1"),
+      pic("sociaket-nft-sb1"),
       omar,
       "0.1000",
     ],
@@ -482,15 +482,15 @@ async function main() {
       stakingBadges,
       "Diamond Hands Badge",
       "Never unstaked during volatility.",
-      pic("centher-nft-sb2"),
+      pic("sociaket-nft-sb2"),
       omar,
       "0.1500",
     ],
     [
       stakingBadges,
       "Genesis Citizen Badge",
-      "Day-one Centher citizen.",
-      pic("centher-nft-sb3"),
+      "Day-one Sociaket citizen.",
+      pic("sociaket-nft-sb3"),
       demoId,
       "1.0000",
     ],

@@ -19,7 +19,8 @@ const deploymentOrigin = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
   : null;
 
-const appUrl = process.env.BETTER_AUTH_URL || deploymentOrigin || "http://localhost:3002";
+const appUrl =
+  process.env.BETTER_AUTH_URL || deploymentOrigin || "http://localhost:3002";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -39,6 +40,7 @@ export const auth = betterAuth({
   trustedOrigins: [
     appUrl,
     "https://centher-app.vercel.app",
+    "https://app.sociaket.com",
     ...(deploymentOrigin ? [deploymentOrigin] : []),
     "http://localhost:3000",
     "http://localhost:3001",

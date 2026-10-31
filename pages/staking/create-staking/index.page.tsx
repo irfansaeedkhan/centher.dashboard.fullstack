@@ -351,7 +351,7 @@ const CreateStaking: NextPageWithLayout = () => {
     start_date: Joi.string().max(150).label("start date"),
     claim_period: Joi.string().max(150).label("claim period"),
     rewards_release_start: Joi.string().max(150).label("rewards release start"),
-    show_on_centher: Joi.string().max(10).label("show on centher"),
+    show_on_centher: Joi.string().max(10).label("show on sociaket"),
     liquidity_pool_provided: Joi.string()
       .max(10)
       .label("liquidity pool provided"),
@@ -1589,20 +1589,20 @@ const CreateStaking: NextPageWithLayout = () => {
                     </p>
                   )}
                 </div>
-                {/*  Show on Centher */}
+                {/*  Show on Sociaket */}
                 <div className="col-span-2 mb-6 w-full text-sm font-medium text-white md:col-span-1 md:mb-0">
                   <label
                     htmlFor="show_on_centher"
                     className="block font-normal tracking-wide"
                   >
-                    Show on {process.env.NEXT_PUBLIC_BRAND_NAME}
+                    Show on {process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"}
                   </label>
                   <div className="mt-2 flex w-full appearance-none items-center justify-between rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-0">
                     <label
                       htmlFor="show_on_centher"
                       className="block font-normal tracking-wide"
                     >
-                      Show on {process.env.NEXT_PUBLIC_BRAND_NAME}
+                      Show on {process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"}
                     </label>
                     <div className="flex gap-3 fmd:gap-5">
                       <div className="flex items-center">

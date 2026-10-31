@@ -1,1 +1,1 @@
-export { CentherTable } from "./centher.table";
+export { SociaketTable } from "./sociaket.table";

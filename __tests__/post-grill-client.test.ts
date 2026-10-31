@@ -20,7 +20,7 @@ const mockGet = jest.fn();
 const mockGetPostById = jest.fn();
 
 jest.mock("@/utils/axios", () => ({
-  axiosApi369x: {
+  axiosApi: {
     get: (...args: any[]) => mockGet(...args),
     post: jest.fn(),
     patch: (...args: any[]) => mockPatch(...args),

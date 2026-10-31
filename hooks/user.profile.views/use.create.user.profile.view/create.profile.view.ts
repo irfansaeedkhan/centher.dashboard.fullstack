@@ -1,10 +1,10 @@
-import { axiosApi369x } from "@/utils/axios";
+import { axiosApi } from "@/utils/axios";
 
 export const createProfileView = async (
   userId: string,
   abortController: AbortController
 ) => {
-  const { data } = await axiosApi369x.post(
+  const { data } = await axiosApi.post(
     `/api/socials/analytics/profile-views`,
     {
       user_id: userId,

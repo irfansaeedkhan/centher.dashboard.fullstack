@@ -203,8 +203,8 @@ const mapPostRow = (
     _id: row.id,
     user: {
       _id: row.authorId,
-      display_name: row.authorName || "Centher Demo",
-      profile_image: row.authorAvatar || "/images/centher.logo.favicon.png",
+      display_name: row.authorName || "Sociaket Demo",
+      profile_image: row.authorAvatar || "/images/sociaket.logo.favicon.png",
       membership: {
         last_status:
           (row.membership as "citizen" | "verified" | "none") || "citizen",
@@ -307,9 +307,9 @@ const mapCommentRow = (
           : String(parent.createdAt),
       user: {
         _id: parent.authorId,
-        display_name: parent.authorName || "Centher Demo",
+        display_name: parent.authorName || "Sociaket Demo",
         profile_image:
-          parent.authorAvatar || "/images/centher.logo.favicon.png",
+          parent.authorAvatar || "/images/sociaket.logo.favicon.png",
         // QA-fix: replies render PostHeader's verification tick against
         // parent_post.user.membership — it must never be undefined.
         membership: {
@@ -409,8 +409,8 @@ const mapUserCard = (
   opts?: { isFollowedByLoggedInUser?: boolean }
 ) => ({
   _id: row.userId,
-  display_name: row.displayName || "Centher User",
-  profile_image: row.avatarUrl || "/images/centher.logo.favicon.png",
+  display_name: row.displayName || "Sociaket User",
+  profile_image: row.avatarUrl || "/images/sociaket.logo.favicon.png",
   is_bot: !!row.isBot,
   last_seen_at: row.lastSeenAt
     ? new Date(row.lastSeenAt as unknown as string).toISOString()
@@ -696,8 +696,8 @@ const mapNotificationRow = (row: {
   post: row.postId ? { _id: row.postId, user_id: "" } : null,
   by: {
     _id: row.actorId || "",
-    display_name: row.actorName || "Centher User",
-    profile_image: row.actorAvatar || "/images/centher.logo.favicon.png",
+    display_name: row.actorName || "Sociaket User",
+    profile_image: row.actorAvatar || "/images/sociaket.logo.favicon.png",
     membership: {
       last_status:
         (row.actorMembership as "citizen" | "verified" | "none") || "citizen",
@@ -753,13 +753,13 @@ export const createHonoApp = () => {
   app.get("/health", (c) =>
     c.json({
       ok: true,
-      brand: process.env.NEXT_PUBLIC_BRAND_NAME || "Centher",
+      brand: process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket",
     })
   );
 
   /**
-   * GET /api/voice/token — mints a short-lived JWT for the Centher voice
-   * server (VoiSpace rooms). Session required.
+   * GET /api/voice/token — mints a short-lived JWT for the Sociaket voice
+   * server (Sociaket Space rooms). Session required.
    *
    * Contract (locked — the voice server verifies exactly this):
    * HS256, secret = BETTER_AUTH_SECRET,
@@ -834,7 +834,7 @@ export const createHonoApp = () => {
   };
 
   /**
-   * Phase 4: the org a user belongs to as a team member (legacy 369x model:
+   * Phase 4: the org a user belongs to as a team member (legacy model:
    * every citizen account is its own org; members join the owner's account).
    */
   const fetchOrganizationOf = async (
@@ -859,7 +859,7 @@ export const createHonoApp = () => {
     return {
       org_id: membership.orgOwnerId,
       profile_image:
-        ownerProfile?.avatarUrl || "/images/centher.logo.favicon.png",
+        ownerProfile?.avatarUrl || "/images/sociaket.logo.favicon.png",
       title: membership.title,
       joined_at: membership.joinedAt.toISOString(),
     };
@@ -885,8 +885,8 @@ export const createHonoApp = () => {
     // Shape matches LoggedInUser used by useUser / header
     return {
       _id: userId,
-      display_name: profile?.displayName || authUser?.name || "Centher Demo",
-      profile_image: profile?.avatarUrl || "/images/centher.logo.favicon.png",
+      display_name: profile?.displayName || authUser?.name || "Sociaket Demo",
+      profile_image: profile?.avatarUrl || "/images/sociaket.logo.favicon.png",
       cover_image: profile?.coverImageUrl || "",
       membership: {
         last_status: membershipStatus,
@@ -903,7 +903,7 @@ export const createHonoApp = () => {
         authUser?.createdAt?.toISOString?.() || new Date().toISOString(),
       updatedAt:
         authUser?.updatedAt?.toISOString?.() || new Date().toISOString(),
-      first_name: authUser?.name?.split(" ")[0] || "Centher",
+      first_name: authUser?.name?.split(" ")[0] || "Sociaket",
       last_name: authUser?.name?.split(" ").slice(1).join(" ") || "Demo",
       pseudonym: profile?.username || "centher_demo",
       referrer_address: null,
@@ -936,7 +936,7 @@ export const createHonoApp = () => {
       .insert(profiles)
       .values({
         userId,
-        displayName: authName || "Centher Demo",
+        displayName: authName || "Sociaket Demo",
         username: base,
       })
       .returning();
@@ -1088,7 +1088,7 @@ export const createHonoApp = () => {
       .from(user)
       .where(eq(user.id, userId!))
       .limit(1);
-    await ensureProfile(userId!, authUser?.name || "Centher Demo");
+    await ensureProfile(userId!, authUser?.name || "Sociaket Demo");
     await db
       .update(profiles)
       .set({
@@ -1133,7 +1133,7 @@ export const createHonoApp = () => {
       .from(user)
       .where(eq(user.id, userId!))
       .limit(1);
-    await ensureProfile(userId!, authUser?.name || "Centher Demo");
+    await ensureProfile(userId!, authUser?.name || "Sociaket Demo");
     await db
       .update(profiles)
       .set({ mentionPermission: body.mention_permission })
@@ -1173,26 +1173,26 @@ export const createHonoApp = () => {
    * bundled presets is a real, persisted choice.
    */
   const PRESET_AVATARS = [
-    { path: "/images/___chat-bot.png", object_name: "preset:___chat-bot.png" },
+    { path: "/images/chat-bot.png", object_name: "preset:chat-bot.png" },
     {
-      path: "/images/___contract-bot.png",
-      object_name: "preset:___contract-bot.png",
+      path: "/images/contract-bot.png",
+      object_name: "preset:contract-bot.png",
     },
     {
-      path: "/images/___crypto-signals.png",
-      object_name: "preset:___crypto-signals.png",
+      path: "/images/crypto-signals.png",
+      object_name: "preset:crypto-signals.png",
     },
     {
-      path: "/images/___exchange-bot.png",
-      object_name: "preset:___exchange-bot.png",
+      path: "/images/exchange-bot.png",
+      object_name: "preset:exchange-bot.png",
     },
     {
-      path: "/images/___staking-bot.png",
-      object_name: "preset:___staking-bot.png",
+      path: "/images/staking-bot.png",
+      object_name: "preset:staking-bot.png",
     },
     {
-      path: "/images/___trade-bot.png",
-      object_name: "preset:___trade-bot.png",
+      path: "/images/trade-bot.png",
+      object_name: "preset:trade-bot.png",
     },
     {
       path: "/images/antonio-de-rosa.png",
@@ -1232,7 +1232,7 @@ export const createHonoApp = () => {
       .from(user)
       .where(eq(user.id, userId!))
       .limit(1);
-    await ensureProfile(userId!, authUser?.name || "Centher Demo");
+    await ensureProfile(userId!, authUser?.name || "Sociaket Demo");
 
     // Phase 11: a Cloudinary secure_url (https://…) is persisted directly.
     // The browser uploads to Cloudinary itself; the server just stores the URL.
@@ -1284,8 +1284,8 @@ export const createHonoApp = () => {
     const membershipStatus = toMembershipStatus(profile?.membership);
     return c.json({
       _id: userId,
-      display_name: profile?.displayName || authUser?.name || "Centher User",
-      profile_image: profile?.avatarUrl || "/images/centher.logo.favicon.png",
+      display_name: profile?.displayName || authUser?.name || "Sociaket User",
+      profile_image: profile?.avatarUrl || "/images/sociaket.logo.favicon.png",
       cover_image: profile?.coverImageUrl || "",
       membership: {
         last_status: membershipStatus,
@@ -1306,7 +1306,7 @@ export const createHonoApp = () => {
   });
 
   /**
-   * Phase 4: orgs / team members. Legacy 369x model — every citizen account
+   * Phase 4: orgs / team members. Legacy model - every citizen account
    * is its own org; team members join the org owner's account. All routes
    * auth-gated; mutations are owner- or invitee-scoped.
    */
@@ -1316,8 +1316,8 @@ export const createHonoApp = () => {
     a: typeof user.$inferSelect | undefined
   ) => ({
     _id: id,
-    display_name: p?.displayName || a?.name || "Centher User",
-    profile_image: p?.avatarUrl || "/images/centher.logo.favicon.png",
+    display_name: p?.displayName || a?.name || "Sociaket User",
+    profile_image: p?.avatarUrl || "/images/sociaket.logo.favicon.png",
     membership: {
       last_status: toMembershipStatus(p?.membership),
       status: toMembershipStatus(p?.membership),
@@ -1604,8 +1604,8 @@ export const createHonoApp = () => {
     return c.json({
       users: rows.map((row) => ({
         _id: row.userId,
-        display_name: row.displayName || "Centher User",
-        profile_image: row.avatarUrl || "/images/centher.logo.favicon.png",
+        display_name: row.displayName || "Sociaket User",
+        profile_image: row.avatarUrl || "/images/sociaket.logo.favicon.png",
         membership: {
           last_status:
             (row.membership as "citizen" | "verified" | "none") || "citizen",
@@ -1811,7 +1811,7 @@ export const createHonoApp = () => {
       mention_users: rows.map((row) => ({
         _id: row.userId,
         display_name: row.displayName || row.username,
-        profile_image: row.avatarUrl || "/images/centher.logo.favicon.png",
+        profile_image: row.avatarUrl || "/images/sociaket.logo.favicon.png",
         membership: {
           last_status:
             (row.membership as "citizen" | "verified" | "none") || "citizen",
@@ -3087,9 +3087,9 @@ export const createHonoApp = () => {
               body: reply.body,
               createdAt: reply.createdAt,
               authorId: userId!,
-              authorName: authorProfile?.displayName || "Centher Demo",
+              authorName: authorProfile?.displayName || "Sociaket Demo",
               authorAvatar:
-                authorProfile?.avatarUrl || "/images/centher.logo.favicon.png",
+                authorProfile?.avatarUrl || "/images/sociaket.logo.favicon.png",
               membership: authorProfile?.membership || "citizen",
             },
             {
@@ -3147,9 +3147,9 @@ export const createHonoApp = () => {
           commentCount: created.commentCount,
           createdAt: created.createdAt,
           authorId: userId!,
-          authorName: authorProfile?.displayName || "Centher Demo",
+          authorName: authorProfile?.displayName || "Sociaket Demo",
           authorAvatar:
-            authorProfile?.avatarUrl || "/images/centher.logo.favicon.png",
+            authorProfile?.avatarUrl || "/images/sociaket.logo.favicon.png",
           membership: authorProfile?.membership || "citizen",
           mediaUrls: created.mediaUrls ?? [],
         })
@@ -3279,7 +3279,7 @@ export const createHonoApp = () => {
 
   /**
    * Phase 1: honest 501 for unmapped API routes — no mock-backed 200s.
-   * Real endpoints are added phase by phase (see centher-plan.md); genuinely
+   * Real endpoints are added phase by phase (see sociaket-plan.md); genuinely
    * unknown calls are logged server-side so they show up in Vercel/Node logs.
    */
   /**
@@ -3533,7 +3533,7 @@ export const createHonoApp = () => {
   const deletedUserCard = () => ({
     _id: "",
     display_name: "Deleted user",
-    profile_image: "/images/centher.logo.favicon.png",
+    profile_image: "/images/sociaket.logo.favicon.png",
     last_seen_at: null,
     is_online: false,
     membership: {

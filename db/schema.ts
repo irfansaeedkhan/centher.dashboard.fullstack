@@ -113,7 +113,7 @@ export const profiles = pgTable("profiles", {
 });
 
 /**
- * Phase 4: orgs. Legacy 369x model — every citizen account is its own org;
+ * Phase 4: orgs. Legacy model - every citizen account is its own org;
  * team members join the org owner's account. No separate organizations table.
  */
 export const orgMembers = pgTable(

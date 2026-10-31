@@ -1,5 +1,5 @@
 import { Post } from "@/models/post";
-import { axiosApi369x } from "@/utils/axios";
+import { axiosApi } from "@/utils/axios";
 import { AppError } from "@/utils/app-error";
 
 export const getPostById = async (
@@ -12,7 +12,7 @@ export const getPostById = async (
         ? "/with-auth"
         : "";
 
-    const response = await axiosApi369x.get<{
+    const response = await axiosApi.get<{
       posts: [Post];
     }>(`/api/socials/posts/${postId}${withAuth}?exact_post=true`);
 

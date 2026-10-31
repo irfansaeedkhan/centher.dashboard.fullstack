@@ -13,8 +13,8 @@ export const PromotionCard8Mobile = () => {
       )}
     >
       <Image
-        src="/images/apex-mobile.png"
-        alt="apex-mobile"
+        src="/images/promo-phone.png"
+        alt="promo-phone"
         width={175}
         height={181}
         className="h-[170px] w-[170px] object-contain fxm:h-[181px] fxm:w-[175px]"

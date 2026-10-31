@@ -1,21 +1,21 @@
 version: "3"
 
 services:
-  dapp-369x-io-development:
-    container_name: dapp-369x-io
+  dapp-sociaket-io-development:
+    container_name: dapp-sociaket-io
     build:
       context: ../../
       dockerfile: docker/development/Dockerfile
-    image: dapp-369x-io-development
+    image: dapp-sociaket-io-development
     volumes:
       - ../../:/app
       - /app/node_modules
     ports:
       - "3000:3000"
     networks:
-      - 369x-io
+      - sociaket-io
 
 networks:
-  369x-io:
-    name: 369x-io
+  sociaket-io:
+    name: sociaket-io
     driver: bridge

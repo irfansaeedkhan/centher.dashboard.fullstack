@@ -39,6 +39,20 @@ const nextConfig = {
           ],
   },
   pageExtensions: ["page.tsx", "page.ts", "api.ts"],
+  async redirects() {
+    return [
+      {
+        source: "/trading-centher-coming-soon",
+        destination: "/trading-sociaket-coming-soon",
+        permanent: true,
+      },
+      {
+        source: "/trading-centher-coming-soon/:path*",
+        destination: "/trading-sociaket-coming-soon/:path*",
+        permanent: true,
+      },
+    ];
+  },
   webpack(config, { isServer, webpack }) {
     config.module.rules.push({
       test: /\.svg$/i,

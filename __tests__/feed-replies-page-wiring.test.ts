@@ -21,7 +21,7 @@ import * as fs from "fs";
 import * as path from "path";
 
 jest.mock("@/utils/axios", () => ({
-  axiosApi369x: {
+  axiosApi: {
     get: jest.fn(),
     post: jest.fn(),
     patch: jest.fn(),
@@ -29,13 +29,13 @@ jest.mock("@/utils/axios", () => ({
   },
 }));
 
-import { axiosApi369x } from "@/utils/axios";
+import { axiosApi } from "@/utils/axios";
 import {
   deleteReply,
   editReply,
 } from "@/components/feed.components/single.post.v2/post.helpers";
 
-const api = axiosApi369x as unknown as {
+const api = axiosApi as unknown as {
   get: jest.Mock;
   post: jest.Mock;
   patch: jest.Mock;

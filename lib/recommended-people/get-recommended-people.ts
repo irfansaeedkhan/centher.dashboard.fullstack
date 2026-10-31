@@ -1,6 +1,6 @@
 import { User } from "@/models/user";
 import { AppError } from "@/utils/app-error";
-import { axiosApi369x } from "@/utils/axios";
+import { axiosApi } from "@/utils/axios";
 
 export interface RecommendedPeople {
   _id: User["_id"];
@@ -12,7 +12,7 @@ export interface RecommendedPeople {
 
 export const getRecommendedPeople = async (): Promise<RecommendedPeople[]> => {
   try {
-    const res = await axiosApi369x.get<{ users?: RecommendedPeople[] }>(
+    const res = await axiosApi.get<{ users?: RecommendedPeople[] }>(
       "/api/socials/recommended-people"
     );
     return res.data.users ?? [];

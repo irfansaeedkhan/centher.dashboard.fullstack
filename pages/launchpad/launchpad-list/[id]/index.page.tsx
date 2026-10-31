@@ -6,7 +6,7 @@ import { NextPageWithLayout } from "@/pages/_app.page";
 import { DetailsTabsWrapper } from "./_components/details-tabs-wrapper";
 import { PresaleDataType } from "../_components/launchpad-card-data";
 import { BookingList, LaunchpadOverview, ReferralRewards } from "./_components";
-import { axiosApi369x } from "@/utils/axios/centher-api";
+import { axiosApi } from "@/utils/axios/sociaket-api";
 import { customLog } from "@/utils/custom.log";
 
 interface RestLaunchpadDetail {
@@ -36,7 +36,7 @@ const adaptToPresale = (lp: RestLaunchpadDetail): PresaleDataType => {
     Math.floor(Number(v) || 0).toString();
   const softCap = intStr(lp.soft_cap);
   const raised = intStr(lp.raised);
-  // Portfolio-library fix (Centher item 3): the backend exposes ONLY
+  // Portfolio-library fix (Sociaket item 3): the backend exposes ONLY
   // raised / soft_cap / status / created_at — no total supply, no hard
   // cap, no vesting months, no min/max buy. The old adapter filled those
   // with "0" (and the soft cap with a plain number the overview then
@@ -115,7 +115,7 @@ const LaunchpadListDetails: NextPageWithLayout = () => {
     setLoading(true);
     setLoadError(null);
     try {
-      const { data } = await axiosApi369x.get<RestLaunchpadDetail>(
+      const { data } = await axiosApi.get<RestLaunchpadDetail>(
         `/api/launchpads/${id.toString()}`
       );
       setLaunchpadData(adaptToPresale(data));
@@ -160,7 +160,7 @@ const LaunchpadListDetails: NextPageWithLayout = () => {
         <button
           type="button"
           onClick={() => loadLaunchpad()}
-          className="bg-brand-primary rounded-lg px-5 py-2 text-sm font-semibold text-white"
+          className="rounded-lg bg-brand-primary px-5 py-2 text-sm font-semibold text-white"
         >
           Retry
         </button>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { NextPageWithLayout } from "@/pages/_app.page";
-import { axiosApi369x } from "@/utils/axios/centher-api";
+import { axiosApi } from "@/utils/axios/sociaket-api";
 import { customLog } from "@/utils/custom.log";
 
 import NetworkTabs from "../_components/network.tabs";
@@ -18,7 +18,7 @@ const AdminMarketplace: NextPageWithLayout = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axiosApi369x
+    axiosApi
       .get<{ collections: Collection[] }>("/api/marketplace/collections")
       .then((res) => setCollections(res.data.collections ?? []))
       .catch((e) => {

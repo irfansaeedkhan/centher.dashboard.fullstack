@@ -22,8 +22,8 @@ const AdminHeader: React.FC<AdminHeaderProps> = (props) => {
             className="flex items-center gap-4 sm:min-w-[22px] md:min-w-[166px]"
           >
             <Image
-              src="/images/centher.logo.png"
-              alt="Centher Logo"
+              src="/images/sociaket.logo.png"
+              alt="Sociaket Logo"
               width={160}
               height={64}
               className="h-auto w-40"

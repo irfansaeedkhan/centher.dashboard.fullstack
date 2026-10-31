@@ -17,15 +17,17 @@ const V2: NextPageWithLayout = () => {
             COMING SOON
           </div>
           <div className="max-w-[300px] text-center text-sm text-gray-shade-7 md:max-w-[534px] ">
-            We are in the process of releasing Launchpad 2.0. Stay tuned for
-            more exciting projects to come on
+            We are getting Launchpad 2.0 ready. Stay tuned for more exciting
+            projects to come on
           </div>
           <Link
             href={AppRoutes.auth.login}
             className="w-[137px] text-center text-sm"
           >
             <Button
-              title={`${process.env.NEXT_PUBLIC_BRAND_DOMAIN}!`}
+              title={`${
+                process.env.NEXT_PUBLIC_BRAND_DOMAIN || "sociaket.com"
+              }!`}
               variant="primary"
               className="w-full py-3 font-bold"
             />

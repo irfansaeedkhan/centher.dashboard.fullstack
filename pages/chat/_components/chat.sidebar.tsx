@@ -19,7 +19,7 @@ import {
 } from "@/lib/chat/types";
 import { getDateDifferent } from "@/lib/chat/utils";
 import useUser from "@/hooks/use.user";
-import { axiosApi369x } from "@/utils/axios/centher-api";
+import { axiosApi } from "@/utils/axios/sociaket-api";
 import { customLog } from "@/utils/custom.log";
 
 interface SearchedUser {
@@ -141,7 +141,7 @@ const ChatSidebar = () => {
           </h3>
           <p className="text-xs font-medium leading-[14.63px] text-gray-shade-7 sm:text-sm sm:leading-[17.07px]">
             Direct Messages are private conversations between you and other
-            people on {process.env.NEXT_PUBLIC_BRAND_NAME}.
+            people on {process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"}.
           </p>
           <Button
             title="Start conversation"
@@ -450,7 +450,7 @@ const NewConversationModal: React.FC<{
     setSearching(true);
     const t = setTimeout(async () => {
       try {
-        const res = await axiosApi369x.get("/api/search", {
+        const res = await axiosApi.get("/api/search", {
           params: { q: term, limit: 10 },
         });
         setResults(res.data?.search_results ?? []);

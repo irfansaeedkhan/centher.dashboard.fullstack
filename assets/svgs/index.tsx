@@ -1,10 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
-import X369xIconImgBg from "./centher.icon.bg.png";
-import X369xIconImg from "./centher.icon.png";
+import SociaketIconImgBg from "./sociaket.icon.bg.png";
+import SociaketIconImg from "./sociaket.icon.png";
 import NTRIconImgBg from "./ntr.icon.bg.png";
 import NTRIconImg from "./ntr.icon.png";
-import DXCIconImg from "./dexa-logo.png";
-import DXCIconNewImg from "./dexa-logo-new.png";
+import DXCIconImg from "./token-mark.png";
+import DXCIconNewImg from "./token-mark-new.png";
 import VerifiedIconImg from "./verifiedmark.png";
 import LockedIconImg from "./lock-icon.png";
 import HammerIconImg from "./hammer-icon.png";
@@ -192,9 +192,8 @@ export { default as NewUnlockWalletIcon } from "./new-unlock-wallet-icon.svg";
 export { default as NewCalendarIcon } from "./new-calendar-icon.svg";
 export { default as CrownIcon } from "./crown-icon.svg";
 export { default as GiftIcon } from "./gift-icon.svg";
-export { default as X369XIcon } from "./369x.icon.svg";
-export { default as VoispaceLiveIcon } from "./voispace.live.icon.svg";
-export { default as VoispaceGradientRing } from "./voispace.gradient.ring.svg";
+export { default as SociaketSpaceLiveIcon } from "./sociaket-space.live.icon.svg";
+export { default as SociaketSpaceGradientRing } from "./sociaket-space.gradient.ring.svg";
 export { default as VideoIcon2 } from "./video.svg";
 export { default as AmaLiveProfileIcon } from "./ama.live.svg";
 export { default as VipIcon } from "./vip.icon.svg";
@@ -212,12 +211,12 @@ export { default as CancelSpeechIcon } from "./cancel-speech.svg";
 export { default as SmMutedMicIcon } from "./sm-muted-mic.svg";
 export { default as SmMicIcon } from "./sm-mic.svg";
 
-export const X369xIcon: React.FC<IconProps> = (props) => {
+export const SociaketIcon: React.FC<IconProps> = (props) => {
   return (
     <img
       className={props.className}
-      src={X369xIconImg.src}
-      alt="Centher Icon"
+      src={SociaketIconImg.src}
+      alt="Sociaket Icon"
       sizes="256px"
       width={40}
       height={40}
@@ -225,12 +224,12 @@ export const X369xIcon: React.FC<IconProps> = (props) => {
   );
 };
 
-export const X369xIconBG: React.FC<IconProps> = (props) => {
+export const SociaketIconBG: React.FC<IconProps> = (props) => {
   return (
     <img
       className={props.className}
-      src={X369xIconImgBg.src}
-      alt="Centher Icon BG"
+      src={SociaketIconImgBg.src}
+      alt="Sociaket Icon BG"
       sizes="256px"
       width={40}
       height={40}

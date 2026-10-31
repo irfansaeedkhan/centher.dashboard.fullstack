@@ -25,8 +25,8 @@ Login.getLayout = (page) => {
         <div className="mb-10 flex w-fit md:hidden">
           <Link href={AppRoutes.home}>
             <Image
-              src="/images/centher.logo.png"
-              alt="Centher Logo"
+              src="/images/sociaket.logo.png"
+              alt="Sociaket Logo"
               width={160}
               height={64}
               className="h-auto w-40"
@@ -55,7 +55,7 @@ export default Login;
 
 const signupLeftData = {
   title: "Connect wallet",
-  content: `Log into your account to take advantage of the whole ${
-    process.env.NEXT_PUBLIC_BRAND_NAME || "Centher"
+  content: `Sign in to your account and get the full ${
+    process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"
   } SocialFi world`,
 };

@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { IoClose } from "react-icons/io5";
-import { GradientArrowOutline, X369XIcon, NewWalletIcon } from "@/assets/svgs";
+import {
+  GradientArrowOutline,
+  SociaketIcon,
+  NewWalletIcon,
+} from "@/assets/svgs";
 import { WalletEnum } from "@/web3/hooks/use.wallet";
 import ModalContainer from "./modal-container";
 
@@ -15,7 +19,7 @@ interface Props {
   onClose: () => void;
   crossIcon?: boolean;
   /**
-   * Portfolio-library fix (Centher item 4): when true, the modal is
+   * Portfolio-library fix (Sociaket item 4): when true, the modal is
    * dismissible by a visible close button AND Escape AND backdrop click.
    * Defaults to false so existing callers keep their current behavior;
    * the staking pool detail route opts in, because its old
@@ -116,7 +120,7 @@ const ConnectWalletModal: React.FC<Props> = ({
               className="flex w-full cursor-pointer items-center justify-between gap-10 !rounded-xl bg-popup-0 px-5 py-3"
             >
               <div className="flex items-center gap-3 fsm:gap-6">
-                <X369XIcon />
+                <SociaketIcon />
                 <h3 className="text-sm font-semibold text-white fmd:text-base">
                   Wallet for Dummies
                 </h3>
@@ -128,9 +132,9 @@ const ConnectWalletModal: React.FC<Props> = ({
           </div>
         ) : null}
         <p className="w-full max-w-[366px] text-center text-xs text-gray-shade-14">
-          Feeling lost? Login to {process.env.NEXT_PUBLIC_BRAND_NAME} like you
-          do with other social networks simply using username and password
-          instead!
+          Feeling lost? Login to{" "}
+          {process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"} like you do with
+          other social networks simply using username and password instead!
         </p>
       </div>
     </ModalContainer>

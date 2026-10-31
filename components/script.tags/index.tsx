@@ -6,7 +6,7 @@ const ScriptTags = () => {
   return (
     <>
       <Head>
-        <title>{process.env.NEXT_PUBLIC_BRAND_DOMAIN}</title>
+        <title>{process.env.NEXT_PUBLIC_BRAND_DOMAIN || "sociaket.com"}</title>
 
         <meta httpEquiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
@@ -17,34 +17,43 @@ const ScriptTags = () => {
 
         <meta
           name="description"
-          content={`${process.env.NEXT_PUBLIC_BRAND_DOMAIN} is worlds best and reliable Web3 token and NFT Marketplace`}
+          content={`${
+            process.env.NEXT_PUBLIC_BRAND_DOMAIN || "sociaket.com"
+          } is worlds best and reliable Web3 token and NFT Marketplace`}
         />
         <meta
           name="keywords"
-          content={`${process.env.NEXT_PUBLIC_BRAND_NAME},${process.env.NEXT_PUBLIC_BRAND_DOMAIN},login,sign up`}
+          content={`${process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"},${
+            process.env.NEXT_PUBLIC_BRAND_DOMAIN || "sociaket.com"
+          },login,sign up`}
         />
-        <meta name="author" content={process.env.NEXT_PUBLIC_BRAND_DOMAIN} />
+        <meta
+          name="author"
+          content={process.env.NEXT_PUBLIC_BRAND_DOMAIN || "sociaket.com"}
+        />
         <meta name="robots" content="all,follow" />
         <meta name="google" content="notranslate" />
 
         <meta property="og:type" content="website" />
         <meta
           property="og:title"
-          content={process.env.NEXT_PUBLIC_BRAND_DOMAIN}
+          content={process.env.NEXT_PUBLIC_BRAND_DOMAIN || "sociaket.com"}
         />
         <meta
           property="og:description"
-          content={`${process.env.NEXT_PUBLIC_BRAND_DOMAIN} is worlds best and reliable Web3 token and NFT Marketplace`}
+          content={`${
+            process.env.NEXT_PUBLIC_BRAND_DOMAIN || "sociaket.com"
+          } is worlds best and reliable Web3 token and NFT Marketplace`}
         />
-        <meta property="og:url" content="https://app.centher.io/" />
+        <meta property="og:url" content="https://app.sociaket.com/" />
         <meta
           property="og:site_name"
-          content={process.env.NEXT_PUBLIC_BRAND_DOMAIN}
+          content={process.env.NEXT_PUBLIC_BRAND_DOMAIN || "sociaket.com"}
         />
         <meta
           property="og:image"
           itemProp="image"
-          content="/images/centher.logo.bg.550.420.png"
+          content="/images/sociaket.logo.bg.550.420.png"
         />
         <meta property="og:image:width" content="550" />
         <meta property="og:image:height" content="420" />
@@ -52,15 +61,17 @@ const ScriptTags = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta
           name="twitter:description"
-          content={`${process.env.NEXT_PUBLIC_BRAND_DOMAIN} is worlds best and reliable Web3 token and NFT Marketplace`}
+          content={`${
+            process.env.NEXT_PUBLIC_BRAND_DOMAIN || "sociaket.com"
+          } is worlds best and reliable Web3 token and NFT Marketplace`}
         />
         <meta
           name="twitter:title"
-          content={process.env.NEXT_PUBLIC_BRAND_DOMAIN}
+          content={process.env.NEXT_PUBLIC_BRAND_DOMAIN || "sociaket.com"}
         />
         <meta
           name="twitter:image"
-          content="/images/centher.logo.bg.550.420.png"
+          content="/images/sociaket.logo.bg.550.420.png"
         />
 
         {/* TODO: Shivam - Need google site verification content */}

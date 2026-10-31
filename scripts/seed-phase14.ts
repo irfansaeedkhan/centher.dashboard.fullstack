@@ -1,7 +1,7 @@
 /**
  * Phase 14: Rich NFT demo seed — every NFT state for full functionality testing.
  *
- * - Fixes "Centher Genesis" collections with generated images
+ * - Fixes "Sociaket Genesis" collections with generated images
  * - ~20 NFTs: video, audio, listed (buyable), with active bids, unlisted,
  *   owned-by-demo (listed)
  * - Seeds bids into nft_bids when the Phase 13 table exists
@@ -17,7 +17,7 @@ import { collections, nfts, user } from "../db/schema";
 
 const url = readFileSync(
   process.env.HOME + "/.neon-centher-db-url",
-  "utf8",
+  "utf8"
 ).trim();
 const db = drizzle(neon(url));
 
@@ -60,7 +60,7 @@ async function ensureNft(opts: {
     .select({ id: nfts.id })
     .from(nfts)
     .where(
-      and(eq(nfts.collectionId, opts.collectionId), eq(nfts.name, opts.name)),
+      and(eq(nfts.collectionId, opts.collectionId), eq(nfts.name, opts.name))
     )
     .limit(1);
   if (existing[0]) return existing[0].id;
@@ -84,7 +84,7 @@ async function ensureNft(opts: {
 async function tableExists(name: string): Promise<boolean> {
   const sql = neon(url);
   const r = await sql.query(
-    `SELECT 1 FROM information_schema.tables WHERE table_name='${name}' LIMIT 1`,
+    `SELECT 1 FROM information_schema.tables WHERE table_name='${name}' LIMIT 1`
   );
   return (r as unknown[]).length > 0;
 }
@@ -92,17 +92,17 @@ async function tableExists(name: string): Promise<boolean> {
 async function ensureBid(
   nftId: string,
   bidderId: string,
-  amount: string,
+  amount: string
 ): Promise<void> {
   const sql = neon(url);
   const existing = await sql.query(
     "SELECT id FROM nft_bids WHERE nft_id=$1 AND bidder_id=$2 AND amount_bnb=$3 LIMIT 1",
-    [nftId, bidderId, amount],
+    [nftId, bidderId, amount]
   );
   if ((existing as unknown[]).length > 0) return;
   await sql.query(
     "INSERT INTO nft_bids (nft_id, bidder_id, amount_bnb, status) VALUES ($1,$2,$3,'active')",
-    [nftId, bidderId, amount],
+    [nftId, bidderId, amount]
   );
 }
 
@@ -119,11 +119,11 @@ async function main() {
   if (otherIds.length < 3) throw new Error("need at least 3 other users");
   const [leo, nina, omar, sofia, kai] = otherIds;
 
-  // --- 1. Fix Centher Genesis collections with generated images ---
+  // --- 1. Fix Sociaket Genesis collections with generated images ---
   const genesisCols = await db
     .select({ id: collections.id })
     .from(collections)
-    .where(eq(collections.name, "Centher Genesis"));
+    .where(eq(collections.name, "Sociaket Genesis"));
   for (const gc of genesisCols) {
     await db
       .update(collections)
@@ -133,7 +133,7 @@ async function main() {
       })
       .where(eq(collections.id, gc.id));
   }
-  console.log(`Fixed ${genesisCols.length} Centher Genesis collections`);
+  console.log(`Fixed ${genesisCols.length} Sociaket Genesis collections`);
 
   // Get collection IDs
   const getCol = async (name: string) => {
@@ -144,10 +144,10 @@ async function main() {
       .limit(1);
     return r[0]?.id ?? null;
   };
-  const genesisId = await getCol("Centher Genesis");
+  const genesisId = await getCol("Sociaket Genesis");
   const neonId = await getCol("Neon Dreams");
   const pixelId = await getCol("Pixel Pioneers");
-  const badgesId = await getCol("Centher Staking Badges");
+  const badgesId = await getCol("Sociaket Staking Badges");
   if (!genesisId || !neonId || !pixelId || !badgesId) {
     throw new Error("collections missing — run seed-phase12 first");
   }
@@ -167,25 +167,25 @@ async function main() {
       "Bloom in Motion",
       "A flower blooms in vivid detail — nature loop.",
       VIDEOS[0],
-      "centher-video-bloom",
+      "sociaket-video-bloom",
     ],
     [
       "Big Buck Bunny",
       "A giant rabbit takes revenge — animated classic.",
       VIDEOS[1],
-      "centher-video-bbb",
+      "sociaket-video-bbb",
     ],
     [
       "Jellyfish Drift",
       "Graceful jellyfish drifting through deep blue.",
       VIDEOS[2],
-      "centher-video-jelly",
+      "sociaket-video-jelly",
     ],
     [
       "Sample Reel",
       "Demo video NFT — motion and color study.",
       VIDEOS[3],
-      "centher-video-sample",
+      "sociaket-video-sample",
     ],
   ];
   for (const [name, desc, videoUrl, seed] of videoDefs) {
@@ -199,7 +199,7 @@ async function main() {
         price: "1.5000",
         mediaType: "video",
         animationUrl: videoUrl,
-      }),
+      })
     );
   }
 
@@ -219,12 +219,12 @@ async function main() {
         collectionId: neonId,
         name: `Audio: ${name}`,
         description: desc,
-        imageUrl: pic(`centher-audio-${name}`),
+        imageUrl: pic(`sociaket-audio-${name}`),
         ownerId: leo,
         price: "0.7500",
         mediaType: "audio",
         animationUrl: audioUrl,
-      }),
+      })
     );
   }
 
@@ -234,7 +234,7 @@ async function main() {
       genesisId,
       "Genesis Ape #1",
       "Rare genesis ape — gold fur.",
-      pic("centher-buy-ape1"),
+      pic("sociaket-buy-ape1"),
       omar,
       "2.0000",
     ],
@@ -242,7 +242,7 @@ async function main() {
       genesisId,
       "Genesis Punk #7",
       "Pixel punk with laser eyes.",
-      pic("centher-buy-punk7"),
+      pic("sociaket-buy-punk7"),
       sofia,
       "1.2500",
     ],
@@ -250,7 +250,7 @@ async function main() {
       pixelId,
       "Pixel Hero #42",
       "8-bit hero, max stats.",
-      pic("centher-buy-hero42"),
+      pic("sociaket-buy-hero42"),
       kai,
       "0.8000",
     ],
@@ -258,7 +258,7 @@ async function main() {
       pixelId,
       "Pixel Villain #13",
       "Unlucky number, lucky traits.",
-      pic("centher-buy-villain13"),
+      pic("sociaket-buy-villain13"),
       leo,
       "0.6500",
     ],
@@ -266,7 +266,7 @@ async function main() {
       badgesId,
       "Gold Staker Badge",
       "Awarded for 1 year of staking.",
-      pic("centher-buy-goldbadge"),
+      pic("sociaket-buy-goldbadge"),
       nina,
       "0.4000",
     ],
@@ -274,7 +274,7 @@ async function main() {
       neonId,
       "Neon Cityscape",
       "Midnight metropolis in neon.",
-      pic("centher-buy-cityscape"),
+      pic("sociaket-buy-cityscape"),
       omar,
       "0.9500",
     ],
@@ -299,7 +299,7 @@ async function main() {
       genesisId,
       "Genesis Crown #1",
       "The crown jewel — 1 of 1.",
-      pic("centher-bid-crown"),
+      pic("sociaket-bid-crown"),
       sofia,
       "5.0000",
     ],
@@ -307,7 +307,7 @@ async function main() {
       neonId,
       "Neon Phantom",
       "Ghost in the neon machine.",
-      pic("centher-bid-phantom"),
+      pic("sociaket-bid-phantom"),
       leo,
       "2.5000",
     ],
@@ -315,7 +315,7 @@ async function main() {
       pixelId,
       "Pixel Dragon",
       "Legendary fire-breathing sprite.",
-      pic("centher-bid-dragon"),
+      pic("sociaket-bid-dragon"),
       nina,
       "3.2000",
     ],
@@ -345,7 +345,7 @@ async function main() {
       badgesId,
       "Founder Badge",
       "Soulbound — never for sale.",
-      pic("centher-unlisted-founder"),
+      pic("sociaket-unlisted-founder"),
       demoId,
       "0.0000",
     ],
@@ -353,7 +353,7 @@ async function main() {
       genesisId,
       "Genesis Vault #99",
       "Locked in the vault.",
-      pic("centher-unlisted-vault"),
+      pic("sociaket-unlisted-vault"),
       leo,
       "10.0000",
     ],
@@ -361,7 +361,7 @@ async function main() {
       pixelId,
       "Pixel Ghost (Burned)",
       "Delisted forever.",
-      pic("centher-unlisted-ghost"),
+      pic("sociaket-unlisted-ghost"),
       nina,
       "0.0000",
     ],
@@ -376,7 +376,7 @@ async function main() {
         ownerId: owner,
         price,
         listed: false,
-      }),
+      })
     );
   }
 
@@ -386,14 +386,14 @@ async function main() {
       genesisId,
       "Demo's Genesis Star",
       "My prized genesis piece — open to offers.",
-      pic("centher-demo-star"),
+      pic("sociaket-demo-star"),
       "1.8000",
     ],
     [
       neonId,
       "Demo's Neon Wave",
       "Catch the wave — listed for sale.",
-      pic("centher-demo-wave"),
+      pic("sociaket-demo-wave"),
       "0.6000",
     ],
   ];
@@ -416,7 +416,7 @@ async function main() {
   console.log(
     `Phase 14 seed done. NFTs touched: ${touched}. Bids table: ${
       hasBids ? "seeded" : "skipped (no table)"
-    }`,
+    }`
   );
 }
 

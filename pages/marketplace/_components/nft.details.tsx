@@ -11,7 +11,7 @@ interface Props {
 }
 
 export const NFTDetails: React.FC<Props> = ({ nft }) => {
-  // Portfolio-library fix (Centher item 6): the old Details button had
+  // Portfolio-library fix (Sociaket item 6): the old Details button had
   // no handler at all — the body was always rendered, so clicking it
   // produced no visible change. It is a real toggle now, expanded by
   // default to preserve the previous visible content.
@@ -43,7 +43,7 @@ export const NFTDetails: React.FC<Props> = ({ nft }) => {
                   </div>
                   <div className={detailBox}>
                     <h5 className={title}>MINT TRANSACTION</h5>
-                    {/* Portfolio-library fix (Centher item 6): an empty
+                    {/* Portfolio-library fix (Sociaket item 6): an empty
                         mint hash used to render an empty link heading.
                         Label it as unavailable instead of linking
                         nowhere. */}

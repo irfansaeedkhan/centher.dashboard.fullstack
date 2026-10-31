@@ -34,14 +34,14 @@ const DUMMY_USERS = [
     email: "leo.park@centher.io",
     name: "Leo Park",
     username: "leo_park",
-    bio: "Trader hanging out in VoiSpace",
+    bio: "Trader hanging out in Sociaket Space",
     membership: "verified",
   },
   {
     email: "nina.ross@centher.io",
     name: "Nina Ross",
     username: "nina_ross",
-    bio: "NFT curator on Centher Marketplace",
+    bio: "NFT curator on Sociaket Marketplace",
     membership: "citizen",
   },
   {
@@ -69,7 +69,7 @@ const DUMMY_USERS = [
     email: "aisha.khan@centher.io",
     name: "Aisha Khan",
     username: "aisha_khan",
-    bio: "Product designer at Centher",
+    bio: "Product designer at Sociaket",
     membership: "citizen",
   },
   {
@@ -108,7 +108,7 @@ async function ensureAuthUser(email: string, name: string, password: string) {
 }
 
 async function ensureDemoUser() {
-  return ensureAuthUser(DEMO_EMAIL, "Centher Demo", DEMO_PASSWORD);
+  return ensureAuthUser(DEMO_EMAIL, "Sociaket Demo", DEMO_PASSWORD);
 }
 
 async function ensureDummyUsers() {
@@ -128,7 +128,7 @@ async function ensureDummyUsers() {
         username: dummy.username,
         bio: dummy.bio,
         membership: dummy.membership,
-        avatarUrl: "/images/centher.logo.favicon.png",
+        avatarUrl: "/images/sociaket.logo.favicon.png",
       })
       .onConflictDoNothing();
 
@@ -143,7 +143,7 @@ async function ensureDummyUsers() {
 }
 
 async function main() {
-  console.error("Seeding Centher demo data…");
+  console.error("Seeding Sociaket demo data…");
 
   const demo = await ensureDemoUser();
   const demoId = demo.id;
@@ -153,11 +153,11 @@ async function main() {
     .insert(profiles)
     .values({
       userId: demoId,
-      displayName: "Centher Demo",
+      displayName: "Sociaket Demo",
       username: "centher_demo",
-      bio: "Demo citizen exploring Centher SocialFi",
+      bio: "Demo citizen exploring Sociaket SocialFi",
       membership: "citizen",
-      avatarUrl: "/images/centher.logo.favicon.png",
+      avatarUrl: "/images/sociaket.logo.favicon.png",
     })
     .onConflictDoNothing();
 
@@ -175,7 +175,7 @@ async function main() {
     const authors = [demoId, ...dummyUsers.map((u) => u.id)];
     const postBodies = Array.from({ length: 14 }, (_, i) => ({
       authorId: authors[i % authors.length],
-      body: `Centher demo post #${
+      body: `Sociaket demo post #${
         i + 1
       } — SocialFi feed sample with yellow brand vibes.`,
       likeCount: (i * 3) % 17,
@@ -186,7 +186,7 @@ async function main() {
 
   const [convo] = await db
     .insert(conversations)
-    .values({ title: "Centher Welcome Chat" })
+    .values({ title: "Sociaket Welcome Chat" })
     .returning();
   const [convo2] = await db
     .insert(conversations)
@@ -197,7 +197,7 @@ async function main() {
     {
       conversationId: convo.id,
       senderId: demoId,
-      body: "Welcome to Centher chat demo!",
+      body: "Welcome to Sociaket chat demo!",
     },
     {
       conversationId: convo.id,
@@ -214,7 +214,7 @@ async function main() {
   const [live] = await db
     .insert(channels)
     .values({
-      name: "Centher Live Desk",
+      name: "Sociaket Live Desk",
       description: "Demo live/voice channel",
       kind: "live",
       hostId: demoId,
@@ -225,7 +225,7 @@ async function main() {
   const [ama] = await db
     .insert(channels)
     .values({
-      name: "AMA with Centher",
+      name: "AMA with Sociaket",
       description: "Ask anything (demo)",
       kind: "ama",
       hostId: demoId,
@@ -250,18 +250,18 @@ async function main() {
   const [collection] = await db
     .insert(collections)
     .values({
-      name: "Centher Genesis",
+      name: "Sociaket Genesis",
       description: "Demo NFT collection",
-      imageUrl: "/images/centher.logo.png",
+      imageUrl: "/images/sociaket.logo.png",
       creatorId: demoId,
     })
     .returning();
 
   const nftRows = Array.from({ length: 14 }, (_, i) => ({
     collectionId: collection.id,
-    name: `Centher NFT #${i + 1}`,
+    name: `Sociaket NFT #${i + 1}`,
     description: `Demo listing ${i + 1}`,
-    imageUrl: "/images/centher.logo.favicon.png",
+    imageUrl: "/images/sociaket.logo.favicon.png",
     ownerId: demoId,
     price: ((i + 1) * 0.15).toFixed(4),
     listed: true,
@@ -270,13 +270,13 @@ async function main() {
 
   await db.insert(stakingPools).values([
     {
-      name: "Centher Flex Stake",
+      name: "Sociaket Flex Stake",
       apy: "12.50",
       tvl: "125000.00",
       status: "active",
     },
     {
-      name: "Centher Locked 90d",
+      name: "Sociaket Locked 90d",
       apy: "18.00",
       tvl: "84000.00",
       status: "active",
@@ -291,7 +291,7 @@ async function main() {
 
   await db.insert(launchpads).values([
     {
-      name: "Centher Pad Alpha",
+      name: "Sociaket Pad Alpha",
       symbol: "CPA",
       status: "live",
       raised: "320000.00",

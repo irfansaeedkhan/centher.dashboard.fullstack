@@ -26,7 +26,7 @@ const StakingDetails: NextPageWithLayout = () => {
   const [stakingPool, setStakingPool] = useState<ListCardDataOBj | null>(null);
   const [hasSwapping, setHasSwapping] = useState(false);
   const [connectWalletModal, setConnectWalletModal] = useState(false);
-  // Portfolio-library fix (Centher item 4): dismissing the wallet gate
+  // Portfolio-library fix (Sociaket item 4): dismissing the wallet gate
   // must STICK. The old page re-opened the modal from two effects
   // whenever no wallet was connected, so even a working close control
   // would have been undone immediately and the modal kept covering
@@ -151,8 +151,8 @@ const StakingDetails: NextPageWithLayout = () => {
         </h2>
         <p className="max-w-[480px] text-sm font-normal leading-6 text-gray-shade-14">
           Pool details load from your connected wallet. You closed the
-          wallet-connect dialog, so nothing is connected and no pool data
-          can be shown yet.
+          wallet-connect dialog, so nothing is connected and no pool data can be
+          shown yet.
         </p>
         <div className="flex flex-wrap items-center justify-center gap-3">
           <button

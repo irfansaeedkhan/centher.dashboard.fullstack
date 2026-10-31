@@ -16,7 +16,7 @@ export const getNFTListOfSingleCollection = async ({
   skip?: number;
 }): Promise<CFSNFT[]> => {
   try {
-    // Portfolio-library fix (Centher item 1): the collection UI filter
+    // Portfolio-library fix (Sociaket item 1): the collection UI filter
     // vocabulary ("List"/"NON") is NOT the API vocabulary ("Sale"/
     // "NotForSale"). The server treats any value other than "Sale" as
     // not-listed, so the old pass-through made "Listed For Sale" return

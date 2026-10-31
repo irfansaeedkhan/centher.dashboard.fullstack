@@ -6,7 +6,7 @@ import { getCollectionListOfSingleCreator } from "@/lib/get-collection-list-of-s
 
 const ProductNativeCollection = {
   id: AddressFactory.getContractAddress(SmartContractName.NATIVE_COLLECTION),
-  name: "CENTHER Native NFT",
+  name: "SOCIAKET Native NFT",
   collection: AddressFactory.getContractAddress(
     SmartContractName.NATIVE_COLLECTION
   ),

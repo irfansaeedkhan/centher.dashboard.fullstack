@@ -10,7 +10,7 @@ export const PromotionCard2: React.FC<Props> = ({ className, ...props }) => {
   return (
     <div
       className={clsx(
-        `relative flex h-[330px] w-[272px] flex-col items-center justify-end rounded-10px bg-[url(/images/dexa-bomb.png)] bg-cover bg-center bg-no-repeat px-4 py-6`,
+        `relative flex h-[330px] w-[272px] flex-col items-center justify-end rounded-10px bg-[url(/images/staking-promo-bg.png)] bg-cover bg-center bg-no-repeat px-4 py-6`,
         className
       )}
       {...props}
@@ -19,7 +19,8 @@ export const PromotionCard2: React.FC<Props> = ({ className, ...props }) => {
         <p
           className={`w-full max-w-[220px] text-center text-sm font-bold uppercase leading-[17.07px] text-white`}
         >
-          Buy and stake DXC coin on {process.env.NEXT_PUBLIC_BRAND_NAME}
+          Stake on {process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"} and earn
+          rewards on your holdings
         </p>
         <Link
           href={AppRoutes.staking.index}

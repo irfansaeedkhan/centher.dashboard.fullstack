@@ -9,7 +9,7 @@ import { FiArrowUpRight, FiCopy, FiGithub, FiInstagram } from "react-icons/fi";
 import { isAddress } from "ethers/lib/utils";
 import {
   LinkNewIcon,
-  X369XIcon,
+  SociaketIcon,
   NewTelegramIcon,
   NewRedditIcon,
   NewDiscordIcon,
@@ -501,7 +501,7 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                   )}
                   {data?.show_on_centher === "yes" && (
                     <div className={section}>
-                      <p className={label}>Show on Centher</p>
+                      <p className={label}>Show on Sociaket</p>
                       <p className={value2}>{data?.show_on_centher}</p>
                     </div>
                   )}
@@ -567,7 +567,7 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
               <div className="flex flex-col gap-4 pt-6 fsm:pt-5">
                 <div className="grid w-full gap-6 fsm:grid-cols-2 fsm:gap-10">
                   <div className="flex flex-col gap-3">
-                    {/* hard coded dexa links */}
+                    {/* hard coded project links */}
                     <div className="text-sm font-semibold text-white">
                       Official Links
                     </div>
@@ -609,9 +609,9 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                           className="product-social-button flex select-none items-center gap-2 rounded-[11px] bg-elevation-1 px-[10px] py-[6px] text-xs font-medium text-gray-shade-14"
                         >
                           <span className="h-5 w-5 flex-shrink-0">
-                            <X369XIcon />
+                            <SociaketIcon />
                           </span>
-                          <span>Centher</span>
+                          <span>Sociaket</span>
                         </a>
                       ) : null}
 
@@ -736,7 +736,7 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                       memberDetails.length > 0 &&
                       memberDetails.map((member: Memb, key: any) => (
                         <Link
-                          href={`https://app.centher.io/profile/${member.address}`}
+                          href={`https://app.sociaket.com/profile/${member.address}`}
                           key={key}
                           target="_blank"
                           className="flex items-center gap-3 rounded-[14px] bg-background-shade-3 px-3 py-2"

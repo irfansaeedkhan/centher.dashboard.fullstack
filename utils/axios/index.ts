@@ -1,3 +1,3 @@
-export * from "./centher-api";
-export * from "./centher-identity-service";
-export * from "./centher-file-service";
+export * from "./sociaket-api";
+export * from "./sociaket-identity-service";
+export * from "./sociaket-file-service";

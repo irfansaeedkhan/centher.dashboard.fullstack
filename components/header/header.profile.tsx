@@ -21,7 +21,7 @@ import {
 } from "@/assets/svgs";
 import { BlockchainConfig } from "@/web3/blockchain/config";
 import { useChatConversations } from "@/hooks/chat/useChat";
-import { axiosApi369x } from "@/utils/axios/centher-api";
+import { axiosApi } from "@/utils/axios/sociaket-api";
 import Button from "@/components/button";
 import { WalletEnum, useWallet } from "@/web3/hooks/use.wallet";
 
@@ -43,7 +43,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
   const { unreadTotal: unreadConversations } = useChatConversations();
   const [unreadNotifications, setUnreadNotifications] = React.useState(0);
   React.useEffect(() => {
-    axiosApi369x
+    axiosApi
       .get("/api/notifications", { params: { limit: 100 } })
       .then((res) => {
         const list = res.data?.notifications ?? [];

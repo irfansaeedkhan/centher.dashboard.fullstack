@@ -3,4 +3,4 @@ Allow: /
 Allow: /feed/*
 Disallow: /admin/
 
-Sitemap: https://dapp.369x.io/sitemap.xml
+Sitemap: https://app.sociaket.com/sitemap.xml

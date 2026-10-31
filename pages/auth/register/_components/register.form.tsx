@@ -40,7 +40,9 @@ const initialFeeModalState: FeeModalState = {
 
 const ButtonsText = {
   connect_metamask: "Connect to Metamask",
-  connect_wallet: `Connect To ${process.env.NEXT_PUBLIC_BRAND_NAME} Wallet`,
+  connect_wallet: `Connect To ${
+    process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"
+  } Wallet`,
 };
 
 export const RegisterForm: React.FC = () => {
@@ -213,7 +215,8 @@ export const RegisterForm: React.FC = () => {
           />
 
           <p className="text-sm text-white">
-            I have read and agree to {process.env.NEXT_PUBLIC_BRAND_NAME}{" "}
+            I have read and agree to{" "}
+            {process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"}{" "}
             <Link href={AppRoutes.terms}>
               <span className="cursor-pointer font-semibold underline">
                 Terms & Condition

@@ -3,7 +3,7 @@ import { IBlockchainConfig } from "./types";
 
 import dxcAbi from "../abis/dxc.json";
 import usdtAbi from "../abis/usdt.json";
-import centherAbi from "../abis/centher.json";
+import sociaketAbi from "../abis/sociaket.json";
 import presaleAbi from "../abis/presale.json";
 import marketplaceAbi from "../abis/marketplace.json";
 import oldMarketplaceAbi from "../abis/marketplace.old.json";
@@ -26,7 +26,7 @@ export const BlockchainConfig: IBlockchainConfig = {
   },
   contracts: {
     CENTHER_TOKEN: {
-      // CENTHER Token Contract Address
+      // SOCIAKET Token Contract Address
       56: "0x0000000000000000000000000000000000000000",
 
       11155111: "0x0000000000000000000000000000000000000000",
@@ -110,7 +110,7 @@ export const BlockchainConfig: IBlockchainConfig = {
         // keep working and no page crashes on a missing credential.
         process.env.NEXT_PUBLIC_CHAINSTACK_RPC_URL || "https://rpc.sepolia.org",
   abis: {
-    CENTHER_TOKEN: centherAbi,
+    CENTHER_TOKEN: sociaketAbi,
     REGISTRATION: registrationAbi,
     PRESALE: presaleAbi,
     MARKETPALCE: marketplaceAbi,

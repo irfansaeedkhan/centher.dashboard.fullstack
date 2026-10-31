@@ -2,7 +2,7 @@
  * Phase 5: REST client for /api/chat/*. Uses the app's authed axios instance
  * so 401s flow through the same stale-session handling as everything else.
  */
-import { axiosApi369x } from "@/utils/axios/centher-api";
+import { axiosApi } from "@/utils/axios/sociaket-api";
 import type {
   ChatAttachment,
   ChatConversation,
@@ -26,38 +26,38 @@ async function req<T>(promise: Promise<{ data: T }>): Promise<T> {
 export const chatApi = {
   listConversations: () =>
     req(
-      axiosApi369x.get<{ conversations: ChatConversation[] }>(
+      axiosApi.get<{ conversations: ChatConversation[] }>(
         "/api/chat/conversations"
       )
     ),
 
   createConversation: (user_ids: string[], title?: string) =>
     req(
-      axiosApi369x.post<ChatConversation>("/api/chat/conversations", {
+      axiosApi.post<ChatConversation>("/api/chat/conversations", {
         user_ids,
         title,
       })
     ),
 
   deleteConversation: (id: string) =>
-    req(axiosApi369x.delete<{ ok: true }>(`/api/chat/conversations/${id}`)),
+    req(axiosApi.delete<{ ok: true }>(`/api/chat/conversations/${id}`)),
 
   pinConversation: (id: string) =>
-    req(axiosApi369x.post<{ ok: true }>(`/api/chat/conversations/${id}/pin`)),
+    req(axiosApi.post<{ ok: true }>(`/api/chat/conversations/${id}/pin`)),
 
   unpinConversation: (id: string) =>
-    req(axiosApi369x.post<{ ok: true }>(`/api/chat/conversations/${id}/unpin`)),
+    req(axiosApi.post<{ ok: true }>(`/api/chat/conversations/${id}/unpin`)),
 
   markAsRead: (id: string, opts?: { upToMessageId?: string }) =>
     req(
-      axiosApi369x.post<{ ok: true }>(`/api/chat/conversations/${id}/read`, {
+      axiosApi.post<{ ok: true }>(`/api/chat/conversations/${id}/read`, {
         up_to_message_id: opts?.upToMessageId,
       })
     ),
 
   listMessages: (id: string, opts?: { limit?: number; before?: string }) =>
     req(
-      axiosApi369x.get<{ messages: ChatMessage[]; has_more?: boolean }>(
+      axiosApi.get<{ messages: ChatMessage[]; has_more?: boolean }>(
         `/api/chat/conversations/${id}/messages`,
         { params: { limit: opts?.limit, before: opts?.before } }
       )
@@ -73,7 +73,7 @@ export const chatApi = {
     }
   ) =>
     req(
-      axiosApi369x.post<ChatMessage>(`/api/chat/conversations/${id}/messages`, {
+      axiosApi.post<ChatMessage>(`/api/chat/conversations/${id}/messages`, {
         body,
         kind: opts?.kind ?? "text",
         attachment_id: opts?.attachment_id,
@@ -91,33 +91,31 @@ export const chatApi = {
     width?: number;
     height?: number;
     thumbnail_url?: string;
-  }) => req(axiosApi369x.post<ChatAttachment>("/api/chat/attachments", data)),
+  }) => req(axiosApi.post<ChatAttachment>("/api/chat/attachments", data)),
 
   sendTyping: (id: string) =>
-    req(
-      axiosApi369x.post<{ ok: true }>(`/api/chat/conversations/${id}/typing`)
-    ),
+    req(axiosApi.post<{ ok: true }>(`/api/chat/conversations/${id}/typing`)),
 
   getTyping: (id: string) =>
     req(
-      axiosApi369x.get<{ typing: TypingUser[] }>(
+      axiosApi.get<{ typing: TypingUser[] }>(
         `/api/chat/conversations/${id}/typing`
       )
     ),
 
   editMessage: (messageId: string, body: string) =>
     req(
-      axiosApi369x.patch<ChatMessage>(`/api/chat/messages/${messageId}`, {
+      axiosApi.patch<ChatMessage>(`/api/chat/messages/${messageId}`, {
         body,
       })
     ),
 
   deleteMessage: (messageId: string) =>
-    req(axiosApi369x.delete<{ ok: true }>(`/api/chat/messages/${messageId}`)),
+    req(axiosApi.delete<{ ok: true }>(`/api/chat/messages/${messageId}`)),
 
   toggleReaction: (messageId: string, emoji: string) =>
     req(
-      axiosApi369x.post<{ ok: true; reacted: boolean }>(
+      axiosApi.post<{ ok: true; reacted: boolean }>(
         `/api/chat/messages/${messageId}/reactions`,
         { emoji }
       )
@@ -126,7 +124,7 @@ export const chatApi = {
   // Chat completeness Q24: search message bodies across my conversations.
   searchMessages: (q: string, opts?: { limit?: number; before?: string }) =>
     req(
-      axiosApi369x.get<{
+      axiosApi.get<{
         results: ChatMessageSearchResult[];
         has_more?: boolean;
       }>("/api/chat/search", {
@@ -135,28 +133,26 @@ export const chatApi = {
     ),
 
   // Chat completeness Q24: presence heartbeat (server throttles writes).
-  sendPresence: () =>
-    req(axiosApi369x.post<{ ok: true }>("/api/chat/presence")),
+  sendPresence: () => req(axiosApi.post<{ ok: true }>("/api/chat/presence")),
 
   // Chat completeness Q26: group lifecycle.
   renameConversation: (id: string, title: string) =>
     req(
-      axiosApi369x.patch<ChatConversation>(`/api/chat/conversations/${id}`, {
+      axiosApi.patch<ChatConversation>(`/api/chat/conversations/${id}`, {
         title,
       })
     ),
 
   addMembers: (id: string, user_ids: string[]) =>
     req(
-      axiosApi369x.post<ChatConversation>(
-        `/api/chat/conversations/${id}/members`,
-        { user_ids }
-      )
+      axiosApi.post<ChatConversation>(`/api/chat/conversations/${id}/members`, {
+        user_ids,
+      })
     ),
 
   removeMember: (id: string, userId: string) =>
     req(
-      axiosApi369x.delete<ChatConversation | { ok: true; left: true }>(
+      axiosApi.delete<ChatConversation | { ok: true; left: true }>(
         `/api/chat/conversations/${id}/members/${encodeURIComponent(userId)}`
       )
     ),

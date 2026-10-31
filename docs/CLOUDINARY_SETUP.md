@@ -1,6 +1,6 @@
 # Cloudinary setup (free tier)
 
-Centher uploads images (post media, room covers, avatars, profile covers)
+Sociaket uploads images (post media, room covers, avatars, profile covers)
 directly from the browser to **Cloudinary's free tier** — 25GB storage +
 25GB bandwidth/month, no credit card. The code ships ready; this page is
 the one manual step: creating the account and the upload preset.

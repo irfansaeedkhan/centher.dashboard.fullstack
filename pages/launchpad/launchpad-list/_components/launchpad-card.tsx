@@ -34,7 +34,7 @@ export const LaunchpadCard: React.FC<LaunchpadDataType> = ({
     rawTargetDate instanceof Date && !isNaN(rawTargetDate.getTime())
       ? rawTargetDate
       : undefined;
-  // Portfolio-library fix (Centher item 3): the REST API returns raised /
+  // Portfolio-library fix (Sociaket item 3): the REST API returns raised /
   // soft_cap as plain numbers (e.g. "320000.00"), NOT wei. The old card
   // divided them by 1e18 (rendering ~0) and showed the "Soft" row from
   // minTokensToSell, which the list mapping hardcodes to 0. Render the
@@ -221,7 +221,7 @@ const countdownRenderer: CountdownRendererFn = ({
   seconds,
   completed,
 }) => {
-  // Portfolio-library fix (Centher item 3): a target date in the past
+  // Portfolio-library fix (Sociaket item 3): a target date in the past
   // (e.g. an upcoming card whose start_date is the creation timestamp)
   // used to render a misleading 0:0:0:0 countdown. A finished countdown
   // has no target to count to, so render "Not available" instead,

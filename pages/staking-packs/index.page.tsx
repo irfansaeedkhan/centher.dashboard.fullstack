@@ -4,7 +4,7 @@ import Image from "next/image";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import Button from "@/components/button";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import { axiosApi369x } from "@/utils/axios/centher-api";
+import { axiosApi } from "@/utils/axios/sociaket-api";
 import { customLog } from "@/utils/custom.log";
 
 interface StakingPool {
@@ -23,7 +23,7 @@ const StakingPackPage: NextPageWithLayout = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axiosApi369x
+    axiosApi
       .get<{ pools: StakingPool[] }>("/api/staking/pools")
       .then((res) => setPools(res.data.pools ?? []))
       .catch((e) => {

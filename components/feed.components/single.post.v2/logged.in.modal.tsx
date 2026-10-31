@@ -37,8 +37,8 @@ export const LoggedInModal: React.FC<Props> = ({ isOpen, onClose }) => {
             <header className="flex items-center justify-between text-white">
               <h3 className="text-lg font-semibold">
                 <Image
-                  src="/images/centher.logo.png"
-                  alt="Centher Logo"
+                  src="/images/sociaket.logo.png"
+                  alt="Sociaket Logo"
                   width={75}
                   height={39}
                   className="w-18"
@@ -53,7 +53,7 @@ export const LoggedInModal: React.FC<Props> = ({ isOpen, onClose }) => {
               <div className="mt-4 space-y-8 text-center">
                 <h3 className="text-2xl font-semibold text-white">
                   Register or login to{" "}
-                  <b>{process.env.NEXT_PUBLIC_BRAND_NAME}</b>
+                  <b>{process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"}</b>
                 </h3>
                 <div>
                   <Link href={AppRoutes.auth.login}>

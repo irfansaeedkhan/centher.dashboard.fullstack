@@ -1,9 +1,9 @@
 import { AppError } from "@/utils/app-error";
-import { axiosApi369x } from "@/utils/axios";
+import { axiosApi } from "@/utils/axios";
 
 export const deleteAllRecentSearch = async () => {
   try {
-    await axiosApi369x.delete("/api/search/recent");
+    await axiosApi.delete("/api/search/recent");
   } catch (error: any) {
     throw new AppError(
       error,

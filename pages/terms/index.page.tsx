@@ -21,9 +21,9 @@ const Terms: NextPage = () => {
         </div>
         <p className="mt-6 px-4 text-sm font-medium text-white fsm:text-lg flg:px-0">
           By registering and interacting on{" "}
-          <strong>{process.env.NEXT_PUBLIC_BRAND_NAME}</strong> the user
-          implicitly declares to be informed about these terms and conditions
-          and to be fully aware of the following
+          <strong>{process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"}</strong>{" "}
+          the user implicitly declares to be informed about these terms and
+          conditions and to be fully aware of the following
         </p>
 
         <div className="mt-10 max-w-[826px] rounded-none bg-[#1B1C22] fmd:rounded-xl">
@@ -45,9 +45,11 @@ const Terms: NextPage = () => {
           </h3>
           <div className="mt-4 px-4 pb-8 text-sm font-normal text-white flg:px-8">
             <p>
-              <strong>{process.env.NEXT_PUBLIC_BRAND_NAME}</strong> is a De.Fi.
-              platform; therefore, it is not governed by any centralized entity,
-              be it a company or a group of individuals.
+              <strong>
+                {process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"}
+              </strong>{" "}
+              is a De.Fi. platform; therefore, it is not governed by any
+              centralized entity, be it a company or a group of individuals.
             </p>
             <br />
             <p>
@@ -60,8 +62,10 @@ const Terms: NextPage = () => {
               The user declares to understand the risks related to eventual
               hacker attacks, disruptions related to technology and other
               factors not attributable to{" "}
-              <strong>{process.env.NEXT_PUBLIC_BRAND_NAME}</strong>, on which
-              the user cannot claim any compensation.
+              <strong>
+                {process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"}
+              </strong>
+              , on which the user cannot claim any compensation.
             </p>
           </div>
         </div>
@@ -80,18 +84,28 @@ const Terms: NextPage = () => {
               By accepting our terms and conditions you agree to indemnify us
               against any damage, loss or missed opportunity arising from your
               participation in any Launchpad you have accessed on{" "}
-              <strong>{process.env.NEXT_PUBLIC_BRAND_NAME}</strong>.
+              <strong>
+                {process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"}
+              </strong>
+              .
             </p>
             <br />
             <p>
               All forms of capital raising activities in fiat currencies (real
               world currencies) are prohibited on{" "}
-              <strong>{process.env.NEXT_PUBLIC_BRAND_NAME}</strong> and the
-              assets traded on{" "}
-              <strong>{process.env.NEXT_PUBLIC_BRAND_NAME}</strong> are Utility
-              Tokens only. Payment Tokens and Security Tokens are therefore
-              strictly excluded as objects of speculation on{" "}
-              <strong>{process.env.NEXT_PUBLIC_BRAND_NAME}</strong>.
+              <strong>
+                {process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"}
+              </strong>{" "}
+              and the assets traded on{" "}
+              <strong>
+                {process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"}
+              </strong>{" "}
+              are Utility Tokens only. Payment Tokens and Security Tokens are
+              therefore strictly excluded as objects of speculation on{" "}
+              <strong>
+                {process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"}
+              </strong>
+              .
             </p>
           </div>
         </div>
@@ -102,28 +116,35 @@ const Terms: NextPage = () => {
           </h3>
           <div className=" mt-4 px-4 pb-8 text-sm font-normal text-white flg:px-8">
             <p>
-              On <strong>{process.env.NEXT_PUBLIC_BRAND_NAME}</strong> all
-              reward and speculative activity is subject to risk, by accepting
-              our terms and conditions you agree to indemnify us against any
-              loss, economic loss and you represent that you are willing to lose
-              all capital.
+              On{" "}
+              <strong>
+                {process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"}
+              </strong>{" "}
+              all reward and speculative activity is subject to risk, by
+              accepting our terms and conditions you agree to indemnify us
+              against any loss, economic loss and you represent that you are
+              willing to lose all capital.
             </p>
             <br />
             <p>
               You further understand that{" "}
-              <strong>{process.env.NEXT_PUBLIC_BRAND_NAME}</strong>being
-              decentralized in nature, does not hold or receive your crypto
-              funds and therefore is not responsible or subject to any legal
-              attack whenever you send your funds to other wallets or other
-              Smart Contracts.
+              <strong>
+                {process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"}
+              </strong>
+              being decentralized in nature, does not hold or receive your
+              crypto funds and therefore is not responsible or subject to any
+              legal attack whenever you send your funds to other wallets or
+              other Smart Contracts.
             </p>
             <br />
             <p>
               The user declares to be willing to lose the tokens or
               cryptocurrencies he/she has decided to invest in{" "}
-              <strong>{process.env.NEXT_PUBLIC_BRAND_NAME}</strong> given the
-              unregulated market conditions and the highly speculative nature of
-              decentralized markets.
+              <strong>
+                {process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"}
+              </strong>{" "}
+              given the unregulated market conditions and the highly speculative
+              nature of decentralized markets.
             </p>
           </div>
         </div>
@@ -134,17 +155,22 @@ const Terms: NextPage = () => {
           </h3>
           <div className=" mt-4 px-4 pb-8 text-sm font-normal text-white flg:px-8">
             <p>
-              <strong>{process.env.NEXT_PUBLIC_BRAND_NAME}</strong> is a fully
-              decentralized NFT Marketplace so by accepting our terms and
-              conditions you agree to release us from any legal liability for
-              copyright infringement by other users or organizations
+              <strong>
+                {process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"}
+              </strong>{" "}
+              is a fully decentralized NFT Marketplace so by accepting our terms
+              and conditions you agree to release us from any legal liability
+              for copyright infringement by other users or organizations
             </p>
             <br />
             <p>
               Both creators and buyers by accepting our terms and conditions
               agree to indemnify{" "}
-              <strong>{process.env.NEXT_PUBLIC_BRAND_NAME}</strong> from any
-              damage or loss received from the purchase of NFT on the platform.
+              <strong>
+                {process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"}
+              </strong>{" "}
+              from any damage or loss received from the purchase of NFT on the
+              platform.
             </p>
           </div>
         </div>
@@ -157,18 +183,26 @@ const Terms: NextPage = () => {
             <p>
               The user declares to take responsibility for his/her own referrals
               and to warn his/her referrals of the risks related to the use of
-              the <strong>{process.env.NEXT_PUBLIC_BRAND_NAME}</strong> platform
-              and compel them to read the Terms and Conditions herein contained
-              before taking any action on{" "}
-              <strong>{process.env.NEXT_PUBLIC_BRAND_NAME}</strong>.
+              the{" "}
+              <strong>
+                {process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"}
+              </strong>{" "}
+              platform and compel them to read the Terms and Conditions herein
+              contained before taking any action on{" "}
+              <strong>
+                {process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"}
+              </strong>
+              .
             </p>
             <br />
             <p>
               Each user who participates in{" "}
-              <strong>{process.env.NEXT_PUBLIC_BRAND_NAME}</strong> activities,
-              by accepting our Terms and Conditions, agrees to release his or
-              her Sponsor from any liability related to his or her own use of
-              the platform and from any damage or loss.
+              <strong>
+                {process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"}
+              </strong>{" "}
+              activities, by accepting our Terms and Conditions, agrees to
+              release his or her Sponsor from any liability related to his or
+              her own use of the platform and from any damage or loss.
             </p>
           </div>
         </div>
@@ -211,7 +245,9 @@ const Terms: NextPage = () => {
               By accepting this agreement and its terms and conditions, you
               agree to release and discharge any other users, developers,
               employees, contractors, and organizations connected with{" "}
-              <strong>{process.env.NEXT_PUBLIC_BRAND_NAME}</strong>{" "}
+              <strong>
+                {process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"}
+              </strong>{" "}
               decentralized platform from any liability to you and to waive any
               claim for loss or damage by reason of injury to person or property
               or serious or permanent injury to you, for any cause whatsoever.
