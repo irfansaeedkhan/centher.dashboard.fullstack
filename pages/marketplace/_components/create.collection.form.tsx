@@ -36,11 +36,9 @@ export const normalizeUrl = (value: unknown): string => {
   return `${scheme}${withoutRepeatedScheme}`;
 };
 
-// The brand domain may or may not carry a scheme depending on env, so
-// strip it here — the placeholder adds https:// exactly once.
-const brandDomainForUrl = (
-  process.env.NEXT_PUBLIC_BRAND_DOMAIN || "sociaket.com"
-)
+// Brand domain is a literal here, so the placeholder adds
+// https:// exactly once.
+const brandDomainForUrl = "sociaket.com"
   .replace(/^https?:\/\//i, "")
   .replace(/\/+$/, "");
 

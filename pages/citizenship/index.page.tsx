@@ -94,16 +94,15 @@ const Citizenship: NextPageWithLayout = () => {
             />
           </div>
           <div className="text-center text-[16px] font-medium tracking-[8px] text-white sm:text-[20px] md:text-[28px] md:tracking-[10px]">
-            {process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"} Citizenship
+            {"Sociaket"} Citizenship
           </div>
           <div className="text-center text-[16px] font-medium tracking-[8px] text-white sm:text-[18px] md:text-[25px] md:tracking-[8px]">
             (Business Account)
           </div>
           <div className="max-w-[300px] text-center text-sm text-gray-shade-7 md:max-w-[534px]">
-            At {process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"} we are
-            building a place where anyone opening a business account gets
-            {process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"} Citizenship with
-            a Passport.
+            At {"Sociaket"} we are building a place where anyone opening a
+            business account gets
+            {"Sociaket"} Citizenship with a Passport.
           </div>
           <div className="max-w-[300px] text-center text-sm text-gray-shade-7 md:max-w-[534px]">
             This Passport opens premium features like{" "}
@@ -122,10 +121,8 @@ const Citizenship: NextPageWithLayout = () => {
           {loggedInUser?.membership.status !== "citizen" && (
             <div className="max-w-[300px] text-center text-sm text-gray-shade-7 md:max-w-[534px]">
               Grab your Passport now and become a{" "}
-              <span className="text-gradient">
-                {process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"} Citizen
-              </span>{" "}
-              to give your business a boost!
+              <span className="text-gradient">{"Sociaket"} Citizen</span> to
+              give your business a boost!
             </div>
           )}
 

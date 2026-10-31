@@ -753,7 +753,7 @@ export const createHonoApp = () => {
   app.get("/health", (c) =>
     c.json({
       ok: true,
-      brand: process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket",
+      brand: "Sociaket",
     })
   );
 

@@ -27,8 +27,7 @@ const OverviewCards = ({ data }: any) => {
       </div>
       <div className="card  flex flex-col gap-3 rounded-xl bg-elevation-1 p-6 ">
         <h5 className="text-xs font-semibold text-gray-shade-7">
-          Total {process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"} to be
-          distributed
+          Total {"Sociaket"} to be distributed
         </h5>
         <h6 className="text-sm font-semibold text-white">
           {data.totalCentherTobeDistributedFromBusd +

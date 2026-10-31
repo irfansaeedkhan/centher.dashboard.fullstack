@@ -55,7 +55,5 @@ export default Login;
 
 const signupLeftData = {
   title: "Connect wallet",
-  content: `Sign in to your account and get the full ${
-    process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"
-  } SocialFi world`,
+  content: `Sign in to your account and get the full Sociaket SocialFi world`,
 };

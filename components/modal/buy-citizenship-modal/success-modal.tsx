@@ -30,8 +30,7 @@ export const CitizenShipSuccessModal: React.FC<CustomModalProps> = () => {
                 Congratulations! you have successfully subscribed to{" "}
                 <span className="text-gradient">
                   {" "}
-                  {process.env.NEXT_PUBLIC_BRAND_NAME || "Sociaket"} CITIZEN
-                  Passport
+                  {"Sociaket"} CITIZEN Passport
                 </span>{" "}
                 Membership. Enjoy the best experience with us.
               </p>
