@@ -18,7 +18,7 @@ const SocialLinks: NextPageWithLayout = () => {
       ) : (
         <div className="flex h-[calc(100vh-40px)] w-full justify-center">
           <Image
-            src="/images/preloader.png"
+            src="/images/sociaket-loader.gif"
             alt="preloader"
             width={64}
             height={64}

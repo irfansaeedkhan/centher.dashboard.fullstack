@@ -28,7 +28,7 @@ export const RewardsClaimable: React.FC<{
       {isLoading ? (
         <div className="flex w-full items-center justify-center">
           <Image
-            src="/images/preloader.png"
+            src="/images/sociaket-loader.gif"
             alt="preloader"
             width={64}
             height={64}

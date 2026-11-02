@@ -128,7 +128,7 @@ const LaunchpadList: NextPageWithLayout = () => {
     return (
       <div className="mt-10 flex w-full items-center justify-center">
         <Image
-          src="/images/preloader.png"
+          src="/images/sociaket-loader.gif"
           alt="Preloader"
           width={64}
           height={64}
