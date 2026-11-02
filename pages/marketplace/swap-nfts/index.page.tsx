@@ -151,7 +151,7 @@ const SwapNfts: NextPageWithLayout = () => {
         ) : isLoading && userNfts.length === 0 ? (
           <div className="flex h-[calc(100vh-150px)] w-full items-center justify-center">
             <Image
-              src="/images/preloader.png"
+              src="/images/sociaket-loader.gif"
               alt="preloader"
               width={64}
               height={64}

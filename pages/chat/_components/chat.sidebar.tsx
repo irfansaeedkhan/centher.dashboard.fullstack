@@ -171,7 +171,7 @@ const ChatSidebar = () => {
         {loading ? (
           <div className="flex items-center justify-center py-10">
             <Image
-              src="/images/preloader.png"
+              src="/images/sociaket-loader.gif"
               alt="Loading"
               width={48}
               height={48}

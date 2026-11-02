@@ -59,7 +59,7 @@ const StakingPackPage: NextPageWithLayout = () => {
           {loading ? (
             <div className="flex w-full justify-center py-10">
               <Image
-                src="/images/preloader.png"
+                src="/images/sociaket-loader.gif"
                 alt="Loading"
                 width={48}
                 height={48}

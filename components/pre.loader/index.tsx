@@ -9,7 +9,7 @@ export const PreLoader: React.FC = () => {
         className={`fixed inset-0 z-[3050] flex items-center justify-center overflow-y-auto overflow-x-hidden bg-black-shade-8 font-monto backdrop-blur-[7px] backdrop-filter`}
       >
         <Image
-          src="/images/preloader.png"
+          src="/images/sociaket-loader.gif"
           alt="pre loader"
           width={64}
           height={64}

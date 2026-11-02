@@ -1,5 +1,5 @@
 <?xml version="1.0" standalone="no"?>
 <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
 <defs><mask id="cut"><rect width="512" height="512" fill="white"/><text x="256" y="375" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="360" font-weight="700" fill="black">S</text><circle cx="350" cy="130" r="34" fill="black"/></mask></defs>
-<rect x="16" y="16" width="480" height="480" rx="110" fill="#000000" mask="url(#cut)"/>
+<path d="M256,16 L496,256 L256,496 L16,256 Z" fill="#000000" mask="url(#cut)"/>
 </svg>
