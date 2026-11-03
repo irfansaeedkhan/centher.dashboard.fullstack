@@ -17,12 +17,11 @@ const Terms: NextPage = () => {
         </h3>
 
         <div className="mt-4 px-4 text-sm font-medium text-[#888DAA] flg:px-0">
-          Last updated on August 26, 2024
+          Last updated on November 3, 2026
         </div>
         <p className="mt-6 px-4 text-sm font-medium text-white fsm:text-lg flg:px-0">
-          By registering and interacting on <strong>{"Sociaket"}</strong> the
-          user implicitly declares to be informed about these terms and
-          conditions and to be fully aware of the following
+          By registering and using <strong>{"Sociaket"}</strong>, you agree to
+          these terms and conditions and confirm you have read them.
         </p>
 
         <div className="mt-10 max-w-[826px] rounded-none bg-[#1B1C22] fmd:rounded-xl">
@@ -30,11 +29,10 @@ const Terms: NextPage = () => {
             Privacy Policy
           </h3>
           <p className=" mt-4 px-4 pb-8 text-sm font-normal text-white flg:px-8">
-            This platform in its social networking functions is entirely
-            decentralized, so we do not hold your data and there is no one who
-            can somehow use it. Our advertising is also without data profiling,
-            so when you see an advertisement, at the same time everyone is
-            viewing it, even non-target users.
+            <strong>{"Sociaket"}</strong> social networking runs decentralized.
+            We do not hold your data, and no one can use it. Our advertising
+            uses no data profiling. When you see an advertisement, everyone sees
+            the same advertisement at the same time.
           </p>
         </div>
 
@@ -44,22 +42,20 @@ const Terms: NextPage = () => {
           </h3>
           <div className="mt-4 px-4 pb-8 text-sm font-normal text-white flg:px-8">
             <p>
-              <strong>{"Sociaket"}</strong> is a De.Fi. platform; therefore, it
-              is not governed by any centralized entity, be it a company or a
-              group of individuals.
+              <strong>{"Sociaket"}</strong> is a De.Fi. platform. It is not
+              governed by any central entity, company, or group of individuals.
             </p>
             <br />
             <p>
-              The user declares to understand the speculative nature of this
-              kind of activity and the risks of losing part of or all the
-              capital in cryptocurrency.
+              You understand this activity is speculative. You risk losing part
+              or all of the capital you put into cryptocurrency.
             </p>
             <br />
             <p>
-              The user declares to understand the risks related to eventual
-              hacker attacks, disruptions related to technology and other
-              factors not attributable to <strong>{"Sociaket"}</strong>, on
-              which the user cannot claim any compensation.
+              You understand the risks of hacker attacks, technology
+              disruptions, and other factors outside{" "}
+              <strong>{"Sociaket"}</strong> control. You cannot claim
+              compensation from <strong>{"Sociaket"}</strong> for those risks.
             </p>
           </div>
         </div>
@@ -70,24 +66,22 @@ const Terms: NextPage = () => {
           </h3>
           <div className=" mt-4 px-4 pb-8 text-sm font-normal text-white flg:px-8">
             <p>
-              Anyone can launch their own project through our Launchpad if it
-              passes the basic requirements of our selection.
+              Anyone can launch a project through our Launchpad if it passes our
+              basic selection requirements.
             </p>
             <br />
             <p>
-              By accepting our terms and conditions you agree to indemnify us
-              against any damage, loss or missed opportunity arising from your
-              participation in any Launchpad you have accessed on{" "}
-              <strong>{"Sociaket"}</strong>.
+              By accepting these terms, you agree to indemnify us against any
+              damage, loss, or missed opportunity from your participation in any
+              Launchpad you accessed on <strong>{"Sociaket"}</strong>.
             </p>
             <br />
             <p>
-              All forms of capital raising activities in fiat currencies (real
-              world currencies) are prohibited on <strong>{"Sociaket"}</strong>{" "}
-              and the assets traded on <strong>{"Sociaket"}</strong> are Utility
-              Tokens only. Payment Tokens and Security Tokens are therefore
-              strictly excluded as objects of speculation on{" "}
-              <strong>{"Sociaket"}</strong>.
+              Capital raising in fiat currencies (real world currencies) is
+              prohibited on <strong>{"Sociaket"}</strong>. Assets traded on{" "}
+              <strong>{"Sociaket"}</strong> are Utility Tokens only. Payment
+              Tokens and Security Tokens are strictly excluded from speculation
+              on <strong>{"Sociaket"}</strong>.
             </p>
           </div>
         </div>
@@ -98,26 +92,26 @@ const Terms: NextPage = () => {
           </h3>
           <div className=" mt-4 px-4 pb-8 text-sm font-normal text-white flg:px-8">
             <p>
-              On <strong>{"Sociaket"}</strong> all reward and speculative
-              activity is subject to risk, by accepting our terms and conditions
-              you agree to indemnify us against any loss, economic loss and you
-              represent that you are willing to lose all capital.
+              On <strong>{"Sociaket"}</strong>, all reward and speculative
+              activity carries risk. By accepting these terms, you agree to
+              indemnify us against any loss or economic loss, and you confirm
+              you are willing to lose all capital.
             </p>
             <br />
             <p>
-              You further understand that <strong>{"Sociaket"}</strong>
-              being decentralized in nature, does not hold or receive your
-              crypto funds and therefore is not responsible or subject to any
-              legal attack whenever you send your funds to other wallets or
-              other Smart Contracts.
+              You further understand that <strong>{"Sociaket"}</strong>, being
+              decentralized, does not hold or receive your crypto funds.{" "}
+              <strong>{"Sociaket"}</strong> is therefore not responsible for
+              funds you send to other wallets or other Smart Contracts, and no
+              legal claim against <strong>{"Sociaket"}</strong> arises from
+              those transfers.
             </p>
             <br />
             <p>
-              The user declares to be willing to lose the tokens or
-              cryptocurrencies he/she has decided to invest in{" "}
-              <strong>{"Sociaket"}</strong> given the unregulated market
-              conditions and the highly speculative nature of decentralized
-              markets.
+              You accept that you may lose the tokens or cryptocurrencies you
+              invest in <strong>{"Sociaket"}</strong>, given the unregulated
+              market conditions and the highly speculative nature of
+              decentralized markets.
             </p>
           </div>
         </div>
@@ -129,15 +123,15 @@ const Terms: NextPage = () => {
           <div className=" mt-4 px-4 pb-8 text-sm font-normal text-white flg:px-8">
             <p>
               <strong>{"Sociaket"}</strong> is a fully decentralized NFT
-              Marketplace so by accepting our terms and conditions you agree to
-              release us from any legal liability for copyright infringement by
-              other users or organizations
+              Marketplace. By accepting these terms, you agree to release us
+              from any legal liability for copyright infringement by other users
+              or organizations.
             </p>
             <br />
             <p>
-              Both creators and buyers by accepting our terms and conditions
-              agree to indemnify <strong>{"Sociaket"}</strong> from any damage
-              or loss received from the purchase of NFT on the platform.
+              Creators and buyers, by accepting these terms, agree to indemnify{" "}
+              <strong>{"Sociaket"}</strong> against any damage or loss from the
+              purchase of NFTs on the platform.
             </p>
           </div>
         </div>
@@ -148,18 +142,18 @@ const Terms: NextPage = () => {
           </h3>
           <div className=" mt-4 px-4 pb-8 text-sm font-normal text-white flg:px-8">
             <p>
-              The user declares to take responsibility for his/her own referrals
-              and to warn his/her referrals of the risks related to the use of
-              the <strong>{"Sociaket"}</strong> platform and compel them to read
-              the Terms and Conditions herein contained before taking any action
-              on <strong>{"Sociaket"}</strong>.
+              You take responsibility for your own referrals. You must warn your
+              referrals about the risks of using the{" "}
+              <strong>{"Sociaket"}</strong> platform, and you must require them
+              to read these Terms and Conditions before they take any action on{" "}
+              <strong>{"Sociaket"}</strong>.
             </p>
             <br />
             <p>
-              Each user who participates in <strong>{"Sociaket"}</strong>{" "}
-              activities, by accepting our Terms and Conditions, agrees to
-              release his or her Sponsor from any liability related to his or
-              her own use of the platform and from any damage or loss.
+              Each user who takes part in <strong>{"Sociaket"}</strong>{" "}
+              activities, by accepting these Terms and Conditions, agrees to
+              release their Sponsor from any liability related to their own use
+              of the platform and from any damage or loss.
             </p>
           </div>
         </div>
@@ -170,11 +164,9 @@ const Terms: NextPage = () => {
           </h3>
           <div className=" mt-4 px-4 pb-8 text-sm font-normal text-white flg:px-8">
             <p>
-              If any particular term, covenant, or provision of this agreement
-              is determined to be invalid or unenforceable, the invalidity or
-              unenforceability thereof will not affect the remaining provisions
-              of this agreement, which will nevertheless remain in full force
-              and effect.
+              If any term, covenant, or provision of this agreement is found
+              invalid or unenforceable, the rest of this agreement remains in
+              full force and effect.
             </p>
           </div>
         </div>
@@ -186,9 +178,9 @@ const Terms: NextPage = () => {
           <div className=" mt-4 px-4 pb-8 text-sm font-normal text-white flg:px-8">
             <p>
               This Agreement is the sole and entire agreement between the
-              parties relating to the subject matter hereof. This Agreement
-              supersedes all prior understandings, agreements, and documentation
-              relating to such subject matter.
+              parties on this subject matter. It supersedes all prior
+              understandings, agreements, and documentation on this subject
+              matter.
             </p>
           </div>
         </div>
@@ -199,13 +191,12 @@ const Terms: NextPage = () => {
           </h3>
           <div className=" mt-4 px-4 pb-8 text-sm font-normal text-white flg:px-8">
             <p>
-              By accepting this agreement and its terms and conditions, you
-              agree to release and discharge any other users, developers,
-              employees, contractors, and organizations connected with{" "}
-              <strong>{"Sociaket"}</strong> decentralized platform from any
-              liability to you and to waive any claim for loss or damage by
-              reason of injury to person or property or serious or permanent
-              injury to you, for any cause whatsoever.
+              By accepting this agreement, you agree to release and discharge
+              other users, developers, employees, contractors, and organizations
+              connected with the <strong>{"Sociaket"}</strong> decentralized
+              platform from any liability to you. You waive any claim for loss
+              or damage from injury to person or property, including serious or
+              permanent injury, for any cause whatsoever.
             </p>
           </div>
         </div>
