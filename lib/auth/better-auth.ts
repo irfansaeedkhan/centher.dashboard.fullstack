@@ -5,7 +5,7 @@ import * as schema from "@/db/schema";
 
 // Preview sign-in fix (portfolio-library sign-in block, 2026-10-30):
 // BETTER_AUTH_URL is documented in README.md as the production URL
-// (https://centher-app.vercel.app). When that variable is set on Vercel,
+// (https://sociaket-app.vercel.app). When that variable is set on Vercel,
 // appUrl above is production, so the old trustedOrigins list contained
 // only production + localhost — a sign-in POST from any Vercel preview
 // deployment carried a preview origin Better Auth does not trust, and
@@ -40,6 +40,7 @@ export const auth = betterAuth({
   trustedOrigins: [
     appUrl,
     "https://centher-app.vercel.app",
+    "https://sociaket-app.vercel.app",
     "https://app.sociaket.com",
     ...(deploymentOrigin ? [deploymentOrigin] : []),
     "http://localhost:3000",

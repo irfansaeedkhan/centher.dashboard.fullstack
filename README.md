@@ -73,7 +73,7 @@ Voice/stream UI uses seeded channel state; live WebRTC is simulated for demo.
 | ---- | ----- |
 | `DATABASE_URL` | Neon connection string |
 | `BETTER_AUTH_SECRET` | long random secret |
-| `BETTER_AUTH_URL` | `https://centher-app.vercel.app` (your production URL, **https**, not localhost) |
+| `BETTER_AUTH_URL` | `https://sociaket-app.vercel.app` (your production URL, **https**, not localhost) |
 | `NEXT_PUBLIC_BRAND_NAME` | `Sociaket` |
 
 Optional: `NEXT_PUBLIC_DEMO_EMAIL` / `NEXT_PUBLIC_DEMO_PASSWORD` — if set, password **must** be `Demo1234!` (with `!`) to match the seed. Prefer leaving them unset; the login form uses the seed credentials.
