@@ -27,7 +27,7 @@ import {
   user,
 } from "../db/schema";
 
-const DEMO_EMAIL = process.env.NEXT_PUBLIC_DEMO_EMAIL || "demo@centher.io";
+const DEMO_EMAIL = process.env.NEXT_PUBLIC_DEMO_EMAIL || "demo@sociaket.io";
 
 const pic = (seed: string) => `https://picsum.photos/seed/${seed}/800/600`;
 
