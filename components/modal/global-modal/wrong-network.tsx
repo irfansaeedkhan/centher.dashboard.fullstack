@@ -76,9 +76,15 @@ export const WrongNetworkModal = () => {
   return (
     <CustomNewModal
       onClose={() => {
+        // Closing the warning dismisses it for this session (until the
+        // chain changes), so it does not pop back on every navigation.
+        try {
+          sessionStorage.setItem("wrong_network_dismissed", "1");
+        } catch {
+          // ignore storage errors
+        }
         hideModal(MODAL_TYPES.WRONG_NETWORK);
       }}
-      disable="yes"
       title={"Wrong Network"}
     >
       <div className="mb-8 flex w-full justify-center px-5 md:px-10">
