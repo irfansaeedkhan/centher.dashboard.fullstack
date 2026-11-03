@@ -34,6 +34,12 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins, sdk }) => {
   const router = useRouter();
   const { user: loggedInUser } = useUser();
   const [stakingPool, setStakingPool] = useState<ListCardDataOBj | null>(null);
+  // If a remote banner/icon fails to load (dead gateway, unallowed host,
+  // missing content), fall back to the local cover instead of showing a
+  // broken-image icon. The state only ever moves false -> true, so the
+  // fallback itself can never loop back through onError.
+  const [coverImgError, setCoverImgError] = useState(false);
+  const [iconImgError, setIconImgError] = useState(false);
 
   useEffect(() => {
     if (!loggedInUser) return;
@@ -50,11 +56,14 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins, sdk }) => {
       <div className="h-[180px] w-full">
         <Image
           src={
-            card.metadata?.banner?.length
+            coverImgError
+              ? "/images/profile-header-cover.jpg"
+              : card.metadata?.banner?.length
               ? formatIPFSUrl(card.metadata.banner) ||
                 "/images/profile-header-cover.jpg"
               : "/images/profile-header-cover.jpg"
           }
+          onError={() => setCoverImgError(true)}
           alt="profile-header-cover"
           width={1040}
           height={360}
@@ -66,11 +75,14 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins, sdk }) => {
         <div className="flex items-center gap-4">
           <Image
             src={
-              card.metadata?.icon
+              iconImgError
+                ? "/images/profile-header-cover.jpg"
+                : card.metadata?.icon
                 ? formatIPFSUrl(card.metadata.icon) ||
                   "/images/profile-header-cover.jpg"
                 : "/images/profile-header-cover.jpg"
             }
+            onError={() => setIconImgError(true)}
             alt="profile-header-cover"
             width={112}
             height={112}

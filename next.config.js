@@ -12,6 +12,7 @@ const nextConfig = {
       process.env.NEXT_PUBLIC_APP_ENV === "production"
         ? [
             "centher.infura-ipfs.io",
+            "centher-staging.infura-ipfs.io",
             "api.centher.io",
             "static.centher.io",
             "static.centher.io.s3.eu-west-3.amazonaws.com",
