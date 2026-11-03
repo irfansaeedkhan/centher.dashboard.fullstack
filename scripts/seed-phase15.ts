@@ -27,7 +27,7 @@ const url = readFileSync(
 ).trim();
 const db = drizzle(neon(url));
 
-const DEMO_EMAIL = process.env.NEXT_PUBLIC_DEMO_EMAIL || "demo@centher.io";
+const DEMO_EMAIL = process.env.NEXT_PUBLIC_DEMO_EMAIL || "demo@sociaket.io";
 
 // Deterministic PRNG
 function mulberry32(seed: number) {

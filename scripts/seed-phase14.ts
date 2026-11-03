@@ -107,7 +107,7 @@ async function ensureBid(
 }
 
 async function main() {
-  const demoId = await getUserId("demo@centher.io");
+  const demoId = await getUserId("demo@sociaket.io");
   if (!demoId) throw new Error("demo user not found");
 
   // Get some other users for ownership variety

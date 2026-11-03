@@ -18,7 +18,7 @@ import { and, asc, eq } from "drizzle-orm";
 import { db } from "../db";
 import { nftBids, nftPurchases, nfts, user } from "../db/schema";
 
-const DEMO_EMAIL = process.env.NEXT_PUBLIC_DEMO_EMAIL || "demo@centher.io";
+const DEMO_EMAIL = process.env.NEXT_PUBLIC_DEMO_EMAIL || "demo@sociaket.io";
 
 async function getUserIdByEmail(email: string): Promise<string | null> {
   const rows = await db

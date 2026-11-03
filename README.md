@@ -14,7 +14,7 @@ Sociaket SocialFi dapp — feed, chat, voice/stream, NFT marketplace, staking, l
 
 | Field    | Value            |
 | -------- | ---------------- |
-| Email    | `demo@centher.io` |
+| Email    | `demo@sociaket.io` |
 | Password | `Demo1234!`       |
 
 Shown on the login screen. Wallet connect remains available but is not required for the demo path.

@@ -13,7 +13,7 @@ const ButtonsText = {
 
 // Must match scripts/seed.ts. Do not trust a mismatched NEXT_PUBLIC_DEMO_* env
 // (e.g. Demo1234 without !) — that causes 401 "Login failed" on Vercel.
-const DEMO_EMAIL = "demo@centher.io";
+const DEMO_EMAIL = "demo@sociaket.io";
 const DEMO_PASSWORD = "Demo1234!";
 
 export const LoginForm: React.FC = () => {
